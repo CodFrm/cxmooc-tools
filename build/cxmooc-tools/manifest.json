@@ -1,0 +1,36 @@
+{
+    "manifest_version": 2,
+    "name": "超星慕课小工具",
+    "version": "1.0.0",
+    "description": "用于超星慕课的小工具",
+    "icons": {
+        "16": "img/logo.png",
+        "48": "img/logo.png",
+        "128": "img/logo.png"
+    },
+    "page_action": {
+        "default_icon": "img/logo.png",
+        "default_title": "超星慕课小工具"
+    },
+    "background": {
+        "scripts": ["src/background.js", "src/md5.js"]
+    },
+    "content_scripts": [{
+        "matches": [
+            "*://*.chaoxing.com/mycourse/studentstudy?*"
+        ],
+        "js": ["src/start.js"],
+        "run_at": "document_start"
+    }],
+    "permissions": [
+        "contextMenus",
+        "tabs",
+        "notifications",
+        "webRequest",
+        "webRequestBlocking",
+        "storage",
+        "declarativeContent"
+    ],
+    "web_accessible_resources": ["src/mooc.js", "src/md5.js"],
+    "homepage_url": "http://blog.icodef.com"
+}

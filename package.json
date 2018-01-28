@@ -1,0 +1,24 @@
+{
+  "name": "cxmooc-tools",
+  "version": "1.0.0",
+  "description": "> 一个快速学习超星慕课的chrome扩展工具(੧ᐛ੭挂科模式,启动)\r > 初次开发chrome扩展,有兴趣的朋友可以一起来哦",
+  "main": "mooc.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "webpack",
+    "run":""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/CodFrm/cxmooc-tools.git"
+  },
+  "author": "CodFrm",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/CodFrm/cxmooc-tools/issues"
+  },
+  "homepage": "https://github.com/CodFrm/cxmooc-tools#readme",
+  "devDependencies": {
+    "webpack": "^3.10.0"
+  }
+}
