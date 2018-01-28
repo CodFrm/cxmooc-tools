@@ -13,18 +13,25 @@ showExpand(document.getElementById('iframe'));
  * @param {iframe document} _this 
  */
 function showExpand(_this) {
-    ans = _this.contentWindow.document.getElementsByClassName('ans-job-icon');
+    var ans = _this.contentWindow.document.getElementsByClassName('ans-job-icon');
     for (var i = 0; i < ans.length; i++) {
+        if (ans[i].nextSibling.className.indexOf('ans-insertvideo-online') < 0) {
+            //判断是否为视频
+            continue;
+        }
         ans[i].style.width = '100%';
+        ans[i].style.textAlign = 'center';
         var boom = createBtn('秒过视频');
+        boom.value = i;
         ans[i].appendChild(boom);
         boom.onclick = function () {
             //获取参数
+            var _index = this.value;
             var mArg = _this.contentWindow.document.body.innerHTML;
             mArg = '{' + substrEx(mArg, 'mArg = {', ';');
             mArg = JSON.parse(mArg);
             console.log(mArg);
-            get('/ananas/status/' + mArg.attachments["0"].property.objectid +
+            get('/ananas/status/' + mArg.attachments[_index].property.objectid +
                 '?k=318&_dc=' + Date.parse(new Date())).onreadystatechange = function () {
                 if (this.readyState == 4) {
                     if (this.status != 200) {
@@ -34,14 +41,14 @@ function showExpand(_this) {
                         var json = JSON.parse(this.responseText);
                         var playTime = parseInt(json.duration - Math.random(1, 2));
                         var enc = '[' + mArg.defaults.clazzId + '][' + mArg.defaults.userid + '][' +
-                            mArg.attachments["0"].property._jobid + '][' + mArg.attachments["0"].objectId + '][' +
+                            mArg.attachments[_index].property._jobid + '][' + mArg.attachments[_index].objectId + '][' +
                             (playTime * 1000).toString() + '][d_yHJ!$pdA~5][' + (json.duration * 1000).toString() + '][0_' +
                             json.duration + ']';
                         enc = hex_md5(enc);
                         get('/multimedia/log/' + json.dtoken + '?clipTime=0_' + json.duration +
-                            '&otherInfo=' + mArg.attachments["0"].otherInfo +
-                            '&userid=' + mArg.defaults.userid + '&rt=0.9&jobid=' + mArg.attachments["0"].property._jobid +
-                            '&duration=' + json.duration + '&dtype=Video&objectId=' + mArg.attachments["0"].objectId +
+                            '&otherInfo=' + mArg.attachments[_index].otherInfo +
+                            '&userid=' + mArg.defaults.userid + '&rt=0.9&jobid=' + mArg.attachments[_index].property._jobid +
+                            '&duration=' + json.duration + '&dtype=Video&objectId=' + mArg.attachments[_index].objectId +
                             '&clazzId=' + mArg.defaults.clazzId +
                             '&view=pc&playingTime=' + playTime + '&isdrag=4&enc=' + enc).onreadystatechange = function () {
                             if (this.readyState == 4) {
