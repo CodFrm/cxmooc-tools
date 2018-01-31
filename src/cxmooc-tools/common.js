@@ -6,14 +6,31 @@ import {
  * @param {iframe document} _this 
  */
 export function showExpand(_this) {
-    var ans = _this.contentWindow.document.getElementsByClassName('ans-job-icon');
+    var ans = _this.contentDocument.getElementsByClassName('ans-job-icon');
     for (var i = 0; i < ans.length; i++) {
         if (ans[i].nextSibling.className.indexOf('ans-insertvideo-online') < 0) {
             //判断是否为视频
             continue;
         }
+        console.log(_this.contentDocument.querySelector('iframe'));
+        console.log(_this.contentDocument.getElementsByTagName('iframe'));
+        var doc=_this.contentDocument.getElementsByTagName('iframe')[i].contentDocument;
+        console.log(doc);
         ans[i].style.width = '100%';
         ans[i].style.textAlign = 'center';
+        var hang = createBtn('开始挂机');
+        hang.value = i;
+        ans[i].appendChild(hang);
+        hang.onclick = function () {
+            var player = doc.querySelector('object');
+            var time = setInterval(function () {
+                try {
+                    player.playMovie();
+                } catch (e) {
+                    clearInterval(time);
+                }
+            }, 1000);
+        }
         var boom = createBtn('秒过视频');
         boom.value = i;
         ans[i].appendChild(boom);
@@ -23,7 +40,6 @@ export function showExpand(_this) {
             var mArg = _this.contentWindow.document.body.innerHTML;
             mArg = '{' + substrEx(mArg, 'mArg = {', ';');
             mArg = JSON.parse(mArg);
-            console.log(mArg);
             get('/ananas/status/' + mArg.attachments[_index].property.objectid +
                 '?k=318&_dc=' + Date.parse(new Date())).onreadystatechange = function () {
                 if (this.readyState == 4) {
@@ -57,6 +73,7 @@ export function showExpand(_this) {
 
             }
         }
+
     }
 }
 /**
@@ -111,5 +128,6 @@ function createBtn(title) {
     btn.style.padding = '2px 8px';
     btn.style.cursor = 'pointer';
     btn.style.fontSize = '12px';
+    btn.style.marginLeft = '4px';
     return btn;
 }
