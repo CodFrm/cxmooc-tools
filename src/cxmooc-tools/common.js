@@ -39,14 +39,39 @@ function getTopicMsg(elTopic) {
     var msg = {};
     msg.topic = elTopic.querySelector('div.clearfix').innerText;
     msg.type = substrEx(msg.topic, '【', '】');
+    switch (msg.type) {
+        case '单选题':
+            {
+                msg.type = 1;
+                break;
+            }
+        case '多选题':
+            {
+                msg.type = 2;
+                break;
+            }
+        case '判断题':
+            {
+                msg.type = 3;
+                break;
+            }
+    }
     msg.topic = msg.topic.substring(msg.topic.indexOf('】') + 1);
     msg.topic = msg.topic.substring(0, msg.topic.indexOf('（'));
     var elOption = elTopic.nextSibling.nextSibling.getElementsByTagName('li');
     msg.option = [];
     for (var i = 0; i < elOption.length; i++) {
+        var content = '';
+        var op = elOption[i].querySelector('input').value;
+        if (msg.type == 3) {
+            op = (op == 'true' ? 'Y' : 'N');
+            content = op;
+        } else {
+            content = elOption[i].querySelector('.after').innerText;
+        }
         msg.option.push({
-            op: elOption[i].querySelector('.before input').value,
-            content: elOption[i].querySelector('.after').innerText,
+            op: op,
+            content: content,
         });
     }
     return msg;
