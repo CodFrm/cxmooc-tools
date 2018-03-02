@@ -1,6 +1,7 @@
 import {
     hex_md5
 } from './md5';
+
 /**
  * 显示扩展按钮,并绑定事件
  * @param {iframe document} _this 
@@ -74,23 +75,39 @@ function getTopicMsg(elTopic) {
             content: content,
         });
     }
-    return msg;
 }
 
 function video(_this, elLogo, index) {
+    var wid = _this.contentDocument.getElementsByTagName('iframe')[index].contentWindow;
     var doc = _this.contentDocument.getElementsByTagName('iframe')[index].contentDocument;
+    injected(doc, 'action.js');
+    //在框架内注入js
     var hang = createBtn('开始挂机');
     hang.value = index;
     elLogo.appendChild(hang);
     hang.onclick = function () {
-        var player = doc.querySelector('object');
-        var time = setInterval(function () {
-            try {
-                player.playMovie();
-            } catch (e) {
-                clearInterval(time);
-            }
-        }, 1000);
+        wid.monitorPlay();
+        /*var player = doc.querySelector('object');
+        var reader = player.parentNode.parentNode;
+        //监听暂停事件
+        console.log($(reader));
+        reader.addEventListener('onPause', function (h, g) {
+            console.log('123123');
+            player.playMovie();
+        });
+        console.log($('div#reader'));
+        $('div#reader').bind('onPause', function (h, g) {
+            console.log('123123');
+            player.playMovie();
+        });
+        // var time = setInterval(function () {
+        //     try {
+        //         player.playMovie();
+        //     } catch (e) {
+        //         clearInterval(time);
+        //     }
+        // }, 1000);
+        */
     }
     var boom = createBtn('秒过视频');
     boom.value = index;
@@ -135,6 +152,15 @@ function video(_this, elLogo, index) {
         }
     }
 }
+
+function injected(doc, file) {
+    var path = 'src/' + file;
+    var temp = doc.createElement('script');
+    temp.setAttribute('type', 'text/javascript');
+    temp.src = document.head.getAttribute('chrome-url') + path;
+    doc.head.appendChild(temp);
+}
+
 /**
  * 取中间文本
  * @param {*} str 

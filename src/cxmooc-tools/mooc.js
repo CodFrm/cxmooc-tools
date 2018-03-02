@@ -1,7 +1,6 @@
 import {
     showExpand
 } from './common';
-console.log('cxmooc-tools start');
 //监听框架加载
 document.addEventListener('load', function (ev) {
     var ev = ev || event;
