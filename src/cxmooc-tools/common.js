@@ -9,19 +9,58 @@ import {
 export function showExpand(_this) {
     var ans = _this.contentDocument.getElementsByClassName('ans-job-icon');
     for (var i = 0; i < ans.length; i++) {
-        if (ans[i].nextSibling.className.indexOf('ans-insertvideo-online') < 0) {
-            //判断是否为视频
-            continue;
+            ans[i].style.width = '100%';
+            ans[i].style.textAlign = 'center';
+            if (ans[i].nextSibling.className.indexOf('ans-insertvideo-online') >= 0) {
+                //视频
+                video(_this, ans[i], i);
+            } else {
+                //题目
+                topic(_this, ans[i], i);
+            }
         }
-        var wid = _this.contentDocument.getElementsByTagName('iframe')[i].contentWindow;
-        var doc = _this.contentDocument.getElementsByTagName('iframe')[i].contentDocument;
+    }
+
+    function topic(_this, elLogo, index) {
+        var doc = _this.contentDocument.getElementsByTagName('iframe')[index].contentDocument;
+        var topicDoc = doc.getElementById('frame_content').contentDocument;
+        var html = topicDoc.body.innerHTML;
+        var topicList = topicDoc.getElementsByClassName('Zy_TItle');
+        for (var i = 0; i < topicList.length; i++) {
+            console.log(getTopicMsg(topicList[i]));
+        }
+
+    }
+
+    /**
+     * 获取题目信息
+     * @param {*} elTopic 
+     */
+    function getTopicMsg(elTopic) {
+        var msg = {};
+        msg.topic = elTopic.querySelector('div.clearfix').innerText;
+        msg.type = substrEx(msg.topic, '【', '】');
+        msg.topic = msg.topic.substring(msg.topic.indexOf('】') + 1);
+        msg.topic = msg.topic.substring(0, msg.topic.indexOf('（'));
+        var elOption = elTopic.nextSibling.nextSibling.getElementsByTagName('li');
+        msg.option = [];
+        for (var i = 0; i < elOption.length; i++) {
+            msg.option.push({
+                op: elOption[i].querySelector('.before input').value,
+                content: elOption[i].querySelector('.after').innerText,
+            });
+        }
+        return msg;
+    }
+
+    function video(_this, elLogo, index) {
+        var wid = _this.contentDocument.getElementsByTagName('iframe')[index].contentWindow;
+        var doc = _this.contentDocument.getElementsByTagName('iframe')[index].contentDocument;
         injected(doc, 'action.js');
         //在框架内注入js
-        ans[i].style.width = '100%';
-        ans[i].style.textAlign = 'center';
         var hang = createBtn('开始挂机');
-        hang.value = i;
-        ans[i].appendChild(hang);
+        hang.value = index;
+        elLogo.appendChild(hang);
         hang.onclick = function () {
             wid.monitorPlay();
             /*var player = doc.querySelector('object');
@@ -47,12 +86,12 @@ export function showExpand(_this) {
             */
         }
         var boom = createBtn('秒过视频');
-        boom.value = i;
-        ans[i].appendChild(boom);
+        boom.value = index;
+        elLogo.appendChild(boom);
         boom.onclick = function () {
             //获取参数
             var _index = this.value;
-            var mArg = _this.contentWindow.document.body.innerHTML;
+            var mArg = _this.contentDocument.body.innerHTML;
             mArg = '{' + substrEx(mArg, 'mArg = {', ';');
             mArg = JSON.parse(mArg);
             get('/ananas/status/' + mArg.attachments[_index].property.objectid +
@@ -88,70 +127,68 @@ export function showExpand(_this) {
 
             }
         }
-
     }
-}
 
-function injected(doc, file) {
-    var path = 'src/' + file;
-    var temp = doc.createElement('script');
-    temp.setAttribute('type', 'text/javascript');
-    temp.src = document.head.getAttribute('chrome-url') + path;
-    doc.head.appendChild(temp);
-}
+    function injected(doc, file) {
+        var path = 'src/' + file;
+        var temp = doc.createElement('script');
+        temp.setAttribute('type', 'text/javascript');
+        temp.src = document.head.getAttribute('chrome-url') + path;
+        doc.head.appendChild(temp);
+    }
 
-/**
- * 取中间文本
- * @param {*} str 
- * @param {*} left 
- * @param {*} right 
- */
-function substrEx(str, left, right) {
-    var leftPos = str.indexOf(left) + left.length;
-    var rightPos = str.indexOf(right, leftPos);
-    return str.substring(leftPos, rightPos);
-}
-/**
- * 创建http请求
- */
-function createRequest() {
-    var xmlhttp;
-    if (window.XMLHttpRequest) {
-        xmlhttp = new XMLHttpRequest();
-    } else {
-        xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+    /**
+     * 取中间文本
+     * @param {*} str 
+     * @param {*} left 
+     * @param {*} right 
+     */
+    function substrEx(str, left, right) {
+        var leftPos = str.indexOf(left) + left.length;
+        var rightPos = str.indexOf(right, leftPos);
+        return str.substring(leftPos, rightPos);
     }
-    return xmlhttp;
-}
-/**
- * get请求
- * @param {*} url 
- */
-function get(url) {
-    try {
-        var xmlhttp = createRequest();
-        xmlhttp.open("GET", url, true);
-        xmlhttp.send();
-    } catch (e) {
-        return false;
+    /**
+     * 创建http请求
+     */
+    function createRequest() {
+        var xmlhttp;
+        if (window.XMLHttpRequest) {
+            xmlhttp = new XMLHttpRequest();
+        } else {
+            xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+        }
+        return xmlhttp;
     }
-    return xmlhttp;
-}
-/**
- * 创建一个按钮
- * @param {*} title 
- */
-function createBtn(title) {
-    var btn = document.createElement('button');
-    btn.innerText = title;
-    btn.style.outline = 'none';
-    btn.style.border = '0';
-    btn.style.background = '#7d9d35';
-    btn.style.color = '#fff';
-    btn.style.borderRadius = '4px';
-    btn.style.padding = '2px 8px';
-    btn.style.cursor = 'pointer';
-    btn.style.fontSize = '12px';
-    btn.style.marginLeft = '4px';
-    return btn;
-}
+    /**
+     * get请求
+     * @param {*} url 
+     */
+    function get(url) {
+        try {
+            var xmlhttp = createRequest();
+            xmlhttp.open("GET", url, true);
+            xmlhttp.send();
+        } catch (e) {
+            return false;
+        }
+        return xmlhttp;
+    }
+    /**
+     * 创建一个按钮
+     * @param {*} title 
+     */
+    function createBtn(title) {
+        var btn = document.createElement('button');
+        btn.innerText = title;
+        btn.style.outline = 'none';
+        btn.style.border = '0';
+        btn.style.background = '#7d9d35';
+        btn.style.color = '#fff';
+        btn.style.borderRadius = '4px';
+        btn.style.padding = '2px 8px';
+        btn.style.cursor = 'pointer';
+        btn.style.fontSize = '12px';
+        btn.style.marginLeft = '4px';
+        return btn;
+    }
