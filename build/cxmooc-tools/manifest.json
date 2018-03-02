@@ -13,7 +13,7 @@
         "default_title": "超星慕课小工具"
     },
     "background": {
-        "scripts": ["src/background.js", "src/md5.js"]
+        "scripts": ["src/background.js"]
     },
     "content_scripts": [{
         "matches": [
@@ -31,6 +31,6 @@
         "storage",
         "declarativeContent"
     ],
-    "web_accessible_resources": ["src/mooc.js", "src/md5.js"],
+    "web_accessible_resources": ["src/mooc.js", "src/action.js"],
     "homepage_url": "http://blog.icodef.com"
 }
