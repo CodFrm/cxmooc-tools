@@ -8,12 +8,10 @@
         "48": "img/logo.png",
         "128": "img/logo.png"
     },
-    "page_action": {
+    "browser_action": {
         "default_icon": "img/logo.png",
-        "default_title": "超星慕课小工具"
-    },
-    "background": {
-        "scripts": ["src/background.js"]
+        "default_title": "超星慕课小工具",
+        "default_popup": "src/popup.html"
     },
     "content_scripts": [{
         "matches": [

@@ -87,27 +87,6 @@ function video(_this, elLogo, index) {
     elLogo.appendChild(hang);
     hang.onclick = function () {
         wid.monitorPlay();
-        /*var player = doc.querySelector('object');
-        var reader = player.parentNode.parentNode;
-        //监听暂停事件
-        console.log($(reader));
-        reader.addEventListener('onPause', function (h, g) {
-            console.log('123123');
-            player.playMovie();
-        });
-        console.log($('div#reader'));
-        $('div#reader').bind('onPause', function (h, g) {
-            console.log('123123');
-            player.playMovie();
-        });
-        // var time = setInterval(function () {
-        //     try {
-        //         player.playMovie();
-        //     } catch (e) {
-        //         clearInterval(time);
-        //     }
-        // }, 1000);
-        */
     }
     var boom = createBtn('秒过视频');
     boom.value = index;
