@@ -80,6 +80,7 @@ function getTopicMsg(elTopic) {
 function video(_this, elLogo, index) {
     var wid = _this.contentDocument.getElementsByTagName('iframe')[index].contentWindow;
     var doc = _this.contentDocument.getElementsByTagName('iframe')[index].contentDocument;
+    var objId = _this.contentDocument.getElementsByTagName('iframe')[index].getAttribute('objectid');
     injected(doc, 'action.js');
     //在框架内注入js
     var hang = createBtn('开始挂机');
@@ -93,11 +94,18 @@ function video(_this, elLogo, index) {
     elLogo.appendChild(boom);
     boom.onclick = function () {
         //获取参数
-        var _index = this.value;
+        var _index = 0;
         var mArg = _this.contentDocument.body.innerHTML;
         mArg = '{' + substrEx(mArg, 'mArg = {', ';');
         mArg = JSON.parse(mArg);
-        get('/ananas/status/' + mArg.attachments[_index].property.objectid +
+        do {
+            if (mArg.attachments[_index++].objectId == objId) {
+                _index--;
+                break;
+            }
+
+        } while (_index < mArg.attachments.length)
+        get('/ananas/status/' + mArg.attachments[_index].objectId +
             '?k=318&_dc=' + Date.parse(new Date())).onreadystatechange = function () {
             if (this.readyState == 4) {
                 if (this.status != 200) {
