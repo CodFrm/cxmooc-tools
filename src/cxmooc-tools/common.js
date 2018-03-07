@@ -98,13 +98,12 @@ function video(_this, elLogo, index) {
         var mArg = _this.contentDocument.body.innerHTML;
         mArg = '{' + substrEx(mArg, 'mArg = {', ';');
         mArg = JSON.parse(mArg);
-        do {
-            if (mArg.attachments[_index++].objectId == objId) {
-                _index--;
+        for(let i=0;i<mArg.attachments.length;i++){
+            if(mArg.attachments[i].objectId == objId){
+                _index=i;
                 break;
             }
-
-        } while (_index < mArg.attachments.length)
+        }
         get('/ananas/status/' + mArg.attachments[_index].objectId +
             '?k=318&_dc=' + Date.parse(new Date())).onreadystatechange = function () {
             if (this.readyState == 4) {

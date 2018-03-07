@@ -1,4 +1,3 @@
-const UglifyPlugin = require('uglifyjs-webpack-plugin')
 module.exports = {
     entry: {
         mooc: __dirname + '/src/cxmooc-tools/mooc.js',
@@ -8,8 +7,5 @@ module.exports = {
     output: {
         path: __dirname + '/build/cxmooc-tools/src',
         filename: '[name].js'
-    },
-    plugins: [
-        new UglifyPlugin()
-    ]
+    }
 }
