@@ -1,2 +1,3 @@
 node_modules
 build/cxmooc-tools/src/*.js
+package-lock.json
