@@ -1,7 +1,7 @@
 import {
     hex_md5
 } from './md5';
-
+const topic = require('./topic');
 /**
  * 显示扩展按钮,并绑定事件
  * @param {iframe document} _this 
@@ -14,66 +14,10 @@ export function showExpand(_this) {
         if (ans[i].nextSibling.className.indexOf('ans-insertvideo-online') >= 0) {
             //视频
             video(_this, ans[i], i);
-        } else {
-            //题目
-            topic(_this, ans[i], i);
+        } else if(ans[i].parentNode.className.indexOf('ans-attach-ct ans-job-finished') >= 0){
+            //做完的题目
+            topic(_this, ans[i], i); 
         }
-    }
-}
-
-function topic(_this, elLogo, index) {
-    var doc = _this.contentDocument.getElementsByTagName('iframe')[index].contentDocument;
-    var topicDoc = doc.getElementById('frame_content').contentDocument;
-    var html = topicDoc.body.innerHTML;
-    var topicList = topicDoc.getElementsByClassName('Zy_TItle');
-    for (var i = 0; i < topicList.length; i++) {
-        console.log(getTopicMsg(topicList[i]));
-    }
-
-}
-
-/**
- * 获取题目信息
- * @param {*} elTopic 
- */
-function getTopicMsg(elTopic) {
-    var msg = {};
-    msg.topic = elTopic.querySelector('div.clearfix').innerText;
-    msg.type = substrEx(msg.topic, '【', '】');
-    switch (msg.type) {
-        case '单选题':
-            {
-                msg.type = 1;
-                break;
-            }
-        case '多选题':
-            {
-                msg.type = 2;
-                break;
-            }
-        case '判断题':
-            {
-                msg.type = 3;
-                break;
-            }
-    }
-    msg.topic = msg.topic.substring(msg.topic.indexOf('】') + 1);
-    msg.topic = msg.topic.substring(0, msg.topic.indexOf('（'));
-    var elOption = elTopic.nextSibling.nextSibling.getElementsByTagName('li');
-    msg.option = [];
-    for (var i = 0; i < elOption.length; i++) {
-        var content = '';
-        var op = elOption[i].querySelector('input').value;
-        if (msg.type == 3) {
-            op = (op == 'true' ? 'Y' : 'N');
-            content = op;
-        } else {
-            content = elOption[i].querySelector('.after').innerText;
-        }
-        msg.option.push({
-            op: op,
-            content: content,
-        });
     }
 }
 
@@ -98,9 +42,9 @@ function video(_this, elLogo, index) {
         var mArg = _this.contentDocument.body.innerHTML;
         mArg = '{' + substrEx(mArg, 'mArg = {', ';');
         mArg = JSON.parse(mArg);
-        for(let i=0;i<mArg.attachments.length;i++){
-            if(mArg.attachments[i].objectId == objId){
-                _index=i;
+        for (let i = 0; i < mArg.attachments.length; i++) {
+            if (mArg.attachments[i].objectId == objId) {
+                _index = i;
                 break;
             }
         }

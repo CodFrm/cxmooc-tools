@@ -7,6 +7,3 @@ before_install:
  - npm install
 script: 
  - npm run build
-after_script:
- - npm run coveralls
- 
