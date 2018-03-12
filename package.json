@@ -7,7 +7,7 @@
     "test": "echo \"Hello,World\nDeveloper Blog:blog.icodef.com\" && exit 1",
     "build": "webpack --mode production --config webpack.prod.js",
     "dev": "webpack --watch --mode development --config webpack.dev.js",
-    "server":"node src/server/listen.js"
+    "server": "node src/server/listen.js"
   },
   "repository": {
     "type": "git",
@@ -20,7 +20,9 @@
   },
   "homepage": "https://github.com/CodFrm/cxmooc-tools#readme",
   "devDependencies": {
+    "body-parser": "^1.18.2",
     "express": "^4.16.2",
+    "mongodb": "^3.0.4",
     "webpack": "^4.1.0",
     "webpack-cli": "^2.0.10",
     "webpack-merge": "^4.1.2"
