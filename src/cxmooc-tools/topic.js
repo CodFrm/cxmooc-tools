@@ -116,7 +116,6 @@ module.exports = function (_this, elLogo, index, over) {
             retJson.push(tmpJson);
         }
         //提交数据
-        console.log(JSON.stringify(retJson));
         common.post(moocServer.url + 'answer', JSON.stringify(retJson));
     }
     /** 

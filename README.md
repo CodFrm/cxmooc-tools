@@ -13,6 +13,21 @@
 npm install
 npm run build
 ```
+## Server
+搭配了一个服务器程序,这个服务器将会记录你正确的答题答案,并不会记录你的任何账号信息
+
+并且接口没有任何权限,全由插件提交上传,还请大家不要故意上传错误的答案 (๑• . •๑)
+
+因为超新慕课是https的原因,所以服务器配置需要https
+
+环境:
+* Node.js
+* Mongodb
+```
+npm install
+npm run server
+```
+
 
 ## 安装
 Chrome:

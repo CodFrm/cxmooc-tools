@@ -10,7 +10,6 @@ window.onload = function () {
                 return;
             }
         }
-        this.console.log(localStorage.getItem("fresh"));
         injected(document, 'mooc.js');
         document.head.setAttribute('chrome-url', chrome.extension.getURL(''));
     })

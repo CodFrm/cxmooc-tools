@@ -4,8 +4,34 @@ const app = express();
 const moocModel = require('./mooc');
 const md5 = require("md5");
 const config = require('../config');
-var mooc = new moocModel();
+var path = require('path');
+var fs = require('fs');
+const http = require('http');
+const https = require('https');
 
+var privateKey = fs.readFileSync(path.join(__dirname, './certificate/private.key'), 'utf8');
+var certificate = fs.readFileSync(path.join(__dirname, './certificate/file.crt'), 'utf8');
+var credentials = {
+    key: privateKey,
+    cert: certificate
+};
+var httpServer = http.createServer(app);
+var httpsServer = https.createServer(credentials, app);
+var PORT = 8080;
+var SSLPORT = 8081;
+
+//创建http服务器  
+httpServer.listen(PORT, function () {
+    console.log('HTTP Server is running on: http://localhost:%s', PORT);
+});
+
+//创建https服务器  
+httpsServer.listen(SSLPORT, function () {
+    console.log('HTTPS Server is running on: https://localhost:%s', SSLPORT);
+});
+
+
+var mooc = new moocModel();
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
@@ -105,10 +131,4 @@ app.get('/answer', function (req, res) {
             }
         });
     }
-})
-
-var server = app.listen(8080, function () {
-    var host = server.address().address
-    var port = server.address().port
-    console.log("Server started successfully\nHome URL:http://%s:%s", host, port)
 })
