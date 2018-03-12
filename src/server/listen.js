@@ -1,9 +1,11 @@
-var express = require('express');
-var bodyParser = require('body-parser');
-var app = express();
-var moocModel = require('./mooc');
+const express = require('express');
+const bodyParser = require('body-parser');
+const app = express();
+const moocModel = require('./mooc');
+const md5 = require("md5");
+const config = require('../config');
 var mooc = new moocModel();
-var md5 = require("md5");
+
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
@@ -61,9 +63,9 @@ app.all('/answer', function (req, res, next) {
 })
 app.get('/update', function (req, res) {
     res.send({
-        version: 1.3,
-        url: 'http://blog.icodef.com/2018/01/25/1304',
-        enforce: false
+        version: config.version,
+        url: config.update,
+        enforce: config.enforce
     });
 })
 
