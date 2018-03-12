@@ -17,15 +17,29 @@ app.get('/', function (req, res) {
 
 app.post('/answer', function (req, res) {
     var ip = getClientIp(req);
-    mooc.count('answer', req.body, function (err, result) {
-        console.log(result);
-        res.send({
-            code: 0,
-            msg: 'success',
-            ip: ip
+    if (req.body.topic && req.body.type) {
+        mooc.count('answer', {
+            topic: req.body.topic,
+            type: req.body.type
+        }, function (err, result) {
+            if (err) throw err;
+            if (result >= 0 && result < 10) {
+                var data = req.body;
+                data.ip = ip;
+                data.time = Date.parse(new Date());
+                mooc.insert('answer', data);
+            }
+            res.send({
+                code: 0,
+                msg: 'success'
+            });
         });
-    });
-
+    } else {
+        res.send({
+            code: -1,
+            msg: 'error'
+        });
+    }
 })
 
 function getClientIp(req) {
@@ -35,14 +49,26 @@ function getClientIp(req) {
         req.connection.socket.remoteAddress;
 }
 app.get('/answer', function (req, res) {
-    mooc.insert('answer', {
-        test: 123,
-        debug: Date.parse(new Date())
-    });
-    console.log(req);
-    res.send({
-        'test': 233
-    });
+    console.log(req.query);
+    var topic = req.query.topic;
+    var ret = [];
+    for (let i = 0; i < topic.length; i++) {
+        mooc.find('answer', {
+            topic: topic[i],
+            type: type[i]
+        }).limit(10).toArray(function (err, result) {
+            var pushData = {
+                topic: topic[i],
+            };
+            if (result) {
+                pushData.result = result;
+            } else {
+                pushData.result = null
+            }
+            ret.push(pushData);
+        });
+    }
+
 })
 
 var server = app.listen(8080, function () {

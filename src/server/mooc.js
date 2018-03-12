@@ -19,7 +19,10 @@ module.exports = function () {
         return dbase.collection(set).insertOne(row);
     }
 
-    this.findOne = function (set, cond) {
+    this.find = function (set, cond) {
+        return dbase.collection(set).find(cond);
+    }
+    this.findOne = function (set, cond, callback) {
         return dbase.collection(set).findOne(cond, null, callback);
     }
 
