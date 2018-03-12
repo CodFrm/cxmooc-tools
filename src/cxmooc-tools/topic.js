@@ -1,12 +1,104 @@
+const common = require('./common');
+const md5 = require("md5");
+const moocServer = require('../config');
 /**
  * 题目处理模块
  */
-
-module.exports = function (_this, elLogo, index) {
+module.exports = function (_this, elLogo, index, over) {
     var doc = _this.contentDocument.getElementsByTagName('iframe')[index].contentDocument;
     var topicDoc = doc.getElementById('frame_content').contentDocument;
     var html = topicDoc.body.innerHTML;
-    dealHTMLTopic(html);
+    if (over) {
+        //完成的提交答案
+        dealHTMLTopic(html);
+    } else {
+        //未完成的填入答案
+        var auto = common.createBtn('搜索答案');
+        elLogo.appendChild(auto);
+        auto.onclick = function () {
+            var topicList = topicDoc.getElementsByClassName('Zy_TItle');
+            var topic = [];
+            for (let i = 0; i < topicList.length; i++) {
+                var msg = getTopicMsg(topicList[i]);
+                var md5Data = md5(msg.topic + msg.type.toString());
+                topicList[i].id = md5Data;
+                topic.push(md5Data);
+            }
+            var data = '';
+            for (let i in topic) {
+                data += 'topic[' + i + ']=' + topic[i] + '&';
+            }
+            common.get(moocServer.url + 'answer?' + data).onreadystatechange = function () {
+                if (this.readyState == 4) {
+                    if (this.status != 200) {
+                        alert('未知错误');
+                    } else {
+                        var json = JSON.parse(this.responseText);
+                        //填入答案
+                        for (let i in json) {
+                            fillIn(json[i].topic, json[i].result);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    function rand(min, max) {
+        switch (arguments.length) {
+            case 1:
+                return parseInt(Math.random() * min + 1, 10);
+                break;
+            case 2:
+                return parseInt(Math.random() * (max - min + 1) + min, 10);
+                break;
+            default:
+                return 0;
+                break;
+        }
+    }
+
+    function fillIn(id, result) {
+        var topicEl = topicDoc.getElementById(id);
+        result = result[rand(0, result.length - 1)];
+        for (let i = 0; i < result.correct.length; i++) {
+            var options = topicEl.nextSibling.nextSibling.getElementsByTagName('li');
+            for (let n = 0; n < options.length; n++) {
+                var optionsContent;
+                if (result.type == 3) {
+                    if (result.correct[i].content) {
+                        options[0].getElementsByTagName('input')[0].click();
+                    } else {
+                        options[1].getElementsByTagName('input')[0].click();
+                    }
+                    break;
+                } else if (result.type <= 2) {
+                    optionsContent = removeHTML(options[n].querySelector('.after').innerHTML);
+                    if (result.correct[i].content == optionsContent) {
+                        options[n].querySelector('.after').click();
+                    }
+                } else if (result.type == 4) {
+                    optionsContent = common.substrEx(options[n].innerHTML, "第", "空");
+                    if (optionsContent == result.correct[i].option) {
+                        options[n].getElementsByTagName('input')[0].value = result.correct[i].content;
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * 获取题目信息
+     * @param {*} elTopic 
+     */
+    function getTopicMsg(elTopic) {
+        var msg = {};
+        msg.topic = elTopic.querySelector('div.clearfix').innerHTML;
+        msg.type = switchTopicType(common.substrEx(msg.topic, '【', '】'));
+        msg.topic = removeHTML(msg.topic.substring(msg.topic.indexOf('】') + 1));
+        return msg;
+    }
+
     /** 
      * 处理html源码获取题目信息
      */
@@ -23,7 +115,9 @@ module.exports = function (_this, elLogo, index) {
             var tmpJson = dealTopicMsg(result);
             retJson.push(tmpJson);
         }
-        console.log(retJson);
+        //提交数据
+        console.log(JSON.stringify(retJson));
+        common.post(moocServer.url + 'answer', JSON.stringify(retJson));
     }
     /** 
      * 去除html标签
@@ -58,8 +152,9 @@ module.exports = function (_this, elLogo, index) {
             if (msg.type == 3) {
                 var pos = regxData[4].indexOf('：');
                 if (pos >= 0) {
-                    regxData[4] = regxData[4].substring(pos+1, pos + 2);
+                    regxData[4] = regxData[4].substring(pos + 1, pos + 2);
                 }
+                regxData[4] = (regxData[4] == '×' ? false : true)
                 correct = [{
                     option: regxData[4],
                     content: regxData[4]

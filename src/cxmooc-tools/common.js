@@ -1,6 +1,4 @@
-import {
-    hex_md5
-} from './md5';
+const md5 = require("md5");
 const topic = require('./topic');
 /**
  * 显示扩展按钮,并绑定事件
@@ -14,9 +12,12 @@ export function showExpand(_this) {
         if (ans[i].nextSibling.className.indexOf('ans-insertvideo-online') >= 0) {
             //视频
             video(_this, ans[i], i);
-        } else if(ans[i].parentNode.className.indexOf('ans-attach-ct ans-job-finished') >= 0){
+        } else if (ans[i].parentNode.className.indexOf('ans-attach-ct ans-job-finished') >= 0) {
             //做完的题目
-            topic(_this, ans[i], i); 
+            topic(_this, ans[i], i, true);
+        } else if (ans[i].parentNode.className.indexOf('ans-attach-ct') >= 0) {
+            //未做完的题目
+            topic(_this, ans[i], i, false);
         }
     }
 }
@@ -61,7 +62,7 @@ function video(_this, elLogo, index) {
                         mArg.attachments[_index].property._jobid + '][' + mArg.attachments[_index].objectId + '][' +
                         (playTime * 1000).toString() + '][d_yHJ!$pdA~5][' + (json.duration * 1000).toString() + '][0_' +
                         json.duration + ']';
-                    enc = hex_md5(enc);
+                    enc = md5(enc);
                     get('/multimedia/log/' + json.dtoken + '?clipTime=0_' + json.duration +
                         '&otherInfo=' + mArg.attachments[_index].otherInfo +
                         '&userid=' + mArg.defaults.userid + '&rt=0.9&jobid=' + mArg.attachments[_index].property._jobid +
@@ -97,7 +98,7 @@ function injected(doc, file) {
  * @param {*} left 
  * @param {*} right 
  */
-function substrEx(str, left, right) {
+export function substrEx(str, left, right) {
     var leftPos = str.indexOf(left) + left.length;
     var rightPos = str.indexOf(right, leftPos);
     return str.substring(leftPos, rightPos);
@@ -118,21 +119,34 @@ function createRequest() {
  * get请求
  * @param {*} url 
  */
-function get(url) {
+export function get(url) {
     try {
         var xmlhttp = createRequest();
         xmlhttp.open("GET", url, true);
-        xmlhttp.send();
+        xmlhttp.send(data);
     } catch (e) {
         return false;
     }
     return xmlhttp;
 }
+
+export function post(url, data) {
+    try {
+        var xmlhttp = createRequest();
+        xmlhttp.open("POST", url, true);
+        xmlhttp.setRequestHeader("Content-Type", "application/json");
+        xmlhttp.send(data);
+    } catch (e) {
+        return false;
+    }
+    return xmlhttp;
+}
+
 /**
  * 创建一个按钮
  * @param {*} title 
  */
-function createBtn(title) {
+export function createBtn(title) {
     var btn = document.createElement('button');
     btn.innerText = title;
     btn.style.outline = 'none';

@@ -19,8 +19,8 @@ module.exports = function () {
         return dbase.collection(set).insertOne(row);
     }
 
-    this.find = function (set, cond) {
-        return dbase.collection(set).find(cond);
+    this.find = function (set, cond, option) {
+        return dbase.collection(set).find(cond, option);
     }
     this.findOne = function (set, cond, callback) {
         return dbase.collection(set).findOne(cond, null, callback);
