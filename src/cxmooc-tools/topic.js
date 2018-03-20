@@ -60,6 +60,9 @@ module.exports = function (_this, elLogo, index, over) {
 
     function fillIn(id, result) {
         var topicEl = topicDoc.getElementById(id);
+        if (result.length <= 0) {
+            return;
+        }
         result = result[rand(0, result.length - 1)];
         for (let i = 0; i < result.correct.length; i++) {
             var options = topicEl.nextSibling.nextSibling.getElementsByTagName('li');

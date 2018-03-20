@@ -158,5 +158,7 @@ export function createBtn(title) {
     btn.style.cursor = 'pointer';
     btn.style.fontSize = '12px';
     btn.style.marginLeft = '4px';
+    btn.onmousemove=()=>{btn.style.boxShadow='1px 1px 1px 1px #ccc';};
+    btn.onmouseout=()=>{btn.style.boxShadow='';};
     return btn;
 }
