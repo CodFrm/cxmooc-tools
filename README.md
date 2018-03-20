@@ -30,13 +30,24 @@ npm run server
 
 
 ## 安装
-Chrome:
 
-扩展程序->开启开发者模式->加载已解压的扩展程序->目录:build/cxmooc-tools
+### Chrome:
 
-其他chrome系浏览器:
+#### 方法1:
+
+Build->扩展程序->开启开发者模式->加载已解压的扩展程序->目录:build/cxmooc-tools
+
+#### 方法2:
+[https://github.com/CodFrm/cxmooc-tools/releases](https://github.com/CodFrm/cxmooc-tools/releases)
+
+下载发布的版本cxmooc-tools.crx文件
+
+扩展程序->开启开发者模式->解压cxmooc-tools.crx文件->加载已解压的扩展程序->目录:cxmooc-tools(刚刚解压到的目录)
+
+### 其他chrome系浏览器:
 
 [https://github.com/CodFrm/cxmooc-tools/releases](https://github.com/CodFrm/cxmooc-tools/releases)
+
 下载发布版本cxmooc-tools.crx文件,直接拖入浏览器安装
 
 ## 说明
