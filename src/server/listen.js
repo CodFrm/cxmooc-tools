@@ -48,6 +48,13 @@ app.post('/answer', function (req, res) {
     var ip = getClientIp(req);
     var ret = [];
     console.log(req.body);
+    if (req.body.length <= 0) {
+        res.send({
+            code: 0,
+            msg: 'success'
+        });
+        return;
+    }
     for (let i in req.body) {
         let topic = req.body[i];
         let type = parseInt(topic.type);
@@ -56,7 +63,8 @@ app.post('/answer', function (req, res) {
             type: type
         };
         mooc.count('answer', cond, function (err, result) {
-            if (result >= 0 && result < 10) {
+            if (result <= 0) {
+                //想了想,记录10次没有任何意义,反而给恶意提交的人机会
                 let data = topic;
                 data.hash = md5(topic.topic + type.toString());
                 cond.hash = data.hash;
@@ -75,7 +83,6 @@ app.post('/answer', function (req, res) {
             }
         });
     }
-
 })
 app.all('/answer', function (req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");
@@ -106,6 +113,13 @@ app.get('/answer', function (req, res) {
     var topic = req.query.topic || [];
     var type = req.query.type || [];
     var ret = [];
+    if (topic.length <= 0) {
+        res.send({
+            code: 0,
+            msg: 'success'
+        });
+        return;
+    }
     for (let i = 0; i < topic.length; i++) {
         mooc.find('answer', {
             hash: topic[i]
