@@ -35,6 +35,8 @@ function video(_this, elLogo, index) {
         wid.monitorPlay();
     }
     var boom = createBtn('秒过视频');
+    boom.style.background='#F57C00';
+    boom.title="秒过视频有被后台检测到的风险";
     boom.value = index;
     elLogo.appendChild(boom);
     boom.onclick = function () {

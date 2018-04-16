@@ -60,29 +60,44 @@ module.exports = function (_this, elLogo, index, over) {
 
     function fillIn(id, result) {
         var topicEl = topicDoc.getElementById(id);
+        var prompt = topicEl.nextSibling.nextSibling.getElementsByClassName('prompt');
+        if (prompt.length <= 0) {
+            prompt = document.createElement('div');
+            prompt.style.color = "#e53935";
+            prompt.className = "prompt";
+            topicEl.nextSibling.nextSibling.appendChild(prompt);
+        } else {
+            prompt = prompt[0];
+        }
         if (result.length <= 0) {
+            prompt.innerHTML = "没有从题库中获取到相应记录";
             return;
         }
-        result = result[rand(0, result.length - 1)];
+        result = result[0];
+        var options = topicEl.nextSibling.nextSibling.getElementsByTagName('li');
+        prompt.innerHTML = '答案:';
         for (let i = 0; i < result.correct.length; i++) {
-            var options = topicEl.nextSibling.nextSibling.getElementsByTagName('li');
             for (let n = 0; n < options.length; n++) {
                 var optionsContent;
                 if (result.type == 3) {
                     if (result.correct[i].content) {
+                        prompt.innerHTML += '对 √';
                         options[0].getElementsByTagName('input')[0].click();
                     } else {
+                        prompt.innerHTML += '错 ×';
                         options[1].getElementsByTagName('input')[0].click();
                     }
                     break;
                 } else if (result.type <= 2) {
                     optionsContent = removeHTML(options[n].querySelector('.after').innerHTML);
                     if (result.correct[i].content == optionsContent) {
+                        prompt.innerHTML += optionsContent + "   ";
                         options[n].querySelector('.after').click();
                     }
                 } else if (result.type == 4) {
                     optionsContent = common.substrEx(options[n].innerHTML, "第", "空");
                     if (optionsContent == result.correct[i].option) {
+                        prompt.innerHTML += optionsContent + "   ";
                         options[n].getElementsByTagName('input')[0].value = result.correct[i].content;
                     }
                 }
@@ -189,6 +204,10 @@ module.exports = function (_this, elLogo, index, over) {
         return msg;
     }
 
+    /**
+     * 题目类型
+     * @param {*} typeTtile 
+     */
     function switchTopicType(typeTtile) {
         var type = typeTtile;
         switch (type) {
