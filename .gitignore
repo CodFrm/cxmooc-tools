@@ -1,5 +1,5 @@
 node_modules
-build/cxmooc-tools/src/*.js
+build/cxmooc-tools/src/*.*
 package-lock.json
 coverage
 typings
