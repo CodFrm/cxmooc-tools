@@ -23,11 +23,11 @@ module.exports = function (_this, elLogo, index) {
     //在框架内注入js
     common.injected(doc, 'action.js');
     //创建各个按钮
-    var hang = createBtn('开始挂机');
-    hang.value = index;
-    hang.title = "先播放再点我";
-    elLogo.appendChild(hang);
-    hang.onclick = function () {
+    var hang_btn = createBtn('开始挂机');
+    hang_btn.value = index;
+    hang_btn.title = "先播放再点我";
+    elLogo.appendChild(hang_btn);
+    hang_btn.onclick = function () {
         wid.monitorPlay();
     }
 
@@ -140,8 +140,11 @@ module.exports = function (_this, elLogo, index) {
     /**
      * 挂机类
      */
-    var hang = function () {
+    var hang = function (res) {
         var _instance = this;
+        if (res.prompt != undefined) {
+            _instance.prompt = res.prompt;
+        }
         var timer = 0;
         var time = 0;
         this.start = function (start_time = 0) {
@@ -168,6 +171,7 @@ module.exports = function (_this, elLogo, index) {
                             console.log(tmpTime);
                             send_time_pack(tmpTime, function (ret) {
                                 if (ret == true) {
+                                    _instance.stop();
                                     if (_instance.prompt != undefined) {
                                         _instance.prompt(1);
                                     }
@@ -176,6 +180,9 @@ module.exports = function (_this, elLogo, index) {
                         });
                         if ((tmpTime) >= videoInfo.duration) {
                             _instance.stop();
+                            if (_instance.prompt != undefined) {
+                                _instance.prompt(2);
+                            }
                         }
                     }
                 }
@@ -190,7 +197,21 @@ module.exports = function (_this, elLogo, index) {
         return this;
     };
     //挂机模式2按钮事件
-    var instance_hang = new hang();
+    var instance_hang = new hang({
+        prompt: function (code) {
+            switch (code) {
+                case 1:
+                    alert('已经通过的视频');
+                    break;
+                case 2:
+                    alert('视频挂机完成');
+                    break;
+                default:
+                    alert('不明错误');
+                    break
+            }
+        }
+    });
     hang_mode_2.onclick = function () {
         if (hang_mode_2.getAttribute('start') == 'true') {
             //开始则为暂停
@@ -202,7 +223,7 @@ module.exports = function (_this, elLogo, index) {
             hang_mode_2.setAttribute('start', 'true');
             instance_hang.start(hang_mode_2.getAttribute('time'));
         }
-        console.log("coding....");
+        console.log("这是一个在测试阶段的产物");
     }
 
     /**
