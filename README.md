@@ -28,16 +28,20 @@ npm install
 npm run server
 ```
 
-
 ## 安装
 
 ### Chrome:
 
 #### 方法1:
 
+能够体验到最新的功能,需要安装环境,可能有bug
+
 Build->扩展程序->开启开发者模式->加载已解压的扩展程序->目录:build/cxmooc-tools
 
 #### 方法2:
+
+比较稳定的版本,无需安装环境,下载即用
+
 [https://github.com/CodFrm/cxmooc-tools/releases](https://github.com/CodFrm/cxmooc-tools/releases)
 
 下载发布的版本cxmooc-tools.crx文件
@@ -46,12 +50,17 @@ Build->扩展程序->开启开发者模式->加载已解压的扩展程序->目�
 
 ### 其他chrome系浏览器:
 
+例如:360极速浏览器,QQ浏览器等...(内核为chrome)
 [https://github.com/CodFrm/cxmooc-tools/releases](https://github.com/CodFrm/cxmooc-tools/releases)
 
 下载发布版本cxmooc-tools.crx文件,直接拖入浏览器安装
 
 ## 说明
-PC打开超星慕课课程页面,在视频上方将会显示一个按钮,单击按钮即可直接将视频看完
+PC打开超星慕课课程页面,在视频上方将会显示一个按钮,单击按钮即可直接将视频看完,但是有一定的风险
+
+开始挂机需要先播放视频后,再点击,还在优化中
+
+挂机模式2,还在测试中,不知道有什么样的风险,欢迎反馈,如果能成功,将在全自动挂机迈出一大步^_^
 
 ![](/build/cxmooc-tools/img/soft/soft_01.png)
 
