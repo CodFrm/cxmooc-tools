@@ -62,7 +62,7 @@ module.exports = function (_this, elLogo, index) {
             callback(videoTopic);
             return;
         }
-        mArg.attachments[_index].mid = '13699717041081426508636528';
+        // mArg.attachments[_index].mid = '13699717041081426508636528';
         get('/richvideo/initdatawithviewer?&start=undefined&mid=' +
             mArg.attachments[_index].mid).onreadystatechange = function () {
             if (this.readyState == 4) {
