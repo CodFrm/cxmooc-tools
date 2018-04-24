@@ -10,7 +10,8 @@ module.exports = function (_this, elLogo, index, over) {
     var html = topicDoc.body.innerHTML;
     if (over) {
         //完成的提交答案
-        dealHTMLTopic(html);
+        dealDocumentTopic(topicDoc);
+        dealHTMLTopic(topicDoc.body.innerHTML);
     } else {
         //未完成的填入答案
         var auto = common.createBtn('搜索答案');
@@ -42,6 +43,130 @@ module.exports = function (_this, elLogo, index, over) {
                 }
             }
         }
+    }
+
+    /**
+     * 用document方式提取题目
+     */
+    function dealDocumentTopic(doc) {
+        var topic = doc.getElementsByClassName('TiMu');
+        var retJson = new Array();
+        for (var i = 0; i < topic.length; i++) {
+            //题目标题块对象
+            var titleDiv = topic[i].getElementsByClassName('Zy_TItle clearfix');
+            if (titleDiv.length <= 0) {
+                continue;
+            }
+            titleDiv = titleDiv[0];
+            //题目标题对象
+            var title = titleDiv.getElementsByClassName('clearfix');
+            if (title.length <= 0) {
+                continue;
+            }
+            title = title[0];
+            //题目类型对象
+            var type = title.getElementsByTagName('div');
+            if (type.length <= 0) {
+                continue;
+            }
+            type = type[0];
+            //获取题目类型
+            type = switchTopicType(common.substrEx(type.innerHTML, '【', '】'));
+            if (type == -1) {
+                continue;
+            }
+            //获取题目
+            title = title.getElementsByTagName('p');
+            if (title.length <= 0) {
+                continue;
+            }
+            title = removeHTML(title[0].innerHTML);
+
+            //对答案进行处理
+            var ret = dealDocumentAnswer(topic[i], type);
+            if (ret != undefined) {
+                ret.type = type;
+                ret.title = title;
+                retJson.push(ret);
+            }
+            // msg.answers = answers;
+            // msg.correct = correct;
+            // console.log(type, title);
+        }
+        console.log(retJson);
+        common.post(moocServer.url + 'answer', JSON.stringify(retJson));
+    }
+
+    function dealDocumentAnswer(topic, type) {
+        var ret = {
+            answers: [],
+            correct: []
+        };
+        //然后看看有没有正确答案
+        var answer = topic.getElementsByClassName('Py_tk');
+        var answerSpan;
+        if (answer.length <= 0) {
+            //没有正确答案,搜索自己的答案,并判断是不是对的,否则返回空
+            answer = topic.getElementsByClassName('Py_answer clearfix');
+            if (answer.length <= 0) {
+                return undefined;
+            }
+            if (answer[0].innerHTML.indexOf("正确答案") < 0) {
+                if (answer[0].getElementsByClassName("dui").length <= 0) {
+                    return undefined;
+                }
+            }
+            answerSpan = answer[0].getElementsByTagName('span');
+            if (answerSpan.length <= 0) {
+                return undefined;
+            }
+            answerSpan = answerSpan[0];
+        }
+        answer = answer[0];
+        //提取选项和答案到数据库结构
+        // msg.answers = answers;
+        // msg.correct = correct;
+        if (type <= 2) {
+            var options = topic.getElementsByClassName('Zy_ulTop');
+            if (options.length >= 0) {
+                options = options[0].getElementsByClassName('clearfix');
+                for (var i = 0; i < options.length; i++) {
+                    var option = options[i].getElementsByTagName('i');
+                    if (option.length <= 0) {
+                        continue;
+                    }
+                    var content = options[i].getElementsByTagName('a');
+                    if (content.length <= 0) {
+                        continue;
+                    }
+                    option = option[0];
+                    content = content[0];
+                    option = option.innerHTML.substring(0, 1);
+                    var tmpJson = {
+                        option: option,
+                        content: removeHTML(content.innerHTML)
+                    };
+                    ret.answers.push(tmpJson);
+                    //判断是否在其中
+                    //选择题的正确答案和自己的答案都在一起,先判断有没有正确答案
+                    if (answerSpan.innerHTML.indexOf(option) >= 0) {
+                        ret.correct.push(tmpJson);
+                    }
+                }
+            }
+        } else if (type == 3) {
+            var t = true;
+            if (answerSpan.innerHTML.indexOf('×') >= 0) {
+                t = false;
+            }
+            ret.correct.push({
+                option: t,
+                content: t
+            });
+        } else if (type == 4) {
+        
+        }
+        return ret;
     }
 
     function rand(min, max) {
@@ -125,6 +250,8 @@ module.exports = function (_this, elLogo, index, over) {
         var result;
         var retJson = new Array();
         while (result = regx.exec(data)) {
+            //判断是不是有正确答案的显示,如果有正确答案,就处理正确答案
+            //太难处理了,已切换成document的形式
             if (result.input.indexOf('<span>正确答案：') < 0) {
                 if (result[5] != 'dui') {
                     continue;
@@ -132,7 +259,19 @@ module.exports = function (_this, elLogo, index, over) {
             }
             var tmpJson = dealTopicMsg(result);
             retJson.push(tmpJson);
+            // var tmpJson = {};
+            // if (result.input.indexOf('>正确答案：') > 0) {
+            //     result[4] = result[3];
+            // } else {
+            //     if (result[5] != 'dui') {
+            //         continue;
+            //     }
+            //     result[4] += '</div>';
+            // }
+            // tmpJson = dealTopicMsg(result);
+            // retJson.push(tmpJson);
         }
+        console.log(retJson);
         //提交数据
         common.post(moocServer.url + 'answer', JSON.stringify(retJson));
     }
@@ -190,7 +329,7 @@ module.exports = function (_this, elLogo, index, over) {
                 }
             }
         } else if (msg.type == 4) {
-            var answerRegx = /第(.*?)空[\s\S]*?<div class="clearfix">([\s\S]*?)</g;
+            var answerRegx = /第(.*?)空[\s\S]*?<div class="clearfix">([\s\S]*?)<\/div>/g;
             regxData[4] += '<';
             while (result = answerRegx.exec(regxData[4] + '<')) {
                 correct.push({
