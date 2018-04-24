@@ -29,6 +29,10 @@ module.exports = function () {
     this.count = function (set, cond, callback) {
         return dbase.collection(set).count(cond, null, callback);
     }
+
+    this.updateOne = function (set, cond, data, callback) {
+        return dbase.collection(set).updateOne(cond, data, callback);
+    }
     return this;
 
 }

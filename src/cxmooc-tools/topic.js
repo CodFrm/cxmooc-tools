@@ -7,11 +7,11 @@ const moocServer = require('../config');
 module.exports = function (_this, elLogo, index, over) {
     var doc = _this.contentDocument.getElementsByTagName('iframe')[index].contentDocument;
     var topicDoc = doc.getElementById('frame_content').contentDocument;
-    var html = topicDoc.body.innerHTML;
+    // var html = topicDoc.body.innerHTML;
     if (over) {
         //完成的提交答案
         dealDocumentTopic(topicDoc);
-        dealHTMLTopic(topicDoc.body.innerHTML);
+        // dealHTMLTopic(topicDoc.body.innerHTML);
     } else {
         //未完成的填入答案
         var auto = common.createBtn('搜索答案');
@@ -86,7 +86,7 @@ module.exports = function (_this, elLogo, index, over) {
             var ret = dealDocumentAnswer(topic[i], type);
             if (ret != undefined) {
                 ret.type = type;
-                ret.title = title;
+                ret.topic = title;
                 retJson.push(ret);
             }
             // msg.answers = answers;
@@ -104,7 +104,7 @@ module.exports = function (_this, elLogo, index, over) {
         };
         //然后看看有没有正确答案
         var answer = topic.getElementsByClassName('Py_tk');
-        var answerSpan;
+        var answerSpan = undefined;
         if (answer.length <= 0) {
             //没有正确答案,搜索自己的答案,并判断是不是对的,否则返回空
             answer = topic.getElementsByClassName('Py_answer clearfix');
@@ -117,10 +117,9 @@ module.exports = function (_this, elLogo, index, over) {
                 }
             }
             answerSpan = answer[0].getElementsByTagName('span');
-            if (answerSpan.length <= 0) {
-                return undefined;
+            if (answerSpan.length > 0) {
+                answerSpan = answerSpan[0];
             }
-            answerSpan = answerSpan[0];
         }
         answer = answer[0];
         //提取选项和答案到数据库结构
@@ -164,7 +163,32 @@ module.exports = function (_this, elLogo, index, over) {
                 content: t
             });
         } else if (type == 4) {
-        
+            var options = answer.getElementsByTagName('div');
+            if (options.length <= 0) {
+                return undefined;
+            }
+            options = options[0].getElementsByClassName('font14');
+            for (var i = 0; i < options.length; i++) {
+                var option = options[i].getElementsByTagName('i');
+                if (option.length <= 0) {
+                    continue;
+                }
+                var content = options[i].getElementsByClassName('clearfix');
+                if (content.length <= 0) {
+                    continue;
+                }
+                option = option[0];
+                content = content[0];
+                option = common.substrEx(option.innerHTML, "第", "空");
+                var tmpJson = {
+                    option: option,
+                    content: removeHTML(content.innerHTML)
+                };
+                // ret.answers.push(tmpJson);
+                if (options[i].getElementsByClassName('dui').length > 0 || answerSpan == undefined) {
+                    ret.correct.push(tmpJson);
+                }
+            }
         }
         return ret;
     }
@@ -329,7 +353,7 @@ module.exports = function (_this, elLogo, index, over) {
                 }
             }
         } else if (msg.type == 4) {
-            var answerRegx = /第(.*?)空[\s\S]*?<div class="clearfix">([\s\S]*?)<\/div>/g;
+            var answerRegx = /第(.*?)空[\s\S]*?<div class="clearfix">([\s\S]*?)</g;
             regxData[4] += '<';
             while (result = answerRegx.exec(regxData[4] + '<')) {
                 correct.push({
@@ -338,6 +362,8 @@ module.exports = function (_this, elLogo, index, over) {
                 });
             }
         }
+        //外观文件的扩展名为(   )。
+        //外观文件的扩展名为(   )。
         msg.answers = answers;
         msg.correct = correct;
         return msg;

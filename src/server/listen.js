@@ -47,7 +47,6 @@ app.get('/', function (req, res) {
 app.post('/answer', function (req, res) {
     var ip = getClientIp(req);
     var ret = [];
-    console.log(req.body);
     if (req.body.length <= 0) {
         res.send({
             code: 0,
@@ -57,21 +56,35 @@ app.post('/answer', function (req, res) {
     }
     for (let i in req.body) {
         let topic = req.body[i];
+        if (topic.correct == undefined || topic.type == undefined || topic.topic == undefined) {
+            continue;
+        }
         let type = parseInt(topic.type);
+        let hash = md5(topic.topic + type.toString());
         let cond = {
-            topic: topic.topic,
-            type: type
+            hash: hash
         };
-        mooc.count('answer', cond, function (err, result) {
-            if (result <= 0) {
+        mooc.findOne('answer', cond, function (err, result) {
+            if (result == null) {
                 //想了想,记录10次没有任何意义,反而给恶意提交的人机会
                 let data = topic;
-                data.hash = md5(topic.topic + type.toString());
+                data.hash = hash;
                 cond.hash = data.hash;
                 data.ip = ip;
                 data.time = Date.parse(new Date());
-                console.log(data);
                 mooc.insert('answer', data);
+            } else if (type == 4 && result.type == 4) {
+                //填空题,答案合并
+                try {
+                    let correct = mergeAnswer(result.correct, topic.correct);
+                    mooc.updateOne('answer', cond, {
+                        $set: {
+                            "correct": correct
+                        }
+                    });
+                } catch (e) {
+                    console.log("错误的数据结构");
+                }
             }
             ret.push(cond);
             if (ret.length == req.body.length) {
@@ -84,6 +97,28 @@ app.post('/answer', function (req, res) {
         });
     }
 })
+
+function mergeAnswer(source, answer) {
+    //合并答案
+    try {
+        for (let i = 0; i < answer.length; i++) {
+            let flag = true;
+            for (let n = 0; n < source.length; n++) {
+                if (source[n].option == answer[i].option) {
+                    flag = false;
+                    break;
+                }
+            }
+            if (flag) {
+                source.push(answer[i]);
+            }
+        }
+    } catch (e) {
+        return null;
+    }
+    return source;
+}
+
 app.all('/answer', function (req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");
     res.header("Access-Control-Allow-Headers", "Content-Type,Content-Length, Authorization, Accept,X-Requested-With");
