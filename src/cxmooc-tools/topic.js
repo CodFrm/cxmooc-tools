@@ -246,7 +246,7 @@ module.exports = function (_this, elLogo, index, over) {
                 } else if (result.type == 4) {
                     optionsContent = common.substrEx(options[n].innerHTML, "第", "空");
                     if (optionsContent == result.correct[i].option) {
-                        prompt.innerHTML += optionsContent + "   ";
+                        prompt.innerHTML += "第" + optionsContent + "空:" + result.correct[i].content + "   ";
                         options[n].getElementsByTagName('input')[0].value = result.correct[i].content;
                     }
                 }
