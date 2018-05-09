@@ -76,12 +76,11 @@ module.exports = function (_this, elLogo, index, over) {
                 continue;
             }
             //获取题目
-            title = title.getElementsByTagName('p');
+            title = removeHTML(title.innerHTML.substring(title.innerHTML.indexOf('】') + 1));
+            // title = title.getElementsByTagName('p');
             if (title.length <= 0) {
                 continue;
             }
-            title = removeHTML(title[0].innerHTML);
-
             //对答案进行处理
             var ret = dealDocumentAnswer(topic[i], type);
             if (ret != undefined) {
