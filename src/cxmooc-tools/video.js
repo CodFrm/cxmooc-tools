@@ -103,13 +103,14 @@ module.exports = function (_this, elLogo, index) {
     }
     //获取正确答案
     var getTrueAnswer = function (list) {
+        var right = '';
         for (let i = 0; i < list.length; i++) {
             if (list[i].isRight) {
-                return {
-                    "name": list[i].name,
-                    "description": list[i].description
-                };
+                right += '<span style="margin-left:6px;">'+list[i].name + ":" + list[i].description+'</span>';
             }
+        }
+        if (right != '') {
+            return right;
         }
         return '没有找到答案(没有,出bug了???)';
     }
@@ -118,7 +119,7 @@ module.exports = function (_this, elLogo, index) {
         iframe.parentNode.appendChild(createDiv('本视频题目列表:'));
         for (let i = 0; i < data.length; i++) {
             var answer = getTrueAnswer(data[i].datas[0].options);
-            var title = "题目" + (i + 1) + ":" + data[i].datas[0].description + "<br/>答案:    " + answer.name + ":" + answer.description;
+            var title = "题目" + (i + 1) + ":" + data[i].datas[0].description + "<br/>答案:   " + answer;
             var divEl = createDiv(title);
             iframe.parentNode.appendChild(divEl);
         }
