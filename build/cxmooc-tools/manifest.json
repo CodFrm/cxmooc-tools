@@ -1,7 +1,7 @@
 {
     "manifest_version": 2,
     "name": "超星慕课小工具",
-    "version": "1.3.6",
+    "version": "1.3.8",
     "description": "用于超星慕课的小工具",
     "icons": {
         "16": "img/logo.png",
