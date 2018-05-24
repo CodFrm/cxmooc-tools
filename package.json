@@ -14,7 +14,7 @@
     "url": "git+https://github.com/CodFrm/cxmooc-tools.git"
   },
   "author": "CodFrm",
-  "license": "ISC",
+  "license": "BSD-3",
   "bugs": {
     "url": "https://github.com/CodFrm/cxmooc-tools/issues"
   },
