@@ -30,15 +30,13 @@ npm run server
 
 ## 安装
 
-### Chrome:
-
-#### 方法1:
+### 方法1:
 
 能够体验到最新的功能,需要安装环境,可能有bug
 
 Build->扩展程序->开启开发者模式->加载已解压的扩展程序->目录:build/cxmooc-tools
 
-#### 方法2:
+### 方法2(推荐):
 
 比较稳定的版本,无需安装环境,下载即用
 
@@ -48,9 +46,19 @@ Build->扩展程序->开启开发者模式->加载已解压的扩展程序->目�
 
 扩展程序->开启开发者模式->解压cxmooc-tools.crx文件->加载已解压的扩展程序->目录:cxmooc-tools(刚刚解压到的目录)
 
-### 其他chrome系浏览器:
+以chrome为例:
 
-例如:360极速浏览器,QQ浏览器等...(内核为chrome)
+![](build/cxmooc-tools/img/1.png)
+
+![](build/cxmooc-tools/img/2.png)
+
+然后选择你解压的目录加载就可以了,打开超星慕课的课程或者题目页面之后就可以看到效果了
+
+### 方法3:
+
+某些浏览器允许直接拖入扩展进行安装,很方便
+例如:360极速浏览器,QQ浏览器等...(内核为chrome,如果依旧不行,请按照方法2来)
+
 [https://github.com/CodFrm/cxmooc-tools/releases](https://github.com/CodFrm/cxmooc-tools/releases)
 
 下载发布版本cxmooc-tools.crx文件,直接拖入浏览器安装
