@@ -1,4 +1,7 @@
 [![Build Status](https://www.travis-ci.org/CodFrm/cxmooc-tools.svg?branch=master)](https://www.travis-ci.org/CodFrm/cxmooc-tools)
+[![npm](https://img.shields.io/npm/v/npm.svg)](https://www.npmjs.com/package/cxmooc-tools)
+[![npm](https://img.shields.io/npm/dt/express.svg)](https://www.npmjs.com/package/cxmooc-tools)
+
 
 # 超星慕课小工具
 > 一个快速学习超星慕课的chrome扩展工具(੧ᐛ੭挂科模式,启动)
