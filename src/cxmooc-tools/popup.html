@@ -5,11 +5,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title><%= htmlWebpackPlugin.options.title %></title>
+    <title>
+        <%= htmlWebpackPlugin.options.title %>
+    </title>
 </head>
 <style>
     body {
-        width: 350px;
+        width: 400px;
     }
 
     .title {
@@ -24,20 +26,40 @@
         text-align: right;
         color: #cccccc;
     }
+
+    h4 {
+        margin: 0;
+        margin-top: 4px;
+    }
 </style>
 
 <body>
     <h3 class="title">超星慕课小工具</h3>
-    <p>提供超星慕课挂机和秒过功能,秒过有被后台检测的危险,还请不要滥用.</p>
-    <p>对于使用本扩展造成的后果,不承担任何责任.欢迎技术交流</p>
-    <br>
-    <p>服务器将会记录你正确的答题答案,并不会记录你的任何账号信息</p>
-    <p>并且接口没有任何权限,全由插件提交上传,还请大家不要故意上传错误的答案 (๑• . •๑) </p>
-    <p>GitHub开源地址:
-        <a href="https://github.com/CodFrm">https://github.com/CodFrm</a>
-    </p>
-    <p class="ps">PS:本扩展全部是免费的</p>
-    <p id="version" class="ps"></p>
+    <div>
+        <h4>插件说明:</h4>
+        <p>提供超星慕课挂机,秒过,题库等功能,秒过有被后台检测的危险,还请不要滥用.</p>
+        <p>对于使用本扩展造成的后果,不承担任何责任.欢迎技术交流</p>
+        <p>服务器将会记录你正确的答题答案,但是不会记录你的任何账号信息</p>
+        <p>并且接口没有任何权限,全由插件提交上传,还请大家不要故意上传错误的答案 (๑• . •๑) </p>
+    </div>
+    <div>
+        <h4>插件配置:</h4>
+        <input type="checkbox" id="rand-answer" />
+        <label for="rand-answer">随机答案(没有正确的答案会随机选择)</label>
+    </div>
+    <div>
+        <h4>其他说明:</h4>
+        <p>GitHub开源地址:
+            <br>
+            <a href="https://github.com/CodFrm/cxmooc-tools">https://github.com/CodFrm/cxmooc-tools</a>
+        </p>
+        <p>Bug/意见/题目反馈地址:
+            <br>
+            <a href="https://github.com/CodFrm/cxmooc-tools/issues">https://github.com/CodFrm/cxmooc-tools/issues</a>
+        </p>
+        <p class="ps">PS:本扩展全部是免费的</p>
+        <p id="version" class="ps"></p>
+    </div>
 </body>
 
 </html>

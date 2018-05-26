@@ -12,6 +12,10 @@ window.onload = function () {
         }
         injected(document, 'mooc.js');
         document.head.setAttribute('chrome-url', chrome.extension.getURL(''));
+        chrome.storage.sync.get('rand_answer', function (items) {
+            //设置一下配置
+            document.head.setAttribute('rand-answer', items.rand_answer);
+        });
     })
 }
 

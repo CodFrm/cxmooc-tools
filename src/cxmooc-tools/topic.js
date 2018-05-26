@@ -209,6 +209,7 @@ module.exports = function (_this, elLogo, index, over) {
     function fillIn(id, result) {
         var topicEl = topicDoc.getElementById(id);
         var prompt = topicEl.nextSibling.nextSibling.getElementsByClassName('prompt');
+        var rand=false;
         if (prompt.length <= 0) {
             prompt = document.createElement('div');
             prompt.style.color = "#e53935";
@@ -219,7 +220,11 @@ module.exports = function (_this, elLogo, index, over) {
         }
         if (result.length <= 0) {
             prompt.innerHTML = "没有从题库中获取到相应记录";
-            return;
+            //无答案,检索配置有没有设置随机答案....
+            if(!localStorage.rand_answer){
+                return;
+            }
+            rand=true;
         }
         result = result[0];
         var options = topicEl.nextSibling.nextSibling.getElementsByTagName('li');

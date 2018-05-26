@@ -17,4 +17,14 @@ window.onload = function () {
         }
     }
     xhr.send();
+    chrome.storage.sync.get('rand_answer', function (items) {
+        document.getElementById('rand-answer').checked = items.rand_answer;
+    });
+    document.getElementById('rand-answer').onclick = function () {
+        chrome.storage.sync.set({
+            'rand_answer': document.getElementById('rand-answer').checked
+        });
+        localStorage.setItem('rand_answer', document.getElementById('rand-answer').checked);
+        return true;
+    }
 }
