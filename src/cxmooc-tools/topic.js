@@ -7,11 +7,9 @@ const moocServer = require('../config');
 module.exports = function (_this, elLogo, index, over) {
     var doc = _this.contentDocument.getElementsByTagName('iframe')[index].contentDocument;
     var topicDoc = doc.getElementById('frame_content').contentDocument;
-    // var html = topicDoc.body.innerHTML;
     if (over) {
         //完成的提交答案
         dealDocumentTopic(topicDoc);
-        // dealHTMLTopic(topicDoc.body.innerHTML);
     } else {
         //未完成的填入答案
         var auto = common.createBtn('搜索答案');
@@ -209,7 +207,6 @@ module.exports = function (_this, elLogo, index, over) {
     function fillIn(id, result) {
         var topicEl = topicDoc.getElementById(id);
         var prompt = topicEl.nextSibling.nextSibling.getElementsByClassName('prompt');
-        var rand=false;
         if (prompt.length <= 0) {
             prompt = document.createElement('div');
             prompt.style.color = "#e53935";
@@ -217,18 +214,75 @@ module.exports = function (_this, elLogo, index, over) {
             topicEl.nextSibling.nextSibling.appendChild(prompt);
         } else {
             prompt = prompt[0];
+            prompt.style.fontWeight = 100;
         }
+        var options = topicEl.nextSibling.nextSibling.getElementsByTagName('li');
         if (result.length <= 0) {
-            prompt.innerHTML = "没有从题库中获取到相应记录";
             //无答案,检索配置有没有设置随机答案....
-            if(!localStorage.rand_answer){
+            var rand = document.head.getAttribute('rand-answer');
+            if (rand == 'false') {
+                prompt.innerHTML = "没有从题库中获取到相应记录";
                 return;
             }
-            rand=true;
+            prompt.style.fontWeight = 600;
+            prompt.innerHTML = "请注意这是随机生成的答案!<br/>";
+            rand = true;
+            var tmpResult = {
+                correct: []
+            };
+            tmpResult.type = switchTopicType(common.substrEx(topicEl.innerText, '【', '】'));
+            var d = Math.floor(Math.random() * 10 + 1);
+            //随机生成答案,有些混乱了....
+            for (let n = 0; n < options.length; n++) {
+                var optionsContent;
+                if (tmpResult.type == 3) {
+                    //判断题
+                    if (d % 2 == 1) {
+                        tmpResult.correct.push({
+                            content: true
+                        });
+                    } else {
+                        tmpResult.correct.push({
+                            content: false
+                        });
+                    }
+                    break;
+                } else if (tmpResult.type <= 2) {
+                    //单选题
+                    optionsContent = removeHTML(options[n].querySelector('.after').innerHTML);
+                    if (tmpResult.type == 2) {
+                        options[n].querySelector('input[type=checkbox]').checked = false;
+                        //多选
+                        d = Math.floor(Math.random() * 2 + 1);
+                        if (d == 1) {
+                            tmpResult.correct.push({
+                                content: optionsContent
+                            });
+                        }
+                        if (tmpResult.correct.length <= 0) {
+                            if (n == d % options.length) {
+                                tmpResult.correct.push({
+                                    content: optionsContent
+                                });
+                            }
+                        }
+                    } else {
+                        if (n == d % options.length) {
+                            tmpResult.correct.push({
+                                content: optionsContent
+                            });
+                        }
+                    }
+                } else {
+                    //填空题啥的就不弄了
+                    prompt.innerHTML = '不支持随机的题目类型';
+                    return;
+                }
+            }
+            result.push(tmpResult);
         }
         result = result[0];
-        var options = topicEl.nextSibling.nextSibling.getElementsByTagName('li');
-        prompt.innerHTML = '答案:';
+        prompt.innerHTML += '答案:';
         for (let i = 0; i < result.correct.length; i++) {
             for (let n = 0; n < options.length; n++) {
                 var optionsContent;
