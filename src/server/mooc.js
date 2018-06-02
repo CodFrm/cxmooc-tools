@@ -4,7 +4,6 @@
 
 var mongodb = require('mongodb');
 module.exports = function () {
-    return ;
     var url = "mongodb://localhost:27017/cxmooc";
     var db;
     var dbase;
