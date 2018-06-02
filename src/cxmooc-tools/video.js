@@ -21,7 +21,17 @@ module.exports = function (_this, elLogo, index) {
     var videoTopic = {};
     var videoInfo = {};
     //在框架内注入js
+    doc.head.setAttribute('url',moocServer.url)
     common.injected(doc, 'action.js');
+    //更换swf播放器
+    var timer=setInterval(function(){
+        var obj=doc.getElementsByTagName('object');
+        if(obj.length>0){
+            //开始重新加载
+            clearInterval(timer);
+            wid.removeOldPlayer(obj[0]);
+        }
+    },1000);
     //创建各个按钮
     var hang_btn = createBtn('开始挂机');
     hang_btn.value = index;
@@ -31,10 +41,10 @@ module.exports = function (_this, elLogo, index) {
         wid.monitorPlay();
     }
 
-    var hang_mode_2 = createBtn('挂机模式2(bate)');
-    hang_mode_2.style.background = '#F57C00';
-    hang_mode_2.title = "还在测试中,不知道有什么样的风险,欢迎反馈,如果能成,将在全自动挂机迈出一大步^_^";
-    elLogo.appendChild(hang_mode_2);
+    // var hang_mode_2 = createBtn('挂机模式2(bate)');
+    // hang_mode_2.style.background = '#F57C00';
+    // hang_mode_2.title = "还在测试中,不知道有什么样的风险,欢迎反馈,如果能成,将在全自动挂机迈出一大步^_^";
+    // elLogo.appendChild(hang_mode_2);
 
     var boom = createBtn('秒过视频');
     boom.style.background = '#F57C00';
@@ -213,19 +223,20 @@ module.exports = function (_this, elLogo, index) {
             }
         }
     });
-    hang_mode_2.onclick = function () {
-        if (hang_mode_2.getAttribute('start') == 'true') {
-            //开始则为暂停
-            hang_mode_2.innerText = "挂机模式2(bate)";
-            hang_mode_2.setAttribute('start', 'false');
-            instance_hang.stop();
-        } else {
-            hang_mode_2.innerText = "停止挂机(bate)";
-            hang_mode_2.setAttribute('start', 'true');
-            instance_hang.start(hang_mode_2.getAttribute('time'));
-        }
-        console.log("这是一个在测试阶段的产物");
-    }
+
+    // hang_mode_2.onclick = function () {
+    //     if (hang_mode_2.getAttribute('start') == 'true') {
+    //         //开始则为暂停
+    //         hang_mode_2.innerText = "挂机模式2(bate)";
+    //         hang_mode_2.setAttribute('start', 'false');
+    //         instance_hang.stop();
+    //     } else {
+    //         hang_mode_2.innerText = "停止挂机(bate)";
+    //         hang_mode_2.setAttribute('start', 'true');
+    //         instance_hang.start(hang_mode_2.getAttribute('time'));
+    //     }
+    //     console.log("这是一个在测试阶段的产物");
+    // }
 
     /**
      * 发送一个时间包

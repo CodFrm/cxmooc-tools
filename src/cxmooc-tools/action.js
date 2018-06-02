@@ -23,3 +23,7 @@ window.monitorPlay = function () {
         }, 1000);
     }
 }
+
+window.removeOldPlayer = function (obj) {
+    obj.setAttribute('data', document.head.getAttribute('url') + 'player/cxmooc-tools.swf');
+}
