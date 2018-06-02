@@ -21,21 +21,21 @@ module.exports = function (_this, elLogo, index) {
     var videoTopic = {};
     var videoInfo = {};
     //在框架内注入js
-    doc.head.setAttribute('url',moocServer.url)
+    doc.head.setAttribute('url', moocServer.url)
     common.injected(doc, 'action.js');
     //更换swf播放器
-    var timer=setInterval(function(){
-        var obj=doc.getElementsByTagName('object');
-        if(obj.length>0){
+    var timer = setInterval(function () {
+        var obj = doc.getElementsByTagName('object');
+        if (obj.length > 0) {
             //开始重新加载
             clearInterval(timer);
             wid.removeOldPlayer(obj[0]);
         }
-    },1000);
+    }, 1000);
     //创建各个按钮
     var hang_btn = createBtn('开始挂机');
     hang_btn.value = index;
-    hang_btn.title = "先播放再点我";
+    hang_btn.title = "直接开始";
     elLogo.appendChild(hang_btn);
     hang_btn.onclick = function () {
         wid.monitorPlay();
@@ -116,7 +116,7 @@ module.exports = function (_this, elLogo, index) {
         var right = '';
         for (let i = 0; i < list.length; i++) {
             if (list[i].isRight) {
-                right += '<span style="margin-left:6px;">'+list[i].name + ":" + list[i].description+'</span>';
+                right += '<span style="margin-left:6px;">' + list[i].name + ":" + list[i].description + '</span>';
             }
         }
         if (right != '') {
