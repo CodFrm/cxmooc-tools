@@ -37,7 +37,10 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
     extended: true
 }));
-app.use(express.static(path.join(__dirname, 'static')));
+
+app.use(express.static(path.join(__dirname, 'static'), {
+    maxage: '7d'
+}));
 
 app.get('/', function (req, res) {
     ret = '<h2>欢迎使用超星慕课刷课插件</h2><p>这个服务器将会记录你正确的答题答案,并不会记录你的任何账号信息</p>';

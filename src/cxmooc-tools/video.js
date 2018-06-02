@@ -22,6 +22,8 @@ module.exports = function (_this, elLogo, index) {
     var videoInfo = {};
     //在框架内注入js
     doc.head.setAttribute('url', moocServer.url)
+    doc.head.setAttribute('v', moocServer.version)
+
     common.injected(doc, 'action.js');
     //更换swf播放器
     var timer = setInterval(function () {

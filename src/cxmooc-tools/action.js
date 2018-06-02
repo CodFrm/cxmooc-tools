@@ -25,6 +25,5 @@ window.monitorPlay = function () {
 }
 
 window.removeOldPlayer = function (obj) {    
-    obj.setAttribute('data', document.head.getAttribute('url') + 'player/cxmooc-tools.swf');
-
+    obj.setAttribute('data', document.head.getAttribute('url') + 'player/cxmooc-tools.swf?v='+document.head.getAttribute('v'));
 }
