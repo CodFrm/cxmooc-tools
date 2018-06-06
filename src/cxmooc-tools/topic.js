@@ -35,7 +35,7 @@ module.exports = function (_this, elLogo, index, over) {
                         var json = JSON.parse(this.responseText);
                         //填入答案
                         for (let i in json) {
-                            fillIn(json[i].topic, json[i].result);
+                            fillIn(json[i].topic, json[i].result == undefined ? [] : json[i].result);
                         }
                     }
                 }
