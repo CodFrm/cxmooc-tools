@@ -6,12 +6,13 @@ xhr.onreadystatechange = function () {
     if (xhr.readyState == 4) {
         if (this.status == 200) {
             var json = JSON.parse(this.responseText);
+            console.log(json);
             chrome.storage.local.set({
                 'version': json.version,
                 'url': json.url,
                 'enforce': json.enforce
             }, function () {
-                message('设置已保存');
+                console.log('设置已保存');
             });
             if (moocConfig.version < json.version) {
                 chrome.browserAction.setBadgeText({
