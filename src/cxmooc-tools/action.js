@@ -26,22 +26,35 @@ window.monitorPlay = function () {
 
 window.removeOldPlayer = function (obj) {
     //移除老的视频对象
-    console.log(obj);
-    paras = obj.parentNode.parentNode;
-    console.log(obj.parentNode.parentNode.removeChild(obj.parentNode));
-    //       <div id="note1-wrap"> 
-    //    <div id="hl"></div> 
-    //    <div id="note1">
-    // 	正在为您加载视频...
-    //    </div> 
-    //   </div> 
+    var parent = obj.parentNode.parentNode;
+    obj.parentNode.parentNode.removeChild(obj.parentNode);
     var note = this.document.getElementById('note');
     var note1 = document.createElement('div');
     note1.id = 'note1-wrap';
     note1.innerHTML = '<div id="hl"></div><div id="note1">cxmooc-tools正在为您更换播放器...</div></div>';
     document.body.insertBefore(note1, note);
     newPlayer();
-    // obj.setAttribute('data', document.head.getAttribute('url') + 'player/cxmooc-tools.swf?v=' + document.head.getAttribute('v'));
+    //对线路进行监控和切换
+    $(parent).bind('onChangeLine', function (h, g) {
+        //监听线路切换
+        localStorage['lineIndex'] = g;
+    });
+    var timer = setInterval(function () {
+        var obj = document.querySelector('object');
+        if (obj != null) {
+            clearInterval(timer);
+            //切换上一次记录的线路,如果没有或者为0就不进行切换了
+            if(localStorage['lineIndex']==undefined || localStorage['lineIndex']==0){
+                return ;
+            }
+            var flashvars=obj.querySelector('[name="flashvars"]').getAttribute('value');
+            obj.querySelector('[name="flashvars"]').setAttribute(
+                'value',
+                flashvars.replace('dftLineIndex%22%3A0%2C%22', 'dftLineIndex%22%3A' + localStorage['lineIndex'] + '%2C%22')
+            );
+            obj.setAttribute('data', obj.getAttribute('data'));
+        }
+    }, 500);
 }
 
 /**
@@ -88,32 +101,8 @@ window.newPlayer = function () {
             data: paras,
             height: 540,
             width: 676,
-            playerPath:document.head.getAttribute('url') + 'player/cxmooc-tools.swf?v=' + document.head.getAttribute('v'),
-            ResourcePlugPath:document.head.getAttribute('url') + 'player/ResourcePlug.swf?v=' + document.head.getAttribute('v'),
-        });
-    }
-
-    function showHTML5Player(paras) {
-        loadMultiFile([{
-            href: 'videoplayer/video-js.css',
-            tag: 'link',
-            rel: 'stylesheet'
-        }, {
-            src: 'videoplayer/video.js',
-            tag: 'script',
-            type: 'text/javascript',
-            defer: 'defer'
-        }], function () {
-            var html = [
-                '<video id="video" class="video-js vjs-default-skin" controls preload="auto" width="100%" height="100%" poster="{0}" data-setup="{}">',
-                '<source src="{1}" type="video/mp4">',
-                '<source src="video.webm" type="video/webm">',
-                '</video>'
-            ].join('');
-
-            html = Ext.String.format(html, paras.screenshot, paras.http);
-
-            Ext.get('reader').setHTML(html);
+            playerPath: document.head.getAttribute('url') + 'player/cxmooc-tools.swf?v=' + document.head.getAttribute('v'),
+            ResourcePlugPath: document.head.getAttribute('url') + 'player/ResourcePlug.swf?v=' + document.head.getAttribute('v'),
         });
     }
 
