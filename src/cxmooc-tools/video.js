@@ -1,7 +1,5 @@
 const common = require('./common');
 const md5 = require("md5");
-const moocServer = require('../config');
-
 const createBtn = common.createBtn;
 const get = common.get;
 
@@ -21,9 +19,6 @@ module.exports = function (_this, elLogo, index) {
     var videoTopic = {};
     var videoInfo = {};
     //在框架内注入js
-    doc.head.setAttribute('url', moocServer.url)
-    doc.head.setAttribute('v', moocServer.version)
-
     common.injected(doc, 'action.js');
     //更换swf播放器
     var timer = setInterval(function () {

@@ -1,7 +1,7 @@
 /**
  * 框架(iframe)内操作js
  */
-
+const moocConfig = require('../config');
 /**
  * 开始监控暂停,自动重新播放
  */
@@ -25,29 +25,38 @@ window.monitorPlay = function () {
 }
 
 window.removeOldPlayer = function (obj) {
-    //移除老的视频对象
-    var parent = obj.parentNode.parentNode;
-    obj.parentNode.parentNode.removeChild(obj.parentNode);
-    var note = this.document.getElementById('note');
-    var note1 = document.createElement('div');
-    note1.id = 'note1-wrap';
-    note1.innerHTML = '<div id="hl"></div><div id="note1">cxmooc-tools正在为您更换播放器...</div></div>';
-    document.body.insertBefore(note1, note);
-    newPlayer();
+    //服务器在线判断
+    var http = new XMLHttpRequest();
+    http.open('GET', moocConfig.cx.player + '?v=' + moocConfig.version);
+    http.onreadystatechange = function () {
+        if (http.readyState == 4 && http.status == 200) {
+            //移除老的视频对象
+            var parent = obj.parentNode.parentNode;
+            obj.parentNode.parentNode.removeChild(obj.parentNode);
+            var note = document.getElementById('note');
+            var note1 = document.createElement('div');
+            note1.id = 'note1-wrap';
+            note1.innerHTML = '<div id="hl"></div><div id="note1">cxmooc-tools正在为您更换播放器...</div></div>';
+            document.body.insertBefore(note1, note);
+            newPlayer();
+        }
+    }
+    http.send();
     //对线路进行监控和切换
     $(parent).bind('onChangeLine', function (h, g) {
         //监听线路切换
         localStorage['lineIndex'] = g;
     });
     var timer = setInterval(function () {
+        if (localStorage['lineIndex'] == undefined || localStorage['lineIndex'] == 0) {
+            clearInterval(timer);
+            return;
+        }
         var obj = document.querySelector('object');
         if (obj != null) {
             clearInterval(timer);
             //切换上一次记录的线路,如果没有或者为0就不进行切换了
-            if(localStorage['lineIndex']==undefined || localStorage['lineIndex']==0){
-                return ;
-            }
-            var flashvars=obj.querySelector('[name="flashvars"]').getAttribute('value');
+            var flashvars = obj.querySelector('[name="flashvars"]').getAttribute('value');
             obj.querySelector('[name="flashvars"]').setAttribute(
                 'value',
                 flashvars.replace('dftLineIndex%22%3A0%2C%22', 'dftLineIndex%22%3A' + localStorage['lineIndex'] + '%2C%22')
@@ -101,8 +110,8 @@ window.newPlayer = function () {
             data: paras,
             height: 540,
             width: 676,
-            playerPath: document.head.getAttribute('url') + 'player/cxmooc-tools.swf?v=' + document.head.getAttribute('v'),
-            ResourcePlugPath: document.head.getAttribute('url') + 'player/ResourcePlug.swf?v=' + document.head.getAttribute('v'),
+            playerPath: moocConfig.cx.player + '?v=' + moocConfig.version,
+            ResourcePlugPath: moocConfig.cx.resplugin + '?v=' + moocConfig.version
         });
     }
 
