@@ -1,5 +1,5 @@
 const topic = require('./topic');
-const video=require('./video');
+const video = require('./video');
 /**
  * 显示扩展按钮,并绑定事件
  * @param {iframe document} _this 
@@ -103,4 +103,19 @@ export function createBtn(title) {
         btn.style.boxShadow = '';
     };
     return btn;
+}
+
+export function switchChoice() {
+    var tab = document.getElementsByClassName('tabtags');
+    if (tab.length <= 0) {
+        return false;
+    }
+    var tabs=tab[0].getElementsByTagName('span');
+    for(var i=0;i<tabs.length;i++){
+        if(tabs[i].className.indexOf('currents')>0){
+            //现行,切换到下一个
+        }
+    }
+    //可以换页了
+    console.log(tabs);
 }

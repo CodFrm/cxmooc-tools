@@ -10,6 +10,7 @@ const get = common.get;
  * @param {*} index 
  */
 module.exports = function (_this, elLogo, index) {
+    common.switchChoice();
     //获取要操作的对象和视频id
     var wid = _this.contentDocument.getElementsByTagName('iframe')[index].contentWindow;
     var doc = _this.contentDocument.getElementsByTagName('iframe')[index].contentDocument;
@@ -31,11 +32,37 @@ module.exports = function (_this, elLogo, index) {
     }, 1000);
     //创建各个按钮
     var hang_btn = createBtn('开始挂机');
+    hang_btn.id = 'action-btn';
     hang_btn.value = index;
     hang_btn.title = "直接开始";
     elLogo.appendChild(hang_btn);
     hang_btn.onclick = function () {
-        wid.monitorPlay();
+        var config = JSON.parse(localStorage['config']);
+        if (config['auto']) {
+            //全自动挂机开始
+            hang_btn.innerText = '挂机中...';
+            wid.monitorPlay(function () {
+                //播放完成
+                console.log('over');
+                setTimeout(function () {
+                    //判断有没有下一个,自动进行下一个任务
+                    var ans = _this.contentDocument.getElementsByClassName('ans-job-icon');
+                    if (ans.length > index + 1) {
+                        //点击
+                        console.log('下一任务点');
+                        console.log(ans[index + 1]);
+                        var nextAction = ans[index + 1].firstElementChild;
+                        console.log(nextAction);
+                        nextAction.click();
+                    } else {
+                        //已经是最后一个,搜索下一个选项夹
+                        console.log('下一选项夹');
+                    }
+                }, config['interval'] * 1000 * 60);
+            });
+        } else {
+            wid.monitorPlay();
+        }
     }
 
     // var hang_mode_2 = createBtn('挂机模式2(bate)');

@@ -5,12 +5,18 @@ const moocConfig = require('../config');
 /**
  * 开始监控暂停,自动重新播放
  */
-window.monitorPlay = function () {
+window.monitorPlay = function (playOver) {
     var player = document.querySelector('object');
     var reader = player.parentNode.parentNode;
     play();
     $(reader).bind('onPause', function (h, g) {
         play();
+    });
+    //监听完成事件
+    $(reader).bind('onEnd', function (h, g) {
+        if (playOver != undefined) {
+            playOver();
+        }
     });
 
     function play() {
