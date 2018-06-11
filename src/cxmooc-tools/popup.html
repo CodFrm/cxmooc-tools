@@ -31,6 +31,11 @@
         margin: 0;
         margin-top: 4px;
     }
+
+    .config-item {
+        display: inline-block;
+        width: 100px;
+    }
 </style>
 
 <body>
@@ -44,8 +49,18 @@
     </div>
     <div>
         <h4>插件配置:</h4>
-        <input type="checkbox" id="rand-answer" />
-        <label for="rand-answer">随机答案(没有正确的答案会随机选择)</label>
+        <div class="config-item">
+            <input type="checkbox" id="rand-answer" />
+            <label for="rand-answer" title="没有正确的答案会随机选择">随机答案</label>
+        </div>
+        <div class="config-item">
+            <input type="checkbox" id="auto" />
+            <label for="auto" title="点开始挂机,播放完一个视频之后会自动进入下一个">全自动挂机</label>
+        </div>
+        <div id="auto-m" class="config-item" style="display: none;">
+            <label for="interval" title="播放(题目)完成后n分钟再继续下一个任务">间隔时间:</label>
+            <input type="text" id="interval" style="font-size: 10px;width: 30%" placeholder="分钟" />
+        </div>
     </div>
     <div>
         <h4>其他说明:</h4>

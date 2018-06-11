@@ -20,11 +20,34 @@ window.onload = function () {
     chrome.storage.sync.get('rand_answer', function (items) {
         document.getElementById('rand-answer').checked = items.rand_answer;
     });
+    chrome.storage.sync.get('interval', function (items) {
+        document.getElementById('interval').value = items.interval == undefined ? 5 : items.interval;
+    });
+    chrome.storage.sync.get('auto', function (items) {
+        document.getElementById('auto').checked = items.auto;
+        document.getElementById('auto').onchange();
+    });
     document.getElementById('rand-answer').onclick = function () {
         chrome.storage.sync.set({
             'rand_answer': document.getElementById('rand-answer').checked
         });
-        localStorage.setItem('rand_answer', document.getElementById('rand-answer').checked);
         return true;
+    }
+    document.getElementById('auto').onchange = function () {
+        check = document.getElementById('auto');
+        if (check.checked) {
+            document.getElementById('auto-m').style.display = 'inline-block';
+        } else {
+            document.getElementById('auto-m').style.display = 'none';
+        }
+        chrome.storage.sync.set({
+            'auto': check.checked
+        });
+        document.getElementById('version').innerHTML = check.checked;
+    }
+    document.getElementById('interval').onblur = function () {
+        chrome.storage.sync.set({
+            'interval': document.getElementById('interval').value
+        });
     }
 }

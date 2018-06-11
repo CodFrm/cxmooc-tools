@@ -18,7 +18,7 @@
     },
     "content_scripts": [{
         "matches": [
-            "*://*.chaoxing.com/mycourse/studentstudy?*"
+            "*://*/mycourse/studentstudy?*"
         ],
         "js": ["src/start.js"],
         "run_at": "document_start"
