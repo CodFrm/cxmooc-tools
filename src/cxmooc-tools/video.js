@@ -28,7 +28,7 @@ module.exports = function (_this, elLogo, index) {
             clearInterval(timer);
             wid.removeOldPlayer(obj[0]);
         }
-    }, 1000);
+    }, 200);
     //创建各个按钮
     var hang_btn = createBtn('开始挂机');
     hang_btn.id = 'action-btn';

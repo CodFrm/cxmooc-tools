@@ -8,11 +8,10 @@ const moocConfig = require('../config');
 window.monitorPlay = function (playOver) {
     var timer = setInterval(function () {
         var player = document.querySelector('object');
-        if (player != undefined) {
-            clearInterval(timer);
-        } else {
+        if (player == undefined || player == null) {
             return;
         }
+        clearInterval(timer);
         var reader = player.parentNode.parentNode;
         play();
         $(reader).bind('onPause', function (h, g) {

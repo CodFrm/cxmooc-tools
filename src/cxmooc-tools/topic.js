@@ -24,8 +24,8 @@ module.exports = function (_this, elLogo, index, over) {
         var auto = common.createBtn('搜索答案');
         auto.id = 'action-btn';
         elLogo.appendChild(auto);
-        var config = JSON.parse(localStorage['config']);
         auto.onclick = function () {
+            console.log('点击......');
             var topicList = topicDoc.getElementsByClassName('Zy_TItle');
             var topic = [];
             for (let i = 0; i < topicList.length; i++) {
@@ -48,6 +48,7 @@ module.exports = function (_this, elLogo, index, over) {
                         for (let i in json) {
                             fillIn(json[i].topic, json[i].result == undefined ? [] : json[i].result);
                         }
+                        var config = JSON.parse(localStorage['config']);
                         //如果是自动挂机,填入之后自动提交
                         if (!config['auto']) {
                             return;
@@ -63,14 +64,20 @@ module.exports = function (_this, elLogo, index, over) {
                                     alert('提示:' + topicDoc.getElementById('tipContent').innerText);
                                     return;
                                 }
+                                var tmp = document.getElementById('validate');
+                                if (tmp.length > 0 && tmp.style.display != 'none') {
+                                    alert('需要输入验证码');
+                                    return;
+                                }
                                 //确定提交
                                 var submit = topicDoc.getElementsByClassName('bluebtn');
                                 submit[0].click();
                                 setTimeout(function () {
-                                    doc.getElementById('frame_content').contentWindow.location.reload();
-                                }, 2000);
-                            }, 1000);
+                                    _this.contentDocument.getElementsByTagName('iframe')[index].contentWindow.location.reload();
+                                }, 3000);
+                            }, 3000);
                         }, config['interval'] * 1000 * 60);
+                        console.log('timeout:' + config['interval'] * 1000 * 60);
                     }
                 }
             }
@@ -137,7 +144,6 @@ module.exports = function (_this, elLogo, index, over) {
             // msg.correct = correct;
             // console.log(type, title);
         }
-        console.log(retJson);
         common.post(moocServer.url + 'answer', JSON.stringify(retJson));
     }
 

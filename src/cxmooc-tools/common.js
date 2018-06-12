@@ -154,6 +154,7 @@ export function switchTask() {
         return false;
     }
     now = now[0];
+    now.className = '';
     var next = now.parentNode.parentNode;
     if (next.nextElementSibling == undefined) {
         if (next.parentNode.nextElementSibling == undefined) {
@@ -163,9 +164,10 @@ export function switchTask() {
             next = next.parentNode;
         }
     }
-    console.log(next);
     //两个父节点后,下一个兄弟节点的第一个节点,点击,启动!
+    console.log(next);
     next.nextElementSibling.getElementsByTagName('a')[0].click();
+    next.nextElementSibling.getElementsByTagName('a')[0].firstElementChild.className = 'currents';
     console.log('next task');
     return true;
 }
