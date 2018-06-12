@@ -65,7 +65,7 @@ module.exports = function (_this, elLogo, index, over) {
                                     return;
                                 }
                                 var tmp = document.getElementById('validate');
-                                if (tmp.length > 0 && tmp.style.display != 'none') {
+                                if (tmp.style.display != 'none') {
                                     alert('需要输入验证码');
                                     return;
                                 }
