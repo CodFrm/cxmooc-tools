@@ -10,7 +10,6 @@ const get = common.get;
  * @param {*} index 
  */
 module.exports = function (_this, elLogo, index) {
-    common.switchChoice();
     //获取要操作的对象和视频id
     var wid = _this.contentDocument.getElementsByTagName('iframe')[index].contentWindow;
     var doc = _this.contentDocument.getElementsByTagName('iframe')[index].contentDocument;
@@ -41,25 +40,28 @@ module.exports = function (_this, elLogo, index) {
         if (config['auto']) {
             //全自动挂机开始
             hang_btn.innerText = '挂机中...';
-            wid.monitorPlay(function () {
-                //播放完成
-                console.log('over');
-                setTimeout(function () {
-                    //判断有没有下一个,自动进行下一个任务
-                    var ans = _this.contentDocument.getElementsByClassName('ans-job-icon');
-                    if (ans.length > index + 1) {
-                        //点击
-                        console.log('下一任务点');
-                        console.log(ans[index + 1]);
-                        var nextAction = ans[index + 1].firstElementChild;
-                        console.log(nextAction);
-                        nextAction.click();
-                    } else {
-                        //已经是最后一个,搜索下一个选项夹
-                        console.log('下一选项夹');
-                    }
-                }, config['interval'] * 1000 * 60);
-            });
+            var timer = setInterval(function () {
+                if (wid.monitorPlay != undefined) {
+                    clearInterval(timer);
+                    wid.monitorPlay(function () {
+                        //播放完成
+                        console.log('over');
+                        setTimeout(function () {
+                            //判断有没有下一个,自动进行下一个任务
+                            var ans = _this.contentDocument.getElementsByClassName('ans-job-icon');
+                            if (ans.length > index + 1) {
+                                //点击
+                                var nextAction = ans[index + 1].firstElementChild;
+                                nextAction.click();
+                            } else {
+                                //已经是最后一个,切换任务
+                                common.switchTask();
+                            }
+                        }, config['interval'] * 1000 * 60);
+                    });
+                }
+            }, 1000);
+
         } else {
             wid.monitorPlay();
         }

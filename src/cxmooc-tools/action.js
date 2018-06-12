@@ -6,28 +6,35 @@ const moocConfig = require('../config');
  * 开始监控暂停,自动重新播放
  */
 window.monitorPlay = function (playOver) {
-    var player = document.querySelector('object');
-    var reader = player.parentNode.parentNode;
-    play();
-    $(reader).bind('onPause', function (h, g) {
-        play();
-    });
-    //监听完成事件
-    $(reader).bind('onEnd', function (h, g) {
-        if (playOver != undefined) {
-            playOver();
+    var timer = setInterval(function () {
+        var player = document.querySelector('object');
+        if (player != undefined) {
+            clearInterval(timer);
+        } else {
+            return;
         }
-    });
-
-    function play() {
-        var time = setInterval(function () {
-            if (player.getPlayState() != 1) {
-                player.playMovie();
-            } else {
-                clearInterval(time);
+        var reader = player.parentNode.parentNode;
+        play();
+        $(reader).bind('onPause', function (h, g) {
+            play();
+        });
+        //监听完成事件
+        $(reader).bind('onEnd', function (h, g) {
+            if (playOver != undefined) {
+                playOver();
             }
-        }, 1000);
-    }
+        });
+
+        function play() {
+            var time = setInterval(function () {
+                if (player.getPlayState() != 1) {
+                    player.playMovie();
+                } else {
+                    clearInterval(time);
+                }
+            }, 1000);
+        }
+    }, 200);
 }
 
 window.removeOldPlayer = function (obj) {

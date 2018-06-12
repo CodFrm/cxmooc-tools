@@ -43,7 +43,6 @@ window.onload = function () {
         chrome.storage.sync.set({
             'auto': check.checked
         });
-        document.getElementById('version').innerHTML = check.checked;
     }
     document.getElementById('interval').onblur = function () {
         chrome.storage.sync.set({

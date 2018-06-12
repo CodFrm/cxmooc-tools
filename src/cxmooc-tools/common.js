@@ -6,6 +6,15 @@ const video = require('./video');
  */
 export function showExpand(_this) {
     var ans = _this.contentDocument.getElementsByClassName('ans-job-icon');
+    var config = JSON.parse(localStorage['config']);
+    if (ans.length <= 0 && config['auto']) {
+        //没有任务点,正在挂机的状态,5s后切换下一个
+        console.log('null,switch task');
+        setTimeout(function () {
+            switchTask();
+        }, 5000);
+        return;
+    }
     for (var i = 0; i < ans.length; i++) {
         ans[i].style.width = '100%';
         ans[i].style.textAlign = 'center';
@@ -18,6 +27,10 @@ export function showExpand(_this) {
         } else if (ans[i].parentNode.className.indexOf('ans-attach-ct') >= 0) {
             //未做完的题目
             topic(_this, ans[i], i, false);
+        }
+        //如果是挂机模式,并且是第一个,点击,启动!
+        if (i == 0 && config['auto']) {
+            _this.contentDocument.getElementById('action-btn').click();
         }
     }
 }
@@ -110,12 +123,49 @@ export function switchChoice() {
     if (tab.length <= 0) {
         return false;
     }
-    var tabs=tab[0].getElementsByTagName('span');
-    for(var i=0;i<tabs.length;i++){
-        if(tabs[i].className.indexOf('currents')>0){
+    var tabs = tab[0].getElementsByTagName('span');
+    for (var i = 0; i < tabs.length; i++) {
+        if (tabs[i].className.indexOf('currents') > 0) {
             //现行,切换到下一个
+            if (i + 1 >= tabs.length) {
+                //超过长度
+                break;
+            } else {
+                return tabs[i + 1];
+            }
         }
     }
     //可以换页了
-    console.log(tabs);
+    return false;
+}
+
+export function switchTask() {
+    //判断选项夹
+    var tab = switchChoice();
+    if (tab !== false) {
+        tab.click();
+        return true;
+    }
+    //判断任务点
+    var course = document.getElementById('coursetree');
+    var now = course.getElementsByClassName('currents');
+    if (now.length <= 0) {
+        alert('很奇怪啊');
+        return false;
+    }
+    now = now[0];
+    var next = now.parentNode.parentNode;
+    if (next.nextElementSibling == undefined) {
+        if (next.parentNode.nextElementSibling == undefined) {
+            alert('挂机完成了');
+            return true;
+        } else {
+            next = next.parentNode;
+        }
+    }
+    console.log(next);
+    //两个父节点后,下一个兄弟节点的第一个节点,点击,启动!
+    next.nextElementSibling.getElementsByTagName('a')[0].click();
+    console.log('next task');
+    return true;
 }

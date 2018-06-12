@@ -9,11 +9,22 @@ module.exports = function (_this, elLogo, index, over) {
     var topicDoc = doc.getElementById('frame_content').contentDocument;
     if (over) {
         //完成的提交答案
+        var auto = common.createBtn('下一个');
+        auto.id = 'action-btn';
+        elLogo.appendChild(auto);
+        auto.onclick = function () {
+            //进入下一个
+            setTimeout(function () {
+                nextTask();
+            }, 4000);
+        }
         dealDocumentTopic(topicDoc);
     } else {
         //未完成的填入答案
         var auto = common.createBtn('搜索答案');
+        auto.id = 'action-btn';
         elLogo.appendChild(auto);
+        var config = JSON.parse(localStorage['config']);
         auto.onclick = function () {
             var topicList = topicDoc.getElementsByClassName('Zy_TItle');
             var topic = [];
@@ -37,9 +48,45 @@ module.exports = function (_this, elLogo, index, over) {
                         for (let i in json) {
                             fillIn(json[i].topic, json[i].result == undefined ? [] : json[i].result);
                         }
+                        //如果是自动挂机,填入之后自动提交
+                        if (!config['auto']) {
+                            return;
+                        }
+                        setTimeout(function () {
+                            //提交操作
+                            var submit = topicDoc.getElementsByClassName('Btn_blue_1');
+                            submit = submit[0];
+                            submit.click();
+                            //判断有没有未填的题目
+                            setTimeout(function () {
+                                if (topicDoc.getElementById('tipContent').innerText.indexOf('未做完') > 0) {
+                                    alert('提示:' + topicDoc.getElementById('tipContent').innerText);
+                                    return;
+                                }
+                                //确定提交
+                                var submit = topicDoc.getElementsByClassName('bluebtn');
+                                submit[0].click();
+                                setTimeout(function () {
+                                    doc.getElementById('frame_content').contentWindow.location.reload();
+                                }, 2000);
+                            }, 1000);
+                        }, config['interval'] * 1000 * 60);
                     }
                 }
             }
+        }
+    }
+
+    function nextTask() {
+        //判断有没有下一个,自动进行下一个任务
+        var ans = _this.contentDocument.getElementsByClassName('ans-job-icon');
+        if (ans.length > index + 1) {
+            //点击
+            var nextAction = ans[index + 1].firstElementChild;
+            nextAction.click();
+        } else {
+            //已经是最后一个,切换任务
+            common.switchTask();
         }
     }
 
