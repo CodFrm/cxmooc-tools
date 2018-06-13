@@ -16,7 +16,7 @@ module.exports = function (_this, elLogo, index, over) {
             //进入下一个
             setTimeout(function () {
                 nextTask();
-            }, 4000);
+            }, 5000);
         }
         dealDocumentTopic(topicDoc);
     } else {

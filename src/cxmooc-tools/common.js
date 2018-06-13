@@ -7,10 +7,11 @@ const video = require('./video');
 export function showExpand(_this) {
     var ans = _this.contentDocument.getElementsByClassName('ans-job-icon');
     var config = JSON.parse(localStorage['config']);
+    clearInterval(window.switchTimer);
     if (ans.length <= 0 && config['auto']) {
         //没有任务点,正在挂机的状态,5s后切换下一个
         console.log('null,switch task');
-        setTimeout(function () {
+        window.switchTimer = setTimeout(function () {
             switchTask();
         }, 5000);
         return;
@@ -140,6 +141,16 @@ export function switchChoice() {
 }
 
 export function switchTask() {
+    // var now = Math.round(new Date().getTime() / 1000);
+    // if (localStorage['last'] != undefined) {
+    //     //判断上次间隔
+    //     console.log();
+    //     if (now - localStorage['last'] < 4) {
+    //         //小于4秒不进行操作,返回
+    //         return;
+    //     }
+    // }
+    // localStorage['last'] = Math.round(new Date().getTime() / 1000);
     //判断选项夹
     var tab = switchChoice();
     if (tab !== false) {
