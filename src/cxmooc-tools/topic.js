@@ -14,6 +14,10 @@ module.exports = function (_this, elLogo, index, over) {
         elLogo.appendChild(auto);
         auto.onclick = function () {
             //进入下一个
+            var config = JSON.parse(localStorage['config']);
+            if(!config['auto']){
+                nextTask();
+            }
             setTimeout(function () {
                 nextTask();
             }, 5000);
@@ -73,7 +77,8 @@ module.exports = function (_this, elLogo, index, over) {
                                 var submit = topicDoc.getElementsByClassName('bluebtn');
                                 submit[0].click();
                                 setTimeout(function () {
-                                    _this.contentDocument.getElementsByTagName('iframe')[index].contentWindow.location.reload();
+                                    // _this.contentDocument.getElementsByTagName('iframe')[index].contentWindow.location.reload();
+                                    nextTask();
                                 }, 3000);
                             }, 3000);
                         }, config['interval'] * 1000 * 60);
