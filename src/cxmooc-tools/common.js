@@ -182,3 +182,9 @@ export function switchTask() {
     console.log('next task');
     return true;
 }
+
+export function dealRegx(str, topic) {
+    str = str.replace('{topic}', '[\\s\\S]*?' + topic + '[\\s\\S]*?');
+    str = str.replace('{answer}', '(\\S+?)');
+    return str;
+}

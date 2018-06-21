@@ -10,13 +10,29 @@ window.onload = function () {
                 return;
             }
         }
-        injected(document, 'mooc.js');
         document.head.setAttribute('chrome-url', chrome.extension.getURL(''));
-        chrome.storage.sync.get(['rand_answer','interval','auto'], function (items) {
+        chrome.storage.sync.get([
+            'rand_answer',
+            'interval',
+            'auto'
+        ], function (items) {
             //设置一下配置
             document.head.setAttribute('rand-answer', items.rand_answer);
-            localStorage['config'] =JSON.stringify(items);
+            localStorage['config'] = JSON.stringify(items);
         });
+        chrome.storage.local.get([
+            'topic_regx',
+            'topics',
+            'topic_time'
+        ], function (items) {
+            //读取题库信息
+            if (localStorage['topic_time'] == undefined || localStorage['topic_time'] < items.topic_time) {
+                localStorage['topic_regx'] = items.topic_regx;
+                localStorage['topics'] = items.topics;
+                localStorage['topic_time'] = items.topic_time;
+            }
+        });
+        injected(document, 'mooc.js');
     })
 }
 
