@@ -15,7 +15,7 @@ module.exports = function (_this, elLogo, index, over) {
         auto.onclick = function () {
             //进入下一个
             var config = JSON.parse(localStorage['config']);
-            if(!config['auto']){
+            if (!config['auto']) {
                 nextTask();
             }
             setTimeout(function () {
@@ -29,7 +29,6 @@ module.exports = function (_this, elLogo, index, over) {
         auto.id = 'action-btn';
         elLogo.appendChild(auto);
         auto.onclick = function () {
-            console.log('点击......');
             var topicList = topicDoc.getElementsByClassName('Zy_TItle');
             var topic = [];
             for (let i = 0; i < topicList.length; i++) {
@@ -264,6 +263,7 @@ module.exports = function (_this, elLogo, index, over) {
 
     function fillIn(id, result) {
         var topicEl = topicDoc.getElementById(id);
+        var topicMsg = getTopicMsg(topicEl);
         var prompt = topicEl.nextSibling.nextSibling.getElementsByClassName('prompt');
         if (prompt.length <= 0) {
             prompt = document.createElement('div');
@@ -276,8 +276,43 @@ module.exports = function (_this, elLogo, index, over) {
         }
         var options = topicEl.nextSibling.nextSibling.getElementsByTagName('li');
         if (result.length <= 0) {
-            //无答案,检索配置有没有设置随机答案....
+            //没有在线上检索到答案,先在检索本地题库
             var rand = document.head.getAttribute('rand-answer');
+            //从本地题库读取内容
+            var localTopic = getLocalTopic(topicMsg.topic);
+            if (localTopic != undefined) {
+                //检索到题目了
+                var tmpResult = {
+                    correct: []
+                };
+                tmpResult.type = topicMsg.type;
+                if (tmpResult.type == 3) {
+                    //判断题
+                    tmpResult.correct.push({
+                        content: (localTopic.answer == '√' ? true : false)
+                    });
+                } else if (tmpResult.type <= 2) {
+                    //单/多选
+                    var reg = /[\w]/g;
+                    var match = localTopic.answer.match(reg);
+                    for (var i = 0; i < match.length; i++) {
+                        tmpResult.correct.push({
+                            option: match[i]
+                        });
+                    }
+                } else if (tmpResult.type == 4) {
+                    //填空题,暂时空一下
+
+                }
+                if (tmpResult.correct.length > 0) {
+                    result.push(tmpResult);
+                    console.log(tmpResult);
+                    prompt.innerHTML="成功的从本地题库搜索到答案:<br />"+localTopic.content+"<br/>答案:"+localTopic.answer+"<br/>";
+                }
+            }
+        }
+        if (result.length <= 0) {
+            //无答案,检索配置有没有设置随机答案....
             if (rand == 'false') {
                 prompt.innerHTML = "没有从题库中获取到相应记录";
                 return;
@@ -288,7 +323,7 @@ module.exports = function (_this, elLogo, index, over) {
             var tmpResult = {
                 correct: []
             };
-            tmpResult.type = switchTopicType(common.substrEx(topicEl.innerText, '【', '】'));
+            tmpResult.type = topicMsg.type;
             var d = Math.floor(Math.random() * 10 + 1);
             //随机生成答案,有些混乱了....
             for (let n = 0; n < options.length; n++) {
@@ -355,9 +390,16 @@ module.exports = function (_this, elLogo, index, over) {
                     break;
                 } else if (result.type <= 2) {
                     optionsContent = removeHTML(options[n].querySelector('.after').innerHTML);
+                    var option = options[n].querySelector("[type='radio']").value;
+                    //如果内容是空的,就看选项的
                     if (result.correct[i].content == optionsContent) {
                         prompt.innerHTML += optionsContent + "   ";
                         options[n].querySelector('.after').click();
+                        var option = options[n].querySelector("[type='radio']").value;
+                    } else if (result.correct[i].option == option) {
+                        prompt.innerHTML += optionsContent + "   ";
+                        options[n].querySelector('.after').click();
+                        var option = options[n].querySelector("[type='radio']").value;
                     }
                 } else if (result.type == 4) {
                     optionsContent = common.substrEx(options[n].innerHTML, "第", "空");
@@ -368,6 +410,24 @@ module.exports = function (_this, elLogo, index, over) {
                 }
             }
         }
+    }
+
+    /**
+     * 获取本地题库中的信息
+     * @param {*} topic 
+     */
+    function getLocalTopic(topic) {
+        var reg = new RegExp(common.dealRegx(localStorage['topic_regx'], topic));
+        console.log(reg);
+        var str = localStorage['topics'];
+        var arr = reg.exec(str);
+        if (arr != null) {
+            return {
+                content: arr[0],
+                answer: arr.length >= 2 ? arr[1] : ''
+            };
+        }
+        return;
     }
 
     /**
