@@ -184,7 +184,7 @@ export function switchTask() {
 }
 
 export function dealRegx(str, topic) {
-    str = str.replace('{topic}', '[\\s\\S]*?' + topic + '[\\s\\S]*?');
+    str = str.replace('{topic}', '[\\s\\S]{0,6}?' + topic + '[\\s\\S]*?');
     str = str.replace('{answer}', '(\\S+?)');
     return str;
 }

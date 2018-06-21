@@ -307,7 +307,7 @@ module.exports = function (_this, elLogo, index, over) {
                 if (tmpResult.correct.length > 0) {
                     result.push(tmpResult);
                     console.log(tmpResult);
-                    prompt.innerHTML="成功的从本地题库搜索到答案:<br />"+localTopic.content+"<br/>答案:"+localTopic.answer+"<br/>";
+                    prompt.innerHTML = "成功的从本地题库搜索到答案:<br />" + localTopic.content + "<br/>答案:" + localTopic.answer + "<br/>";
                 }
             }
         }
