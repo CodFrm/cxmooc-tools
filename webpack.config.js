@@ -22,6 +22,16 @@ module.exports = {
                 removeComments: true
             },
             chunks: ['popup']
+        }),
+        new htmlWebpackPlugin({
+            filename: __dirname + '/build/cxmooc-tools/src/import.html',
+            template: __dirname + '/src/cxmooc-tools/import.html',
+            inject: 'head',
+            title: '导入页面',
+            minify: {
+                removeComments: true
+            },
+            chunks: ['popup']
         })
     ]
 }
