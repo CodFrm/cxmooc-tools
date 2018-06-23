@@ -5,8 +5,14 @@ const moocServer = require('../config');
  * 题目处理模块
  */
 module.exports = function (_this, elLogo, index, over) {
-    var doc = _this.contentDocument.getElementsByTagName('iframe')[index].contentDocument;
-    var topicDoc = doc.getElementById('frame_content').contentDocument;
+    var doc, topicDoc;
+    if (_this.id == 'iframe') {
+        doc = _this.contentDocument.getElementsByTagName('iframe')[index].contentDocument;
+        topicDoc = doc.getElementById('frame_content').contentDocument;
+    } else {
+        doc = _this;
+        topicDoc = _this;
+    }
     if (over) {
         //完成的提交答案
         var auto = common.createBtn('下一个');
@@ -30,58 +36,71 @@ module.exports = function (_this, elLogo, index, over) {
         elLogo.appendChild(auto);
         auto.onclick = function () {
             var topicList = topicDoc.getElementsByClassName('Zy_TItle');
-            var topic = [];
-            for (let i = 0; i < topicList.length; i++) {
-                var msg = getTopicMsg(topicList[i]);
-                var md5Data = md5(msg.topic + msg.type.toString());
-                topicList[i].id = md5Data;
-                topic.push(md5Data);
-            }
-            var data = '';
-            for (let i in topic) {
-                data += 'topic[' + i + ']=' + topic[i] + '&';
-            }
-            common.get(moocServer.url + 'answer?' + data).onreadystatechange = function () {
-                if (this.readyState == 4) {
-                    if (this.status != 200) {
-                        alert('未知错误');
-                    } else {
-                        var json = JSON.parse(this.responseText);
-                        //填入答案
-                        for (let i in json) {
-                            fillIn(json[i].topic, json[i].result == undefined ? [] : json[i].result);
-                        }
-                        var config = JSON.parse(localStorage['config']);
-                        //如果是自动挂机,填入之后自动提交
-                        if (!config['auto']) {
-                            return;
-                        }
-                        setTimeout(function () {
-                            //提交操作
-                            var submit = topicDoc.getElementsByClassName('Btn_blue_1');
-                            submit = submit[0];
-                            submit.click();
-                            //判断有没有未填的题目
+            //分多段请求,每段10个请求
+            for (let n = 0; n < topicList.length; n += 10) {
+                var topic = [];
+                for (let i = n; i < topicList.length && i - n < 10; i++) {
+                    var msg = getTopicMsg(topicList[i]);
+                    var md5Data = md5(msg.topic + msg.type.toString());
+                    topicList[i].id = md5Data;
+                    topic.push(md5Data);
+                }
+                var data = '';
+                for (let i in topic) {
+                    data += 'topic[' + i + ']=' + topic[i] + '&';
+                }
+                let show = false;
+                common.get(moocServer.url + 'answer?' + data).onreadystatechange = function () {
+                    if (this.readyState == 4) {
+                        if (this.status != 200) {
+                            if (!show) {
+                                show = true;
+                                alert('未知错误');
+                            }
+                        } else {
+                            var json = JSON.parse(this.responseText);
+                            //填入答案
+                            for (let i in json) {
+                                fillIn(json[i].topic, json[i].result == undefined ? [] : json[i].result);
+                            }
+                            var config = JSON.parse(localStorage['config']);
+                            //如果是自动挂机,填入之后自动提交
+                            if (!config['auto']) {
+                                return;
+                            }
                             setTimeout(function () {
-                                if (topicDoc.getElementById('tipContent').innerText.indexOf('未做完') > 0) {
-                                    alert('提示:' + topicDoc.getElementById('tipContent').innerText);
-                                    return;
-                                }
-                                var tmp = document.getElementById('validate');
-                                if (tmp.style.display != 'none') {
-                                    alert('需要输入验证码');
-                                    return;
-                                }
-                                //确定提交
-                                var submit = topicDoc.getElementsByClassName('bluebtn');
-                                submit[0].click();
+                                //提交操作
+                                var submit = topicDoc.getElementsByClassName('Btn_blue_1');
+                                submit = submit[0];
+                                submit.click();
+                                //判断有没有未填的题目
                                 setTimeout(function () {
-                                    // _this.contentDocument.getElementsByTagName('iframe')[index].contentWindow.location.reload();
-                                    nextTask();
+                                    if (topicDoc.getElementById('tipContent').innerText.indexOf('未做完') > 0) {
+                                        if (!show) {
+                                            show = true;
+                                            alert('提示:' + topicDoc.getElementById('tipContent').innerText);
+                                        }
+                                        return;
+                                    }
+                                    var tmp = document.getElementById('validate');
+                                    if (tmp.style.display != 'none') {
+                                        if (!show) {
+                                            show = true;
+                                            alert('需要输入验证码');
+                                        }
+                                        return;
+                                    }
+                                    //确定提交
+                                    var submit = topicDoc.getElementsByClassName('bluebtn');
+                                    submit[0].click();
+                                    setTimeout(function () {
+                                        // _this.contentDocument.getElementsByTagName('iframe')[index].contentWindow.location.reload();
+                                        nextTask();
+                                    }, 3000);
                                 }, 3000);
-                            }, 3000);
-                        }, config['interval'] * 1000 * 60);
-                        console.log('timeout:' + config['interval'] * 1000 * 60);
+                            }, config['interval'] * 1000 * 60);
+                            console.log('timeout:' + config['interval'] * 1000 * 60);
+                        }
                     }
                 }
             }
@@ -132,11 +151,17 @@ module.exports = function (_this, elLogo, index, over) {
                 continue;
             }
             //获取题目
-            title = removeHTML(title.innerHTML.substring(title.innerHTML.indexOf('】') + 1));
+            var tmpTitle = removeHTML(title.innerHTML.substring(title.innerHTML.indexOf('】') + 1));
             // title = title.getElementsByTagName('p');
-            if (title.length <= 0) {
-                continue;
+            if (tmpTitle.length <= 0) {
+                //题目获取失败,搜索里面有没有img,有那么title就为img的路径
+                var img = title.getElementsByTagName('img');
+                if (img == null) {
+                    continue;
+                }
+                tmpTitle = img.getAttribute('src');
             }
+            title = tmpTitle;
             //对答案进行处理
             var ret = dealDocumentAnswer(topic[i], type);
             if (ret != undefined) {
@@ -272,7 +297,13 @@ module.exports = function (_this, elLogo, index, over) {
             topicEl.nextSibling.nextSibling.appendChild(prompt);
         } else {
             prompt = prompt[0];
+            prompt.style.color = "#e53935";
+            prompt.innerHTML = '';
             prompt.style.fontWeight = 100;
+        }
+        if (topicMsg.topic == '') {
+            prompt.innerHTML = '没有找到题目,什么鬼?';
+            return;
         }
         var options = topicEl.nextSibling.nextSibling.getElementsByTagName('li');
         if (result.length <= 0) {
@@ -342,7 +373,11 @@ module.exports = function (_this, elLogo, index, over) {
                     break;
                 } else if (tmpResult.type <= 2) {
                     //单选题
-                    optionsContent = removeHTML(options[n].querySelector('.after').innerHTML);
+                    var oc = options[n].querySelector('.after');
+                    if (oc == null) {
+                        continue;
+                    }
+                    optionsContent = removeHTML(oc.innerHTML);
                     if (tmpResult.type == 2) {
                         options[n].querySelector('input[type=checkbox]').checked = false;
                         //多选
@@ -389,17 +424,21 @@ module.exports = function (_this, elLogo, index, over) {
                     }
                     break;
                 } else if (result.type <= 2) {
-                    optionsContent = removeHTML(options[n].querySelector('.after').innerHTML);
-                    var option = options[n].querySelector("[type='radio']").value;
+                    var oc = options[n].querySelector('.after');
+                    if (oc == null) {
+                        continue;
+                    }
+                    optionsContent = removeHTML(oc.innerHTML);
+                    var option = options[n].querySelector("input").value;
                     //如果内容是空的,就看选项的
                     if (result.correct[i].content == optionsContent) {
                         prompt.innerHTML += optionsContent + "   ";
                         options[n].querySelector('.after').click();
-                        var option = options[n].querySelector("[type='radio']").value;
+                        var option = options[n].querySelector("input").value;
                     } else if (result.correct[i].option == option) {
                         prompt.innerHTML += optionsContent + "   ";
                         options[n].querySelector('.after').click();
-                        var option = options[n].querySelector("[type='radio']").value;
+                        var option = options[n].querySelector("input").value;
                     }
                 } else if (result.type == 4) {
                     optionsContent = common.substrEx(options[n].innerHTML, "第", "空");
@@ -417,15 +456,19 @@ module.exports = function (_this, elLogo, index, over) {
      * @param {*} topic 
      */
     function getLocalTopic(topic) {
-        var reg = new RegExp(common.dealRegx(localStorage['topic_regx'], topic));
-        console.log(reg);
-        var str = localStorage['topics'];
-        var arr = reg.exec(str);
-        if (arr != null) {
-            return {
-                content: arr[0],
-                answer: arr.length >= 2 ? arr[1] : ''
-            };
+        try {
+            var reg = new RegExp(common.dealRegx(localStorage['topic_regx'], topic));
+            console.log(reg);
+            var str = localStorage['topics'];
+            var arr = reg.exec(str);
+            if (arr != null) {
+                return {
+                    content: arr[0],
+                    answer: arr.length >= 2 ? arr[1] : ''
+                };
+            }
+        } catch (e) {
+
         }
         return;
     }
@@ -439,6 +482,13 @@ module.exports = function (_this, elLogo, index, over) {
         msg.topic = elTopic.querySelector('div.clearfix').innerHTML;
         msg.type = switchTopicType(common.substrEx(msg.topic, '【', '】'));
         msg.topic = removeHTML(msg.topic.substring(msg.topic.indexOf('】') + 1));
+        if (msg.topic <= 0) {
+            //题目获取失败,搜索里面有没有img,有那么title就为img的路径
+            var img = elTopic.getElementsByTagName('img');
+            if (img != null) {
+                msg.topic = img[0].getAttribute('src');
+            }
+        }
         return msg;
     }
 

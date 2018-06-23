@@ -18,7 +18,9 @@
     },
     "content_scripts": [{
         "matches": [
-            "*://*/mycourse/studentstudy?*"
+            "*://*/mycourse/studentstudy?*",
+            "*://*/work/doHomeWorkNew?*",
+            "*://*/work/selectWorkQuestionYiPiYue?*"
         ],
         "js": ["src/start.js"],
         "run_at": "document_start"

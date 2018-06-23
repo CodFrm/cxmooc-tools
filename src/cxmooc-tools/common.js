@@ -75,7 +75,7 @@ export function get(url) {
     try {
         var xmlhttp = createRequest();
         xmlhttp.open("GET", url, true);
-        xmlhttp.send(data);
+        xmlhttp.send();
     } catch (e) {
         return false;
     }
@@ -184,6 +184,8 @@ export function switchTask() {
 }
 
 export function dealRegx(str, topic) {
+    topic = topic.replace('(', '\\(');
+    topic = topic.replace(')', '\\)');
     str = str.replace('{topic}', '[\\s\\S]{0,6}?' + topic + '[\\s\\S]*?');
     str = str.replace('{answer}', '(\\S+?)');
     return str;
