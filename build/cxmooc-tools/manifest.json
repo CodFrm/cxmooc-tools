@@ -20,7 +20,8 @@
         "matches": [
             "*://*/mycourse/studentstudy?*",
             "*://*/work/doHomeWorkNew?*",
-            "*://*/work/selectWorkQuestionYiPiYue?*"
+            "*://*/work/selectWorkQuestionYiPiYue?*",
+            "*://*/exam/test/reVersionTestStartNew?*"
         ],
         "js": ["src/start.js"],
         "run_at": "document_start"

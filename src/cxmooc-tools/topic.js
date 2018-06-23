@@ -457,6 +457,9 @@ module.exports = function (_this, elLogo, index, over) {
      */
     function getLocalTopic(topic) {
         try {
+            if (localStorage['topic_regx'] == undefined || localStorage['topic_regx'] == '') {
+                return;
+            }
             var reg = new RegExp(common.dealRegx(localStorage['topic_regx'], topic));
             console.log(reg);
             var str = localStorage['topics'];
@@ -482,13 +485,6 @@ module.exports = function (_this, elLogo, index, over) {
         msg.topic = elTopic.querySelector('div.clearfix').innerHTML;
         msg.type = switchTopicType(common.substrEx(msg.topic, '【', '】'));
         msg.topic = removeHTML(msg.topic.substring(msg.topic.indexOf('】') + 1));
-        if (msg.topic <= 0) {
-            //题目获取失败,搜索里面有没有img,有那么title就为img的路径
-            var img = elTopic.getElementsByTagName('img');
-            if (img != null) {
-                msg.topic = img[0].getAttribute('src');
-            }
-        }
         return msg;
     }
 
@@ -529,6 +525,9 @@ module.exports = function (_this, elLogo, index, over) {
      * 去除html标签
      */
     function removeHTML(html) {
+        //先处理img标签
+        var imgReplace = /<img .*?src="(.*?)".*?>/g;
+        html = html.replace(imgReplace, '$1');
         var revHtml = /<.*?>/g;
         html = html.replace(revHtml, '');
         html = html.replace(/(^\s+)|(\s+$)/g, '');

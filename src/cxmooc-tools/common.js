@@ -187,6 +187,47 @@ export function dealRegx(str, topic) {
     topic = topic.replace('(', '\\(');
     topic = topic.replace(')', '\\)');
     str = str.replace('{topic}', '[\\s\\S]{0,6}?' + topic + '[\\s\\S]*?');
-    str = str.replace('{answer}', '(\\S+?)');
+    str = str.replace('{answer}', '(\\S+)');
     return str;
+}
+
+/** 
+ * 去除html标签
+ */
+export function removeHTML(html) {
+    //先处理img标签
+    var imgReplace = /<img .*?src="(.*?)".*?>/g;
+    html = html.replace(imgReplace, '$1');
+    var revHtml = /<.*?>/g;
+    html = html.replace(revHtml, '');
+    html = html.replace(/(^\s+)|(\s+$)/g, '');
+    return html.replace(/&nbsp;/g, ' ');
+}
+
+/**
+ * 获取本地题库中的信息
+ * @param {*} topic 
+ */
+export function getLocalTopic(topic, count) {
+    count = count == undefined ? 1 : count;
+    try {
+        if (localStorage['topic_regx'] == undefined || localStorage['topic_regx'] == '') {
+            return;
+        }
+        var reg = new RegExp(dealRegx(localStorage['topic_regx'], topic));
+        console.log(reg);
+        var str = localStorage['topics'];
+        var arr = reg.exec(str);
+        if (arr != null) {
+            return {
+                content: arr[0],
+                answer: arr.length >= 2 ? arr[1] : ''
+            };
+        } else if (count <= 2) {
+            return getLocalTopic(topic.substring(0, topic.length - 4), ++count);
+        }
+    } catch (e) {
+
+    }
+    return;
 }
