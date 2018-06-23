@@ -26,7 +26,7 @@ window.onload = function () {
             'topic_time'
         ], function (items) {
             //读取题库信息
-            if (localStorage['topic_time'] == undefined || localStorage['topic_time'] < items.topic_time) {
+            if (localStorage['topic_time'] == undefined || items.topic_time == undefined || localStorage['topic_time'] < items.topic_time) {
                 localStorage['topic_regx'] = items.topic_regx;
                 localStorage['topics'] = items.topics;
                 localStorage['topic_time'] = items.topic_time;
