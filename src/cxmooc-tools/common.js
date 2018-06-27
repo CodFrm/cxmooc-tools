@@ -31,7 +31,9 @@ export function showExpand(_this) {
         }
         //如果是挂机模式,并且是第一个,点击,启动!
         if (i == 0 && config['auto']) {
-            _this.contentDocument.getElementById('action-btn').click();
+            setTimeout(function () {
+                _this.contentDocument.getElementById('action-btn').click();
+            }, 2000);
         }
     }
 }
