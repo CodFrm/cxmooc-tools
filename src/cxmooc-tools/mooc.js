@@ -143,6 +143,8 @@ if (window.location.href.indexOf('exam/test/reVersionTestStartNew') > 0) {
 function dealTopic(topic) {
     topic = removeHTML(topic.innerHTML);
     var revHtml = /<[\s\S]*?>/g;
+    //处理分
+    topic = topic.replace(/\（[\S]+?分）/, '')
     topic = topic.replace(revHtml, '').trim();
     return topic
 }

@@ -224,7 +224,7 @@ export function getLocalTopic(topic, count) {
                 answer: arr.length >= 2 ? arr[1] : ''
             };
         } else if (count <= 2) {
-            return getLocalTopic(topic.substring(0, topic.length - 4), ++count);
+            return getLocalTopic(topic.substring(count, topic.length - 2), ++count);
         }
     } catch (e) {
 

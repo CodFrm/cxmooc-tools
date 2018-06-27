@@ -39,11 +39,11 @@ window.monitorPlay = function (playOver) {
 window.removeOldPlayer = function (obj) {
     //服务器在线判断
     var http = new XMLHttpRequest();
+    var parent = obj.parentNode.parentNode;
     http.open('GET', moocConfig.cx.player + '?v=' + moocConfig.version);
     http.onreadystatechange = function () {
         if (http.readyState == 4 && http.status == 200) {
             //移除老的视频对象
-            var parent = obj.parentNode.parentNode;
             obj.parentNode.parentNode.removeChild(obj.parentNode);
             var note = document.getElementById('note');
             var note1 = document.createElement('div');
@@ -64,18 +64,20 @@ window.removeOldPlayer = function (obj) {
             clearInterval(timer);
             return;
         }
-        var obj = document.querySelector('object');
-        if (obj != null) {
-            clearInterval(timer);
+        var flashObj = document.querySelector('object');
+        if (flashObj != null) {
             //切换上一次记录的线路,如果没有或者为0就不进行切换了
-            var flashvars = obj.querySelector('[name="flashvars"]').getAttribute('value');
-            obj.querySelector('[name="flashvars"]').setAttribute(
-                'value',
-                flashvars.replace('dftLineIndex%22%3A0%2C%22', 'dftLineIndex%22%3A' + localStorage['lineIndex'] + '%2C%22')
-            );
-            obj.setAttribute('data', obj.getAttribute('data'));
+            if (flashObj.querySelector('[name="flashvars"]') != null) {
+                clearInterval(timer);
+                var flashvars = flashObj.querySelector('[name="flashvars"]').getAttribute('value');
+                flashObj.querySelector('[name="flashvars"]').setAttribute(
+                    'value',
+                    flashvars.replace('dftLineIndex%22%3A0%2C%22', 'dftLineIndex%22%3A' + localStorage['lineIndex'] + '%2C%22')
+                );
+                flashObj.setAttribute('data', flashObj.getAttribute('data'));
+            }
         }
-    }, 500);
+    }, 100);
 }
 
 /**
