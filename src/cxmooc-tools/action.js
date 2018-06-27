@@ -51,6 +51,25 @@ window.removeOldPlayer = function (obj) {
             note1.innerHTML = '<div id="hl"></div><div id="note1">cxmooc-tools正在为您更换播放器...</div></div>';
             document.body.insertBefore(note1, note);
             newPlayer();
+            var timer = setInterval(function () {
+                if (localStorage['lineIndex'] == undefined || localStorage['lineIndex'] == 0) {
+                    clearInterval(timer);
+                    return;
+                }
+                var flashObj = document.querySelector('object');
+                if (flashObj != null) {
+                    //切换上一次记录的线路,如果没有或者为0就不进行切换了
+                    if (flashObj.querySelector('[name="flashvars"]') != null) {
+                        clearInterval(timer);
+                        var flashvars = flashObj.querySelector('[name="flashvars"]').getAttribute('value');
+                        flashObj.querySelector('[name="flashvars"]').setAttribute(
+                            'value',
+                            flashvars.replace('dftLineIndex%22%3A0%2C%22', 'dftLineIndex%22%3A' + localStorage['lineIndex'] + '%2C%22')
+                        );
+                        flashObj.setAttribute('data', flashObj.getAttribute('data'));
+                    }
+                }
+            }, 100);
         }
     }
     http.send();
@@ -59,25 +78,6 @@ window.removeOldPlayer = function (obj) {
         //监听线路切换
         localStorage['lineIndex'] = g;
     });
-    var timer = setInterval(function () {
-        if (localStorage['lineIndex'] == undefined || localStorage['lineIndex'] == 0) {
-            clearInterval(timer);
-            return;
-        }
-        var flashObj = document.querySelector('object');
-        if (flashObj != null) {
-            //切换上一次记录的线路,如果没有或者为0就不进行切换了
-            if (flashObj.querySelector('[name="flashvars"]') != null) {
-                clearInterval(timer);
-                var flashvars = flashObj.querySelector('[name="flashvars"]').getAttribute('value');
-                flashObj.querySelector('[name="flashvars"]').setAttribute(
-                    'value',
-                    flashvars.replace('dftLineIndex%22%3A0%2C%22', 'dftLineIndex%22%3A' + localStorage['lineIndex'] + '%2C%22')
-                );
-                flashObj.setAttribute('data', flashObj.getAttribute('data'));
-            }
-        }
-    }, 100);
 }
 
 /**
