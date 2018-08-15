@@ -6,7 +6,7 @@ import {
 } from './common';
 const moocServer = require('../config');
 //监听框架加载
-document.addEventListener('load', function (ev) {
+document.addEventListener('load', function(ev) {
     var ev = ev || event;
     var _this = ev.srcElement || ev.target;
     if (_this.id == 'iframe') {
@@ -47,7 +47,7 @@ if (window.location.href.indexOf('exam/test/reVersionTestStartNew') > 0) {
     prompt.className = "prompt";
     document.getElementsByTagName('form')[0].appendChild(prompt);
     topic = dealTopic(topic); // +' md5(topic)'69e39744ada2142697461dcb09bef81d'
-    get(moocServer.url + 'answer?topic[0]=' + md5(topic)).onreadystatechange = function () {
+    get(moocServer.url + 'answer?topic[0]=' + md5(topic)).onreadystatechange = function() {
         if (this.readyState == 4) {
             if (this.status != 200) {
                 prompt.innerText = '网络错误';
@@ -79,10 +79,12 @@ if (window.location.href.indexOf('exam/test/reVersionTestStartNew') > 0) {
                             //单/多选
                             var reg = /[\w]/g;
                             var match = localTopic.answer.match(reg);
-                            for (var i = 0; i < match.length; i++) {
-                                tmpResult.correct.push({
-                                    option: match[i]
-                                });
+                            if (match != undefined) {
+                                for (var i = 0; i < match.length; i++) {
+                                    tmpResult.correct.push({
+                                        option: match[i]
+                                    });
+                                }
                             }
                         } else if (tmpResult.type == 4) {
                             //填空题,暂时空一下
@@ -90,7 +92,6 @@ if (window.location.href.indexOf('exam/test/reVersionTestStartNew') > 0) {
                         }
                         if (tmpResult.correct.length > 0) {
                             json[0].result.push(tmpResult);
-                            console.log(tmpResult);
                             prompt.innerHTML = "成功的从本地题库搜索到答案:<br />" + localTopic.content + "<br/>答案:" + localTopic.answer + "<br/>";
                         } else {
                             prompt.innerHTML += "<br />题库中无该题答案";
