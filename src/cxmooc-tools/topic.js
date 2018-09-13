@@ -464,10 +464,10 @@ module.exports = function (_this, elLogo, index, over) {
             console.log(reg);
             var str = localStorage['topics'];
             var arr = reg.exec(str);
-            if (arr != null) {
+            if (arr != null && arr.length >= 2) {
                 return {
                     content: arr[0],
-                    answer: arr.length >= 2 ? arr[1] : ''
+                    answer: arr[1]
                 };
             }
         } catch (e) {
