@@ -7,27 +7,29 @@ const moocConfig = require('../config');
  */
 window.monitorPlay = function (playOver) {
     var timer = setInterval(function () {
-        var player = document.querySelector('object');
+        var player = document.querySelector('#video_html5_api');
         if (player == undefined || player == null) {
             return;
         }
         clearInterval(timer);
+        //判断是否播放，顺便让那个按钮和界面不可见
+        unshowOcclusion();
         var reader = player.parentNode.parentNode;
         play();
-        $(reader).bind('onPause', function (h, g) {
+        player.onpause = function () {
+            console.log('pause');
             play();
-        });
-        //监听完成事件
-        $(reader).bind('onEnd', function (h, g) {
+        }
+        player.onended = function () {
+            console.log('end');
             if (playOver != undefined) {
                 playOver();
             }
-        });
-
+        }
         function play() {
             var time = setInterval(function () {
-                if (player.getPlayState() != 1) {
-                    player.playMovie();
+                if (player.paused) {
+                    player.play();
                 } else {
                     clearInterval(time);
                 }
@@ -35,7 +37,17 @@ window.monitorPlay = function (playOver) {
         }
     }, 200);
 }
-
+function unshowOcclusion() {
+    var playBtn = document.querySelector('.vjs-big-play-button');
+    console.log(playBtn);
+    if (playBtn != null) {
+        playBtn.style.display = 'none';
+    }
+    var tmp = document.querySelector('.vjs-poster');
+    if (tmp != null) {
+        tmp.style.display = 'none';
+    }
+}
 window.removeOldPlayer = function (obj) {
     //服务器在线判断
     var http = new XMLHttpRequest();
@@ -297,7 +309,7 @@ window.newPlayer = function () {
                 },
                 failure: function (resp) {
                     if (resp.status == 404) {
-                        timer && 　clearInterval(timer);
+                        timer && clearInterval(timer);
                         note1Wrap.remove();
                         note.show();
                         Ext.get('loading').hide();
