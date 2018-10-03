@@ -2,7 +2,6 @@
 [![npm](https://img.shields.io/npm/v/cxmooc-tools.svg)](https://www.npmjs.com/package/cxmooc-tools)
 [![npm](https://img.shields.io/npm/dt/cxmooc-tools.svg)](https://www.npmjs.com/package/cxmooc-tools)
 
-
 # 超星慕课小工具
 > 一个快速学习超星慕课的chrome扩展工具(੧ᐛ੭挂科模式,启动)
 >
@@ -13,7 +12,8 @@
 环境:
 * Node.js
 * webpack
-```
+
+```shell
 git clone https://github.com/CodFrm/cxmooc-tools.git
 npm install -g npm-check
 npm install -g npm-upgrade
@@ -31,12 +31,12 @@ npm run build
 环境:
 * Node.js
 * Mongodb
-```
+
+```shell
 npm install
 npm run server
 ```
-
-## 安装
+# 安装
 
 ### 方法1:
 
@@ -48,20 +48,20 @@ npm run server
 
 ### 方法2(推荐):
 
-比较稳定的版本,无需安装环境,下载即可使用。
-
-[https://github.com/CodFrm/cxmooc-tools/releases](https://github.com/CodFrm/cxmooc-tools/releases)
-
+下载发布的版本[cxmooc-tools.crx](https://github.com/CodFrm/cxmooc-tools/releases)无需安装环境,下载即可使用。
 1. 下载发布的版本cxmooc-tools.crx文件，修改后缀为.rar，并将其解压。
 2. 打开Chrome浏览器的更多工具选项，打开扩展程序页面并启用开发者模式。
 3. 加载已解压的扩展程序，路径选择你解压的路径`build/cxmooc-tools`
-``` 解压后应包含以下文件
+
+解压后应包含以下文件
+```
 .
 ├── img  
 ├── src  
 └── manifest.json
 ```
-以Chrome为例:
+**以Chrome浏览器为例:**
+
 ![](build/cxmooc-tools/img/1.png)
 ![](build/cxmooc-tools/img/2.png)
 
@@ -75,8 +75,8 @@ npm run server
 * [x] QQ浏览器
 * [ ] Chrome浏览器（无法启用）
 
-## 说明
-PC打开超星慕课课程页面,在视频上方将会有按钮显示
+# 说明
+使用已安装扩展插件的浏览器打开超星慕课学习页面,在视频上方会显示相关功能按钮。
 
 **秒过视频**功能可直接将视频看完,但是**有一定的风险**
 
@@ -88,13 +88,14 @@ PC打开超星慕课课程页面,在视频上方将会有按钮显示
 
 ![](/build/cxmooc-tools/img/soft/soft_01.png)
 ![](/build/cxmooc-tools/img/soft/soft_02.png)
-#### 题库
+## 题库
 
 关于题库,可以访问该页面:[https://github.com/CodFrm/cxmooc-tools/issues/16](https://github.com/CodFrm/cxmooc-tools/issues/16)
 
 1. 不定期的更新题库文件,因为没有手动的去收集题目,所以大部分题目**需要有人第一次做过**,后来的人才能搜索到题目。
 2. 题库中没有的题目则会自动随机选择一个选项。。。随机。。。请注意！！！！
-## 其他
+
+# 其他
 如果有兴趣的可以来一起开发,完善功能。
 
 GitHub项目地址:[https://github.com/CodFrm/cxmooc-tools](https://github.com/CodFrm/cxmooc-tools)
