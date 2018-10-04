@@ -12,13 +12,30 @@ window.monitorPlay = function (playOver) {
             return;
         }
         clearInterval(timer);
+        /**
+         * 对cdn进行处理
+         */
+        if (localStorage['cdn'] != undefined) {
+            var url = player.src;
+            url = url.substr(url.indexOf('/video/'));
+            console.log(url);
+            player.src = localStorage['cdn'] + url;
+            console.log(player.src);
+        }
         //判断是否播放，顺便让那个按钮和界面不可见
         unshowOcclusion();
-        var reader = player.parentNode.parentNode;
         play();
         player.onpause = function () {
             console.log('pause');
-            play();
+            if (player.currentTime <= player.duration - 1) {
+                play();
+            }
+        }
+        player.onloadstart = function () {
+            var cdn = player.currentSrc;
+            cdn = cdn.substr(0, cdn.indexOf('/video/', 10));
+            localStorage['cdn'] = cdn;
+            console.log('cdn change ' + cdn);
         }
         player.onended = function () {
             console.log('end');
