@@ -15,10 +15,6 @@
 
 ```shell
 git clone https://github.com/CodFrm/cxmooc-tools.git
-npm install -g npm-check
-npm install -g npm-upgrade
-npm-check
-npm-upgrade
 npm install
 npm run build
 ```
