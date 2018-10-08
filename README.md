@@ -2,7 +2,7 @@
 [![npm](https://img.shields.io/npm/v/cxmooc-tools.svg)](https://www.npmjs.com/package/cxmooc-tools)
 [![npm](https://img.shields.io/npm/dt/cxmooc-tools.svg)](https://www.npmjs.com/package/cxmooc-tools)
 
-## 超星慕课小工具 Document 2018/10/03
+## 超星慕课小工具
 > 一个快速学习超星慕课的chrome扩展工具(੧ᐛ੭挂科模式,启动)
 >
 > 初次开发chrome扩展,有兴趣的朋友可以一起来哦，欢迎PR!
