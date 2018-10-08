@@ -59,13 +59,20 @@ module.exports = function (_this, elLogo, index, over) {
                             }
                         } else {
                             var json = JSON.parse(this.responseText);
+                            var answer_null = false;
                             //填入答案
                             for (let i in json) {
-                                fillIn(json[i].topic, json[i].result == undefined ? [] : json[i].result);
+                                if (fillIn(json[i].topic, json[i].result == undefined ? [] : json[i].result) == 'null answer') {
+                                    answer_null = true;
+                                }
                             }
                             var config = JSON.parse(localStorage['config']);
                             //如果是自动挂机,填入之后自动提交
                             if (!config['auto']) {
+                                return;
+                            }
+                            if (answer_null) {
+                                alert('有题目没有找到答案,并且未设置随机答案,请手动填入');
                                 return;
                             }
                             setTimeout(function () {
@@ -306,9 +313,9 @@ module.exports = function (_this, elLogo, index, over) {
             return;
         }
         var options = topicEl.nextSibling.nextSibling.getElementsByTagName('li');
+        var rand = document.head.getAttribute('rand-answer');
         if (result.length <= 0) {
             //没有在线上检索到答案,先在检索本地题库
-            var rand = document.head.getAttribute('rand-answer');
             //从本地题库读取内容
             var localTopic = getLocalTopic(topicMsg.topic);
             if (localTopic != undefined) {
@@ -346,7 +353,7 @@ module.exports = function (_this, elLogo, index, over) {
             //无答案,检索配置有没有设置随机答案....
             if (rand == 'false') {
                 prompt.innerHTML = "没有从题库中获取到相应记录";
-                return;
+                return 'null answer';
             }
             prompt.style.fontWeight = 600;
             prompt.innerHTML = "请注意这是随机生成的答案!<br/>";
