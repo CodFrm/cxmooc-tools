@@ -167,7 +167,6 @@ export function switchTask() {
         return false;
     }
     now = now[0];
-    now.className = '';
     var next = now.parentNode.parentNode;
     if (next.nextElementSibling == undefined) {
         if (next.parentNode.nextElementSibling == undefined) {
@@ -186,6 +185,7 @@ export function switchTask() {
             switchTask();
         }, 2000);
     } else {
+        now.className = '';
         nextBtn.click();
         nextBtn.firstElementChild.className = 'currents';
         console.log('next task');
