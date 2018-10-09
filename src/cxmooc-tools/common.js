@@ -179,9 +179,17 @@ export function switchTask() {
     }
     //两个父节点后,下一个兄弟节点的第一个节点,点击,启动!
     console.log(next);
-    next.nextElementSibling.getElementsByTagName('a')[0].click();
-    next.nextElementSibling.getElementsByTagName('a')[0].firstElementChild.className = 'currents';
-    console.log('next task');
+    var nextBtn = next.nextElementSibling.getElementsByTagName('a')[0];
+    if (nextBtn.href.indexOf('getTeacherAjax') <= 0) {
+        console.log('switch task lock');
+        setTimeout(function () {
+            switchTask();
+        }, 2000);
+    } else {
+        nextBtn.click();
+        nextBtn.firstElementChild.className = 'currents';
+        console.log('next task');
+    }
     return true;
 }
 
