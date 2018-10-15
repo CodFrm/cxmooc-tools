@@ -39,6 +39,17 @@ module.exports = function (_this, elLogo, index) {
         var config = JSON.parse(localStorage['config']);
         if (config['auto']) {
             //全自动挂机开始
+            //判断完成的任务点
+            var ans = _this.contentDocument.getElementsByClassName('ans-job-icon');
+            if (ans[index].parentNode.className.indexOf('ans-job-finished') >= 0) {
+                if (ans.length > index + 1) {
+                    var nextAction = ans[index + 1].firstElementChild;
+                    nextAction.click();
+                } else {
+                    common.switchTask();
+                }
+                return;
+            }
             hang_btn.innerText = '挂机中...';
             var timer = setInterval(function () {
                 if (wid.monitorPlay != undefined) {
@@ -48,7 +59,6 @@ module.exports = function (_this, elLogo, index) {
                         console.log('over');
                         setTimeout(function () {
                             //判断有没有下一个,自动进行下一个任务
-                            var ans = _this.contentDocument.getElementsByClassName('ans-job-icon');
                             if (ans.length > index + 1) {
                                 //点击
                                 var nextAction = ans[index + 1].firstElementChild;
@@ -101,14 +111,14 @@ module.exports = function (_this, elLogo, index) {
         // mArg.attachments[_index].mid = '13699717041081426508636528';
         get('/richvideo/initdatawithviewer?&start=undefined&mid=' +
             mArg.attachments[_index].mid).onreadystatechange = function () {
-            if (this.readyState == 4) {
-                if (this.status == 200) {
-                    var json = JSON.parse(this.responseText);
-                    videoTopic = json;
-                    callback(json);
+                if (this.readyState == 4) {
+                    if (this.status == 200) {
+                        var json = JSON.parse(this.responseText);
+                        videoTopic = json;
+                        callback(json);
+                    }
                 }
             }
-        }
     }
     /**
      * 获取视频信息
@@ -121,14 +131,14 @@ module.exports = function (_this, elLogo, index) {
         }
         get('/ananas/status/' + mArg.attachments[_index].objectId +
             '?k=318&_dc=' + Date.parse(new Date())).onreadystatechange = function () {
-            if (this.readyState == 4) {
-                if (this.status == 200) {
-                    var json = JSON.parse(this.responseText);
-                    videoInfo = json;
-                    callback(json);
+                if (this.readyState == 4) {
+                    if (this.status == 200) {
+                        var json = JSON.parse(this.responseText);
+                        videoInfo = json;
+                        callback(json);
+                    }
                 }
             }
-        }
     }
     var createDiv = function (title) {
         var divEl = document.createElement('div');
@@ -281,14 +291,14 @@ module.exports = function (_this, elLogo, index) {
                 '&duration=' + json.duration + '&dtype=Video&objectId=' + mArg.attachments[_index].objectId +
                 '&clazzId=' + mArg.defaults.clazzId +
                 '&view=pc&playingTime=' + playTime + '&isdrag=4&enc=' + enc).onreadystatechange = function () {
-                if (this.readyState == 4) {
-                    if (this.status == 200) {
-                        let isPassed = JSON.parse(this.responseText);
-                        callback(isPassed.isPassed);
-                        return;
+                    if (this.readyState == 4) {
+                        if (this.status == 200) {
+                            let isPassed = JSON.parse(this.responseText);
+                            callback(isPassed.isPassed);
+                            return;
+                        }
                     }
                 }
-            }
         });
     }
 
