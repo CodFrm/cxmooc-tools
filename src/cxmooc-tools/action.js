@@ -302,8 +302,8 @@ window.newPlayer = function () {
 
                             timer && clearInterval(timer);
 
-                            if (!(Ext.isIpad || Ext.isIos || Ext.isAndroid)) {
-                                showMoocPlayer_cxmooc_tools(paras);
+                            if (Ext.isIpad || Ext.isIos || Ext.isAndroid) {
+                                showHTML5Player(paras);
                             } else {
                                 showHTML5Player(paras);
                             }
