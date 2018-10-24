@@ -45,7 +45,7 @@ npm run server
 ### 方法2(推荐):
 
 下载发布的版本[cxmooc-tools.crx](https://github.com/CodFrm/cxmooc-tools/releases)无需安装环境,下载即可使用。
-1. 下载发布的版本cxmooc-tools.crx文件，修改后缀为.rar，并将其解压。
+1. 下载发布的版本cxmooc-tools.crx文件，修改后缀为.zip，并将其解压。
 2. 打开Chrome浏览器的更多工具选项，打开扩展程序页面并启用开发者模式。
 3. 加载已解压的扩展程序，路径选择你解压的路径`build/cxmooc-tools`
 
