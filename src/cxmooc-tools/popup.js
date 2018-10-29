@@ -27,9 +27,19 @@ window.onload = function () {
         document.getElementById('auto').checked = items.auto;
         document.getElementById('auto').onchange();
     });
+    chrome.storage.sync.get('video_mute', function (items) {
+        document.getElementById('video-mute').checked = items.video_mute;
+        document.getElementById('video-mute').onchange();
+    });
     document.getElementById('rand-answer').onclick = function () {
         chrome.storage.sync.set({
             'rand_answer': document.getElementById('rand-answer').checked
+        });
+        return true;
+    }
+    document.getElementById('video-mute').onclick = function () {
+        chrome.storage.sync.set({
+            'video_mute': document.getElementById('video-mute').checked
         });
         return true;
     }

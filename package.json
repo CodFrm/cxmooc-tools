@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Hello,World\nDeveloper Blog:blog.icodef.com\" && exit 1",
     "build": "webpack --mode production --config webpack.prod.js",
-    "dev": "webpack --watch --mode development --config webpack.dev.js",
+    "dev": "webpack --mode development --config webpack.dev.js",
     "server": "node src/server/listen.js"
   },
   "repository": {

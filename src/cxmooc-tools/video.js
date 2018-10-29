@@ -68,12 +68,12 @@ module.exports = function (_this, elLogo, index) {
                                 common.switchTask();
                             }
                         }, config['interval'] * 1000 * 60);
-                    });
+                    }, config);
                 }
             }, 1000);
 
         } else {
-            wid.monitorPlay();
+            wid.monitorPlay(undefined, config);
         }
     }
 

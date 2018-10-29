@@ -14,9 +14,11 @@ window.onload = function () {
         chrome.storage.sync.get([
             'rand_answer',
             'interval',
-            'auto'
+            'auto',
+            'video_mute'
         ], function (items) {
             //设置一下配置
+            console.log(items);
             document.head.setAttribute('rand-answer', items.rand_answer);
             localStorage['config'] = JSON.stringify(items);
         });

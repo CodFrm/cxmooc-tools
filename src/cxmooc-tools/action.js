@@ -5,7 +5,7 @@ const moocConfig = require('../config');
 /**
  * 开始监控暂停,自动重新播放
  */
-window.monitorPlay = function (playOver) {
+window.monitorPlay = function (playOver, config) {
     var timer = setInterval(function () {
         var player = document.querySelector('#video_html5_api');
         if (player == undefined || player == null) {
@@ -47,6 +47,8 @@ window.monitorPlay = function (playOver) {
             var time = setInterval(function () {
                 if (player.paused) {
                     player.play();
+                    console.log(config);
+                    player.muted = config.video_mute;
                 } else {
                     clearInterval(time);
                 }
