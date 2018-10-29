@@ -13,14 +13,14 @@ module.exports = function (_this, elLogo, index, over) {
         doc = _this;
         topicDoc = _this;
     }
-    if (over) {
+    var config = JSON.parse(localStorage['config']);
+    if (over || (config['auto'] && config['answer_ignore'])) {
         //完成的提交答案
         var auto = common.createBtn('下一个');
         auto.id = 'action-btn';
         elLogo.appendChild(auto);
         auto.onclick = function () {
             //进入下一个
-            var config = JSON.parse(localStorage['config']);
             if (!config['auto']) {
                 nextTask();
             }
@@ -66,7 +66,6 @@ module.exports = function (_this, elLogo, index, over) {
                                     answer_null = true;
                                 }
                             }
-                            var config = JSON.parse(localStorage['config']);
                             //如果是自动挂机,填入之后自动提交
                             if (!config['auto']) {
                                 return;

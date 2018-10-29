@@ -31,6 +31,16 @@ window.onload = function () {
         document.getElementById('video-mute').checked = items.video_mute;
         document.getElementById('video-mute').onchange();
     });
+    chrome.storage.sync.get('answer_ignore', function (items) {
+        document.getElementById('answer-ignore').checked = items.answer_ignore;
+        document.getElementById('answer-ignore').onchange();
+    });
+    document.getElementById('answer-ignore').onclick = function () {
+        chrome.storage.sync.set({
+            'answer_ignore': document.getElementById('answer-ignore').checked
+        });
+        return true;
+    }
     document.getElementById('rand-answer').onclick = function () {
         chrome.storage.sync.set({
             'rand_answer': document.getElementById('rand-answer').checked
@@ -47,8 +57,10 @@ window.onload = function () {
         check = document.getElementById('auto');
         if (check.checked) {
             document.getElementById('auto-m').style.display = 'inline-block';
+            document.getElementById('ignore').style.display = '';
         } else {
             document.getElementById('auto-m').style.display = 'none';
+            document.getElementById('ignore').style.display = 'none';
         }
         chrome.storage.sync.set({
             'auto': check.checked

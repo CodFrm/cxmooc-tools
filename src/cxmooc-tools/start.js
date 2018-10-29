@@ -15,7 +15,8 @@ window.onload = function () {
             'rand_answer',
             'interval',
             'auto',
-            'video_mute'
+            'video_mute',
+            'answer_ignore'
         ], function (items) {
             //设置一下配置
             console.log(items);
