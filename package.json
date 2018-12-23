@@ -20,15 +20,15 @@
   },
   "homepage": "https://github.com/CodFrm/cxmooc-tools#readme",
   "devDependencies": {
+    "html-webpack-plugin": "^3.2.0",
     "webpack": "^4.20.2",
     "webpack-cli": "^3.1.2",
-    "webpack-merge": "^4.1.4",
-    "html-webpack-plugin": "^3.2.0"
+    "webpack-merge": "^4.1.4"
   },
   "dependencies": {
-    "md5": "^2.2.1",
+    "body-parser": "^1.18.3",
     "express": "^4.16.3",
-    "mongodb": "^3.1.6",
-    "body-parser": "^1.18.3"
+    "md5": "^2.2.1",
+    "mongodb": "^3.1.10"
   }
 }
