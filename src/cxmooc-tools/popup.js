@@ -31,6 +31,11 @@ window.onload = function () {
         document.getElementById('video-mute').checked = items.video_mute;
         document.getElementById('video-mute').onchange();
     });
+
+    chrome.storage.sync.get('video_multiple', function (items) {
+        document.getElementById('video-multiple').value = items.video_multiple == undefined ? 1 : items.video_multiple;
+    });
+
     chrome.storage.sync.get('answer_ignore', function (items) {
         document.getElementById('answer-ignore').checked = items.answer_ignore;
         document.getElementById('answer-ignore').onchange();
@@ -69,6 +74,11 @@ window.onload = function () {
     document.getElementById('interval').onblur = function () {
         chrome.storage.sync.set({
             'interval': document.getElementById('interval').value
+        });
+    }
+    document.getElementById('video-multiple').onblur = function () {
+        chrome.storage.sync.set({
+            'video_multiple': document.getElementById('video-multiple').value
         });
     }
 }

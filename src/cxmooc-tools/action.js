@@ -49,6 +49,7 @@ window.monitorPlay = function (playOver, config) {
                     player.play();
                     console.log(config);
                     player.muted = config.video_mute;
+                    player.playbackRate = config.video_multiple;
                 } else {
                     clearInterval(time);
                 }

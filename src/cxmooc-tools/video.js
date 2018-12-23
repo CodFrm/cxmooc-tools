@@ -304,6 +304,11 @@ module.exports = function (_this, elLogo, index) {
 
     //秒过按钮事件
     boom.onclick = function () {
+        if (localStorage['boom_no_prompt'] == undefined || localStorage['boom_no_prompt'] != 1) {
+            var msg = prompt('秒过视频会产生不良记录,是否继续?如果以后不想再弹出本对话框请在下方填写yes')
+            if (msg === null) return;
+            if (msg === 'yes') localStorage['boom_no_prompt'] = 1;
+        }
         getVideoInfo(function (json) {
             var playTime = parseInt(json.duration - Math.random(1, 2));
             send_time_pack(playTime, function (ret) {
