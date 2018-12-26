@@ -29,6 +29,11 @@ export function showExpand(_this) {
             //未做完的题目
             topic(_this, ans[i], i, false);
         }
+        //处理某些标签
+        var delSpans = ans[i].getElementsByTagName('span');
+        for (var n = 0; n < delSpans.length; n++) {
+            delSpans[n].setAttribute('style', '');
+        }
         //如果是挂机模式,并且是第一个,点击,启动!
         if (i == 0 && config['auto']) {
             setTimeout(function () {
