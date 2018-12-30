@@ -17,6 +17,8 @@
 git clone https://github.com/CodFrm/cxmooc-tools.git
 npm install
 npm run build
+# 开发模式请使用
+npm run dev
 ```
 
 ### Server

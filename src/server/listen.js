@@ -9,14 +9,14 @@ var fs = require('fs');
 const http = require('http');
 const https = require('https');
 
-var privateKey = fs.readFileSync(path.join(__dirname, './certificate/private.key'), 'utf8');
-var certificate = fs.readFileSync(path.join(__dirname, './certificate/file.crt'), 'utf8');
-var credentials = {
-    key: privateKey,
-    cert: certificate
-};
+// var privateKey = fs.readFileSync(path.join(__dirname, './certificate/private.key'), 'utf8');
+// var certificate = fs.readFileSync(path.join(__dirname, './certificate/file.crt'), 'utf8');
+// var credentials = {
+//     key: privateKey,
+//     cert: certificate
+// };
 var httpServer = http.createServer(app);
-var httpsServer = https.createServer(credentials, app);
+// var httpsServer = https.createServer(credentials, app);
 var PORT = 8080;
 var SSLPORT = 8081;
 
@@ -26,9 +26,9 @@ httpServer.listen(PORT, function () {
 });
 
 //创建https服务器  
-httpsServer.listen(SSLPORT, function () {
-    console.log('HTTPS Server is running on: https://localhost:%s', SSLPORT);
-});
+// httpsServer.listen(SSLPORT, function () {
+//     console.log('HTTPS Server is running on: https://localhost:%s', SSLPORT);
+// });
 
 
 var mooc = new moocModel();
@@ -131,7 +131,7 @@ function mergeAnswer(source, answer) {
     return source;
 }
 
-app.all('/answer', function (req, res, next) {
+app.all('/(|v2/)answer', function (req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");
     res.header("Access-Control-Allow-Headers", "Content-Type,Content-Length, Authorization, Accept,X-Requested-With");
     res.header("Access-Control-Allow-Methods", "PUT,POST,GET,DELETE,OPTIONS");
@@ -141,6 +141,7 @@ app.all('/answer', function (req, res, next) {
         next();
     }
 })
+
 app.get('/update', function (req, res) {
     res.send({
         version: config.version,
@@ -155,10 +156,20 @@ function getClientIp(req) {
         req.socket.remoteAddress ||
         req.connection.socket.remoteAddress;
 }
+app.get('/v2/answer', function (req, res) {
+    selectAnswer(req, res, function (topic) {
+        return { $regex: topic }
+    });
+});
 
 app.get('/answer', function (req, res) {
+    selectAnswer(req, res, function (topic) {
+        return topic;
+    });
+})
+
+function selectAnswer(req, res, where) {
     var topic = req.query.topic || [];
-    var type = req.query.type || [];
     var ret = [];
     if (topic.length <= 0) {
         res.send({
@@ -169,27 +180,28 @@ app.get('/answer', function (req, res) {
     }
     for (let i = 0; i < topic.length; i++) {
         mooc.find('answer', {
-            hash: topic[i]
+            topic: where(topic[i])
         }, {
-            fields: {
-                _id: 0,
-                topic: 1,
-                type: 1,
-                hash: 1,
-                time: 1,
-                correct: 1
-            }
-        }).limit(10).toArray(function (err, result) {
-            var pushData = {
-                topic: topic[i],
-            };
-            if (result) {
-                pushData.result = result;
-            }
-            ret.push(pushData);
-            if (ret.length == topic.length) {
-                res.send(ret);
-            }
-        });
+                fields: {
+                    _id: 0,
+                    topic: 1,
+                    type: 1,
+                    hash: 1,
+                    time: 1,
+                    correct: 1
+                }
+            }).limit(10).toArray(function (err, result) {
+                var pushData = {
+                    topic: topic[i],
+                    index: i
+                };
+                if (result) {
+                    pushData.result = result;
+                }
+                ret.push(pushData);
+                if (ret.length == topic.length) {
+                    res.send(ret);
+                }
+            });
     }
-})
+}
