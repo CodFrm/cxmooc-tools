@@ -9,14 +9,14 @@ var fs = require('fs');
 const http = require('http');
 const https = require('https');
 
-// var privateKey = fs.readFileSync(path.join(__dirname, './certificate/private.key'), 'utf8');
-// var certificate = fs.readFileSync(path.join(__dirname, './certificate/file.crt'), 'utf8');
-// var credentials = {
-//     key: privateKey,
-//     cert: certificate
-// };
+var privateKey = fs.readFileSync(path.join(__dirname, './certificate/private.key'), 'utf8');
+var certificate = fs.readFileSync(path.join(__dirname, './certificate/file.crt'), 'utf8');
+var credentials = {
+    key: privateKey,
+    cert: certificate
+};
 var httpServer = http.createServer(app);
-// var httpsServer = https.createServer(credentials, app);
+var httpsServer = https.createServer(credentials, app);
 var PORT = 8080;
 var SSLPORT = 8081;
 
@@ -26,9 +26,9 @@ httpServer.listen(PORT, function () {
 });
 
 //创建https服务器  
-// httpsServer.listen(SSLPORT, function () {
-//     console.log('HTTPS Server is running on: https://localhost:%s', SSLPORT);
-// });
+httpsServer.listen(SSLPORT, function () {
+    console.log('HTTPS Server is running on: https://localhost:%s', SSLPORT);
+});
 
 
 var mooc = new moocModel();
