@@ -246,3 +246,25 @@ export function getLocalTopic(topic, count) {
     }
     return;
 }
+
+export function pop_prompt(text, sec = 4) {
+    var box = document.createElement('div');
+    box.style.position = "absolute";
+    box.style.background = "#aeffab";
+    box.style.fontSize = "18px";
+    box.style.padding = "4px 20px";
+    box.style.borderRadius = "20px";
+    box.style.top = "50%";
+    box.style.left = "50%";
+    box.style.transform = "translate(-50%,-50%)";
+    box.style.transition = "1s";
+    box.style.opacity = "0";
+    box.innerText = text;
+    setTimeout(function () {
+        box.style.opacity = "0";
+        setTimeout(function () {
+            box.remove();
+        }, 1000)
+    }, sec * 1000);
+    return box;
+}

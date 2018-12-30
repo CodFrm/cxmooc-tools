@@ -70,15 +70,16 @@
             <input type="checkbox" id="answer-ignore" />
             <label for="answer-ignore" title="自动挂机时,忽略掉题目不做，直接跳过">忽略题目</label>
         </div>
-        <div class="config-item" style="width:120px">
-            <label for="video-multiple" title="视频播放的倍数,1为正常速度">播放速度:</label>
+        <div class="config-item" style="width:120px;color:#ff0000">
+            <label for="video-multiple" title="视频播放的倍数,1为正常速度(最高16倍,该功能有一定危险)">播放速度:</label>
             <input type="text" id="video-multiple" style="font-size: 10px;width: 30%" placeholder="倍" />倍
         </div>
         <a href="import.html" target="_black">题库导入</a>
     </div>
     <div>
         <h4>其他说明:</h4>
-        <span>时间间隔单位为分钟,可以有小数点,例如,0.1为6秒</span>
+        <p>时间间隔单位为分钟,可以有小数点,例如,0.1为6秒</p>
+        <p style="color:#ff0000;font-weight: bold">视频加速最高16倍,该功能有一定危险</p>
         <p>GitHub开源地址:
             <br>
             <a href="https://github.com/CodFrm/cxmooc-tools" target="_black">https://github.com/CodFrm/cxmooc-tools</a>

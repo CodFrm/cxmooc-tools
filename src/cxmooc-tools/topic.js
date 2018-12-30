@@ -179,6 +179,9 @@ module.exports = function (_this, elLogo, index, over) {
             // msg.correct = correct;
             // console.log(type, title);
         }
+        var box = common.pop_prompt("√  答案自动记录成功");
+        document.body.appendChild(box);
+        setTimeout(function(){box.style.opacity = "1";},500);
         common.post(moocServer.url + 'answer', JSON.stringify(retJson));
     }
 
