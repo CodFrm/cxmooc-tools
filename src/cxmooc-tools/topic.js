@@ -44,7 +44,7 @@ module.exports = function (_this, elLogo, index, over) {
                     var md5Data;
                     if (config['blurry_answer']) {
                         var blurdeal = msg.topic;
-                        blurdeal = blurdeal.replace(/[\s。（）]+$/, '');
+                        blurdeal = blurdeal.replace(/[\s。（）\(\)\.]+$/, '');
                         md5Data = { topic: encodeURI(blurdeal), type: msg.type.toString() };
                     } else {
                         md5Data = md5(msg.topic + msg.type.toString());
@@ -514,6 +514,17 @@ module.exports = function (_this, elLogo, index, over) {
         return msg;
     }
 
+    /**
+     * 处理符号
+     * @param {*} topic 
+     */
+    function dealSymbol(topic) {
+        topic = topic.replace('，', ',');
+        topic = topic.replace('（', '(');
+        topic = topic.replace('）', ')');
+        topic = topic.replace('？', '?');
+        return topic;
+    }
     /** 
      * 处理html源码获取题目信息
      */
@@ -557,6 +568,7 @@ module.exports = function (_this, elLogo, index, over) {
         var revHtml = /<.*?>/g;
         html = html.replace(revHtml, '');
         html = html.replace(/(^\s+)|(\s+$)/g, '');
+        html = dealSymbol(html);
         return html.replace(/&nbsp;/g, ' ');
     }
     /**
