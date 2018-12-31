@@ -89,11 +89,15 @@ export function get(url) {
     return xmlhttp;
 }
 
-export function post(url, data) {
+export function post(url, data, json = true) {
     try {
         var xmlhttp = createRequest();
         xmlhttp.open("POST", url, true);
-        xmlhttp.setRequestHeader("Content-Type", "application/json");
+        if (json) {
+            xmlhttp.setRequestHeader("Content-Type", "application/json");
+        }else{
+            xmlhttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+        }
         xmlhttp.send(data);
     } catch (e) {
         return false;

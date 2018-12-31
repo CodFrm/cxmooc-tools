@@ -17,47 +17,54 @@ window.onload = function () {
         }
     }
     xhr.send();
-    chrome.storage.sync.get('rand_answer', function (items) {
-        document.getElementById('rand-answer').checked = items.rand_answer;
+    chrome.storage.sync.get(['rand_answer', 'blurry_answer', 'video_mute', 'answer_ignore'], function (items) {
+        for (item in items) {
+            document.getElementById(item.replace('_', '-')).checked = items[item];
+        }
+
     });
+
     chrome.storage.sync.get('interval', function (items) {
         document.getElementById('interval').value = items.interval == undefined ? 5 : items.interval;
     });
+
     chrome.storage.sync.get('auto', function (items) {
         document.getElementById('auto').checked = items.auto;
         document.getElementById('auto').onchange();
-    });
-    chrome.storage.sync.get('video_mute', function (items) {
-        document.getElementById('video-mute').checked = items.video_mute;
-        document.getElementById('video-mute').onchange();
     });
 
     chrome.storage.sync.get('video_multiple', function (items) {
         document.getElementById('video-multiple').value = items.video_multiple == undefined ? 1 : items.video_multiple;
     });
 
-    chrome.storage.sync.get('answer_ignore', function (items) {
-        document.getElementById('answer-ignore').checked = items.answer_ignore;
-        document.getElementById('answer-ignore').onchange();
-    });
     document.getElementById('answer-ignore').onclick = function () {
         chrome.storage.sync.set({
             'answer_ignore': document.getElementById('answer-ignore').checked
         });
         return true;
     }
+
     document.getElementById('rand-answer').onclick = function () {
         chrome.storage.sync.set({
             'rand_answer': document.getElementById('rand-answer').checked
         });
         return true;
     }
+
     document.getElementById('video-mute').onclick = function () {
         chrome.storage.sync.set({
             'video_mute': document.getElementById('video-mute').checked
         });
         return true;
     }
+
+    document.getElementById('blurry-answer').onclick = function () {
+        chrome.storage.sync.set({
+            'blurry_answer': document.getElementById('blurry-answer').checked
+        });
+        return true;
+    }
+
     document.getElementById('auto').onchange = function () {
         check = document.getElementById('auto');
         if (check.checked) {

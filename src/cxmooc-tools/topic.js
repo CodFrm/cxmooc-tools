@@ -41,16 +41,31 @@ module.exports = function (_this, elLogo, index, over) {
                 var topic = [];
                 for (let i = n; i < topicList.length && i - n < 10; i++) {
                     var msg = getTopicMsg(topicList[i]);
-                    var md5Data = md5(msg.topic + msg.type.toString());
+                    var md5Data;
+                    if (config['blurry_answer']) {
+                        md5Data = { topic: encodeURI(msg.topic), type: msg.type.toString() };
+                    } else {
+                        md5Data = md5(msg.topic + msg.type.toString());
+                    }
                     topicList[i].id = md5Data;
                     topic.push(md5Data);
                 }
                 var data = '';
                 for (let i in topic) {
-                    data += 'topic[' + i + ']=' + topic[i] + '&';
+                    if (config['blurry_answer']) {
+                        data += 'topic[' + i + ']=' + topic[i].topic + '&type[' + i + ']=' + topic.type + '&';
+                    } else {
+                        data += 'topic[' + i + ']=' + topic[i] + '&';
+                    }
                 }
                 let show = false;
-                common.get(moocServer.url + 'answer?' + data).onreadystatechange = function () {
+                var netReq;
+                if (config['blurry_answer']) {
+                    netReq = common.post(moocServer.url + 'v2/answer', data, false);
+                } else {
+                    netReq = common.get(moocServer.url + 'answer?' + data);
+                }
+                netReq.onreadystatechange = function () {
                     if (this.readyState == 4) {
                         if (this.status != 200) {
                             if (!show) {
@@ -181,7 +196,7 @@ module.exports = function (_this, elLogo, index, over) {
         }
         var box = common.pop_prompt("√  答案自动记录成功");
         document.body.appendChild(box);
-        setTimeout(function(){box.style.opacity = "1";},500);
+        setTimeout(function () { box.style.opacity = "1"; }, 500);
         common.post(moocServer.url + 'answer', JSON.stringify(retJson));
     }
 

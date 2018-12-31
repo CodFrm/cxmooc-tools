@@ -156,20 +156,21 @@ function getClientIp(req) {
         req.socket.remoteAddress ||
         req.connection.socket.remoteAddress;
 }
-app.get('/v2/answer', function (req, res) {
-    selectAnswer(req, res, function (topic) {
+app.post('/v2/answer', function (req, res) {
+    var topic = req.body.topic || [];
+    selectAnswer(topic, res, function (topic) {
         return { $regex: topic }
     });
 });
 
 app.get('/answer', function (req, res) {
-    selectAnswer(req, res, function (topic) {
+    var topic = req.query.topic || [];
+    selectAnswer(topic, res, function (topic) {
         return topic;
     });
 })
 
-function selectAnswer(req, res, where) {
-    var topic = req.query.topic || [];
+function selectAnswer(topic, res, where) {
     var ret = [];
     if (topic.length <= 0) {
         res.send({

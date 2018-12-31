@@ -17,7 +17,8 @@ window.onload = function () {
             'auto',
             'video_mute',
             'answer_ignore',
-            'video_multiple'
+            'video_multiple',
+            'blurry_answer'
         ], function (items) {
             //设置一下配置
             console.log(items);
