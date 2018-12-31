@@ -21,6 +21,9 @@ window.onload = function () {
             'blurry_answer'
         ], function (items) {
             //设置一下配置
+            if (items.blurry_answer == undefined) {
+                items.blurry_answer = true;
+            }
             console.log(items);
             document.head.setAttribute('rand-answer', items.rand_answer);
             localStorage['config'] = JSON.stringify(items);

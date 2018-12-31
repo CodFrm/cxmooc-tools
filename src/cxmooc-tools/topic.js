@@ -370,7 +370,7 @@ module.exports = function (_this, elLogo, index, over) {
         }
         if (result.length <= 0) {
             //无答案,检索配置有没有设置随机答案....
-            if (rand == 'false') {
+            if (rand != 'true') {
                 prompt.innerHTML = "没有从题库中获取到相应记录";
                 return 'null answer';
             }
@@ -407,19 +407,25 @@ module.exports = function (_this, elLogo, index, over) {
                     if (tmpResult.type == 2) {
                         options[n].querySelector('input[type=checkbox]').checked = false;
                         //多选
-                        d = Math.floor(Math.random() * 2 + 1);
-                        if (d == 1) {
+                        d = Math.floor(Math.random() * (options.length - 1) + 2);
+                        console.log("num:" + d);
+                        var select = [];
+                        for (var i = 0; i < options.length; i++) {
+                            select.push(i);
+                        }
+                        for (; d > 0; d--) {
+                            var index = Math.floor(Math.random() * select.length);
+                            var n_oc = options[select[index]].querySelector('.after');
+                            if (n_oc == null) {
+                                continue;
+                            }
+                            optionsContent = removeHTML(n_oc.innerHTML);
                             tmpResult.correct.push({
                                 content: optionsContent
                             });
+                            select.splice(index, 1);
                         }
-                        if (tmpResult.correct.length <= 0) {
-                            if (n == d % options.length) {
-                                tmpResult.correct.push({
-                                    content: optionsContent
-                                });
-                            }
-                        }
+                        break;
                     } else {
                         if (n == d % options.length) {
                             tmpResult.correct.push({
@@ -523,6 +529,8 @@ module.exports = function (_this, elLogo, index, over) {
         topic = topic.replace('（', '(');
         topic = topic.replace('）', ')');
         topic = topic.replace('？', '?');
+        topic = topic.replace('：', ':');
+        topic = topic.replace(/[“”]/g, '"');
         return topic;
     }
     /** 

@@ -161,21 +161,25 @@ app.post('/v2/answer', function (req, res) {
     var type = req.body.type || [];
     selectAnswer(topic, res, function (i) {
         var where = {};
-        topic = dealSymbol(topic[i]);
+        topic[i] = dealSymbol(topic[i]);
+        var topic_n = topic[i];
+        // topic[i] = topic;
         if (type[i] != undefined) {
-            where = { topic: { $regex: topic }, type: parseInt(type[i]) };
+            where = { topic: { $regex: topic_n }, type: parseInt(type[i]) };
         } else {
-            where = { topic: { $regex: topic } };
+            where = { topic: { $regex: topic_n } };
         }
         return where;
     });
 });
 
 function dealSymbol(topic) {
-    topic = topic.replace(/[，,]/, '[,，]');
-    topic = topic.replace(/[(（]/, '[(（]');
-    topic = topic.replace(/[）)]/, '[）)]');
-    topic = topic.replace(/[？?]/, '[？?]');
+    topic = topic.replace(/[，,]/g, '[,，]');
+    topic = topic.replace(/[(（]/g, '[(（]');
+    topic = topic.replace(/[）)]/g, '[）)]');
+    topic = topic.replace(/[？?]/g, '[？?]');
+    topic = topic.replace(/[：:]/g, '[：:]');
+    topic = topic.replace(/[“”"]/g, '[“”"]');
     return topic;
 }
 

@@ -18,10 +18,12 @@ window.onload = function () {
     }
     xhr.send();
     chrome.storage.sync.get(['rand_answer', 'blurry_answer', 'video_mute', 'answer_ignore'], function (items) {
+        if (items.blurry_answer == undefined) {
+            items.blurry_answer = true;
+        }
         for (item in items) {
             document.getElementById(item.replace('_', '-')).checked = items[item];
         }
-
     });
 
     chrome.storage.sync.get('interval', function (items) {
