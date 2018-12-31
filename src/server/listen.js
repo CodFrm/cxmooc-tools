@@ -158,15 +158,22 @@ function getClientIp(req) {
 }
 app.post('/v2/answer', function (req, res) {
     var topic = req.body.topic || [];
-    selectAnswer(topic, res, function (topic) {
-        return { $regex: topic }
+    var type = req.body.type || [];
+    selectAnswer(topic, res, function (i) {
+        var where = {};
+        if (type[i] != undefined) {
+            where = { topic: { $regex: topic[i] }, type: parseInt(type[i]) };
+        } else {
+            where = { topic: { $regex: topic[i] } };
+        }
+        return where;
     });
 });
 
 app.get('/answer', function (req, res) {
     var topic = req.query.topic || [];
-    selectAnswer(topic, res, function (topic) {
-        return topic;
+    selectAnswer(topic, res, function (i) {
+        return { topic: topic[i] };
     });
 })
 
@@ -180,29 +187,27 @@ function selectAnswer(topic, res, where) {
         return;
     }
     for (let i = 0; i < topic.length; i++) {
-        mooc.find('answer', {
-            topic: where(topic[i])
-        }, {
-                fields: {
-                    _id: 0,
-                    topic: 1,
-                    type: 1,
-                    hash: 1,
-                    time: 1,
-                    correct: 1
-                }
-            }).limit(10).toArray(function (err, result) {
-                var pushData = {
-                    topic: topic[i],
-                    index: i
-                };
-                if (result) {
-                    pushData.result = result;
-                }
-                ret.push(pushData);
-                if (ret.length == topic.length) {
-                    res.send(ret);
-                }
-            });
+        mooc.find('answer', where(i), {
+            fields: {
+                _id: 0,
+                topic: 1,
+                type: 1,
+                hash: 1,
+                time: 1,
+                correct: 1
+            }
+        }).limit(10).toArray(function (err, result) {
+            var pushData = {
+                topic: topic[i],
+                index: i
+            };
+            if (result) {
+                pushData.result = result;
+            }
+            ret.push(pushData);
+            if (ret.length == topic.length) {
+                res.send(ret);
+            }
+        });
     }
 }

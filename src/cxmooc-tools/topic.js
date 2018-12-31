@@ -43,17 +43,19 @@ module.exports = function (_this, elLogo, index, over) {
                     var msg = getTopicMsg(topicList[i]);
                     var md5Data;
                     if (config['blurry_answer']) {
-                        md5Data = { topic: encodeURI(msg.topic), type: msg.type.toString() };
+                        var blurdeal = msg.topic;
+                        blurdeal = blurdeal.replace(/[\s。（）]+$/, '');
+                        md5Data = { topic: encodeURI(blurdeal), type: msg.type.toString() };
                     } else {
                         md5Data = md5(msg.topic + msg.type.toString());
                     }
-                    topicList[i].id = md5Data;
+                    topicList[i].id = 'answer_' + i.toString();
                     topic.push(md5Data);
                 }
                 var data = '';
                 for (let i in topic) {
                     if (config['blurry_answer']) {
-                        data += 'topic[' + i + ']=' + topic[i].topic + '&type[' + i + ']=' + topic.type + '&';
+                        data += 'topic[' + i + ']=' + topic[i].topic + '&type[' + i + ']=' + topic[i].type + '&';
                     } else {
                         data += 'topic[' + i + ']=' + topic[i] + '&';
                     }
@@ -77,7 +79,7 @@ module.exports = function (_this, elLogo, index, over) {
                             var answer_null = false;
                             //填入答案
                             for (let i in json) {
-                                if (fillIn(json[i].topic, json[i].result == undefined ? [] : json[i].result) == 'null answer') {
+                                if (fillIn('answer_' + json[i].index, json[i].result == undefined ? [] : json[i].result) == 'null answer') {
                                     answer_null = true;
                                 }
                             }
