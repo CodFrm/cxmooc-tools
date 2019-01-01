@@ -4,9 +4,10 @@ import {
     get,
     getLocalTopic
 } from './common';
+const md5 = require("md5");
 const moocServer = require('../config');
 //监听框架加载
-document.addEventListener('load', function(ev) {
+document.addEventListener('load', function (ev) {
     var ev = ev || event;
     var _this = ev.srcElement || ev.target;
     if (_this.id == 'iframe') {
@@ -40,14 +41,21 @@ if (window.location.href.indexOf('work/selectWorkQuestionYiPiYue') > 0) {
 //考试
 if (window.location.href.indexOf('exam/test/reVersionTestStartNew') > 0) {
     //读取题目和答案
-    const md5 = require("md5");
+    var config = JSON.parse(localStorage['config']);
     var topic = document.getElementById('position${velocityCount}').getElementsByClassName('clearfix')[0];
     var prompt = document.createElement('div');
     prompt.style.color = "#e53935";
     prompt.className = "prompt";
     document.getElementsByTagName('form')[0].appendChild(prompt);
-    topic = dealTopic(topic); // +' md5(topic)'69e39744ada2142697461dcb09bef81d'
-    get(moocServer.url + 'answer?topic[0]=' + md5(topic)).onreadystatechange = function() {
+    var netReq;
+    if (config['blurry_answer']) {
+        topic = dealTopic(topic);
+        netReq = common.post(moocServer.url + 'v2/answer', 'topic[0]='+topic, false);
+    } else {
+        topic = md5(dealTopic(topic));
+        netReq = get(moocServer.url + 'answer?topic[0]=' + md5(topic));
+    }
+    netReq.onreadystatechange = function () {
         if (this.readyState == 4) {
             if (this.status != 200) {
                 prompt.innerText = '网络错误';

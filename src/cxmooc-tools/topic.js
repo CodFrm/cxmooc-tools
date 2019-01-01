@@ -38,7 +38,7 @@ module.exports = function (_this, elLogo, index, over) {
             var topicList = topicDoc.getElementsByClassName('Zy_TItle');
             //分多段请求,每段10个请求
             for (let n = 0; n < topicList.length; n += 10) {
-                var topic = [];
+                let topic = [];
                 for (let i = n; i < topicList.length && i - n < 10; i++) {
                     var msg = getTopicMsg(topicList[i]);
                     var md5Data;
@@ -79,7 +79,7 @@ module.exports = function (_this, elLogo, index, over) {
                             var answer_null = false;
                             //填入答案
                             for (let i in json) {
-                                if (fillIn('answer_' + json[i].index, json[i].result == undefined ? [] : json[i].result) == 'null answer') {
+                                if (fillIn('answer_' + (n + json[i].index), json[i].result == undefined ? [] : json[i].result) == 'null answer') {
                                     answer_null = true;
                                 }
                             }

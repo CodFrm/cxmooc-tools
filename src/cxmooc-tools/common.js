@@ -95,7 +95,7 @@ export function post(url, data, json = true) {
         xmlhttp.open("POST", url, true);
         if (json) {
             xmlhttp.setRequestHeader("Content-Type", "application/json");
-        }else{
+        } else {
             xmlhttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
         }
         xmlhttp.send(data);
@@ -214,13 +214,29 @@ export function dealRegx(str, topic) {
  * 去除html标签
  */
 export function removeHTML(html) {
+    //TODO:重复的函数
     //先处理img标签
     var imgReplace = /<img .*?src="(.*?)".*?>/g;
     html = html.replace(imgReplace, '$1');
     var revHtml = /<.*?>/g;
     html = html.replace(revHtml, '');
     html = html.replace(/(^\s+)|(\s+$)/g, '');
+    html = dealSymbol(html);
     return html.replace(/&nbsp;/g, ' ');
+}
+
+/**
+ * 处理符号
+ * @param {*} topic 
+ */
+function dealSymbol(topic) {
+    topic = topic.replace('，', ',');
+    topic = topic.replace('（', '(');
+    topic = topic.replace('）', ')');
+    topic = topic.replace('？', '?');
+    topic = topic.replace('：', ':');
+    topic = topic.replace(/[“”]/g, '"');
+    return topic;
 }
 
 /**

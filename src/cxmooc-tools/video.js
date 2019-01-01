@@ -73,7 +73,12 @@ module.exports = function (_this, elLogo, index) {
             }, 1000);
 
         } else {
-            wid.monitorPlay(undefined, config);
+            //TODO:wid.monitorPlay 重复多余的 以后可以去掉
+            if (wid.monitorPlay != undefined) {
+                wid.monitorPlay(undefined, config);
+            } else {
+                monitorPlay(undefined, config);
+            }
         }
     }
 
@@ -319,5 +324,70 @@ module.exports = function (_this, elLogo, index) {
                 }
             });
         });
+    }
+
+    function monitorPlay(playOver, config) {
+        var document = wid.document;
+        function unshowOcclusion() {
+            var playBtn = document.querySelector('.vjs-big-play-button');
+            console.log(playBtn);
+            if (playBtn != null) {
+                playBtn.style.display = 'none';
+            }
+            var tmp = document.querySelector('.vjs-poster');
+            if (tmp != null) {
+                tmp.style.display = 'none';
+            }
+        }
+        var timer = setInterval(function () {
+            var player = document.querySelector('#video_html5_api');
+            if (player == undefined || player == null) {
+                return;
+            }
+            clearInterval(timer);
+            /**
+             * 对cdn进行处理
+             */
+            if (localStorage['cdn'] != undefined) {
+                var url = player.src;
+                url = url.substr(url.indexOf('/video/'));
+                console.log(url);
+                player.src = localStorage['cdn'] + url;
+                console.log(player.src);
+            }
+            //判断是否播放，顺便让那个按钮和界面不可见
+            unshowOcclusion();
+            play();
+            player.onpause = function () {
+                console.log('pause');
+                if (player.currentTime <= player.duration - 1) {
+                    play();
+                }
+            }
+            player.onloadstart = function () {
+                var cdn = player.currentSrc;
+                cdn = cdn.substr(0, cdn.indexOf('/video/', 10));
+                localStorage['cdn'] = cdn;
+                console.log('cdn change ' + cdn);
+            }
+            player.onended = function () {
+                console.log('end');
+                if (playOver != undefined) {
+                    playOver();
+                }
+            }
+            function play() {
+                var time = setInterval(function () {
+                    if (player.paused) {
+                        player.play();
+                        console.log(config);
+                        player.muted = config.video_mute;
+                        player.playbackRate = config.video_multiple;
+                    } else {
+                        clearInterval(time);
+                    }
+                }, 1000);
+            }
+        }, 200);
     }
 }
