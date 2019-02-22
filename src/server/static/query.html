@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+    <title>cxmooc-tools</title>
+</head>
+<style>
+    body {
+        margin: 0;
+        background-image: url(./img/bg.png);
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+    }
+
+    .top {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 60%;
+        text-align: center;
+        height: 60%;
+    }
+
+    .search {
+        height: 40px;
+    }
+
+    .topic:hover,
+    .topic:focus {
+        box-shadow: 0px 0px 0px 1px #06c4ff;
+    }
+
+    .topic {
+        border: 1px solid #06c4ff;
+        border-radius: 20px;
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        background: #ffffff;
+        outline: none;
+        padding: 0 12px;
+        box-sizing: border-box;
+        display: inline-block;
+        outline: none;
+        font: 17px arial, sans-serif;
+    }
+
+    .icon {
+        fill: #eeeeee;
+        display: inline-block;
+        width: 30px;
+        height: 30px;
+        position: absolute;
+        top: 6px;
+        right: 18px;
+        cursor: pointer;
+    }
+
+    @media (max-width: 600px) {
+        .top {
+            width: 90%;
+            height: 60%;
+            top: 40%;
+            transform: translate(-50%, -40%);
+        }
+
+    }
+
+    ::-webkit-scrollbar {
+        width: 6px;
+        height: 6px;
+    }
+
+    ::-webkit-scrollbar-track {
+        border-radius: 3px;
+        background: rgba(0, 0, 0, 0.06);
+        -webkit-box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.08);
+    }
+
+    ::-webkit-scrollbar-thumb {
+        border-radius: 3px;
+        background: rgba(0, 0, 0, 0.12);
+        -webkit-box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.2);
+    }
+
+    .answer {
+        margin-top: 20px;
+        width: 100%;
+        min-height: 100px;
+        background: #ffffff;
+        border-radius: 6px;
+    }
+
+    .success {
+        color: #ff0000;
+        display: inline-block;
+        min-width: 33%;
+    }
+
+    .topic-content {
+        font-size: 18px;
+    }
+
+    .answer {
+        box-sizing: border-box;
+        padding: 6px 4px;
+        max-height: 400px;
+        overflow: auto;
+        overflow-x: hidden;
+        display: none;
+    }
+
+    .answer .item {
+        text-align: left;
+    }
+
+    .answer * {
+        margin: 0;
+    }
+
+    .answer .item:not(:first-child) {
+        margin-top: 10px;
+    }
+</style>
+
+<body>
+    <div class="top">
+        <div class="search">
+            <input class="topic" type="text">
+            <svg t="1550848494038" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg"
+                p-id="1112" xmlns:xlink="http://www.w3.org/1999/xlink" width="200" height="200">
+                <defs>
+                    <style type="text/css"></style>
+                </defs>
+                <path
+                    d="M952 896l-204.992-204.992q86.016-106.016 86.016-243.008 0-159.008-112.512-271.488T448.512 64t-272 112.512T64 448.512t112.512 272T448 833.024q136.992 0 242.016-84.992l204.992 204q12 12 28.512 12t28-11.488 11.488-28-11.008-28.512z m-381.984-160Q512 760.992 448 760.992q-63.008 0-120.992-24.992-56-23.008-100-66.016Q184 625.984 160 569.984q-24-58.016-24-122.016 0-63.008 24-120.992 24-56 67.008-99.008 44-44 100-68 58.016-24 120.992-24 64 0 122.016 24 56 24 99.488 67.488T736 326.944q24.992 58.016 24.992 122.016 0 63.008-24.992 120.992-23.008 56-66.016 100-44 43.008-100 66.016z"
+                    p-id="1113"></path>
+            </svg>
+        </div>
+        <a target="_blank" href="//shang.qq.com/wpa/qunwpa?idkey=ab37aa792572befaacbeb5742ff590337403d2660ca1a0d3e44bd98715d44aab"><img style="margin-top: 10px;" border="0" src="//pub.idqqimg.com/wpa/images/group.png" alt="超星刷课不挂感情不翻" title="超星刷课不挂感情不翻"></a>
+        <div class="answer">
+        </div>
+    </div>
+    <script>
+        $('.topic').keydown(function (event) {
+            if (event.keyCode == 13) {
+                queryAnswer();
+            }
+        });
+        $('.icon').click(function () {
+            queryAnswer();
+        });
+
+        function create() {
+
+        }
+        function queryAnswer() {
+            $.ajax({
+                url: 'v2/answer',
+                method: 'post',
+                data: 'topic[0]=' + $('.topic').val(),
+                success: function (json) {
+                    result = json[0].result;
+                    $('.answer').empty();
+                    for (item in result) {
+                        var html = '<div class="item">' +
+                            '<p class="topic-content">' + result[item].topic + '</p>';
+                        correct = result[item].correct;
+                        for (index in correct) {
+                            html += '<p class="success">';
+                            switch (result[item].type) {
+                                case 1:
+                                case 2: {
+                                    html += correct[index].option + ': ' + correct[index].content;
+                                    break;
+                                }
+                                case 3: {
+                                    if (correct[index].option == true) {
+                                        html += '√ ';
+                                    } else {
+                                        html += '× ';
+                                    }
+                                    break;
+                                }
+                                case 4: {
+                                    html += '第' + correct[index].option + '空: ' + correct[index].content;
+                                    break;
+                                }
+                            }
+                            html += '</p>';
+                        }
+                        html += '</div>';
+                        $('.answer').append(html)
+                    }
+                    if ($('.answer').css('display') == 'none') {
+                        $('.answer').slideToggle();
+                    }
+                }
+            });
+        }
+    </script>
+    
+</body>
+
+</html>
