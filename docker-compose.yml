@@ -1,0 +1,8 @@
+version: '3'
+
+services:
+    mongdb:
+      image: mongo
+      container_name: cx_db
+      ports:
+          - 27017:27017
