@@ -1,4 +1,4 @@
-[![Build Status](https://www.travis-ci.org/CodFrm/cxmooc-tools.svg?branch=re_dev)](https://www.travis-ci.org/CodFrm/cxmooc-tools)
+[![Build Status](https://www.travis-ci.org/CodFrm/cxmooc-tools.svg?branch=master)](https://www.travis-ci.org/CodFrm/cxmooc-tools)
 [![npm](https://img.shields.io/npm/v/cxmooc-tools.svg)](https://www.npmjs.com/package/cxmooc-tools)
 [![npm](https://img.shields.io/npm/dt/cxmooc-tools.svg)](https://www.npmjs.com/package/cxmooc-tools)
 
