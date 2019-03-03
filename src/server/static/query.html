@@ -9,68 +9,147 @@
     <title>cxmooc-tools</title>
 </head>
 <style>
-    body {
+    html,body {
+        width: 100%;
+        height: 100%;
         margin: 0;
-        background-image: url(./img/bg.png);
-        background-size: cover;
-        background-repeat: no-repeat;
-        background-attachment: fixed;
-    }
 
+    }
+    /*总盒子*/
+    .all_box{
+        background-size:cover;
+        max-width: 1920px;
+        margin: 0 auto;
+        padding: 0;
+        width: 100%;
+        height: 100%;
+        background:url(./img/bg.jpg);
+        background-repeat:no-repeat ;
+        background-size:100% 100%;
+    }
     .top {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
         width: 60%;
+        margin: 0 auto;
+        height: 100%;
+        text-align: left;
+    }
+    /*搜索盒子*/
+    .search {
         text-align: center;
-        height: 60%;
+        height: auto;
+        padding-top: 200px;
+        background-color: transparent;
+        position: relative;
+    }
+    .search input{
+        height: 40px;
+    }
+    /*头部文字*/
+    .search h2{
+        margin-top: 0px;
+        margin-bottom: 0px;
+        font-family: 'Open Sans Condensed', sans-serif;
+        font-weight: 500;
+        line-height: 1.1;
+        padding-bottom: 40px;
     }
 
-    .search {
-        height: 40px;
+    .search h2 span{
+        font-weight: 900;
+        color: rgba(255, 87, 34, 0.54);
     }
 
     .topic:hover,
     .topic:focus {
-        box-shadow: 0px 0px 0px 1px #06c4ff;
+        box-shadow: 0px 0px 0px 0.5px #06c4ff;
+        background-color: #ffffff;
+        border: 0px;
     }
-
     .topic {
-        border: 1px solid #06c4ff;
+        transition: all 0.5s;
+        border: 1px solid #222;
         border-radius: 20px;
         width: 100%;
         height: 100%;
         margin: 0;
         background: #ffffff;
         outline: none;
-        padding: 0 12px;
+        padding: 0 40px;
         box-sizing: border-box;
         display: inline-block;
         outline: none;
-        font: 17px arial, sans-serif;
+        font: 14px arial, sans-serif;
+        background: none;
     }
-
+    /*包含搜索框和图标盒子*/
+    .input_box{
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        padding: 0;
+        position: relative;
+    }
     .icon {
-        fill: #eeeeee;
         display: inline-block;
-        width: 30px;
-        height: 30px;
+        width: 18px;
+        height: 18px;
         position: absolute;
-        top: 6px;
-        right: 18px;
+        left: 2%;
+        top: 27%;
         cursor: pointer;
     }
 
     @media (max-width: 600px) {
-        .top {
-            width: 90%;
-            height: 60%;
-            top: 40%;
-            transform: translate(-50%, -40%);
+       /* 下面是分变率改字体*/
+        .search h2 span{
+            font-size: 15px;
+            font-weight: 900;
+            color: rgba(255, 87, 34, 0.54);
         }
-
+        .search h2{
+            font-size: 15px;
+        }
+        .all_box a{
+            font-size: 15px;
+        }
+        .item p{
+            font-size: 15px;
+        }
+        /* 下面是分变率改背景图片*/
+        .all_box{
+            background-size:cover;
+            background:url(./img/bg.jpg);
+            background-repeat:no-repeat ;
+            background-size:100% 100%;
+        }
     }
+
+    /*加入我们文字*/
+    .join_font{
+        text-decoration: none;
+        color: #213502;
+        margin-top: 12px;
+        display:inline-block;
+        vertical-align:middle
+    }
+    .join_font:hover{
+        color: rgba(255, 87, 34, 0.54);
+        text-decoration: #a5d7ff;
+    }
+    .join_font:hover img{
+        filter: none;
+        opacity: 1;
+    }
+
+    /*加入我们图片*/
+    .join_font img{
+        filter: grayscale(100%);
+        opacity: 0.66;
+        padding-left: 10px;
+        margin-top: 1px;
+        vertical-align:middle
+    }
+
 
     ::-webkit-scrollbar {
         width: 6px;
@@ -90,7 +169,7 @@
     }
 
     .answer {
-        margin-top: 20px;
+        margin-top: 10px;
         width: 100%;
         min-height: 100px;
         background: #ffffff;
@@ -110,7 +189,7 @@
     .answer {
         box-sizing: border-box;
         padding: 6px 4px;
-        max-height: 400px;
+        max-height: 300px;
         overflow: auto;
         overflow-x: hidden;
         display: none;
@@ -130,9 +209,12 @@
 </style>
 
 <body>
+    <div class="all_box">
     <div class="top">
         <div class="search">
-            <input class="topic" type="text">
+            <h2>Welcome To <span>超星慕课查找器</span></h2>
+            <div class="input_box">
+            <input class="topic" type="text" placeholder="请输入您要搜索的内容">
             <svg t="1550848494038" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg"
                 p-id="1112" xmlns:xlink="http://www.w3.org/1999/xlink" width="200" height="200">
                 <defs>
@@ -142,10 +224,12 @@
                     d="M952 896l-204.992-204.992q86.016-106.016 86.016-243.008 0-159.008-112.512-271.488T448.512 64t-272 112.512T64 448.512t112.512 272T448 833.024q136.992 0 242.016-84.992l204.992 204q12 12 28.512 12t28-11.488 11.488-28-11.008-28.512z m-381.984-160Q512 760.992 448 760.992q-63.008 0-120.992-24.992-56-23.008-100-66.016Q184 625.984 160 569.984q-24-58.016-24-122.016 0-63.008 24-120.992 24-56 67.008-99.008 44-44 100-68 58.016-24 120.992-24 64 0 122.016 24 56 24 99.488 67.488T736 326.944q24.992 58.016 24.992 122.016 0 63.008-24.992 120.992-23.008 56-66.016 100-44 43.008-100 66.016z"
                     p-id="1113"></path>
             </svg>
+            </div>
         </div>
-        <a target="_blank" href="//shang.qq.com/wpa/qunwpa?idkey=ab37aa792572befaacbeb5742ff590337403d2660ca1a0d3e44bd98715d44aab"><img style="margin-top: 10px;" border="0" src="//pub.idqqimg.com/wpa/images/group.png" alt="超星刷课不挂感情不翻" title="超星刷课不挂感情不翻"></a>
+        <a class="join_font" target="_blank" href="//shang.qq.com/wpa/qunwpa?idkey=ab37aa792572befaacbeb5742ff590337403d2660ca1a0d3e44bd98715d44aab">加入我们<img border="0" src="//pub.idqqimg.com/wpa/images/group.png" alt="超星刷课不挂感情不翻" title="超星刷课不挂感情不翻"></a>
         <div class="answer">
         </div>
+    </div>
     </div>
     <script>
         $('.topic').keydown(function (event) {
@@ -205,7 +289,7 @@
             });
         }
     </script>
-    
+
 </body>
 
 </html>
