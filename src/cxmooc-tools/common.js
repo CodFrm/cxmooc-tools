@@ -1,5 +1,4 @@
 const topic = require('./topic');
-const video = require('./video');
 const chaoxing = require('./chaoxing/chaoxing');
 
 /**
@@ -106,7 +105,7 @@ export function get(url, success) {
  * @param {*} data 
  * @param {*} json 
  */
-export function post(url, data, json = true) {
+export function post(url, data, json = true, success) {
     try {
         var xmlhttp = createRequest();
         xmlhttp.open("POST", url, true);
@@ -119,7 +118,56 @@ export function post(url, data, json = true) {
     } catch (e) {
         return false;
     }
+    xmlhttp.onreadystatechange = function () {
+        if (this.readyState == 4) {
+            if (this.status == 200) {
+                success(this.responseText);
+            }
+        }
+    }
     return xmlhttp;
+}
+
+/**
+ * 创建一行
+ * @param {string} text 
+ */
+export function createLine(text, label) {
+    let p = $('<p></p>');
+    p.css('color', 'red');
+    p.css('font-size', '14px');
+    p.attr('class', 'prompt-line-' + label);
+    p.text(text);
+    return p;
+}
+
+/**
+ * 去除html标签和处理中文
+ * @param {string} html 
+ */
+export function removeHTML(html) {
+    //先处理img标签
+    var imgReplace = /<img .*?src="(.*?)".*?>/g;
+    html = html.replace(imgReplace, '$1');
+    var revHtml = /<.*?>/g;
+    html = html.replace(revHtml, '');
+    html = html.replace(/(^\s+)|(\s+$)/g, '');
+    html = dealSymbol(html);
+    return html.replace(/&nbsp;/g, ' ');
+}
+
+/**
+ * 处理符号
+ * @param {*} topic 
+ */
+function dealSymbol(topic) {
+    topic = topic.replace('，', ',');
+    topic = topic.replace('（', '(');
+    topic = topic.replace('）', ')');
+    topic = topic.replace('？', '?');
+    topic = topic.replace('：', ':');
+    topic = topic.replace(/[“”]/g, '"');
+    return topic;
 }
 
 /**
@@ -267,35 +315,6 @@ export function dealRegx(str, topic) {
     str = str.replace('{topic}', '[\\s\\S]{0,6}?' + topic + '[\\s\\S]*?');
     str = str.replace('{answer}', '(\\S+)');
     return str;
-}
-
-/** 
- * 去除html标签
- */
-export function removeHTML(html) {
-    //TODO:重复的函数
-    //先处理img标签
-    var imgReplace = /<img .*?src="(.*?)".*?>/g;
-    html = html.replace(imgReplace, '$1');
-    var revHtml = /<.*?>/g;
-    html = html.replace(revHtml, '');
-    html = html.replace(/(^\s+)|(\s+$)/g, '');
-    html = dealSymbol(html);
-    return html.replace(/&nbsp;/g, ' ');
-}
-
-/**
- * 处理符号
- * @param {*} topic 
- */
-function dealSymbol(topic) {
-    topic = topic.replace('，', ',');
-    topic = topic.replace('（', '(');
-    topic = topic.replace('）', ')');
-    topic = topic.replace('？', '?');
-    topic = topic.replace('：', ':');
-    topic = topic.replace(/[“”]/g, '"');
-    return topic;
 }
 
 /**
