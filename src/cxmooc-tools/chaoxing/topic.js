@@ -31,28 +31,116 @@ module.exports = function () {
     this.createButton = function () {
         let btn = common.createBtn('搜索题目', '点击自动从网络上的题库中查找答案');
         let prev = $(self.iframe).prev();
+        if (prev.length <= 0) {
+            prev = $(self.iframe).parent();
+            $(prev).prepend(btn);
+        } else {
+            $(prev).append(btn);
+        }
         common.dealTaskLabel(prev);
-        $(prev).append(btn);
         btn.onclick = self.searchAnswer;
     }
 
     this.init = function (iframe) {
         self.iframe = iframe;
         self.document = $(iframe.contentDocument).find('#frame_content')[0].contentDocument;
-        if ($(self.iframe).find('.ans-attach-ct.ans-job-finished').length > 0) {
+        if ($(self.iframe).parents('.ans-attach-ct.ans-job-finished').length > 0) {
             self.collect();
         } else {
             self.createButton();
         }
     }
-
+    /**
+     * 收集题目
+     */
     this.collect = function () {
-        
+        let TiMu = $(self.document).find('.TiMu');
+        let answer = [];
+        for (let i = 0; i < TiMu.length; i++) {
+            let tmp = getAnswerInfo(TiMu[i]);
+            if (tmp == {}) {
+                continue;
+            }
+            answer.push(tmp);
+        }
+        let box = common.pop_prompt("√  答案自动记录成功");
+        $(document.body).append(box);
+        setTimeout(function () { box.style.opacity = "1"; }, 500);
+        common.post(moocServer.url + 'answer', JSON.stringify(answer));
+        self.complete();
     }
-
     return this;
 }
 
+/**
+ * 获取题目信息
+ * @param {*} TiMu 
+ */
+function getAnswerInfo(TiMu) {
+    let answer = $(TiMu).find('.Zy_TItle.clearfix');
+    let correct = $(TiMu).find('.Py_answer.clearfix');
+    if (correct.length <= 0) {
+        return {};
+    }
+    if ($(correct).html().indexOf('正确答案') < 0) {
+        if ($(correct).find('.fr.dui').length <= 0 || $(correct).find('.fr.bandui').length) {
+            return {};
+        }
+    }
+    //验证正确
+    let title = $(answer).find('.clearfix');
+    let type = switchTopicType(common.substrEx(title.text(), '【', '】'));
+    let topic = common.removeHTML(title.html().substring(title.html().indexOf('】') + 1));
+    let options = $(TiMu).find('.Zy_ulTop .clearfix');
+    let ret = {
+        answers: [],
+        correct: []
+    };
+    let tmpAnswer = $(correct).find('span')[0];
+    tmpAnswer = $(tmpAnswer).text();
+    switch (type) {
+        case 1: case 2: {
+            for (let i = 0; i < options.length; i++) {
+                let option = $(options[i]).find('i.fl').text().substring(0, 1);
+                let tmp = { option: option, content: common.removeHTML($(options[i]).find('a.fl').text()) };
+                ret.answers.push(tmp);
+                if (tmpAnswer.indexOf(option) > 0) {
+                    ret.correct.push(tmp);
+                }
+            }
+            break;
+        } case 3: {
+            if (tmpAnswer.indexOf('×') >= 0) {
+                ret.correct.push({ option: false, content: false });
+            } else {
+                ret.correct.push({ option: true, content: true });
+            }
+            break;
+        } case 4: {
+            let isMy = false;
+            options = $(TiMu).find('.Py_tk span.font14');
+            if (options.length <= 0) {
+                isMy = true;
+                options = $(TiMu).find('.Py_answer.clearfix');
+            }
+            for (let i = 0; i < options.length; i++) {
+                if (isMy) {
+                    if ($(options[i]).find('.fr.dui').length <= 0) {
+                        continue;
+                    }
+                }
+                let option = $(options[i]).find('i.fl').text();
+                option = common.substrEx(option, "第", "空");
+                let content = $(options[i]).find('.clearfix').text();
+                ret.correct.push({ option: option, content: common.removeHTML(content) });
+            }
+            break;
+        }
+    }
+    ret.topic = topic;
+    ret.type = type;
+    return ret;
+}
 
 /**
  * 处理题目信息
