@@ -1,24 +1,15 @@
-/**
- * 注入js资源
- * @param doc 
- * @param file 
- */
-export function injected(doc, url) {
-    let temp = doc.createElement('script');
-    temp.setAttribute('type', 'text/javascript');
-    temp.src = url;
-    temp.className = "injected-js";
-    doc.head.appendChild(temp);
-    return temp;
-}
+const chaoxing = require('./chaoxing');
 
 /**
- * 移除注入js
+ * 工厂
+ * @param {string} object 
+ * @return plugin
  */
-export function removeinjected(doc) {
-    let resource = doc.getElementsByClassName("injected-js");
-    for (let i = 0; i < resource.length; i++) {
-        resource[i].remove();
+export function factory(object) {
+    switch (object) {
+        case 'chaoxing': {
+            return new chaoxing();
+        }
     }
 }
 
@@ -154,36 +145,17 @@ function dealSymbol(topic) {
     return topic;
 }
 
-/**
- * 取中间文本
- * @param {*} str 
- * @param {*} left 
- * @param {*} right 
- */
-export function substrEx(str, left, right) {
-    var leftPos = str.indexOf(left) + left.length;
-    var rightPos = str.indexOf(right, leftPos);
-    return str.substring(leftPos, rightPos);
+export function isFinished(el) {
+    if ($(el).parents('.ans-attach-ct.ans-job-finished').length > 0) {
+        return true;
+    }
+    return false;
 }
 
-export function pop_prompt(text, sec = 4) {
-    var box = document.createElement('div');
-    box.style.position = "absolute";
-    box.style.background = "#aeffab";
-    box.style.fontSize = "18px";
-    box.style.padding = "4px 20px";
-    box.style.borderRadius = "20px";
-    box.style.top = "50%";
-    box.style.left = "50%";
-    box.style.transform = "translate(-50%,-50%)";
-    box.style.transition = "1s";
-    box.style.opacity = "0";
-    box.innerText = text;
-    setTimeout(function () {
-        box.style.opacity = "0";
-        setTimeout(function () {
-            box.remove();
-        }, 1000)
-    }, sec * 1000);
-    return box;
+export function isTask(el) {
+    if ($(el).parents('.ans-attach-ct.ans-job-finished').find('.ans-job-icon').length > 0) {
+        return true;
+    }
+    return false;
 }
+

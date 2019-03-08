@@ -8,6 +8,8 @@
 // const md5 = require("md5");
 // const moocServer = require('../config');
 const common = require('./common');
+const chaoxing = require('./chaoxing/chaoxing');
+
 common.removeinjected(document);
 global.config = JSON.parse(localStorage['config']);
 if (window.location.href.indexOf('mycourse/studentstudy?') > 0) {
@@ -16,12 +18,25 @@ if (window.location.href.indexOf('mycourse/studentstudy?') > 0) {
         var ev = ev || event;
         var _this = ev.srcElement || ev.target;
         if (_this.id == 'iframe') {
-            common.factory('chaoxing').studentstudy();
+            factory('chaoxing').studentstudy();
         }
     }, true);
     var frame = document.getElementById('iframe');
     if (frame != null) {
-        common.factory('chaoxing').studentstudy();
+        factory('chaoxing').studentstudy();
+    }
+}
+
+/**
+ * 工厂
+ * @param {string} object 
+ * @return plugin
+ */
+function factory(object) {
+    switch (object) {
+        case 'chaoxing': {
+            return new chaoxing();
+        }
     }
 }
 

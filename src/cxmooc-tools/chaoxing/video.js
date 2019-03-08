@@ -1,4 +1,5 @@
 const common = require('../common');
+const until = require('./until');
 const md5 = require("md5");
 
 module.exports = function () {
@@ -9,6 +10,7 @@ module.exports = function () {
     this.video = undefined;
     this.videoMsg = undefined;
     this.complete = undefined;
+    this.loadover = undefined;
     this.mArg = undefined;
 
     /**
@@ -66,26 +68,44 @@ module.exports = function () {
         initCdn(self.video);
 
         $(self.video).on('loadstart', function () {
-            if (global.config['auto']) {
-                startPlay();
-            }
             let cdn = self.video.currentSrc;
             cdn = cdn.substr(0, cdn.indexOf('/video/', 10));
             localStorage['cdn'] = cdn;
+            //静音和倍速选项
+            self.video.muted = config.video_mute;
+            self.video.playbackRate = config.video_multiple;
+            self.loadover(self);
         });
+
+        $(self.video).on('pause', function () {
+            if (self.video.currentTime <= self.video.duration - 1) {
+                self.video.play();
+            }
+        });
+
         $(self.video).on('ended', function () {
             if (undefined != self.complete) {
                 self.complete();
             }
         });
+
+    }
+
+    this.start = function () {
+        self.startPlay();
     }
 
     /**
      * 开始播放
      */
     this.startPlay = function () {
-        unshowOcclusion();
-        self.video.play();
+        //不是任务点就完成返回
+        if (until.isTask(self.iframe)) {
+            unshowOcclusion();
+            self.video.play();
+        } else {
+            self.complete();
+        }
     }
 
     /**
@@ -137,6 +157,11 @@ module.exports = function () {
         self.document = iframe.contentDocument;
         self.createButton();
         self.initPlayer();
+        if (until.isFinished(self.iframe)) {
+            self.complete && self.complete();
+        } else {
+            self.loadover && self.loadover(self);
+        }
     }
 
     return this;

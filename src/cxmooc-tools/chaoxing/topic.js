@@ -1,10 +1,13 @@
 const common = require('../common');
+const until = require('./until');
 const moocServer = require('../../config');
+
 module.exports = function () {
     let self = this;
     this.iframe = undefined;
     this.document = undefined;
     this.complete = undefined;
+    this.loadover = undefined;
 
     this.searchAnswer = function () {
         let TiMu = $(self.document).find('.Zy_TItle.clearfix');
@@ -17,8 +20,7 @@ module.exports = function () {
             data += 'topic[' + i + ']=' + topic[i].topic + '&type[' + i + ']=' + topic[i].type + '&';
         }
         common.post(moocServer.url + 'v2/answer', data, false, function (data) {
-            let json = JSON.parse('[{"topic":"对错","index":9,"result":[{"correct":[{"option":"D","content":"暗能量-成团分布"}],"type":1,"topic":"关于目前所知的暗物质和暗能量，以下性质的配对错误的是（）。","hash":"6d884d03524319c9ede7e2d673b77093","time":1528103256000},{"correct":[{"option":true,"content":true}],"type":3,"topic":"在现代和后现代时期,绝对正确或者绝对错误的知识是不存在的。()","hash":"8c7215fb54b29c632fd3691dc56db9a4","time":1543204403000},{"correct":[{"option":true,"content":true}],"type":3,"topic":"创意思考不大注重每一步的对错，批判思考坚持要求思维过程中的每个环节无误。( )","hash":"71c7d35a595d46309fc44e46c028ac37","time":1543292724000},{"correct":[{"option":"D","content":"一号"}],"type":1,"topic":"()的世界里只有对错,没有差不多的说法?","hash":"fab696e655477afe93d5770fe035ca22","time":1551287131000}]}]');
-            // let json=JSON.parse(data);
+            let json = JSON.parse(data);
             json.forEach(element => {
                 fillTopic(TiMu, element, topic);
             });
@@ -44,12 +46,18 @@ module.exports = function () {
     this.init = function (iframe) {
         self.iframe = iframe;
         self.document = $(iframe.contentDocument).find('#frame_content')[0].contentDocument;
-        if ($(self.iframe).parents('.ans-attach-ct.ans-job-finished').length > 0) {
+        if (until.isFinished(self.iframe)) {
             self.collect();
         } else {
             self.createButton();
         }
+        self.loadover && self.loadover(self);
     }
+
+    this.start = function () {
+        self.searchAnswer();
+    }
+
     /**
      * 收集题目
      */
