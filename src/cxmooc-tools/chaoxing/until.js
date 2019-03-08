@@ -1,19 +1,6 @@
 const chaoxing = require('./chaoxing');
 
 /**
- * 工厂
- * @param {string} object 
- * @return plugin
- */
-export function factory(object) {
-    switch (object) {
-        case 'chaoxing': {
-            return new chaoxing();
-        }
-    }
-}
-
-/**
  * 创建一个按钮
  * @param {*} title 
  */
@@ -53,57 +40,6 @@ export function dealTaskLabel(label) {
 }
 
 /**
- * get请求
- * @param {*} url 
- */
-export function get(url, success) {
-    try {
-        var xmlhttp = createRequest();
-        xmlhttp.open("GET", url, true);
-        xmlhttp.send();
-    } catch (e) {
-        return false;
-    }
-    xmlhttp.onreadystatechange = function () {
-        if (this.readyState == 4) {
-            if (this.status == 200) {
-                success(this.responseText);
-            }
-        }
-    }
-    return xmlhttp;
-}
-
-/**
- * post请求
- * @param {*} url 
- * @param {*} data 
- * @param {*} json 
- */
-export function post(url, data, json = true, success) {
-    try {
-        var xmlhttp = createRequest();
-        xmlhttp.open("POST", url, true);
-        if (json) {
-            xmlhttp.setRequestHeader("Content-Type", "application/json");
-        } else {
-            xmlhttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-        }
-        xmlhttp.send(data);
-    } catch (e) {
-        return false;
-    }
-    xmlhttp.onreadystatechange = function () {
-        if (this.readyState == 4) {
-            if (this.status == 200) {
-                success(this.responseText);
-            }
-        }
-    }
-    return xmlhttp;
-}
-
-/**
  * 创建一行
  * @param {string} text 
  */
@@ -116,35 +52,6 @@ export function createLine(text, label) {
     return p;
 }
 
-/**
- * 去除html标签和处理中文
- * @param {string} html 
- */
-export function removeHTML(html) {
-    //先处理img标签
-    var imgReplace = /<img .*?src="(.*?)".*?>/g;
-    html = html.replace(imgReplace, '$1');
-    var revHtml = /<.*?>/g;
-    html = html.replace(revHtml, '');
-    html = html.replace(/(^\s+)|(\s+$)/g, '');
-    html = dealSymbol(html);
-    return html.replace(/&nbsp;/g, ' ');
-}
-
-/**
- * 处理符号
- * @param {*} topic 
- */
-function dealSymbol(topic) {
-    topic = topic.replace('，', ',');
-    topic = topic.replace('（', '(');
-    topic = topic.replace('）', ')');
-    topic = topic.replace('？', '?');
-    topic = topic.replace('：', ':');
-    topic = topic.replace(/[“”]/g, '"');
-    return topic;
-}
-
 export function isFinished(el) {
     if ($(el).parents('.ans-attach-ct.ans-job-finished').length > 0) {
         return true;
@@ -153,9 +60,31 @@ export function isFinished(el) {
 }
 
 export function isTask(el) {
-    if ($(el).parents('.ans-attach-ct.ans-job-finished').find('.ans-job-icon').length > 0) {
+    if ($(el).parents('.ans-attach-ct').find('.ans-job-icon').length > 0) {
         return true;
     }
     return false;
 }
 
+
+export function pop_prompt(text, sec = 4) {
+    var box = document.createElement('div');
+    box.style.position = "absolute";
+    box.style.background = "#aeffab";
+    box.style.fontSize = "18px";
+    box.style.padding = "4px 20px";
+    box.style.borderRadius = "20px";
+    box.style.top = "50%";
+    box.style.left = "50%";
+    box.style.transform = "translate(-50%,-50%)";
+    box.style.transition = "1s";
+    box.style.opacity = "0";
+    box.innerText = text;
+    setTimeout(function () {
+        box.style.opacity = "0";
+        setTimeout(function () {
+            box.remove();
+        }, 1000)
+    }, sec * 1000);
+    return box;
+}

@@ -24,14 +24,22 @@ module.exports = function () {
             json.forEach(element => {
                 fillTopic(TiMu, element, topic);
             });
+            config.auto && self.pushTopic();
         });
+        self.pushTopic();
     }
+
+    
+    this.pushTopic = function () {
+
+    }
+
 
     /**
      * 创建按钮
      */
     this.createButton = function () {
-        let btn = common.createBtn('搜索题目', '点击自动从网络上的题库中查找答案');
+        let btn = until.createBtn('搜索题目', '点击自动从网络上的题库中查找答案');
         let prev = $(self.iframe).prev();
         if (prev.length <= 0) {
             prev = $(self.iframe).parent();
@@ -39,7 +47,7 @@ module.exports = function () {
         } else {
             $(prev).append(btn);
         }
-        common.dealTaskLabel(prev);
+        until.dealTaskLabel(prev);
         btn.onclick = self.searchAnswer;
     }
 
@@ -71,7 +79,7 @@ module.exports = function () {
             }
             answer.push(tmp);
         }
-        let box = common.pop_prompt("√  答案自动记录成功");
+        let box = until.pop_prompt("√  答案自动记录成功");
         $(document.body).append(box);
         setTimeout(function () { box.style.opacity = "1"; }, 500);
         common.post(moocServer.url + 'answer', JSON.stringify(answer));
@@ -206,7 +214,7 @@ function fillTopic(TiMu, answer, sourceTopic) {
     $(optionEl).next().find('p').remove();
     let result = selectAnswer(answer.result, sourceTopic[answer.index]);
     if (result.length <= 0) {
-        $(optionEl).next().append(common.createLine('没有答案', 'answer'));
+        $(optionEl).next().append(until.createLine('没有答案', 'answer'));
         return;
     }
     let options = {}
@@ -252,7 +260,7 @@ function fillTopic(TiMu, answer, sourceTopic) {
                 break;
             }
             default: {
-                $(optionEl).next().append(common.createLine('不支持的类型', 'answer'));
+                $(optionEl).next().append(until.createLine('不支持的类型', 'answer'));
                 break;
             }
         }

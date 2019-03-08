@@ -137,13 +137,13 @@ module.exports = function () {
      * 创建按钮
      */
     this.createButton = function () {
-        let btn = common.createBtn('开始挂机', '点击开始自动挂机播放视频');
-        let pass = common.createBtn('秒过视频', '秒过视频会被后台检测到');
-        let download = common.createBtn('下载视频', '我要下载视频好好学习');
+        let btn = until.createBtn('开始挂机', '点击开始自动挂机播放视频');
+        let pass = until.createBtn('秒过视频', '秒过视频会被后台检测到');
+        let download = until.createBtn('下载视频', '我要下载视频好好学习');
         pass.style.background = '#F57C00';
         download.style.background = '#999999';
         let prev = $(self.iframe).prev();
-        common.dealTaskLabel(prev);
+        until.dealTaskLabel(prev);
         $(prev).append(btn);
         $(prev).append(pass);
         $(prev).append(download);
