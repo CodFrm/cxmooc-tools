@@ -1,6 +1,7 @@
 /**
  * 超星刷课功能集合
  */
+const common = require('../common');
 const Video = require('./video');
 const Topic = require('./topic');
 
@@ -48,7 +49,7 @@ module.exports = function () {
         //无任务
         setTimeout(function () {
             config.auto && switchTask();
-        }, (config.interval || 0.1) * 60000);
+        }, (config.interval || 1) * 60000);
     }
 
     this.loadover = function (event) {
@@ -118,6 +119,26 @@ module.exports = function () {
             }
         }, (config.interval || 0.1) * 60000);
     }
+
+    this.read = function () {
+        let timer = undefined;
+        let slide = function () {
+            if (document.body.getScrollHeight() - document.body.getHeight() <= document.documentElement.scrollTop+40) {
+                let next = $('.ml40.nodeItem.r');
+                if (next.length <= 0) {
+                    alert('看完啦~');
+                } else {
+                    next[0].click();
+                }
+                clearTimeout(timer);
+                return;
+            }
+            document.body.scrollTop = document.documentElement.scrollTop = document.documentElement.scrollTop + common.randNumber(60, 80);
+            timer = setTimeout(slide, common.randNumber(15, 25) * 1000);
+        }
+        slide();
+    }
+
     return this;
 }
 

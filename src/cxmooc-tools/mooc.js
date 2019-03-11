@@ -25,6 +25,9 @@ if (window.location.href.indexOf('mycourse/studentstudy?') > 0) {
     if (frame != null) {
         factory('chaoxing').studentstudy();
     }
+}else if(window.location.href.indexOf('ztnodedetailcontroller/visitnodedetail') > 0){
+    //超星阅读页面
+    factory('chaoxing').read();
 }
 
 /**

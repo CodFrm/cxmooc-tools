@@ -21,17 +21,49 @@ module.exports = function () {
         }
         common.post(moocServer.url + 'v2/answer', data, false, function (data) {
             let json = JSON.parse(data);
-            json.forEach(element => {
-                fillTopic(TiMu, element, topic);
-            });
-            config.auto && self.pushTopic();
+            let answer_null = false;
+            for (let i = 0; i < json.length; i++) {
+                if (fillTopic(TiMu, element, topic) == false) {
+                    answer_null = true;
+                }
+            }
+            if (answer_null) {
+                alert('有题目没有找到答案,并且未设置随机答案,请手动填入');
+                return;
+            }
+            if (config.auto) {
+                self.pushTopic();
+            } else {
+                self.complete();
+            }
         });
-        self.pushTopic();
     }
 
 
     this.pushTopic = function () {
-
+        //提交操作
+        let submit = $(self.document).find('.Btn_blue_1');
+        submit[0].click();
+        //判断有没有未填的题目
+        setTimeout(function () {
+            let prompt = $(self.document).find('#tipContent').text();
+            if (prompt.indexOf('未做完') > 0) {
+                alert('提示:' + prompt);
+                return;
+            }
+            prompt = document.getElementById('validate');
+            if (prompt.style.display != 'none') {
+                if (!show) {
+                    show = true;
+                    alert('需要输入验证码');
+                }
+                return;
+            }
+            //确定提交
+            let submit = $(self.document).find('.bluebtn');
+            submit[0].click();
+            self.complete();
+        }, 3000);
     }
 
 
@@ -219,7 +251,7 @@ function fillTopic(TiMu, answer, sourceTopic) {
         }
         if (result.length <= 0 || result.correct.length <= 0) {
             $(optionEl).next().append(until.createLine('没有答案', 'answer'));
-            return;
+            return false;
         }
     }
     let options = {}
@@ -270,6 +302,7 @@ function fillTopic(TiMu, answer, sourceTopic) {
             }
         }
     }
+    return true;
 }
 
 /**

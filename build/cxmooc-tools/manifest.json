@@ -21,7 +21,8 @@
             "*://*/mycourse/studentstudy?*",
             "*://*/work/doHomeWorkNew?*",
             "*://*/work/selectWorkQuestionYiPiYue?*",
-            "*://*/exam/test/reVersionTestStartNew?*"
+            "*://*/exam/test/reVersionTestStartNew?*",
+            "*://*/ztnodedetailcontroller/visitnodedetail?*"
         ],
         "js": ["src/start.js"],
         "run_at": "document_start"
