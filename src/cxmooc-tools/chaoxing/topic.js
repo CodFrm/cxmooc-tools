@@ -29,7 +29,7 @@ module.exports = function () {
         self.pushTopic();
     }
 
-    
+
     this.pushTopic = function () {
 
     }
@@ -214,8 +214,13 @@ function fillTopic(TiMu, answer, sourceTopic) {
     $(optionEl).next().find('p').remove();
     let result = selectAnswer(answer.result, sourceTopic[answer.index]);
     if (result.length <= 0) {
-        $(optionEl).next().append(until.createLine('没有答案', 'answer'));
-        return;
+        if (config.rand_answer == true) {
+            result = genRandAnswer(sourceTopic[answer.index].type);
+        }
+        if (result.length <= 0 || result.correct.length <= 0) {
+            $(optionEl).next().append(until.createLine('没有答案', 'answer'));
+            return;
+        }
     }
     let options = {}
     switch (result.type) {
@@ -265,6 +270,28 @@ function fillTopic(TiMu, answer, sourceTopic) {
             }
         }
     }
+}
+
+/**
+ * 生成随机答案
+ */
+function genRandAnswer(type) {
+    let ret = { correct: [], type: type };
+    if (type == 1) {
+        ret.correct.push({ option: String.fromCharCode(65 + common.randNumber(0, 3)), content: '' });
+    } else if (type == 2) {
+        let list = ['A', 'B', 'C', 'D'];
+        let len = common.randNumber(2, 4);
+        for (let i = 0; i < len; i++) {
+            let pos = common.randNumber(0, list.length - 1);
+            ret.correct.push({ option: list[pos], content: '' });
+            list.splice(pos, 1);
+        }
+    } else if (type == 3) {
+        let answer = common.randNumber(0, 1) == 0 ? false : true;
+        ret.correct.push({ option: answer, content: answer });
+    }
+    return ret;
 }
 
 /**
