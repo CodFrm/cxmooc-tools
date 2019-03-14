@@ -4,3 +4,5 @@ coverage
 typings
 typings.json
 certificate
+*.pem
+*.crx

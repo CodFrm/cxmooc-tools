@@ -16,22 +16,23 @@ cache:
 
 before_install:
  - export TZ='Asia/Shanghai'
+ - openssl aes-256-cbc -K $encrypted_b7d8153e3775_key -iv $encrypted_b7d8153e3775_iv -in ./build/cxmooc-tools.pem.enc -out ./build/cxmooc-tools.pem -d
  - npm install
 
 script: 
  - npm run build
- - zip -r build/upload/cxmooc-tools.crx build/cxmooc-tools/
- - zip -r build/upload/cxmooc-tools.zip build/cxmooc-tools/
- - zip -r build/upload/cxmooc-tools.tar.gz build/cxmooc-tools/
+ - npm run pack
+ - zip -r build/cxmooc-tools.zip build/cxmooc-tools/
+ - tar -czvf build/cxmooc-tools.tar.gz build/cxmooc-tools/
 
 deploy:
   provider: releases
   api_key: $GITHUB_TOKEN
   file_glob: true
   file: 
-    - build/upload/*.crx
-    - build/upload/*.zip
-    - build/upload/*.tar.gz
+    - build/*.crx
+    - build/*.zip
+    - build/*.tar.gz
   skip_cleanup: true
   # draft: true
   on:

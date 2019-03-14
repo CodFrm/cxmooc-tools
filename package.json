@@ -7,7 +7,8 @@
     "test": "echo \"Hello,World\nDeveloper Blog:blog.icodef.com\" && exit 1",
     "build": "webpack --mode production --config webpack.prod.js",
     "dev": "webpack --mode development --config webpack.dev.js",
-    "server": "node src/server/listen.js"
+    "server": "node src/server/listen.js",
+    "pack": "node src/pack-crx.js"
   },
   "repository": {
     "type": "git",
@@ -20,6 +21,7 @@
   },
   "homepage": "https://github.com/CodFrm/cxmooc-tools#readme",
   "devDependencies": {
+    "crx": "^4.0.1",
     "html-webpack-plugin": "^3.2.0",
     "webpack": "^4.20.2",
     "webpack-cli": "^3.1.2",
