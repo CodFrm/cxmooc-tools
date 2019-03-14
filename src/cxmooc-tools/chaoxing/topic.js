@@ -23,7 +23,7 @@ module.exports = function () {
             let json = JSON.parse(data);
             let answer_null = false;
             for (let i = 0; i < json.length; i++) {
-                if (fillTopic(TiMu, element, topic) == false) {
+                if (fillTopic(TiMu, json[i], topic) == false) {
                     answer_null = true;
                 }
             }
@@ -35,6 +35,7 @@ module.exports = function () {
                 self.pushTopic();
             } else {
                 self.complete();
+                self.pushTopic();
             }
         });
     }
@@ -42,10 +43,7 @@ module.exports = function () {
 
     this.pushTopic = function () {
         //提交操作
-        let submit = $(self.document).find('.Btn_blue_1');
-        submit[0].click();
-        //判断有没有未填的题目
-        setTimeout(function () {
+        let confirm = function () {
             let prompt = $(self.document).find('#tipContent').text();
             if (prompt.indexOf('未做完') > 0) {
                 alert('提示:' + prompt);
@@ -62,8 +60,15 @@ module.exports = function () {
             //确定提交
             let submit = $(self.document).find('.bluebtn');
             submit[0].click();
-            self.complete();
-        }, 3000);
+            setTimeout(self.collect,5000);
+        }
+        let submit = function () {
+            let submit = $(self.document).find('.Btn_blue_1');
+            submit[0].click();
+            setTimeout(confirm, 2000);
+        }
+        setTimeout(submit, 1000);
+        //判断有没有未填的题目
     }
 
 
@@ -242,16 +247,23 @@ function switchTopicType(typeTtile) {
  * 填充题目答案
  */
 function fillTopic(TiMu, answer, sourceTopic) {
+    let rand = false;
     let optionEl = $(TiMu[answer.index]).next();
     $(optionEl).next().find('p').remove();
     let result = selectAnswer(answer.result, sourceTopic[answer.index]);
     if (result.length <= 0) {
         if (config.rand_answer == true) {
             result = genRandAnswer(sourceTopic[answer.index].type);
-        }
-        if (result.length <= 0 || result.correct.length <= 0) {
-            $(optionEl).next().append(until.createLine('没有答案', 'answer'));
+            rand = true;
+        } else {
+            until.createLine('没有答案', 'answer', $(optionEl).next());
             return false;
+        }
+        if (result.correct.length <= 0) {
+            until.createLine('不支持的随机答案类型', 'answer', $(optionEl).next());
+            return false;
+        } else {
+            until.createLine('这是随机生成的答案', 'answer', $(optionEl).next());
         }
     }
     let options = {}
@@ -268,12 +280,18 @@ function fillTopic(TiMu, answer, sourceTopic) {
         switch (result.type) {
             case 1: case 2: {
                 for (let n = 0; n < options.length; n++) {
-                    if (options[n].value == result.correct[i].option) {
+                    let content = $(options[n]).parent().next()[0];
+                    if (options[n].value == result.correct[i].option ||
+                        common.removeHTML($(content).text()) == result.correct[i].content
+                    ) {
                         if (!$(options[n]).attr('checked')) {
-                            $(options[n]).click();
+                            options[n].click();
                         }
+                        until.createLine(options[n].value + ':' + $(content).text(), 'answer', $(optionEl).next());
                         options.splice(n, 1);
                         break;
+                    } else if ($(options[n]).attr('checked')) {
+                        options[n].click();
                     }
                 }
                 break;
@@ -281,8 +299,10 @@ function fillTopic(TiMu, answer, sourceTopic) {
             case 3: {
                 if (result.correct[0].option) {
                     options[0].click();
+                    until.createLine('对√', 'answer', $(optionEl).next());
                 } else {
                     options[1].click();
+                    until.createLine('错×', 'answer', $(optionEl).next());
                 }
                 break;
             }
@@ -290,6 +310,7 @@ function fillTopic(TiMu, answer, sourceTopic) {
                 for (let n = 0; n < options.length; n++) {
                     if (common.substrEx(options[n].innerText, '第', '空') == result.correct[i].option) {
                         $(options[n]).find('.inp').val(result.correct[i].content);
+                        until.createLine(options[n].innerText + ':' + result.correct[i].content, 'answer', $(optionEl).next());
                         options.splice(n, 1);
                         break;
                     }
@@ -297,7 +318,7 @@ function fillTopic(TiMu, answer, sourceTopic) {
                 break;
             }
             default: {
-                $(optionEl).next().append(until.createLine('不支持的类型', 'answer'));
+                until.createLine('不支持的类型', 'answer', $(optionEl).next());
                 break;
             }
         }

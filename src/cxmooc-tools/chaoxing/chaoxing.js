@@ -37,9 +37,7 @@ module.exports = function () {
 
     this.complete = function () {
         //完成事件,进行完成操作
-        if (config.auto) {
-            lazySwitch();
-        }
+        lazySwitch();
     }
 
     /**
@@ -123,7 +121,7 @@ module.exports = function () {
     this.read = function () {
         let timer = undefined;
         let slide = function () {
-            if (document.body.getScrollHeight() - document.body.getHeight() <= document.documentElement.scrollTop+40) {
+            if (document.body.getScrollHeight() - document.body.getHeight() <= document.documentElement.scrollTop + 40) {
                 let next = $('.ml40.nodeItem.r');
                 if (next.length <= 0) {
                     alert('看完啦~');
