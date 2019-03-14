@@ -18,8 +18,9 @@
 * Node.js
 * webpack
 
-```shell
+```bash
 git clone https://github.com/CodFrm/cxmooc-tools.git
+cd cxmooc-tools
 npm install
 npm run build
 # 开发模式请使用
@@ -35,7 +36,7 @@ npm run dev
 * Node.js
 * Mongodb
 
-```shell
+```bash
 npm install
 npm run server
 ```

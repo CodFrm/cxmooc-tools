@@ -1,9 +1,34 @@
 language: node_js
-node_js:
- - 'node'
- - '8'
- - '7'
+sudo: required
+
+notifications:
+  email: 
+    on_failure: always
+
+dist: xenial
+
+node_js: stable
+
+cache:
+# yarn: true
+  directories:
+    - node_modules
+
 before_install:
+ - export TZ='Asia/Shanghai'
  - npm install
+
 script: 
  - npm run build
+
+deploy:
+  provider: releases
+  api_key: $GITHUB_TOKEN
+ # user: "GITHUB USERNAME"
+ # password: "GITHUB PASSWORD"
+  file: build/upload
+  skip_cleanup: true
+  # draft: true
+  on:
+    tags: true
+
