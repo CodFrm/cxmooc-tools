@@ -20,15 +20,19 @@ before_install:
 
 script: 
  - npm run build
+ - zip -r build/upload/cxmooc-tools.crx build/cxmooc-tools/
+ - zip -r build/upload/cxmooc-tools.zip build/cxmooc-tools/
+ - zip -r build/upload/cxmooc-tools.tar.gz build/cxmooc-tools/
 
 deploy:
   provider: releases
   api_key: $GITHUB_TOKEN
- # user: "GITHUB USERNAME"
- # password: "GITHUB PASSWORD"
-  file: build/upload
+  file_glob: true
+  file: 
+    - build/upload/*.crx
+    - build/upload/*.zip
+    - build/upload/*.tar.gz
   skip_cleanup: true
   # draft: true
   on:
     tags: true
-
