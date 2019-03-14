@@ -1,12 +1,13 @@
 language: node_js
 sudo: required
 
+notifications:
+  email: 
+    on_failure: always
+
 dist: xenial
 
-node_js:
- - 'node'
- - '8'
- - '7'
+node_js: stable
 
 cache:
 # yarn: true
@@ -25,9 +26,9 @@ deploy:
   api_key: $GITHUB_TOKEN
  # user: "GITHUB USERNAME"
  # password: "GITHUB PASSWORD"
-  file: src/cxmooc-tools
+  file: build/upload
   skip_cleanup: true
-  draft: true
+  # draft: true
   on:
     tags: true
 
