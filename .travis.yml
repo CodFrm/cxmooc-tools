@@ -1,9 +1,33 @@
 language: node_js
+sudo: required
+
+dist: xenial
+
 node_js:
  - 'node'
  - '8'
  - '7'
+
+cache:
+# yarn: true
+  directories:
+    - node_modules
+
 before_install:
+ - export TZ='Asia/Shanghai'
  - npm install
+
 script: 
  - npm run build
+
+deploy:
+  provider: releases
+  api_key: $GITHUB_TOKEN
+ # user: "GITHUB USERNAME"
+ # password: "GITHUB PASSWORD"
+  file: src/cxmooc-tools
+  skip_cleanup: true
+  draft: true
+  on:
+    tags: true
+
