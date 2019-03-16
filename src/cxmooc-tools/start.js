@@ -19,12 +19,8 @@ window.onload = function () {
             'video_mute',
             'answer_ignore',
             'video_multiple',
-            'blurry_answer'
         ], function (items) {
             //设置一下配置
-            if (items.blurry_answer == undefined) {
-                items.blurry_answer = true;
-            }
             localStorage['rand-answer'] = items.rand_answer;
             localStorage['config'] = JSON.stringify(items);
         });
