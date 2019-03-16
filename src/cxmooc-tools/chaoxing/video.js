@@ -12,6 +12,8 @@ module.exports = function () {
     this.complete = undefined;
     this.loadover = undefined;
     this.mArg = undefined;
+    this.pause = true;
+    this.hangBtn = undefined;
 
     /**
      * 初始化显示视频题目
@@ -74,12 +76,12 @@ module.exports = function () {
             //静音和倍速选项
             self.video.muted = config.video_mute;
             self.video.playbackRate = config.video_multiple;
-            self.loadover(self);
+            self.loadover && self.loadover(self);
         });
 
         $(self.video).on('pause', function () {
-            if (self.video.currentTime <= self.video.duration - 1) {
-                self.video.play();
+            if (self.video.currentTime <= self.video.duration - 10) {
+                !self.pause && self.video.play();
             }
         });
 
@@ -99,6 +101,12 @@ module.exports = function () {
      * 开始播放
      */
     this.startPlay = function () {
+        if (self.pause) {
+            $(self.hangBtn).text('暂停挂机');
+        } else {
+            $(self.hangBtn).text('开始挂机');
+        }
+        self.pause = !self.pause;
         //不是任务点就完成返回
         if (until.isTask(self.iframe)) {
             unshowOcclusion();
@@ -137,17 +145,17 @@ module.exports = function () {
      * 创建按钮
      */
     this.createButton = function () {
-        let btn = until.createBtn('开始挂机', '点击开始自动挂机播放视频');
+        self.hangBtn = until.createBtn('开始挂机', '点击开始自动挂机播放视频');
         let pass = until.createBtn('秒过视频', '秒过视频会被后台检测到');
         let download = until.createBtn('下载视频', '我要下载视频好好学习');
         pass.style.background = '#F57C00';
         download.style.background = '#999999';
         let prev = $(self.iframe).prev();
         until.dealTaskLabel(prev);
-        $(prev).append(btn);
+        $(prev).append(self.hangBtn);
         $(prev).append(pass);
         $(prev).append(download);
-        btn.onclick = self.startPlay;
+        self.hangBtn.onclick = self.startPlay;
         pass.onclick = self.passVideo;
         download.onclick = self.downloadVideo;
     }
@@ -159,8 +167,6 @@ module.exports = function () {
         self.initPlayer();
         if (until.isFinished(self.iframe)) {
             self.complete && self.complete();
-        } else {
-            self.loadover && self.loadover(self);
         }
     }
 

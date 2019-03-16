@@ -43,7 +43,7 @@ export function dealTaskLabel(label) {
  * 创建一行
  * @param {string} text 
  */
-export function createLine(text, label, append = undefined) {
+export function createLine(text, label, append) {
     let p = $('<p></p>');
     p.css('color', 'red');
     p.css('font-size', '14px');

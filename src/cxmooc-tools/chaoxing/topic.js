@@ -8,8 +8,18 @@ module.exports = function () {
     this.document = undefined;
     this.complete = undefined;
     this.loadover = undefined;
+    this.topicBtn = undefined;
+    this.pause = true;
 
     this.searchAnswer = function () {
+        if (self.pause) {
+            self.pause = false;
+            config.auto && $(self.topicBtn).text('暂停挂机');
+        } else {
+            self.pause = true;
+            $(self.topicBtn).text('搜索题目');
+            return;
+        }
         let TiMu = $(self.document).find('.Zy_TItle.clearfix');
         let topic = [];
         for (let i = 0; i < TiMu.length; i++) {
@@ -32,16 +42,18 @@ module.exports = function () {
                 return;
             }
             if (config.auto) {
-                self.pushTopic();
+                self.complete(1);
             } else {
                 self.complete();
-                self.pushTopic();
             }
         });
     }
 
 
     this.pushTopic = function () {
+        if (self.pause) {
+            return;
+        }
         //提交操作
         let confirm = function () {
             let prompt = $(self.document).find('#tipContent').text();
@@ -60,7 +72,7 @@ module.exports = function () {
             //确定提交
             let submit = $(self.document).find('.bluebtn');
             submit[0].click();
-            setTimeout(self.collect,5000);
+            setTimeout(self.collect, 5000);
         }
         let submit = function () {
             let submit = $(self.document).find('.Btn_blue_1');
@@ -76,16 +88,16 @@ module.exports = function () {
      * 创建按钮
      */
     this.createButton = function () {
-        let btn = until.createBtn('搜索题目', '点击自动从网络上的题库中查找答案');
+        self.topicBtn = until.createBtn('搜索题目', '点击自动从网络上的题库中查找答案');
         let prev = $(self.iframe).prev();
         if (prev.length <= 0) {
             prev = $(self.iframe).parent();
-            $(prev).prepend(btn);
+            $(prev).prepend(self.topicBtn);
         } else {
-            $(prev).append(btn);
+            $(prev).append(self.topicBtn);
         }
         until.dealTaskLabel(prev);
-        btn.onclick = self.searchAnswer;
+        self.topicBtn.onclick = self.searchAnswer;
     }
 
     this.init = function (iframe) {

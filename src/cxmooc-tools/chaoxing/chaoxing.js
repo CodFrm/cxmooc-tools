@@ -35,18 +35,26 @@ module.exports = function () {
         }
     }
 
-    this.complete = function () {
-        //完成事件,进行完成操作
-        lazySwitch();
+    this.complete = function (event) {
+        switch (event) {
+            case 1: {
+                lazySwitch(this.pushTopic);
+                break;
+            }
+            default: {
+                //完成事件,进行完成操作
+                lazySwitch();
+            }
+        }
     }
 
     /**
      * 延迟切换
      */
-    function lazySwitch() {
+    function lazySwitch(callback) {
         //无任务
         setTimeout(function () {
-            config.auto && switchTask();
+            config.auto && (callback ? callback() : switchTask());
         }, (config.interval || 1) * 60000);
     }
 
@@ -85,7 +93,7 @@ module.exports = function () {
     }
 
     function nextTaskPoint() {
-        let undone = $('.ncells .currents').parents(".ncells").nextAll(".ncells").find("[class*='orange']");
+        let undone = $('.ncells .currents').parents(".ncells").nextAll(".ncells,.cells").find("[class*='orange']");
         if (undone.length <= 0) {
             alert('所有任务点已完成');
             return;
@@ -99,9 +107,13 @@ module.exports = function () {
     }
 
     this.studentstudy = function () {
-        let biggestTimeoutId = window.setTimeout(function () { }, 1);
-        for (let i = 1; i <= biggestTimeoutId; i++) {
-            clearTimeout(i);
+        let time = undefined;
+        while (time = global.timer.pop()) {
+            if (time != undefined) {
+                clearInterval(time);
+            } else {
+                break;
+            }
         }
         let timer = setInterval(function () {
             let iframe = $('iframe');
@@ -110,6 +122,7 @@ module.exports = function () {
             }
             findIframe(iframe);
         }, 500);
+        global.timer.push(timer);
         //无任务        
         setTimeout(function () {
             if (self.list.length <= 0 && config.auto) {

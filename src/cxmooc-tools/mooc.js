@@ -12,6 +12,7 @@ const chaoxing = require('./chaoxing/chaoxing');
 
 common.removeinjected(document);
 global.config = JSON.parse(localStorage['config']);
+global.timer=new Array();
 if (window.location.href.indexOf('mycourse/studentstudy?') > 0) {
     //超星学习页面
     document.addEventListener('load', function (ev) {
