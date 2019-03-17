@@ -23,7 +23,7 @@ window.onload = function () {
             //设置一下配置
             localStorage['rand-answer'] = items.rand_answer;
             localStorage['config'] = JSON.stringify(items);
+            common.injected(document, chrome.extension.getURL('src/mooc.js'));
         });
-        common.injected(document, chrome.extension.getURL('src/mooc.js'));
     })
 }
