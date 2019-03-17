@@ -93,7 +93,7 @@ module.exports = function () {
     }
 
     function nextTaskPoint() {
-        let undone = $('.ncells .currents').parents(".ncells").nextAll(".ncells,.cells").find("[class*='orange']");
+        let undone = $('.ncells .currents').parents(".cells,.ncells").nextAll(".ncells,.cells").find("[class*='orange']");
         if (undone.length <= 0) {
             alert('所有任务点已完成');
             return;
