@@ -2,6 +2,7 @@
  * 超星刷课功能集合
  */
 const common = require('../common');
+const until = require('./until');
 const Video = require('./video');
 const Topic = require('./topic');
 
@@ -26,9 +27,9 @@ module.exports = function () {
             }
             if (obj != undefined) {
                 self.list.push(obj);
+                obj.iframe = iframeElement[i];
                 obj.complete = self.complete;
                 obj.loadover = self.loadover;
-                obj.init(iframeElement[i]);
                 $(iframeElement[i]).attr('cxmooc-tools', 'requisition');
             }
             findIframe($(iframeElement[i].contentDocument).find('iframe'));
@@ -61,8 +62,17 @@ module.exports = function () {
     this.loadover = function (event) {
         if (event == self.list[0]) {
             //第一个加载完成
-            if (config.answer_ignore && self.list[self.index] instanceof Topic) {
-                lazySwitch();
+            isIgnore(event);
+        }
+    }
+
+    function isIgnore(event) {
+        if (config.answer_ignore && self.list[self.index] instanceof Topic) {
+            switchTask();
+        } else {
+            if (until.isFinished(event.iframe)  || !until.isTask(event.iframe)) {
+                //完成了,或者非任务点
+                switchTask();
             } else {
                 config.auto && event.start();
             }
@@ -73,11 +83,7 @@ module.exports = function () {
         //切换下一个未完成的任务
         if (self.list.length > 0 && self.index < self.list.length - 1) {
             self.index += 1;
-            if (config.answer_ignore && self.list[self.index] instanceof Topic) {
-                switchTask();
-            } else {
-                self.list[self.index].start();
-            }
+            isIgnore(self.list[self.index]);
             return;
         }
         let folder = $('.tabtags').find('span');
@@ -107,28 +113,17 @@ module.exports = function () {
     }
 
     this.studentstudy = function () {
-        let time = undefined;
-        while (time = global.timer.pop()) {
-            if (time != undefined) {
-                clearInterval(time);
-            } else {
-                break;
-            }
+        let iframe = $('iframe');
+        findIframe(iframe);
+        for (let i = 0; i < self.list.length; i++) {
+            self.list[i].init();
         }
-        let timer = setInterval(function () {
-            let iframe = $('iframe');
-            if (iframe.length > 0) {
-                clearInterval(timer);
-            }
-            findIframe(iframe);
-        }, 500);
-        global.timer.push(timer);
-        //无任务        
-        setTimeout(function () {
-            if (self.list.length <= 0 && config.auto) {
+        //无任务
+        if (self.list.length <= 0 && config.auto) {
+            setTimeout(function () {
                 switchTask();
-            }
-        }, (config.interval || 0.1) * 60000);
+            }, (config.interval || 0.1) * 60000);
+        }
     }
 
     this.read = function () {

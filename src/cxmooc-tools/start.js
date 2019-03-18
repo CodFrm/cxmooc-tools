@@ -20,7 +20,7 @@ window.onload = function () {
             'answer_ignore',
             'video_multiple',
         ], function (items) {
-            items.interval = items.interval < 0.1 ? 0.1 : items.interval || 5;
+            items.interval = items.interval >= 0 ? items.interval : 5;
             items.rand_answer = items.rand_answer || false;
             items.video_multiple = items.video_multiple || 1;
             items.video_mute = items.video_mute || false;

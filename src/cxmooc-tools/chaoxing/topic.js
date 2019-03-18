@@ -100,15 +100,14 @@ module.exports = function () {
         self.topicBtn.onclick = self.searchAnswer;
     }
 
-    this.init = function (iframe) {
-        self.iframe = iframe;
-        self.document = $(iframe.contentDocument).find('#frame_content')[0].contentDocument;
+    this.init = function () {
+        self.document = $(self.iframe.contentDocument).find('#frame_content')[0].contentDocument;
         if (until.isFinished(self.iframe)) {
             self.collect();
         } else {
             self.createButton();
+            self.loadover && self.loadover(self);
         }
-        self.loadover && self.loadover(self);
     }
 
     this.start = function () {

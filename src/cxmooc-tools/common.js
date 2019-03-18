@@ -37,7 +37,7 @@ export function get(url, success) {
     xmlhttp.onreadystatechange = function () {
         if (this.readyState == 4) {
             if (this.status == 200) {
-                success(this.responseText);
+                success && success(this.responseText);
             }
         }
     }
@@ -66,7 +66,7 @@ export function post(url, data, json = true, success) {
     xmlhttp.onreadystatechange = function () {
         if (this.readyState == 4) {
             if (this.status == 200) {
-                success(this.responseText);
+                success && success(this.responseText);
             }
         }
     }

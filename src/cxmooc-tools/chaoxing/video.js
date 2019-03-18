@@ -44,13 +44,14 @@ module.exports = function () {
         $(self.document).find('.vjs-poster').css('display', 'none');
     }
 
-    function initCdn(player) {
+    function initCdn() {
         if (localStorage['cdn'] != undefined) {
             let cdn = $(self.document).find("[title='Playline']+.vjs-menu .vjs-menu-content .vjs-menu-item .vjs-menu-item-text:contains('" +
                 localStorage['cdn'] + "')");
-            if (cdn.length < 0) {
-                cdn = $(self.document).find("[title='Playline']+.vjs-menu .vjs-menu-content .vjs-menu-item .vjs-menu-item-text")[0];
+            if (cdn.length <= 0) {
+                cdn = $(self.document).find("[title='Playline']+.vjs-menu .vjs-menu-content .vjs-menu-item .vjs-menu-item-text");
             }
+            cdn = cdn[0];
             $(cdn).parent().click();
         }
     }
@@ -74,7 +75,6 @@ module.exports = function () {
         let play = function () {
             localStorage['cdn'] = $(self.document).find("[title='Playline']+.vjs-menu .vjs-menu-content .vjs-menu-item.vjs-selected .vjs-menu-item-text").text();
             //静音和倍速选项
-            //vjs-menu-content vjs-menu-item vjs-selected vjs-menu-item-text
             self.video.muted = config.video_mute;
             self.video.playbackRate = config.video_multiple;
             self.loadover && self.loadover(self);
@@ -108,13 +108,11 @@ module.exports = function () {
             $(self.hangBtn).text('开始挂机');
         }
         self.pause = !self.pause;
-        //不是任务点就完成返回
-        if (until.isTask(self.iframe)) {
-            unshowOcclusion();
+        unshowOcclusion();
+        setTimeout(function () {
             self.video.play();
-        } else {
-            self.complete();
-        }
+        }, 0);
+
     }
 
     /**
@@ -161,14 +159,15 @@ module.exports = function () {
         download.onclick = self.downloadVideo;
     }
 
-    this.init = function (iframe) {
-        self.iframe = iframe;
-        self.document = iframe.contentDocument;
+    this.init = function () {
+        self.document = self.iframe.contentDocument;
         self.createButton();
-        self.initPlayer();
-        if (until.isFinished(self.iframe)) {
-            self.complete && self.complete();
-        }
+        let timer = setInterval(function () {
+            if ($(self.document).find('#video_html5_api').length > 0) {
+                clearInterval(timer);
+                self.initPlayer();
+            }
+        }, 500);
     }
 
     return this;
