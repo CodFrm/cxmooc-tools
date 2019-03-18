@@ -46,9 +46,12 @@ module.exports = function () {
 
     function initCdn(player) {
         if (localStorage['cdn'] != undefined) {
-            let url = player.src;
-            url = url.substr(url.indexOf('/video/'));
-            player.src = localStorage['cdn'] + url;
+            let cdn = $(self.document).find("[title='Playline']+.vjs-menu .vjs-menu-content .vjs-menu-item .vjs-menu-item-text:contains('" +
+                localStorage['cdn'] + "')");
+            if (cdn.length < 0) {
+                cdn = $(self.document).find("[title='Playline']+.vjs-menu .vjs-menu-content .vjs-menu-item .vjs-menu-item-text")[0];
+            }
+            $(cdn).parent().click();
         }
     }
 
@@ -68,16 +71,15 @@ module.exports = function () {
         }
         initVideoTopic();
         initCdn(self.video);
-
-        $(self.video).on('loadstart', function () {
-            let cdn = self.video.currentSrc;
-            cdn = cdn.substr(0, cdn.indexOf('/video/', 10));
-            localStorage['cdn'] = cdn;
+        let play = function () {
+            localStorage['cdn'] = $(self.document).find("[title='Playline']+.vjs-menu .vjs-menu-content .vjs-menu-item.vjs-selected .vjs-menu-item-text").text();
             //静音和倍速选项
+            //vjs-menu-content vjs-menu-item vjs-selected vjs-menu-item-text
             self.video.muted = config.video_mute;
             self.video.playbackRate = config.video_multiple;
             self.loadover && self.loadover(self);
-        });
+        }
+        $(self.video).on('loadstart', play);
 
         $(self.video).on('pause', function () {
             if (self.video.currentTime <= self.video.duration - 10) {
@@ -90,7 +92,6 @@ module.exports = function () {
                 self.complete();
             }
         });
-
     }
 
     this.start = function () {
