@@ -10,6 +10,8 @@ module.exports = function () {
     let self = this;
     this.list = new Array();
     this.index = 0;
+    this.iframe = undefined;
+    this.tag = Math.random();
     /**
      * 查找iframe
      * @param iframeElement 
@@ -70,7 +72,7 @@ module.exports = function () {
         if (config.answer_ignore && self.list[self.index] instanceof Topic) {
             switchTask();
         } else {
-            if (until.isFinished(event.iframe)  || !until.isTask(event.iframe)) {
+            if (until.isFinished(event.iframe) || !until.isTask(event.iframe)) {
                 //完成了,或者非任务点
                 switchTask();
             } else {
@@ -80,6 +82,11 @@ module.exports = function () {
     }
 
     function switchTask() {
+        //判断是否切换了页面
+        console.log(self.iframe,self.tag);
+        if ($(self.iframe).attr('tag') != self.tag) {
+            return;
+        }
         //切换下一个未完成的任务
         if (self.list.length > 0 && self.index < self.list.length - 1) {
             self.index += 1;
@@ -114,6 +121,8 @@ module.exports = function () {
 
     this.studentstudy = function () {
         let iframe = $('iframe');
+        self.iframe = iframe;
+        $(iframe).attr('tag', self.tag);
         findIframe(iframe);
         for (let i = 0; i < self.list.length; i++) {
             self.list[i].init();

@@ -6,3 +6,5 @@ typings.json
 certificate
 *.pem
 *.crx
+*.zip
+*.tar.gz
