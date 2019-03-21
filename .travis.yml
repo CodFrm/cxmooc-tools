@@ -1,9 +1,39 @@
 language: node_js
-node_js:
- - 'node'
- - '8'
- - '7'
+sudo: required
+
+notifications:
+  email: 
+    on_failure: always
+
+dist: xenial
+
+node_js: stable
+
+cache:
+# yarn: true
+  directories:
+    - node_modules
+
 before_install:
+ - export TZ='Asia/Shanghai'
+ - openssl aes-256-cbc -K $encrypted_b7d8153e3775_key -iv $encrypted_b7d8153e3775_iv -in ./build/cxmooc-tools.pem.enc -out ./build/cxmooc-tools.pem -d
  - npm install
+
 script: 
  - npm run build
+ - npm run pack
+ - zip -r build/cxmooc-tools.zip build/cxmooc-tools/
+ - tar -czvf build/cxmooc-tools.tar.gz build/cxmooc-tools/
+
+deploy:
+  provider: releases
+  api_key: $GITHUB_TOKEN
+  file_glob: true
+  file: 
+    - build/*.crx
+    - build/*.zip
+    - build/*.tar.gz
+  skip_cleanup: true
+  # draft: true
+  on:
+    tags: true

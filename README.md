@@ -1,6 +1,7 @@
+![GitHub stars](https://img.shields.io/github/stars/codfrm/cxmooc-tools.svg)
 [![Build Status](https://www.travis-ci.org/CodFrm/cxmooc-tools.svg?branch=master)](https://www.travis-ci.org/CodFrm/cxmooc-tools)
-[![npm](https://img.shields.io/npm/v/cxmooc-tools.svg)](https://www.npmjs.com/package/cxmooc-tools)
-[![npm](https://img.shields.io/npm/dt/cxmooc-tools.svg)](https://www.npmjs.com/package/cxmooc-tools)
+![GitHub All Releases](https://img.shields.io/github/downloads/codfrm/cxmooc-tools/total.svg)
+![GitHub tag (latest SemVer)](https://img.shields.io/github/tag/codfrm/cxmooc-tools.svg?label=version)
 
 ## 超星慕课小工具
 > 一个快速学习超星慕课的chrome扩展工具(੧ᐛ੭挂科模式,启动)
@@ -17,8 +18,9 @@
 * Node.js
 * webpack
 
-```shell
+```bash
 git clone https://github.com/CodFrm/cxmooc-tools.git
+cd cxmooc-tools
 npm install
 npm run build
 # 开发模式请使用
@@ -34,7 +36,7 @@ npm run dev
 * Node.js
 * Mongodb
 
-```shell
+```bash
 npm install
 npm run server
 ```
@@ -90,6 +92,8 @@ npm run server
 ## 说明
 使用已安装扩展插件的浏览器打开超星慕课学习页面,在视频上方会显示相关功能按钮。扩展图标点击可展示配置项目,将鼠标放在配置项上可以看见配置详情。
 
+油猴版本请打开源码查看,global.config中修改配置值
+
 **秒过视频**功能可直接将视频看完,但是**有一定的风险**
 
 插件功能:(勾为已实现的功能,空为将更新的内容)
@@ -97,9 +101,10 @@ npm run server
 * [x] 视频秒过
 * [x] 视频加速
 * [x] 视频静音
-* [x] 自动答题 **(详情请见[题库](#题库))**
+* [x] 自动答题
+* [x] 自动阅读
 * [ ] 视频内题目填充
-* [ ] 考试答题 **(不完善)**
+* [ ] 考试答题
 
 ...
 

@@ -1,12 +1,18 @@
 {
     "manifest_version": 2,
     "name": "超星慕课小工具",
-    "version": "1.5.7",
+    "version": "2.0.0",
     "description": "用于超星慕课的小工具",
     "icons": {
         "16": "img/logo.png",
         "48": "img/logo.png",
         "128": "img/logo.png"
+    },
+    "applications": {
+        "gecko": {
+            "id": "love@xloli.top",
+            "strict_min_version": "42.0"
+        }
     },
     "browser_action": {
         "default_icon": "img/logo.png",
@@ -14,18 +20,25 @@
         "default_popup": "src/popup.html"
     },
     "background": {
-        "scripts": ["src/background.js"]
+        "scripts": [
+            "src/background.js"
+        ]
     },
-    "content_scripts": [{
-        "matches": [
-            "*://*/mycourse/studentstudy?*",
-            "*://*/work/doHomeWorkNew?*",
-            "*://*/work/selectWorkQuestionYiPiYue?*",
-            "*://*/exam/test/reVersionTestStartNew?*"
-        ],
-        "js": ["src/start.js"],
-        "run_at": "document_start"
-    }],
+    "content_scripts": [
+        {
+            "matches": [
+                "*://*/mycourse/studentstudy?*",
+                "*://*/work/doHomeWorkNew?*",
+                "*://*/work/selectWorkQuestionYiPiYue?*",
+                "*://*/exam/test/reVersionTestStartNew?*",
+                "*://*/ztnodedetailcontroller/visitnodedetail?*"
+            ],
+            "js": [
+                "src/start.js"
+            ],
+            "run_at": "document_start"
+        }
+    ],
     "permissions": [
         "contextMenus",
         "tabs",
@@ -36,6 +49,8 @@
         "declarativeContent",
         "https://*/"
     ],
-    "web_accessible_resources": ["src/mooc.js", "src/action.js"],
-    "homepage_url": "http://blog.icodef.com"
+    "web_accessible_resources": [
+        "src/mooc.js"
+    ],
+    "homepage_url": "https://blog.icodef.com"
 }

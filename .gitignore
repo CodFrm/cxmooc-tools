@@ -1,8 +1,10 @@
 node_modules
 build/cxmooc-tools/src/*.*
-package-lock.json
 coverage
 typings
 typings.json
 certificate
-
+*.pem
+*.crx
+*.zip
+*.tar.gz

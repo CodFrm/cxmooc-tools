@@ -1,5 +1,6 @@
 const moocConfig = require('../config');
 
+//更新检测
 var xhr = new XMLHttpRequest();
 xhr.open("GET", moocConfig.url + 'update', true);
 xhr.onreadystatechange = function () {
@@ -11,8 +12,6 @@ xhr.onreadystatechange = function () {
                 'version': json.version,
                 'url': json.url,
                 'enforce': json.enforce
-            }, function () {
-                console.log('设置已保存');
             });
             if (moocConfig.version < json.version) {
                 chrome.browserAction.setBadgeText({

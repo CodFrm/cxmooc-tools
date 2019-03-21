@@ -17,10 +17,7 @@ window.onload = function () {
         }
     }
     xhr.send();
-    chrome.storage.sync.get(['rand_answer', 'blurry_answer', 'video_mute', 'answer_ignore'], function (items) {
-        if (items.blurry_answer == undefined) {
-            items.blurry_answer = true;
-        }
+    chrome.storage.sync.get(['rand_answer', 'video_mute', 'answer_ignore'], function (items) {
         for (item in items) {
             document.getElementById(item.replace('_', '-')).checked = items[item];
         }
@@ -56,13 +53,6 @@ window.onload = function () {
     document.getElementById('video-mute').onclick = function () {
         chrome.storage.sync.set({
             'video_mute': document.getElementById('video-mute').checked
-        });
-        return true;
-    }
-
-    document.getElementById('blurry-answer').onclick = function () {
-        chrome.storage.sync.set({
-            'blurry_answer': document.getElementById('blurry-answer').checked
         });
         return true;
     }
