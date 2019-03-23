@@ -2,7 +2,7 @@
 // @name         超星慕课小工具
 // @namespace    https://github.com/CodFrm/cxmooc-tools
 // @version      2.0.0
-// @description  超星慕课小工具
+// @description  一个快速学习超星慕课的chrome扩展工具(੧ᐛ੭挂科模式,启动)
 // @author       CodFrm
 // @match        *://*/mycourse/studentstudy?*
 // @match        "*://*/ztnodedetailcontroller/visitnodedetail?*"
