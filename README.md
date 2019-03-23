@@ -6,7 +6,7 @@
 ## 超星慕课小工具
 > 一个快速学习超星慕课的chrome扩展工具(੧ᐛ੭挂科模式,启动)
 > 
-> 已经发布了一个属于油猴的脚本[油猴安装](#油猴安装)
+> 已经发布了一个属于油猴的脚本[油猴安装](#油猴安装),火狐浏览器也可以支持了!
 > 
 > 初次开发chrome扩展,有兴趣的朋友可以一起来哦，欢迎PR!
 
@@ -25,6 +25,8 @@ npm install
 npm run build
 # 开发模式请使用
 npm run dev
+# 打包生成crx和油猴
+npm run pack
 ```
 
 ### Server
@@ -43,9 +45,13 @@ npm run server
 
 ## 安装
 ### 油猴安装
-> 油猴脚本只支持秒过,答题和单视频挂机功能,但是安装方便,相当于是一个小甜品吧~
+> 2.0.0之后油猴可以在源码中修改配置,支持全部的功能啦
 
 地址链接:[https://greasyfork.org/zh-CN/scripts/376190-cxmooc-tools](https://greasyfork.org/zh-CN/scripts/376190-cxmooc-tools)
+### 火狐安装
+> 发布了火狐的版本
+
+扩展地址:[https://addons.mozilla.org/zh-CN/firefox/addon/%E8%B6%85%E6%98%9F%E6%85%95%E8%AF%BE%E5%B0%8F%E5%B7%A5%E5%85%B7/](https://addons.mozilla.org/zh-CN/firefox/addon/%E8%B6%85%E6%98%9F%E6%85%95%E8%AF%BE%E5%B0%8F%E5%B7%A5%E5%85%B7/)
 
 ### 方法1:
 > 能够体验到最新的功能,需要按照[准备工作](#准备工作)的方法步骤配置本地环境,可能会存在一些BUG。
@@ -85,14 +91,13 @@ npm run server
 
 * [x] 360极速浏览器
 * [x] QQ浏览器
-* [ ] Chrome浏览器（无法启用）
 
 ...
 
 ## 说明
 使用已安装扩展插件的浏览器打开超星慕课学习页面,在视频上方会显示相关功能按钮。扩展图标点击可展示配置项目,将鼠标放在配置项上可以看见配置详情。
 
-油猴版本请打开源码查看,global.config中修改配置值
+油猴版本请打开源码查看,config中修改配置值
 
 **秒过视频**功能可直接将视频看完,但是**有一定的风险**
 

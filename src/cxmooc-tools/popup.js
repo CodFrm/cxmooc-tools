@@ -13,6 +13,7 @@ window.onload = function () {
                     p.innerHTML = '有新的版本更新:<a href="' + json.url + '" style="float:right;" target="_blank">点我去下载</a>  最新版本:v' + json.version;
                     document.getElementsByTagName('body')[0].appendChild(p);
                 }
+                document.getElementById("injection").innerHTML = json.injection
             }
         }
     }

@@ -1,12 +1,12 @@
 // ==UserScript==
-// @name         cxmooc-tools
+// @name         超星慕课小工具
 // @namespace    https://github.com/CodFrm/cxmooc-tools
-// @version      1.0
+// @version      2.0.0
 // @description  超星慕课小工具
 // @author       CodFrm
 // @match        *://*/mycourse/studentstudy?*
 // @match        "*://*/ztnodedetailcontroller/visitnodedetail?*"
-// @grant        nne
+// @grant        none
 // ==/UserScript==
 
 let config = {
