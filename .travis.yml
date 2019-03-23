@@ -22,8 +22,8 @@ before_install:
 script: 
  - npm run build
  - npm run pack
- - zip -r build/cxmooc-tools.zip build/cxmooc-tools/
- - tar -czvf build/cxmooc-tools.tar.gz build/cxmooc-tools/
+ - cd build/cxmooc-tools && zip ../cxmooc-tools.zip -r ./
+ - tar -czvf ../cxmooc-tools.tar.gz *
 
 deploy:
   provider: releases
