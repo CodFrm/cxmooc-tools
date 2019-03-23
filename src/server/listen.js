@@ -146,7 +146,8 @@ app.get('/update', function (req, res) {
     res.send({
         version: config.version,
         url: config.update,
-        enforce: config.enforce
+        enforce: config.enforce,
+        injection: config.injection
     });
 })
 
