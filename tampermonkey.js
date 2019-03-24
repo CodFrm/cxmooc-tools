@@ -5,7 +5,7 @@
 // @description  一个快速学习超星慕课的chrome扩展工具(੧ᐛ੭挂科模式,启动)
 // @author       CodFrm
 // @match        *://*/mycourse/studentstudy?*
-// @match        "*://*/ztnodedetailcontroller/visitnodedetail?*"
+// @match        *://*/ztnodedetailcontroller/visitnodedetail?*
 // @grant        none
 // ==/UserScript==
 

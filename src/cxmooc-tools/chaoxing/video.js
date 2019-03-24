@@ -45,15 +45,16 @@ module.exports = function () {
     }
 
     function initCdn() {
+        let cdn = undefined;
         if (localStorage['cdn'] != undefined) {
-            let cdn = $(self.document).find("[title='Playline']+.vjs-menu .vjs-menu-content .vjs-menu-item .vjs-menu-item-text:contains('" +
+            cdn = $(self.document).find("[title='Playline']+.vjs-menu .vjs-menu-content .vjs-menu-item .vjs-menu-item-text:contains('" +
                 localStorage['cdn'] + "')");
-            if (cdn.length <= 0) {
-                cdn = $(self.document).find("[title='Playline']+.vjs-menu .vjs-menu-content .vjs-menu-item .vjs-menu-item-text");
-            }
-            cdn = cdn[0];
-            $(cdn).parent().click();
         }
+        if (cdn.length <= 0) {
+            cdn = $(self.document).find("[title='Playline']+.vjs-menu .vjs-menu-content .vjs-menu-item .vjs-menu-item-text");
+        }
+        cdn = cdn[0];
+        $(cdn).parent().click();
     }
 
     /**

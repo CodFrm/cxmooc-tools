@@ -23,7 +23,6 @@ script:
  - npm run build
  - npm run pack
  - cd build/cxmooc-tools && zip ../cxmooc-tools.zip -r ./
- - tar -czvf ../cxmooc-tools.tar.gz *
 
 deploy:
   provider: releases
@@ -33,7 +32,6 @@ deploy:
     - build/tampermonkey.js
     - build/*.crx
     - build/*.zip
-    - build/*.tar.gz
   skip_cleanup: true
   # draft: true
   on:
