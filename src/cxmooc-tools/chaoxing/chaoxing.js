@@ -62,7 +62,11 @@ module.exports = function () {
         //无任务
         let duration = (config.interval || 1) * 60000;
         setTimeout(function () {
-            config.auto && (callback ? callback() : switchTask());
+            if (callback == undefined) {
+                switchTask();
+            } else {
+                callback();
+            }
         }, duration);
     }
 
@@ -88,6 +92,9 @@ module.exports = function () {
     }
 
     function switchTask() {
+        if (!config.auto) {
+            return;
+        }
         //判断是否切换了页面
         console.log(self.iframe, self.tag);
         if ($(self.iframe).attr('tag') != self.tag) {
@@ -139,7 +146,7 @@ module.exports = function () {
             self.list[i].init();
         }
         //无任务
-        if (self.list.length <= 0 && config.auto) {
+        if (self.list.length <= 0) {
             setTimeout(function () {
                 switchTask();
             }, (config.interval || 0.1) * 60000);

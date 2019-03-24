@@ -83,8 +83,11 @@ module.exports = function () {
         $(self.video).on('loadstart', play);
 
         $(self.video).on('pause', function () {
-            if (self.video.currentTime <= self.video.duration - 10) {
-                !self.pause && self.video.play();
+            if (self.video.currentTime <= self.video.duration - 1) {
+                if (!self.pause) {
+                    $(self.document).find('.x-container.ans-timelineobjects.x-container-default,.ans-timelineobjectsbg').css('display', 'none');
+                    self.video.play();
+                }
             }
         });
 
