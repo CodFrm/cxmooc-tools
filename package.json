@@ -8,7 +8,7 @@
     "build": "webpack --mode production --config webpack.prod.js",
     "dev": "webpack --mode development --config webpack.dev.js",
     "server": "node src/server/listen.js",
-    "pack": "npm run build && node src/pack-crx.js"
+    "pack": "npm run build && node src/pack-crx.js && npm run build"
   },
   "repository": {
     "type": "git",

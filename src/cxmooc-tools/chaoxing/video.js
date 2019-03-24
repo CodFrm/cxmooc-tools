@@ -50,7 +50,7 @@ module.exports = function () {
             cdn = $(self.document).find("[title='Playline']+.vjs-menu .vjs-menu-content .vjs-menu-item .vjs-menu-item-text:contains('" +
                 localStorage['cdn'] + "')");
         }
-        if (cdn.length <= 0) {
+        if (cdn == undefined || cdn.length <= 0) {
             cdn = $(self.document).find("[title='Playline']+.vjs-menu .vjs-menu-content .vjs-menu-item .vjs-menu-item-text");
         }
         cdn = cdn[0];

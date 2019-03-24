@@ -20,7 +20,6 @@ before_install:
  - npm install
 
 script: 
- - npm run build
  - npm run pack
  - cd build/cxmooc-tools && zip ../cxmooc-tools.zip -r ./
 
