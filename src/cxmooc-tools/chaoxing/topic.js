@@ -72,7 +72,6 @@ module.exports = function () {
             //确定提交
             let submit = $(self.document).find('.bluebtn');
             submit[0].click();
-            setTimeout(self.collect, 5000);
         }
         let submit = function () {
             let submit = $(self.document).find('.Btn_blue_1');
@@ -102,12 +101,26 @@ module.exports = function () {
 
     this.init = function () {
         self.document = $(self.iframe.contentDocument).find('#frame_content')[0].contentDocument;
+        listenIframe();
+        reloadInit() && self.loadover && self.loadover(self);
+    }
+
+    function reloadInit() {
         if (until.isFinished(self.iframe)) {
             self.collect();
         } else {
             self.createButton();
-            self.loadover && self.loadover(self);
+            return true;
         }
+        return false;
+    }
+
+    //监听框架,跳转抓取题目
+    function listenIframe() {
+        $($(self.iframe.contentDocument).find('#frame_content')[0]).on("load", function () {
+            self.document = this.contentDocument;
+            reloadInit();
+        });
     }
 
     this.start = function () {
@@ -131,7 +144,7 @@ module.exports = function () {
         $(document.body).append(box);
         setTimeout(function () { box.style.opacity = "1"; }, 500);
         common.post(moocServer.url + 'answer', JSON.stringify(answer));
-        self.complete();
+        self.complete(2);
     }
     return this;
 }

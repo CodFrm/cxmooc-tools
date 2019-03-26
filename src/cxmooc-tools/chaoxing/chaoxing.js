@@ -44,6 +44,10 @@ module.exports = function () {
                 lazySwitch(this.pushTopic);
                 break;
             }
+            case 2: {
+                switchTask()
+                break;
+            }
             default: {
                 //完成事件,进行完成操作
                 lazySwitch();
@@ -56,19 +60,25 @@ module.exports = function () {
      */
     function lazySwitch(callback) {
         //无任务
+        let duration = (config.interval || 1) * 60000;
         setTimeout(function () {
-            config.auto && (callback ? callback() : switchTask());
-        }, (config.interval || 1) * 60000);
+            if (callback == undefined) {
+                switchTask();
+            } else {
+                callback();
+            }
+        }, duration);
     }
 
     this.loadover = function (event) {
         if (event == self.list[0]) {
             //第一个加载完成
-            isIgnore(event);
+            config.auto && ignoreCompile(event);
         }
     }
 
-    function isIgnore(event) {
+    //忽略完成的任务
+    function ignoreCompile(event) {
         if (config.answer_ignore && self.list[self.index] instanceof Topic) {
             switchTask();
         } else {
@@ -76,21 +86,24 @@ module.exports = function () {
                 //完成了,或者非任务点
                 switchTask();
             } else {
-                config.auto && event.start();
+                event.start();
             }
         }
     }
 
     function switchTask() {
+        if (!config.auto) {
+            return;
+        }
         //判断是否切换了页面
-        console.log(self.iframe,self.tag);
+        console.log(self.iframe, self.tag);
         if ($(self.iframe).attr('tag') != self.tag) {
             return;
         }
         //切换下一个未完成的任务
         if (self.list.length > 0 && self.index < self.list.length - 1) {
             self.index += 1;
-            isIgnore(self.list[self.index]);
+            ignoreCompile(self.list[self.index]);
             return;
         }
         let folder = $('.tabtags').find('span');
@@ -108,7 +121,12 @@ module.exports = function () {
     function nextTaskPoint() {
         let undone = $('.ncells .currents').parents(".cells,.ncells").nextAll(".ncells,.cells").find("[class*='orange']");
         if (undone.length <= 0) {
-            alert('所有任务点已完成');
+            //扫描锁
+            if ($('.roundpointStudent.lock').length > 0) {
+                setTimeout(nextTaskPoint, 4000);
+            } else {
+                alert('所有任务点已完成');
+            }
             return;
         }
         undone = undone[0];
@@ -128,7 +146,7 @@ module.exports = function () {
             self.list[i].init();
         }
         //无任务
-        if (self.list.length <= 0 && config.auto) {
+        if (self.list.length <= 0) {
             setTimeout(function () {
                 switchTask();
             }, (config.interval || 0.1) * 60000);
@@ -156,4 +174,3 @@ module.exports = function () {
 
     return this;
 }
-

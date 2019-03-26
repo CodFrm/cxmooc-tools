@@ -20,19 +20,17 @@ before_install:
  - npm install
 
 script: 
- - npm run build
  - npm run pack
- - zip -r build/cxmooc-tools.zip build/cxmooc-tools/
- - tar -czvf build/cxmooc-tools.tar.gz build/cxmooc-tools/
+ - cd build/cxmooc-tools && zip ../cxmooc-tools.zip -r ./
 
 deploy:
   provider: releases
   api_key: $GITHUB_TOKEN
   file_glob: true
   file: 
+    - build/tampermonkey.js
     - build/*.crx
     - build/*.zip
-    - build/*.tar.gz
   skip_cleanup: true
   # draft: true
   on:

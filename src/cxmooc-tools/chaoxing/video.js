@@ -45,15 +45,16 @@ module.exports = function () {
     }
 
     function initCdn() {
+        let cdn = undefined;
         if (localStorage['cdn'] != undefined) {
-            let cdn = $(self.document).find("[title='Playline']+.vjs-menu .vjs-menu-content .vjs-menu-item .vjs-menu-item-text:contains('" +
+            cdn = $(self.document).find("[title='Playline']+.vjs-menu .vjs-menu-content .vjs-menu-item .vjs-menu-item-text:contains('" +
                 localStorage['cdn'] + "')");
-            if (cdn.length <= 0) {
-                cdn = $(self.document).find("[title='Playline']+.vjs-menu .vjs-menu-content .vjs-menu-item .vjs-menu-item-text");
-            }
-            cdn = cdn[0];
-            $(cdn).parent().click();
         }
+        if (cdn == undefined || cdn.length <= 0) {
+            cdn = $(self.document).find("[title='Playline']+.vjs-menu .vjs-menu-content .vjs-menu-item .vjs-menu-item-text");
+        }
+        cdn = cdn[0];
+        $(cdn).parent().click();
     }
 
     /**
@@ -82,8 +83,11 @@ module.exports = function () {
         $(self.video).on('loadstart', play);
 
         $(self.video).on('pause', function () {
-            if (self.video.currentTime <= self.video.duration - 10) {
-                !self.pause && self.video.play();
+            if (self.video.currentTime <= self.video.duration - 1) {
+                if (!self.pause) {
+                    $(self.document).find('.x-container.ans-timelineobjects.x-container-default,.ans-timelineobjectsbg').css('display', 'none');
+                    self.video.play();
+                }
             }
         });
 
@@ -190,13 +194,13 @@ function getVideoInfo(objectId, schoolId, success) {
  */
 function sendTimePack(mArg, videoMsg, playTime, success) {
     getVideoInfo(videoMsg.objectId, mArg.defaults.fid, function (videoInfo) {
-        playTime = playTime || (videoInfo.duration - Math.random(1, 2));
+        playTime = parseInt(playTime || (videoInfo.duration - Math.random(1, 2)));
         let enc = '[' + mArg.defaults.clazzId + '][' + mArg.defaults.userid + '][' +
             videoMsg.property._jobid + '][' + videoMsg.objectId + '][' +
             (playTime * 1000).toString() + '][d_yHJ!$pdA~5][' + (videoInfo.duration * 1000).toString() + '][0_' +
             videoInfo.duration + ']';
         enc = md5(enc);
-        common.get('/multimedia/log/' + videoInfo.dtoken + '?clipTime=0_' + videoInfo.duration +
+        common.get(mArg.defaults.reportUrl + '/' + videoInfo.dtoken + '?clipTime=0_' + videoInfo.duration +
             '&otherInfo=' + videoMsg.otherInfo +
             '&userid=' + mArg.defaults.userid + '&rt=0.9&jobid=' + videoMsg.property._jobid +
             '&duration=' + videoInfo.duration + '&dtype=Video&objectId=' + videoMsg.objectId +
