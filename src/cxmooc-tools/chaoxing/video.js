@@ -91,7 +91,15 @@ module.exports = function () {
             }
         });
 
+        let pauseTimer = setInterval(function () {
+            //以防万一的暂停- -
+            if (!self.pause) {
+                self.video.paused && self.video.play();
+            }
+        }, 10000);
+        
         $(self.video).on('ended', function () {
+            clearImmediate(pauseTimer);
             if (undefined != self.complete) {
                 self.complete();
             }
@@ -99,6 +107,7 @@ module.exports = function () {
     }
 
     this.start = function () {
+        common.log(self.iframe.className + " video start")
         self.startPlay();
     }
 

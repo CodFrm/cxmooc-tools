@@ -95,8 +95,8 @@ module.exports = function () {
         if (!config.auto) {
             return;
         }
+        common.log(self.list[self.index].iframe.className + " " + self.index + " switch")
         //判断是否切换了页面
-        console.log(self.iframe, self.tag);
         if ($(self.iframe).attr('tag') != self.tag) {
             return;
         }

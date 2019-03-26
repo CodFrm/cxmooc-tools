@@ -39,8 +39,11 @@ module.exports = function () {
             }
             if (answer_null) {
                 alert('有题目没有找到答案,并且未设置随机答案,请手动填入');
+                $(self.topicBtn).text('搜索题目');
+                self.pause = true;
                 return;
             }
+            common.log(self.iframe.className + " topic complete")
             if (config.auto) {
                 self.complete(1);
             } else {
@@ -106,6 +109,7 @@ module.exports = function () {
     }
 
     function reloadInit() {
+        common.log(self.iframe.className + " topic reload init")
         if (until.isFinished(self.iframe)) {
             self.collect();
         } else {
@@ -118,12 +122,15 @@ module.exports = function () {
     //监听框架,跳转抓取题目
     function listenIframe() {
         $($(self.iframe.contentDocument).find('#frame_content')[0]).on("load", function () {
-            self.document = this.contentDocument;
-            reloadInit();
+            if ($(this).attr('src').indexOf('modules/work') > 0) {
+                self.document = this.contentDocument;
+                reloadInit();
+            }
         });
     }
 
     this.start = function () {
+        common.log(self.iframe.className + " topic start")
         self.searchAnswer();
     }
 
@@ -144,6 +151,8 @@ module.exports = function () {
         $(document.body).append(box);
         setTimeout(function () { box.style.opacity = "1"; }, 500);
         common.post(moocServer.url + 'answer', JSON.stringify(answer));
+
+        common.log(self.iframe.className + " topic answer complete")
         self.complete(2);
     }
     return this;

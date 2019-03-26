@@ -10,13 +10,11 @@
     </title>
 </head>
 <style>
-
-
     p {
         margin: 0;
     }
 
-    label{
+    label {
         font-family: FangSong_GB2312;
         font-size: 14px;
     }
@@ -26,7 +24,6 @@
     .ps {
         text-align: right;
         color: #cccccc;
-        margin-top: 30px;
     }
 
     h4 {
@@ -34,14 +31,14 @@
         margin-top: 4px;
     }
 
-    a{
+    a {
         text-decoration: none;
         color: #336699;
         transition: all .3s;
         border-bottom: 1px solid white;
     }
 
-    a:hover{
+    a:hover {
         border-bottom: 1px solid;
         color: #CCCC33;
 
@@ -49,11 +46,13 @@
 
     .config-item {
         display: inline-block;
-        width: 120px;
+        width:50%;
+        float: left;
         height: 26px;
         line-height: 26px;
         font-size: 14px;
     }
+
     .rdo {
         width: 0px;
         height: 12px;
@@ -65,22 +64,28 @@
         border-radius: 50%;
         position: relative;
     }
-    .rdo:hover:before{
+
+    .rdo:hover:before {
         border: 1px solid #ea879a;
     }
-    .rdo:hover:after{
-        background-color:#ea879a;
+
+    .rdo:hover:after {
+        background-color: #ea879a;
     }
-    .rdo:hover{
-        border-color:#ea879a;
+
+    .rdo:hover {
+        border-color: #ea879a;
     }
-    .rdo:before,.rdo:after {
+
+    .rdo:before,
+    .rdo:after {
         content: '';
         display: block;
         position: absolute;
         border-radius: 50%;
         transition: .3s ease;
     }
+
     .rdo:before {
         top: 0px;
         left: 0px;
@@ -90,6 +95,7 @@
         border: 1px solid #888;
         cursor: pointer;
     }
+
     .rdo:after {
         top: 6px;
         left: 6px;
@@ -98,20 +104,22 @@
         background-color: #fff;
         cursor: pointer;
     }
+
     .rdo:checked:after {
         top: 4px;
         left: 4px;
         width: 12px;
         height: 12px;
-        background-color:#ea879a;
+        background-color: #ea879a;
         cursor: pointer;
     }
+
     .rdo:checked:before {
-        border-color:#ea879a;
+        border-color: #ea879a;
     }
 
     /*input倍数对齐*/
-    .input_text{
+    .input_text {
         margin-top: -2px;
         margin-bottom: 1px;
         vertical-align: middle;
@@ -121,11 +129,13 @@
         font-size: 10px;
         transition: .3s ease;
         width: 30px;
-        border-radius:2px;
-        border:1px solid #ccc;
+        border-radius: 2px;
+        border: 1px solid #ccc;
+        height: 15px;
     }
-    .input_text:hover{
-        border:1px solid #CCFFFF;
+
+    .input_text:hover {
+        border: 1px solid #CCFFFF;
         box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 4px;
         -moz-box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 4px;
         -webkit-box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 4px;
@@ -134,7 +144,6 @@
     /*新的*/
     body {
         width: 400px;
-        /*background: #F5F5F5;*/
         margin: 0 auto;
     }
 
@@ -142,49 +151,68 @@
         font-family: STZhongsong;
         color: #ffffff;
         font-size: 16px;
+        margin: 0;
         margin-left: 30px;
     }
 
-    .title span{
-        color:#3399CC;
+    .title span {
+        color: #3399CC;
     }
+
     /*字体*/
-    .two_font{
+    .two_font {
         font-family: SimHei;
         font-size: 18px;
         padding-bottom: 10px;
         text-align: left;
     }
-    .three_font{
+
+    .three_font {
         font-family: FangSong_GB2312;
         font-size: 14px;
         text-align: left;
         margin-bottom: 7px;
     }
+
     /*头部*/
-    .head{
+    .head {
         width: 100%;
         height: 72px;
         line-height: 72px;
         text-align: left;
-        background-image: url("../image/navtu.png");
+        background-image: url("../img/navtu.png");
     }
-    /*居中对齐*/
-    .center-float-left{display:-webkit-box;display:-moz-box;display:-ms-flexbox;display:-webkit-flex;display:-o-flex;display:flex;-webkit-align-items:center;-moz-align-items:center;-ms-align-items:center;-o-align-items:center;align-items:center;line-height:1.4;justify-content:center}
 
-    .content_top{
+    /*居中对齐*/
+    .center-float-left {
+        display: -webkit-box;
+        display: -moz-box;
+        display: -ms-flexbox;
+        display: -webkit-flex;
+        display: -o-flex;
+        display: flex;
+        -webkit-align-items: center;
+        -moz-align-items: center;
+        -ms-align-items: center;
+        -o-align-items: center;
+        align-items: center;
+        line-height: 1.4;
+        justify-content: center
+    }
+
+    .content_top {
         width: 100%;
-        height: auto;
-        margin-top: 30px;
+        margin-top: 20px;
     }
+
     /*内容第一层*/
-    .content_topleft{
-        width: 40%;
-        height: 130px;
+    .content_topleft {
         color: #003366;
-        margin-right: 5%;
+        width: 100%;
+        padding: 0 20px;
     }
-    .content_topright{
+
+    .content_topright {
         width: 40%;
         height: 130px;
         /*直接设置固定高度了，要加内容注意看高度*/
@@ -192,105 +220,111 @@
     }
 
     /*分类标题*/
-    .one_title{
+    .one_title {
         border-bottom: 1px solid #CCCCCC;
         font-family: STHeiti;
-        height: 30px;
+        padding:4px 0;
+        font-size: 14px;
     }
+
     /*标题下内容*/
-    .three_font span{
+    .three_font span {
         color: #333333;
     }
-    .mt10{
+
+    .mt10 {
         margin-top: 10px;
     }
+
     /*底部分类*/
-     .content_bottom{
-         width: 85%;
-         margin:  0 auto;
-         color: #003366;
-         margin-top: 10px;
-     }
-    .content_bottom .one_title{
-        margin-bottom: 10px;
-    }
-    .width_50{
-        width: 48%;
-        text-align: center;
-        margin-top: 10px;
-    }
-    /*底部项目链接*/
-    .bottom_div{
-        width: 85%;
-        margin:  0 auto;
+    .content_bottom {
+        overflow: hidden;
+        padding: 0 20px;
+        margin: 0 auto;
         color: #003366;
         margin-top: 10px;
     }
-    .bottom_div p{
+
+    .content_bottom .one_title {
+        margin-bottom: 10px;
+    }
+
+    .width_50 {
         margin-top: 10px;
     }
+
+    /*底部项目链接*/
+    .bottom_div {
+        padding:0 20px;
+        margin: 0 auto;
+        color: #003366;
+        margin-top: 10px;
+    }
+
+    .bottom_div p {
+        margin-top: 10px;
+    }
+
     /*移上去变手*/
-    .shou{
+    .shou {
         cursor: pointer;
     }
 </style>
 
 <body>
-        <div class="head">
-            <h3 class="title"><span>超星慕课</span>小工具</h3>
+    <div class="head">
+        <h3 class="title"><span>超星慕课</span>小工具</h3>
 
-        </div>
-        <div class="content_top center-float-left">
-            <div class="content_topleft">
-                <h4 class="one_title">公告</h4>
-                <p class="three_font mt10 shou"><span><a href="http://blog.icodef.com:8080/query.html">最新的查题地址</a></span></p>
-                <p class="three_font"><span>最新版本为3.1</span></p>
-                <!--<p class="three_font"><span>合作宣传请联系我们</span></p>-->
-            </div>
-            <div class="content_topright">
-                <h4 class="one_title">说明</h4>
-                <p class="three_font mt10"><span>秒过有危险,请不要滥用</span></p>
-                <p class="three_font"><span>2倍数及以下为最安全的</span></p>
-                <p class="three_font"><span>谷歌浏览器是最稳定的</span></p>
+    </div>
+    <div class="content_top center-float-left">
+        <div class="content_topleft">
+            <h4 class="one_title">公告</h4>
+            <div id="injection">
+
             </div>
         </div>
-        <div class="content_bottom">
-            <h4 class="one_title"><span>插件配置:</span></h4>
-            <div class="config-item width_50">
-                <input type="checkbox" id="rand-answer" class="rdo" />
-                <label for="rand-answer" title="没有正确的答案会随机选择">随机答案</label>
-            </div>
-            <div class="config-item width_50">
-                <input type="checkbox" id="auto" class="rdo" />
-                <label for="auto" title="进入一个页面就会自动开始挂机,完成一个任务之后会自动进行下一个">全自动挂机</label>
-            </div>
-            <br>
-            <div class="config-item width_50">
-                <input type="checkbox" id="video-mute" class="rdo" />
-                <label for="video-mute" title="自动挂机时,视频静音">视频静音</label>
-            </div>
-            <div id="ignore" class="config-item width_50" style="">
-                <input class="rdo" type="checkbox" id="answer-ignore"/>
-                <label for="answer-ignore" title="自动挂机时,忽略掉题目不做，直接跳过">忽略题目</label>
-            </div>
+    </div>
+    <div class="content_bottom">
+        <h4 class="one_title"><span>插件配置:</span></h4>
+        <div class="config-item width_50">
+            <input type="checkbox" id="rand-answer" class="rdo" />
+            <label for="rand-answer" title="没有正确的答案会随机选择">随机答案</label>
+        </div>
+        <div class="config-item width_50">
+            <input type="checkbox" id="auto" class="rdo" />
+            <label for="auto" title="进入一个页面就会自动开始挂机,完成一个任务之后会自动进行下一个">自动挂机</label>
+        </div>
+        <br>
+        <div class="config-item width_50">
+            <input type="checkbox" id="video-mute" class="rdo" />
+            <label for="video-mute" title="自动挂机时,视频静音">视频静音</label>
+        </div>
+        <div id="ignore" class="config-item width_50" style="">
+            <input class="rdo" type="checkbox" id="answer-ignore" />
+            <label for="answer-ignore" title="自动挂机时,忽略掉题目不做，直接跳过">忽略题目</label>
+        </div>
+        <div>
             <div class="config-item width_50" style="color:#ff0000">
-                <label for="video-multiple" title="视频播放的倍数,1为正常速度(最高16倍,该功能有一定危险)">播放速度:</label>
+                <label for="video-multiple" title="视频播放的倍数,1为正常速度(最高16倍,该功能有一定危险)">倍速播放:</label>
                 <input class="input_text" type="text" id="video-multiple" placeholder="1" />倍
             </div>
             <div id="auto-m" class="config-item width_50">
                 <label for="interval" title="播放(题目)完成后n分钟再继续下一个任务">间隔时间:</label>
-                <input type="text" class="input_text" id="interval"  placeholder="2" />分
+                <input type="text" class="input_text" id="interval" placeholder="2" />分
             </div>
         </div>
-        <div class="bottom_div">
-            <h4 class="one_title"><span>地址:</span></h4>
-            <p><a class="three_font" href="https://github.com/CodFrm/cxmooc-tools" target="_black">GitHub开源地址</a></p>
-            <p><a  class="three_font" href="https://github.com/CodFrm/cxmooc-tools/issues" target="_black">Bug/意见/题目反馈地址</a></p>
-            <p><a target="_blank" href="https://shang.qq.com/wpa/qunwpa?idkey=9bddd2564d84bd999940de422d1c0c70f87ecaf02fe9d7c60389fc2b376179eb">交流qq群&nbsp614202391</a></p>
-        </div>
-        <p class="ps">PS:本扩展全部是免费的</p>
-        <p id="version" class="ps"></p>
-
+    </div>
+    <div class="bottom_div">
+        <h4 class="one_title"><span>地址:</span></h4>
+        <p><a class="three_font" href="https://github.com/CodFrm/cxmooc-tools" target="_black">GitHub开源地址</a></p>
+        <p><a class="three_font" href="https://github.com/CodFrm/cxmooc-tools/issues" target="_black">Bug/意见/题目反馈地址</a>
+        </p>
+        <p><a target="_blank"
+                href="https://shang.qq.com/wpa/qunwpa?idkey=9bddd2564d84bd999940de422d1c0c70f87ecaf02fe9d7c60389fc2b376179eb">交流qq群&nbsp614202391</a>
+        </p>
+    </div>
+    <p class="ps">PS:本扩展全部是免费的</p>
+    <p id="version" class="ps"></p>
 </body>
 
 </html>
