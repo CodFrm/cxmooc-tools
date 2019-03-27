@@ -12,6 +12,7 @@ module.exports = function () {
     this.index = 0;
     this.iframe = undefined;
     this.tag = Math.random();
+    this.complete_num = 0;
     /**
      * 查找iframe
      * @param iframeElement 
@@ -77,6 +78,7 @@ module.exports = function () {
         }
     }
 
+
     //忽略完成的任务
     function ignoreCompile(event) {
         if (config.answer_ignore && self.list[self.index] instanceof Topic) {
@@ -90,6 +92,7 @@ module.exports = function () {
                 if ($(self.iframe).attr('tag') != self.tag) {
                     return;
                 }
+                self.complete_num++;
                 event.start();
             }
         }
@@ -112,6 +115,11 @@ module.exports = function () {
         if (self.list.length > 0 && self.index < self.list.length - 1) {
             self.index += 1;
             ignoreCompile(self.list[self.index]);
+            return;
+        }
+        if (self.complete_num <= 0) {
+            self.complete_num = 1;
+            lazySwitch();
             return;
         }
         let folder = $('.tabtags').find('span');

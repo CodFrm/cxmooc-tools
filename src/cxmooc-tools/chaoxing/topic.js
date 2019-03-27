@@ -122,7 +122,8 @@ module.exports = function () {
     //监听框架,跳转抓取题目
     function listenIframe() {
         $($(self.iframe.contentDocument).find('#frame_content')[0]).on("load", function () {
-            if ($(this).attr('src').indexOf('modules/work') > 0) {
+            common.log("topic load " + this.contentWindow.location.href);
+            if (this.contentWindow.location.href.indexOf('selectWorkQuestionYiPiYue') > 0) {
                 self.document = this.contentDocument;
                 reloadInit();
             }
