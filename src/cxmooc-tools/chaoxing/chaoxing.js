@@ -73,7 +73,7 @@ module.exports = function () {
     this.loadover = function (event) {
         if (event == self.list[0]) {
             //第一个加载完成
-            config.auto && ignoreCompile(event);
+            event.pause && config.auto && ignoreCompile(event);
         }
     }
 
@@ -86,6 +86,10 @@ module.exports = function () {
                 //完成了,或者非任务点
                 switchTask();
             } else {
+                //判断是否切换了页面
+                if ($(self.iframe).attr('tag') != self.tag) {
+                    return;
+                }
                 event.start();
             }
         }
@@ -95,10 +99,14 @@ module.exports = function () {
         if (!config.auto) {
             return;
         }
-        common.log(self.list[self.index].iframe.className + " " + self.index + " switch")
         //判断是否切换了页面
         if ($(self.iframe).attr('tag') != self.tag) {
             return;
+        }
+        if (self.list[self.index] != undefined) {
+            common.log(self.list[self.index].iframe.className + " " + self.index + " switch")
+        } else {
+            common.log("null " + self.index + " switch")
         }
         //切换下一个未完成的任务
         if (self.list.length > 0 && self.index < self.list.length - 1) {
@@ -138,6 +146,7 @@ module.exports = function () {
     }
 
     this.studentstudy = function () {
+        common.log("studentstudy load")
         let iframe = $('iframe');
         self.iframe = iframe;
         $(iframe).attr('tag', self.tag);

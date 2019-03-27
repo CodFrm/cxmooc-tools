@@ -125,7 +125,6 @@ module.exports = function () {
         setTimeout(function () {
             self.video.play();
         }, 0);
-
     }
 
     /**

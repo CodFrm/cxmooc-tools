@@ -14,6 +14,8 @@ window.onload = function () {
                     document.getElementsByTagName('body')[0].appendChild(p);
                 }
                 document.getElementById("injection").innerHTML = json.injection
+            } else {
+                document.getElementById("tiku").src = "https://img.shields.io/badge/%E9%A2%98%E5%BA%93-error-red.svg"
             }
         }
     }

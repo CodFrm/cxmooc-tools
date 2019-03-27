@@ -14,6 +14,7 @@ const crx = new ChromeExtension({
 });
 
 crx.load(['./build/cxmooc-tools/manifest.json',
+    './build/cxmooc-tools/img/navtu.png',
     './build/cxmooc-tools/img/logo.png',
     './build/cxmooc-tools/src/*'
 ]).then(crx => crx.pack()).then(crxBuffer => {

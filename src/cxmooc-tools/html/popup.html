@@ -19,8 +19,6 @@
         font-size: 14px;
     }
 
-
-
     .ps {
         text-align: right;
         color: #cccccc;
@@ -46,7 +44,7 @@
 
     .config-item {
         display: inline-block;
-        width:50%;
+        width: 50%;
         float: left;
         height: 26px;
         line-height: 26px;
@@ -180,7 +178,7 @@
         height: 72px;
         line-height: 72px;
         text-align: left;
-        background-image: url("../img/navtu.png");
+        background-image: url("../img/navtu.webp");
     }
 
     /*居中对齐*/
@@ -223,7 +221,7 @@
     .one_title {
         border-bottom: 1px solid #CCCCCC;
         font-family: STHeiti;
-        padding:4px 0;
+        padding: 4px 0;
         font-size: 14px;
     }
 
@@ -255,7 +253,7 @@
 
     /*底部项目链接*/
     .bottom_div {
-        padding:0 20px;
+        padding: 0 20px;
         margin: 0 auto;
         color: #003366;
         margin-top: 10px;
@@ -270,6 +268,11 @@
     /*移上去变手*/
     .shou {
         cursor: pointer;
+    }
+
+    #tiku {
+        float: left;
+        width: 80px;
     }
 </style>
 
@@ -319,11 +322,17 @@
     <div class="bottom_div">
         <h4 class="one_title"><span>其他:</span></h4>
         <p><a class="three_font" href="https://github.com/CodFrm/cxmooc-tools" target="_black">GitHub开源地址</a></p>
-        <p><a class="three_font" href="https://github.com/CodFrm/cxmooc-tools/issues" target="_black">Bug/意见/题目反馈地址</a></p>
-        <p><a target="_blank" href="https://shang.qq.com/wpa/qunwpa?idkey=9bddd2564d84bd999940de422d1c0c70f87ecaf02fe9d7c60389fc2b376179eb">交流qq群&nbsp614202391</a></p>
+        <p><a class="three_font" href="https://github.com/CodFrm/cxmooc-tools/issues" target="_black">Bug/意见/题目反馈地址</a>
+        </p>
+        <p><a target="_blank"
+                href="https://shang.qq.com/wpa/qunwpa?idkey=9bddd2564d84bd999940de422d1c0c70f87ecaf02fe9d7c60389fc2b376179eb">交流qq群&nbsp614202391</a>
+        </p>
     </div>
-    <p class="ps">PS:本扩展全部是免费的</p>
-    <p id="version" class="ps"></p>
+    <div style="padding:0 20px;margin-top: 10px;">
+        <img id="tiku" src="https://img.shields.io/badge/%E9%A2%98%E5%BA%93-success-brightgreen.svg">
+        <p class="ps">PS:本扩展全部是免费的</p>
+        <p id="version" class="ps"></p>
+    </div>
 </body>
 
 </html>
