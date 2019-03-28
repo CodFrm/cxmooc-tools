@@ -8,7 +8,7 @@ var path = require('path');
 var fs = require('fs');
 const http = require('http');
 const https = require('https');
-const redis = require('./redis');
+const redisCli = require('./redis');
 
 var privateKey = fs.readFileSync(path.join(__dirname, './certificate/private.key'), 'utf8');
 var certificate = fs.readFileSync(path.join(__dirname, './certificate/file.crt'), 'utf8');
@@ -33,6 +33,7 @@ httpsServer.listen(SSLPORT, function () {
 
 
 var mooc = new moocModel();
+var redis = new redisCli();
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
@@ -51,9 +52,10 @@ app.use(express.static(path.join(__dirname, 'static'), {
 }));
 
 //在线人数中间件
-app.use(function (req, res) {
+app.use(function (req, res, next) {
     var ip = getClientIp(req);
-    redis.zadd("cxmooc:online", Date.parse(new Date()), ip);
+    redis.onlineAdd(ip);
+    next();
 });
 
 app.get('/', function (req, res) {
@@ -150,14 +152,13 @@ function mergeAnswer(source, answer) {
 }
 
 app.get('/update', function (req, res) {
-    var time = Date.parse(new Date());
-    redis.zcount("cxmooc:online", time - (5 * 60 * 1000), time, function (err, res) {
+    redis.onlineNum(function (err, data) {
         res.send({
             version: config.version,
             url: config.update,
             enforce: config.enforce,
             injection: config.injection,
-            onlinenum: res
+            onlinenum: data
         });
     });
 })
