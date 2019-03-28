@@ -8,6 +8,7 @@ var path = require('path');
 var fs = require('fs');
 const http = require('http');
 const https = require('https');
+const redisCli = require('./redis');
 
 var privateKey = fs.readFileSync(path.join(__dirname, './certificate/private.key'), 'utf8');
 var certificate = fs.readFileSync(path.join(__dirname, './certificate/file.crt'), 'utf8');
@@ -32,6 +33,7 @@ httpsServer.listen(SSLPORT, function () {
 
 
 var mooc = new moocModel();
+var redis = new redisCli();
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
@@ -48,6 +50,13 @@ app.all('/player/*', function (req, res, next) {
 app.use(express.static(path.join(__dirname, 'static'), {
     maxage: '7d'
 }));
+
+//在线人数中间件
+app.use(function (req, res, next) {
+    var ip = getClientIp(req);
+    redis.onlineAdd(ip);
+    next();
+});
 
 app.get('/', function (req, res) {
     ret = '<h2>欢迎使用超星慕课刷课插件</h2><p>这个服务器将会记录你正确的答题答案,并不会记录你的任何账号信息</p>';
@@ -143,11 +152,14 @@ function mergeAnswer(source, answer) {
 }
 
 app.get('/update', function (req, res) {
-    res.send({
-        version: config.version,
-        url: config.update,
-        enforce: config.enforce,
-        injection: config.injection
+    redis.onlineNum(function (err, data) {
+        res.send({
+            version: config.version,
+            url: config.update,
+            enforce: config.enforce,
+            injection: config.injection,
+            onlinenum: data
+        });
     });
 })
 
