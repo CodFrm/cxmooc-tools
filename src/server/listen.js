@@ -8,6 +8,7 @@ var path = require('path');
 var fs = require('fs');
 const http = require('http');
 const https = require('https');
+const redis = require('./redis');
 
 var privateKey = fs.readFileSync(path.join(__dirname, './certificate/private.key'), 'utf8');
 var certificate = fs.readFileSync(path.join(__dirname, './certificate/file.crt'), 'utf8');
@@ -48,6 +49,12 @@ app.all('/player/*', function (req, res, next) {
 app.use(express.static(path.join(__dirname, 'static'), {
     maxage: '7d'
 }));
+
+//在线人数中间件
+app.use(function (req, res) {
+    var ip = getClientIp(req);
+    redis.zadd("cxmooc:online", Date.parse(new Date()), ip);
+});
 
 app.get('/', function (req, res) {
     ret = '<h2>欢迎使用超星慕课刷课插件</h2><p>这个服务器将会记录你正确的答题答案,并不会记录你的任何账号信息</p>';
@@ -143,11 +150,15 @@ function mergeAnswer(source, answer) {
 }
 
 app.get('/update', function (req, res) {
-    res.send({
-        version: config.version,
-        url: config.update,
-        enforce: config.enforce,
-        injection: config.injection
+    var time = Date.parse(new Date());
+    redis.zcount("cxmooc:online", time - (5 * 60 * 1000), time, function (err, res) {
+        res.send({
+            version: config.version,
+            url: config.update,
+            enforce: config.enforce,
+            injection: config.injection,
+            onlinenum: res
+        });
     });
 })
 
