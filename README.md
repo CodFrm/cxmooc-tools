@@ -52,6 +52,12 @@ npm run server
 > 发布了火狐的版本
 
 扩展地址:[https://addons.mozilla.org/zh-CN/firefox/addon/%E8%B6%85%E6%98%9F%E6%85%95%E8%AF%BE%E5%B0%8F%E5%B7%A5%E5%85%B7/](https://addons.mozilla.org/zh-CN/firefox/addon/%E8%B6%85%E6%98%9F%E6%85%95%E8%AF%BE%E5%B0%8F%E5%B7%A5%E5%85%B7/)
+### 解压安装
+为了方便安装,制作了一个浏览器打包的版本,请在[release页面](https://github.com/CodFrm/cxmooc-tools)查看详情
+
+下载之后,直接解压出来就可以使用了,目录下附带一个[查题助手](https://github.com/yanyongyu/CXmoocSearchTool),补充题库功能,集合了大量的题库地址(因为跨域问题,所以无法置入插件,而且也会有版权的问题)
+
+![](build/cxmooc-tools/img/4.jpg)
 
 ### 方法1:
 > 能够体验到最新的功能,需要按照[准备工作](#准备工作)的方法步骤配置本地环境,可能会存在一些BUG。
