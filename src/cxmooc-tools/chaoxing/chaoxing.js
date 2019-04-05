@@ -175,7 +175,6 @@ module.exports = function () {
         }
         //监控验证码
         self.monitorVcode();
-        getVarCode();
     }
 
     this.monitorVcode = function () {

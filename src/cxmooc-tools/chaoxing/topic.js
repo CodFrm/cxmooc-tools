@@ -38,9 +38,9 @@ module.exports = function () {
                 }
             }
             if (answer_null) {
-                alert('有题目没有找到答案,并且未设置随机答案,请手动填入');
-                $(self.hangBtn).text('搜索题目');
-                self.pause = true;
+                //切换下一个任务点
+                $(self.hangBtn).text('答案不全跳过');
+                self.complete();
                 return;
             }
             common.log(self.iframe.className + " topic complete")

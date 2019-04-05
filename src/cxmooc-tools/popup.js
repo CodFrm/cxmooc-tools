@@ -21,6 +21,8 @@ window.onload = function () {
     }
     xhr.send();
     chrome.storage.sync.get(['rand_answer', 'video_mute', 'answer_ignore'], function (items) {
+        document.getElementById('video-mute').checked = (items.video_mute == undefined ? true : items.video_mute);
+        delete items.video_mute;
         for (item in items) {
             document.getElementById(item.replace('_', '-')).checked = items[item];
         }
@@ -31,8 +33,7 @@ window.onload = function () {
     });
 
     chrome.storage.sync.get('auto', function (items) {
-        document.getElementById('auto').checked = items.auto;
-        document.getElementById('auto').onchange();
+        document.getElementById('auto').checked = (items.auto == undefined ? true : items.auto);
     });
 
     chrome.storage.sync.get('video_multiple', function (items) {
@@ -79,6 +80,15 @@ window.onload = function () {
         });
     }
     document.getElementById('video-multiple').onblur = function () {
+        if (localStorage['boom_multiple'] == undefined || localStorage['boom_multiple'] != 1) {
+            let msg = prompt('这是一个很危险的功能,建议不要进行调整,如果你想调整播放速度请在下方填写yes')
+            if (msg === null || msg !== 'yes') {
+                document.getElementById('video-multiple').value = 1;
+                return;
+            } else {
+                localStorage['boom_multiple'] = 1;
+            }
+        }
         chrome.storage.sync.set({
             'video_multiple': document.getElementById('video-multiple').value
         });

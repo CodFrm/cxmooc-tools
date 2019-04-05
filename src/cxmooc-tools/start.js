@@ -23,10 +23,12 @@ window.onload = function () {
             items.interval = items.interval >= 0 ? items.interval : 5;
             items.rand_answer = items.rand_answer || false;
             items.video_multiple = items.video_multiple || 1;
-            items.video_mute = items.video_mute || false;
+            items.video_mute =  items.video_mute == undefined ? true : items.video_mute;
+            items.auto = items.auto == undefined ? true : items.auto;
             //设置一下配置
             localStorage['rand-answer'] = items.rand_answer;
             localStorage['config'] = JSON.stringify(items);
+            console.log(items);
             common.injected(document, chrome.extension.getURL('src/mooc.js'));
         });
     })
