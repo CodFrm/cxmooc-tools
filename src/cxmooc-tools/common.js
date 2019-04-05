@@ -158,3 +158,14 @@ export function log(msg) {
     console.log("cxmooc-tools [" + (new Date()).format("yyyy-MM-dd hh:mm:ss") + "] " + msg)
     console.trace()
 }
+
+export function getImageBase64(img, ext) {
+    var canvas = document.createElement("canvas");
+    canvas.width = img.width;
+    canvas.height = img.height;
+    var ctx = canvas.getContext("2d");
+    ctx.drawImage(img, 0, 0, img.width, img.height);
+    var dataURL = canvas.toDataURL("image/" + ext); 
+    canvas = null;
+    return dataURL;
+}

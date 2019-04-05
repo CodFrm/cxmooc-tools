@@ -5,7 +5,6 @@ const common = require('../common');
 const until = require('./until');
 const Video = require('./video');
 const Topic = require('./topic');
-const image2base64 = require('image-to-base64');
 
 module.exports = function () {
     let self = this;
@@ -174,20 +173,20 @@ module.exports = function () {
             }, (config.interval || 0.1) * 60000);
         }
         //监控验证码
-        self.monitorVcode();
+        config.auto && self.monitorVcode();
     }
 
     this.monitorVcode = function () {
         //验证码监控加载
         let hookGetVarCode = window.getVarCode;
         window.getVarCode = function () {
+            let vcodeimg = document.createElement('img');
             let img = document.getElementById('imgVerCode');
-            image2base64('/img/code?' + new Date().getTime()).then(
-                (response) => {
-                    img.src = 'data:image/jpg;base64,' + response
-                    //TODO:验证码识别
-                }
-            )
+            $(vcodeimg).on('load', function () {
+                img.src = 'data:' + common.getImageBase64(vcodeimg, 'jpg');
+                //TODO:验证码识别
+            });
+            vcodeimg.src = '/img/code?' + new Date().getTime();
         }
     }
 
