@@ -53,7 +53,7 @@ npm run server
 
 扩展地址:[https://addons.mozilla.org/zh-CN/firefox/addon/%E8%B6%85%E6%98%9F%E6%85%95%E8%AF%BE%E5%B0%8F%E5%B7%A5%E5%85%B7/](https://addons.mozilla.org/zh-CN/firefox/addon/%E8%B6%85%E6%98%9F%E6%85%95%E8%AF%BE%E5%B0%8F%E5%B7%A5%E5%85%B7/)
 ### 解压安装
-为了方便安装,制作了一个浏览器打包的版本,请在[release页面](https://github.com/CodFrm/cxmooc-tools)查看详情
+为了方便安装,制作了一个浏览器打包的版本,请在[release页面](https://github.com/CodFrm/cxmooc-tools/release)查看详情
 
 ![](build/cxmooc-tools/img/4.jpg)
 

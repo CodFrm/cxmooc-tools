@@ -22,5 +22,8 @@ module.exports = {
             },
             chunks: ['popup']
         })
-    ]
+    ],
+    node: {
+        fs: 'empty'
+    }
 }
