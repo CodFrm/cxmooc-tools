@@ -99,7 +99,7 @@ module.exports = function () {
         }, 10000);
         
         $(self.video).on('ended', function () {
-            clearImmediate(pauseTimer);
+            clearInterval(pauseTimer);
             if (undefined != self.complete) {
                 self.complete();
             }

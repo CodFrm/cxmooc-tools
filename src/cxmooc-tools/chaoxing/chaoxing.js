@@ -11,6 +11,7 @@ module.exports = function () {
     this.list = new Array();
     this.index = 0;
     this.iframe = undefined;
+    this.document = undefined;
     this.tag = Math.random();
     this.complete_num = 0;
     /**
@@ -61,6 +62,7 @@ module.exports = function () {
      */
     function lazySwitch(callback) {
         //无任务
+        config.auto && self.notice(config.interval + "分钟后插件将自动切换下一节任务");
         let duration = (config.interval || 1) * 60000;
         setTimeout(function () {
             if (callback == undefined) {
@@ -158,6 +160,8 @@ module.exports = function () {
         let iframe = $('iframe');
         self.iframe = iframe;
         $(iframe).attr('tag', self.tag);
+        self.document = self.iframe[0].contentDocument
+        self.notice(config.auto ? '正在自动挂机中' : '');
         findIframe(iframe);
         for (let i = 0; i < self.list.length; i++) {
             self.list[i].init();
@@ -176,6 +180,7 @@ module.exports = function () {
             if (document.body.getScrollHeight() - document.body.getHeight() <= document.documentElement.scrollTop + 40) {
                 let next = $('.ml40.nodeItem.r');
                 if (next.length <= 0) {
+                    self.notice('看完啦~');
                     alert('看完啦~');
                 } else {
                     next[0].click();
@@ -187,6 +192,18 @@ module.exports = function () {
             timer = setTimeout(slide, common.randNumber(15, 25) * 1000);
         }
         slide();
+    }
+
+    this.notice = function (text) {
+        let el = undefined;
+        if ($(self.document.body).find('.prompt-line-cxmooc-notice').length > 0) {
+            el = $(self.document.body).find('.prompt-line-cxmooc-notice')[0];
+        } else {
+            el = until.createLine(text, 'cxmooc-notice');
+            $(el).css('text-align', 'center');
+            $(self.document.body).prepend(el);
+        }
+        $(el).text(text);
     }
 
     return this;

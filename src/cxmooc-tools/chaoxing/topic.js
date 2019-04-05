@@ -8,16 +8,16 @@ module.exports = function () {
     this.document = undefined;
     this.complete = undefined;
     this.loadover = undefined;
-    this.topicBtn = undefined;
+    this.hangBtn = undefined;
     this.pause = true;
 
     this.searchAnswer = function () {
         if (self.pause) {
             self.pause = false;
-            config.auto && $(self.topicBtn).text('暂停挂机');
+            config.auto && $(self.hangBtn).text('暂停挂机');
         } else {
             self.pause = true;
-            $(self.topicBtn).text('搜索题目');
+            $(self.hangBtn).text('搜索题目');
             return;
         }
         let TiMu = $(self.document).find('.Zy_TItle.clearfix');
@@ -39,7 +39,7 @@ module.exports = function () {
             }
             if (answer_null) {
                 alert('有题目没有找到答案,并且未设置随机答案,请手动填入');
-                $(self.topicBtn).text('搜索题目');
+                $(self.hangBtn).text('搜索题目');
                 self.pause = true;
                 return;
             }
@@ -90,16 +90,16 @@ module.exports = function () {
      * 创建按钮
      */
     this.createButton = function () {
-        self.topicBtn = until.createBtn('搜索题目', '点击自动从网络上的题库中查找答案');
+        self.hangBtn = until.createBtn('搜索题目', '点击自动从网络上的题库中查找答案');
         let prev = $(self.iframe).prev();
         if (prev.length <= 0) {
             prev = $(self.iframe).parent();
-            $(prev).prepend(self.topicBtn);
+            $(prev).prepend(self.hangBtn);
         } else {
-            $(prev).append(self.topicBtn);
+            $(prev).append(self.hangBtn);
         }
         until.dealTaskLabel(prev);
-        self.topicBtn.onclick = self.searchAnswer;
+        self.hangBtn.onclick = self.searchAnswer;
     }
 
     this.init = function () {
