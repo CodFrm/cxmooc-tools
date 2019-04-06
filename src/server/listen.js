@@ -4,36 +4,40 @@ const app = express();
 const moocModel = require('./mooc');
 const md5 = require("md5");
 const config = require('../config');
-var path = require('path');
-var fs = require('fs');
+const serverConfig = require('./config');
+const path = require('path');
+const fs = require('fs');
 const http = require('http');
 const https = require('https');
 const redisCli = require('./redis');
+const vcodePack = require('./vcode');
 
-var privateKey = fs.readFileSync(path.join(__dirname, './certificate/private.key'), 'utf8');
-var certificate = fs.readFileSync(path.join(__dirname, './certificate/file.crt'), 'utf8');
-var credentials = {
-    key: privateKey,
-    cert: certificate
-};
+const PORT = 8080;
+const SSLPORT = 8081;
+
 var httpServer = http.createServer(app);
-var httpsServer = https.createServer(credentials, app);
-var PORT = 8080;
-var SSLPORT = 8081;
-
 //创建http服务器  
 httpServer.listen(PORT, function () {
     console.log('HTTP Server is running on: http://localhost:%s', PORT);
 });
 
-//创建https服务器  
-httpsServer.listen(SSLPORT, function () {
-    console.log('HTTPS Server is running on: https://localhost:%s', SSLPORT);
-});
-
+if (serverConfig.env == 'prod') {
+    var privateKey = fs.readFileSync(path.join(__dirname, './certificate/private.key'), 'utf8');
+    var certificate = fs.readFileSync(path.join(__dirname, './certificate/file.crt'), 'utf8');
+    var credentials = {
+        key: privateKey,
+        cert: certificate
+    };
+    var httpsServer = https.createServer(credentials, app);
+    //创建https服务器  
+    httpsServer.listen(SSLPORT, function () {
+        console.log('HTTPS Server is running on: https://localhost:%s', SSLPORT);
+    });
+}
 
 var mooc = new moocModel();
 var redis = new redisCli();
+var vcode = new vcodePack();
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
@@ -65,7 +69,7 @@ app.get('/', function (req, res) {
     res.send(ret);
 })
 
-app.all('/(|v2/)answer', function (req, res, next) {
+app.use(function (req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");
     res.header("Access-Control-Allow-Headers", "Content-Type,Content-Length, Authorization, Accept,X-Requested-With");
     res.header("Access-Control-Allow-Methods", "PUT,POST,GET,DELETE,OPTIONS");
@@ -237,3 +241,16 @@ function selectAnswer(topic, res, where) {
         });
     }
 }
+
+app.post('/vcode', function (req, res) {
+    if (req.body.img.length <= 0) {
+        return res.send({ code: -1, msg: '' });
+    }
+    vcode.vcodesend(new Buffer(req.body.img, 'base64'), function (pack) {
+        if (pack != undefined && pack.data != undefined && pack.data != '') {
+            res.send({ code: 0, msg: pack.data });
+        } else {
+            res.send({ code: -1, msg: '' });
+        }
+    });
+});

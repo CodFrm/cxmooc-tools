@@ -5,6 +5,7 @@ const common = require('../common');
 const until = require('./until');
 const Video = require('./video');
 const Topic = require('./topic');
+const serverConfig = require('../../config');
 
 module.exports = function () {
     let self = this;
@@ -183,8 +184,12 @@ module.exports = function () {
             let vcodeimg = document.createElement('img');
             let img = document.getElementById('imgVerCode');
             $(vcodeimg).on('load', function () {
-                img.src = 'data:' + common.getImageBase64(vcodeimg, 'jpg');
+                let base64 = common.getImageBase64(vcodeimg, 'jpeg');
+                img.src = base64;
                 //TODO:验证码识别
+                common.post(serverConfig.url + 'vcode', 'img=' + base64.substr('data:image/jpeg;base64,'.length),false,function(ret){
+                    console.log(ret);
+                });
             });
             vcodeimg.src = '/img/code?' + new Date().getTime();
         }

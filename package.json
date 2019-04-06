@@ -30,6 +30,7 @@
   "dependencies": {
     "body-parser": "^1.18.3",
     "express": "^4.16.3",
+    "hashmap": "^2.3.0",
     "md5": "^2.2.1",
     "mongodb": "^3.1.10",
     "redis": "^2.8.0"

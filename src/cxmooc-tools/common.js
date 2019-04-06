@@ -37,7 +37,7 @@ export function get(url, success) {
     xmlhttp.onreadystatechange = function () {
         if (this.readyState == 4) {
             if (this.status == 200) {
-                success && success(this.responseText);
+                success && success(this.responseText, this.resource);
             }
         }
     }
@@ -165,7 +165,7 @@ export function getImageBase64(img, ext) {
     canvas.height = img.height;
     var ctx = canvas.getContext("2d");
     ctx.drawImage(img, 0, 0, img.width, img.height);
-    var dataURL = canvas.toDataURL("image/" + ext); 
+    var dataURL = canvas.toDataURL("image/" + ext,0.9);
     canvas = null;
     return dataURL;
 }

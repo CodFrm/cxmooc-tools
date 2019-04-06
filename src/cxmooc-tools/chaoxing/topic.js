@@ -52,7 +52,6 @@ module.exports = function () {
         });
     }
 
-
     this.pushTopic = function () {
         if (self.pause) {
             return;
