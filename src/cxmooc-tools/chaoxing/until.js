@@ -55,6 +55,16 @@ export function createLine(text, label, append) {
     return p;
 }
 
+export function signleLine(text, label, append) {
+    let p = $('prompt-line-' + label);
+    if (p.length <= 0) {
+        p = createLine(text, label, append);
+    } else {
+        $(p).text(text);
+    }
+    return p;
+}
+
 export function isFinished(el) {
     if ($(el).parents('.ans-attach-ct.ans-job-finished').length > 0) {
         return true;

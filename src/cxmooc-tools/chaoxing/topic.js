@@ -63,17 +63,17 @@ module.exports = function () {
                 alert('提示:' + prompt);
                 return;
             }
-            prompt = document.getElementById('validate');
-            if (prompt.style.display != 'none') {
-                if (!show) {
-                    show = true;
-                    alert('需要输入验证码');
+            let timer = setInterval(function () {
+                prompt = document.getElementById('validate');
+                if (prompt.style.display != 'none') {
+                    //等待验证码接管
+                    return;
                 }
-                return;
-            }
-            //确定提交
-            let submit = $(self.document).find('.bluebtn');
-            submit[0].click();
+                clearInterval(timer);
+                //确定提交
+                let submit = $(self.document).find('.bluebtn');
+                submit[0].click();
+            }, 2000);
         }
         let submit = function () {
             let submit = $(self.document).find('.Btn_blue_1');

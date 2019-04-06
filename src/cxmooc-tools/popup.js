@@ -34,6 +34,7 @@ window.onload = function () {
 
     chrome.storage.sync.get('auto', function (items) {
         document.getElementById('auto').checked = (items.auto == undefined ? true : items.auto);
+        document.getElementById('auto').onchange();
     });
 
     chrome.storage.sync.get('video_multiple', function (items) {

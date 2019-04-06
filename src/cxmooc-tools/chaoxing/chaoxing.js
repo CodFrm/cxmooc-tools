@@ -5,7 +5,7 @@ const common = require('../common');
 const until = require('./until');
 const Video = require('./video');
 const Topic = require('./topic');
-const serverConfig = require('../../config');
+const Vcode = require('./vcode');
 
 module.exports = function () {
     let self = this;
@@ -15,6 +15,7 @@ module.exports = function () {
     this.document = undefined;
     this.tag = Math.random();
     this.complete_num = 0;
+    this.vcode = new Vcode();
     /**
      * 查找iframe
      * @param iframeElement 
@@ -92,7 +93,7 @@ module.exports = function () {
                 switchTask();
             } else {
                 //判断是否切换了页面
-                if ($(self.iframe).attr('tag') != self.tag) {
+                if (localStorage['now_tag'] != self.tag) {
                     return;
                 }
                 self.complete_num++;
@@ -106,7 +107,7 @@ module.exports = function () {
             return;
         }
         //判断是否切换了页面
-        if ($(self.iframe).attr('tag') != self.tag) {
+        if (localStorage['now_tag'] != self.tag) {
             return;
         }
         if (self.list[self.index] != undefined) {
@@ -157,10 +158,10 @@ module.exports = function () {
     }
 
     this.studentstudy = function () {
-        common.log("studentstudy load")
+        common.log("studentstudy load");
         let iframe = $('iframe');
         self.iframe = iframe;
-        $(iframe).attr('tag', self.tag);
+        localStorage['now_tag'] = self.tag;
         self.document = self.iframe[0].contentDocument
         self.notice(config.auto ? '正在自动挂机中' : '');
         findIframe(iframe);
@@ -172,26 +173,6 @@ module.exports = function () {
             setTimeout(function () {
                 switchTask();
             }, (config.interval || 0.1) * 60000);
-        }
-        //监控验证码
-        config.auto && self.monitorVcode();
-    }
-
-    this.monitorVcode = function () {
-        //验证码监控加载
-        let hookGetVarCode = window.getVarCode;
-        window.getVarCode = function () {
-            let vcodeimg = document.createElement('img');
-            let img = document.getElementById('imgVerCode');
-            $(vcodeimg).on('load', function () {
-                let base64 = common.getImageBase64(vcodeimg, 'jpeg');
-                img.src = base64;
-                //TODO:验证码识别
-                common.post(serverConfig.url + 'vcode', 'img=' + base64.substr('data:image/jpeg;base64,'.length),false,function(ret){
-                    console.log(ret);
-                });
-            });
-            vcodeimg.src = '/img/code?' + new Date().getTime();
         }
     }
 

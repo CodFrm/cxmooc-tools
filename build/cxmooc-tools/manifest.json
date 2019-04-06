@@ -31,7 +31,8 @@
                 "*://*/work/doHomeWorkNew?*",
                 "*://*/work/selectWorkQuestionYiPiYue?*",
                 "*://*/exam/test/reVersionTestStartNew?*",
-                "*://*/ztnodedetailcontroller/visitnodedetail?*"
+                "*://*/ztnodedetailcontroller/visitnodedetail?*",
+                "*://*/antispiderShowVerify.ac"
             ],
             "js": [
                 "src/start.js"
