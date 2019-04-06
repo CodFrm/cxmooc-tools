@@ -44,23 +44,9 @@ app.use(bodyParser.urlencoded({
     extended: true
 }));
 
-app.all('/player/*', function (req, res, next) {
-    res.header("Access-Control-Allow-Origin", "*");
-    res.header("Access-Control-Allow-Headers", "X-Requested-With");
-    res.header("Access-Control-Allow-Methods", "PUT,POST,GET,DELETE,OPTIONS");
-    next();
-});
-
 app.use(express.static(path.join(__dirname, 'static'), {
     maxage: '7d'
 }));
-
-//在线人数中间件
-app.use(function (req, res, next) {
-    var ip = getClientIp(req);
-    redis.onlineAdd(ip);
-    next();
-});
 
 app.get('/', function (req, res) {
     ret = '<h2>欢迎使用超星慕课刷课插件</h2><p>这个服务器将会记录你正确的答题答案,并不会记录你的任何账号信息</p>';
@@ -69,7 +55,11 @@ app.get('/', function (req, res) {
     res.send(ret);
 })
 
+//在线人数中间件+允许跨域
 app.use(function (req, res, next) {
+    var ip = getClientIp(req);
+    redis.onlineAdd(ip);
+
     res.header("Access-Control-Allow-Origin", "*");
     res.header("Access-Control-Allow-Headers", "Content-Type,Content-Length, Authorization, Accept,X-Requested-With");
     res.header("Access-Control-Allow-Methods", "PUT,POST,GET,DELETE,OPTIONS");
@@ -79,6 +69,13 @@ app.use(function (req, res, next) {
         next();
     }
 })
+
+app.all('/player/*', function (req, res, next) {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "X-Requested-With");
+    res.header("Access-Control-Allow-Methods", "PUT,POST,GET,DELETE,OPTIONS");
+    next();
+});
 
 app.post('/answer', function (req, res) {
     var ip = getClientIp(req);
@@ -241,6 +238,24 @@ function selectAnswer(topic, res, where) {
         });
     }
 }
+
+//api统计
+app.use('/vcode', function (req, res, next) {
+    var ip = getClientIp(req);
+    redis.callStatis('vcode', req);
+    //限制,ua 12,ip 100
+    let ua = req.get('User-Agent');
+    if (ua == undefined || ua == '') {
+        return res.send({ code: -1, msg: '' });
+    }
+    redis.apiLimit('vcode', ua, 12, ip, function (uanum, ipnum) {
+        if (uanum > 12 || ipnum > 100) {
+            res.send({ code: -1, msg: '超出限制' });
+        } else {
+            next();
+        }
+    });
+});
 
 app.post('/vcode', function (req, res) {
     if (req.body.img.length <= 0) {
