@@ -91,18 +91,22 @@ module.exports = function () {
             }
         });
 
+        let end = false;
         let pauseTimer = setInterval(function () {
             //以防万一的暂停- -
-            if (!self.pause) {
+            if (!self.pause && !end) {
                 self.video.paused && self.video.play();
+            } else {
+                clearInterval(pauseTimer);
             }
         }, 10000);
-        
+
         $(self.video).on('ended', function () {
-            clearInterval(pauseTimer);
+            end = true;
             if (undefined != self.complete) {
                 self.complete();
             }
+            clearInterval(pauseTimer);
         });
     }
 
