@@ -90,19 +90,18 @@ module.exports = function () {
                 }
             }
         });
-
-        let end = false;
+        let tag = Math.random();
+        localStorage['now_video_tag'] = tag;
         let pauseTimer = setInterval(function () {
             //以防万一的暂停- -
-            if (!self.pause && !end) {
+            if (!self.pause && localStorage['now_video_tag'] == tag) {
                 self.video.paused && self.video.play();
-            } else {
+            } else if (localStorage['now_video_tag'] != tag) {
                 clearInterval(pauseTimer);
             }
         }, 10000);
 
         $(self.video).on('ended', function () {
-            end = true;
             if (undefined != self.complete) {
                 self.complete();
             }
