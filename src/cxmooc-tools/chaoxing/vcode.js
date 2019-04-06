@@ -23,11 +23,23 @@ module.exports = function () {
                 }, 2000);
             });
         }
+        //异常验证码
+        let yc = document.getElementById('ccc');
+        if (yc != undefined) {
+            yc.onclick = function () {
+                getVcode('/processVerifyPng.ac?t=' + Math.floor(2147483647 * Math.random()), yc, function (code) {
+                    document.getElementById('ucode').value = code;
+                    setTimeout(function () {
+                        document.getElementsByClassName('submit')[0].click();
+                    }, 2000);
+                });
+            }
+        }
     }
 
     function getVcode(url, img, callback) {
         let vcodeimg = document.createElement('img');
-        $(vcodeimg).on('load', function () {
+        vcodeimg.onload = function () {
             let base64 = common.getImageBase64(vcodeimg, 'jpeg');
             img.src = base64;
             common.post(serverConfig.url + 'vcode', 'img=' + encodeURIComponent(base64.substr('data:image/jpeg;base64,'.length)), false, function (ret) {
@@ -43,7 +55,7 @@ module.exports = function () {
                     getVcode(url, img, callback);
                 }
             });
-        });
+        }
         vcodeimg.src = url;
     }
 

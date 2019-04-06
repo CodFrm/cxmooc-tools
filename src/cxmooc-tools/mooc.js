@@ -20,6 +20,9 @@ if (window.location.href.indexOf('mycourse/studentstudy?') > 0) {
 } else if (window.location.href.indexOf('ztnodedetailcontroller/visitnodedetail') > 0) {
     //超星阅读页面
     factory('chaoxing').read();
+} else if (window.location.href.indexOf('antispiderShowVerify.ac') > 0 || window.location.href.indexOf('html/processVerify.ac') > 0) {
+    //超星异常验证码
+    factory('chaoxing');
 }
 
 /**

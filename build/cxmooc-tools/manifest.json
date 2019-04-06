@@ -32,7 +32,8 @@
                 "*://*/work/selectWorkQuestionYiPiYue?*",
                 "*://*/exam/test/reVersionTestStartNew?*",
                 "*://*/ztnodedetailcontroller/visitnodedetail?*",
-                "*://*/antispiderShowVerify.ac"
+                "*://*/antispiderShowVerify.ac?*",
+                "*://*/html/processVerify.ac?*"
             ],
             "js": [
                 "src/start.js"
