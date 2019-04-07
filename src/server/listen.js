@@ -245,12 +245,12 @@ app.use('/vcode', function (req, res, next) {
     redis.callStatis('vcode', req);
     //限制,ua 12,ip 100
     let ua = req.get('User-Agent');
-    if (ua == undefined || ua == '') {
-        return res.send({ code: -1, msg: '' });
+    if (!ua) {
+        return res.send({ code: -1, msg: 'ua null' });
     }
     redis.apiLimit('vcode', ua, 12, ip, function (uanum, ipnum) {
         if (uanum > 12 || ipnum > 100) {
-            res.send({ code: -1, msg: '超出限制' });
+            res.send({ code: -2, msg: '超出限制' });
         } else {
             next();
         }
@@ -259,13 +259,13 @@ app.use('/vcode', function (req, res, next) {
 
 app.post('/vcode', function (req, res) {
     if (req.body.img.length <= 0) {
-        return res.send({ code: -1, msg: '' });
+        return res.send({ code: -1, msg: 'img null' });
     }
     vcode.vcodesend(new Buffer(req.body.img, 'base64'), function (pack) {
         if (pack != undefined && pack.data != undefined && pack.data != '') {
             res.send({ code: 0, msg: pack.data });
         } else {
-            res.send({ code: -1, msg: '' });
+            res.send({ code: -1, msg: 'error' });
         }
     });
 });

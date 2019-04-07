@@ -7,12 +7,11 @@ module.exports = function () {
     this.monitorVcode = function () {
         //验证码监控加载
         //作业处验证码
-        let hookGetVarCode = window.getVarCode;
         window.getVarCode = function () {
             let notic = until.signleLine('cxmooc自动打码中...', 'dama', $('#sub').parents('td'));
             let img = document.getElementById('imgVerCode');
             getVcode('/img/code?' + new Date().getTime(), img, function (code) {
-                if (code == undefined) {
+                if (code === undefined) {
                     $(notic).text('无打码权限或服务器故障');
                     return;
                 }
@@ -28,6 +27,10 @@ module.exports = function () {
         if (yc != undefined) {
             yc.onclick = function () {
                 getVcode('/processVerifyPng.ac?t=' + Math.floor(2147483647 * Math.random()), yc, function (code) {
+                    if (code === undefined) {
+                        alert('打码已超上限');
+                        return;
+                    }
                     document.getElementById('ucode').value = code;
                     setTimeout(function () {
                         document.getElementsByClassName('submit')[0].click();
@@ -47,9 +50,7 @@ module.exports = function () {
                 if (json.code == -2) {
                     callback();
                     //TODO:无权限
-                    return;
-                }
-                if (json.msg != undefined && json.msg != '') {
+                } else if (json.msg) {
                     callback(json.msg);
                 } else {
                     getVcode(url, img, callback);
