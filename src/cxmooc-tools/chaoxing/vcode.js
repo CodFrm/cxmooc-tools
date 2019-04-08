@@ -10,9 +10,9 @@ module.exports = function () {
         window.getVarCode = function () {
             let notic = until.signleLine('cxmooc自动打码中...', 'dama', $('#sub').parents('td'));
             let img = document.getElementById('imgVerCode');
-            getVcode('/img/code?' + new Date().getTime(), img, function (code) {
+            getVcode('/img/code?' + new Date().getTime(), img, function (code, msg) {
                 if (code === undefined) {
-                    $(notic).text('无打码权限或服务器故障');
+                    $(notic).text(msg);
                     return;
                 }
                 $(notic).text('提交验证码');
@@ -26,9 +26,9 @@ module.exports = function () {
         let yc = document.getElementById('ccc');
         if (yc != undefined) {
             yc.onclick = function () {
-                getVcode('/processVerifyPng.ac?t=' + Math.floor(2147483647 * Math.random()), yc, function (code) {
+                getVcode('/processVerifyPng.ac?t=' + Math.floor(2147483647 * Math.random()), yc, function (code, msg) {
                     if (code === undefined) {
-                        alert('打码已超上限');
+                        alert(msg);
                         return;
                     }
                     document.getElementById('ucode').value = code;
@@ -37,6 +37,27 @@ module.exports = function () {
                     }, 2000);
                 });
             }
+        }
+        //保障账号安全验证码
+        window.chapterVerifyCode = function () {
+            let notic = until.signleLine('cxmooc自动打码中...', 'dama', $('.DySearch'));
+            $(notic).css('float', 'left');
+            let img = $('.fl[name=chapterNumVerCode]');
+            if (img.length <= 0) {
+                return;
+            }
+            img = img[0];
+            getVcode('/verifyCode/studychapter?' + (new Date()).valueOf(), img, function (code, msg) {
+                if (code === undefined) {
+                    $(notic).text(msg);
+                    return;
+                }
+                $(notic).text(msg);
+                $('input#identifyCodeRandom').val(code);
+                setTimeout(function () {
+                    continueGetTeacherAjax();
+                }, 2000);
+            });
         }
     }
 
@@ -48,7 +69,7 @@ module.exports = function () {
             common.post(serverConfig.url + 'vcode', 'img=' + encodeURIComponent(base64.substr('data:image/jpeg;base64,'.length)), false, function (ret) {
                 let json = JSON.parse(ret)
                 if (json.code == -2) {
-                    callback();
+                    callback(undefined, json.msg);
                     //TODO:无权限
                 } else if (json.msg) {
                     callback(json.msg);

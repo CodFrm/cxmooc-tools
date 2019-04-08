@@ -4,7 +4,7 @@ heroImage:
 heroText: 超星慕课小工具
 tagline: 方便 快捷 安全
 actionText: 开始使用
-actionLink: /zh/1-Browser extension/
+actionLink: /1-Browser extension/
 features:
 - title: 功能齐全
   details: 支持视频挂机，自动答题，自动打码
