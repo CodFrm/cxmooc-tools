@@ -9,6 +9,7 @@
 // @match        *://*/antispiderShowVerify.ac?*
 // @match        *://*/html/processVerify.ac?*
 // @grant        none
+// @license      MIT
 // ==/UserScript==
 
 let config = {

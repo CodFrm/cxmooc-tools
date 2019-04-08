@@ -5,12 +5,14 @@ common.removeinjected(document);
 global.config = JSON.parse(localStorage['config']);
 global.timer = new Array();
 if (window.location.href.indexOf('mycourse/studentstudy?') > 0) {
+    //超星异常验证码
+    let cx = factory('chaoxing');
     //超星学习页面
     document.addEventListener('load', function (ev) {
         var ev = ev || event;
         var _this = ev.srcElement || ev.target;
         if (_this.id == 'iframe') {
-            factory('chaoxing').studentstudy();
+            cx.studentstudy();
         }
     }, true);
     var frame = document.getElementById('iframe');
