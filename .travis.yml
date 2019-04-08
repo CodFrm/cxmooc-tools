@@ -18,7 +18,7 @@ before_install:
  - export TZ='Asia/Shanghai'
  # - openssl aes-256-cbc -K $encrypted_b7d8153e3775_key -iv $encrypted_b7d8153e3775_iv -in ./build/cxmooc-tools.pem.enc -out ./build/cxmooc-tools.pem -d
  - npm install
- - npm install -g vuepress@next
+ - npm install -D vuepress@next
  - npm run docs:build
 script: 
  #- npm run pack
