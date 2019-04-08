@@ -1,6 +1,7 @@
 node_modules
 build/cxmooc-tools/src/*.*
 build/tampermonkey.js
+docs/.vuepress/dist/
 coverage
 typings
 typings.json
