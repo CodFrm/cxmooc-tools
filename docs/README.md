@@ -4,7 +4,7 @@ heroImage:
 heroText: 超星慕课小工具
 tagline: 方便 快捷 安全
 actionText: 开始使用
-actionLink: /zh/1-Browser extension/
+actionLink: /1-Browser extension/
 features:
 - title: 功能齐全
   details: 支持视频挂机，自动答题，自动打码
@@ -16,7 +16,7 @@ footer: MIT Licensed | Copyright © 2018 CXmooc-tool developer Team
 ---
 
 ## 关于超星慕课小工具
-`cxmooc-tools`，一个可以辅助观看超星慕课的浏览器扩展，支持自动观看，自动答题等功能。兼容主流浏览器以及`Greasy Fork`脚本。
+`cxmooc-tools`，一个可以辅助观看超星慕课的浏览器扩展，支持自动观看，自动答题等功能。兼容主流浏览器以及`Tampermonkey`脚本。
 
 ### 适配列表
  * [x] Chrome for PC
