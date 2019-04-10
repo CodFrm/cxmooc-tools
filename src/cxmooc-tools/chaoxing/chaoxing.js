@@ -9,7 +9,7 @@ const Vcode = require('./vcode');
 
 module.exports = function () {
     let self = this;
-    this.list = new Array();
+    this.list = undefined;
     this.index = 0;
     this.iframe = undefined;
     this.document = undefined;
@@ -159,6 +159,7 @@ module.exports = function () {
 
     this.studentstudy = function () {
         common.log("studentstudy load");
+        varInit();
         let iframe = $('iframe');
         self.iframe = iframe;
         localStorage['now_tag'] = self.tag;
@@ -174,6 +175,13 @@ module.exports = function () {
                 switchTask();
             }, (config.interval || 0.1) * 60000);
         }
+    }
+
+    function varInit() {
+        self.list = new Array();
+        self.index = 0;
+        self.tag = Math.random();
+        self.complete_num = 0;
     }
 
     this.read = function () {
