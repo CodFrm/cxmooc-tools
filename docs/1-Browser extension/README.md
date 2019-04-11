@@ -18,7 +18,7 @@ title: 浏览器插件
 
 *注意，本插件支持Firefox for Mobile*
 
-为了方便安装,我们还提供了一个浏览器打包的版本,请在[release页面](https://github.com/CodFrm/cxmooc-tools/release)查看详情
+为了方便安装,我们还提供了一个浏览器打包的版本,请在[releases页面](https://github.com/CodFrm/cxmooc-tools/releases)查看详情
 
 ![](/img/4.webp)
 
