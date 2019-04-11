@@ -4,18 +4,16 @@
 ![GitHub tag (latest SemVer)](https://img.shields.io/github/tag/codfrm/cxmooc-tools.svg?label=version)
 
 ## 关于超星慕课小工具
-`cxmooc-tools`，一个可以辅助观看超星慕课的浏览器扩展，支持自动观看，自动答题等功能。兼容主流浏览器以及`Greasy Fork`脚本。
+`cxmooc-tools`，一个可以辅助观看超星慕课的浏览器扩展，支持自动观看，自动答题等功能。兼容主流浏览器以及`Tampermonkey`脚本。
 
-### 适配列表
+### 浏览器适配列表
  * [x] Chrome for PC
  * [x] Firefox for PC
  * [x] Firefox for Mobile
  * [x] QQ 浏览器 for PC
  * [x] Tampermonkey
 
-
 ### 功能支持列表
-
 * [x] 视频挂机
 * [x] 视频秒过
 * [x] 视频倍速
@@ -23,21 +21,16 @@
 * [x] 自动答题
 * [x] 自动阅读
 * [x] 自动填写验证码
-* [ ] 视频内题目填充
 * [ ] 考试答题
 
-
 ## 参与开发
-
-> 如果你想参与开发,请阅读下面内容,如果只是使用本插件,请移步**[使用文档](https://cx-doc.xloli.top/)**
+> 如果你想参与开发,请阅读下面内容,如果只是使用本插件,请移步 **[使用文档](https://cx-doc.xloli.top/)**
 
 ### 环境:
-
 * Node.js
 * webpack
 
 ### Build
-
 ```bash
 git clone https://github.com/CodFrm/cxmooc-tools.git
 cd cxmooc-tools
@@ -60,13 +53,11 @@ npm run server
 ```
 
 ### 贡献流程
-
 1. `Fork Repo`
 2. 发起`Pull Request`，并简要描述更改内容。
 3. `Travis CI 检查通过`
 4. `CodeReview`
 5. 合并到项目仓库
-
 
 ## 题库
 1. 题库大部分答案来源于用户答题后的页面采集,**所以需要有人第一次做过**,后来的人才能搜索到题目。
@@ -79,8 +70,8 @@ npm run server
 
 ## 关于反馈
 您可以通过Issues反馈，反馈时请尽量提供足够明确的信息。
-## 其他
 
+## 其他
 GitHub项目地址:[https://github.com/CodFrm/cxmooc-tools](https://github.com/CodFrm/cxmooc-tools)
 
 Blog地址:[http://blog.icodef.com/2018/01/25/1304](http://blog.icodef.com/2018/01/25/1304)
@@ -88,7 +79,6 @@ Blog地址:[http://blog.icodef.com/2018/01/25/1304](http://blog.icodef.com/2018/
 QQ群:[614202391](https://shang.qq.com/wpa/qunwpa?idkey=9bddd2564d84bd999940de422d1c0c70f87ecaf02fe9d7c60389fc2b376179eb)
 
 ## 免责声明
-
 本项目完全开源，免费，仅供技术学习和交流，**开发者团队并未授权任何组织、机构以及个人将其用于商业或者盈利性质的活动。也从未使用本项目进行任何盈利性活动。未来也不会将其用于开展营利性业务。个人或者组织，机构如果使用本项目产生的各类纠纷，法律问题，均由其本人承担。**
 
 如果您开始使用本项目，即视为同意项目免责声明中的一切条款，条款更新不再另行通知。**开发者仅接受和捐赠者之间不构成购买或雇佣关系的捐赠或者赞赏。** 如果您选择捐赠此项目，我们会列出一份捐赠者名单（包含捐赠金额，日期），但不会公布您的捐赠账号。如果您选择捐赠，那么我将视之为您完全自愿的，没有任何雇佣，购买关系的捐赠。

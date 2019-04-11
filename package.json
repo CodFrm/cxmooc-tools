@@ -1,6 +1,6 @@
 {
   "name": "cxmooc-tools",
-  "version": "2.0.1",
+  "version": "2.0.6",
   "description": "> 一个快速学习超星慕课的chrome扩展工具(੧ᐛ੭挂科模式,启动)\r > 初次开发chrome扩展,有兴趣的朋友可以一起来哦",
   "main": "mooc.js",
   "scripts": {

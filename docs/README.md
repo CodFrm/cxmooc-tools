@@ -18,22 +18,20 @@ footer: MIT Licensed | Copyright © 2018 CXmooc-tool developer Team
 ## 关于超星慕课小工具
 `cxmooc-tools`，一个可以辅助观看超星慕课的浏览器扩展，支持自动观看，自动答题等功能。兼容主流浏览器以及`Tampermonkey`脚本。
 
-### 适配列表
- * [x] Chrome for PC
- * [x] Firefox for PC
- * [x] Firefox for Mobile
- * [x] QQ 浏览器 for PC
- * [x] Tampermonkey
-
+### 浏览器适配列表
+ * Chrome for PC
+ * Firefox for PC
+ * Firefox for Mobile
+ * QQ 浏览器 for PC
+ * Tampermonkey
 
 ### 功能支持列表
 
-* [x] 视频挂机
-* [x] 视频秒过
-* [x] 视频倍速
-* [x] 静音播放
-* [x] 自动答题
-* [x] 自动阅读
-* [x] 自动填写验证码
-* [ ] 视频内题目填充
-* [ ] 考试答题
+* 视频挂机
+* 视频秒过
+* 视频倍速
+* 静音播放
+* 自动答题
+* 自动阅读
+* 自动填写验证码
+
