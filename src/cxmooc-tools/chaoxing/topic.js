@@ -1,5 +1,5 @@
 const common = require('../common');
-const until = require('./until');
+const until = require('./util');
 const moocServer = require('../../config');
 
 module.exports = function () {

@@ -56,7 +56,7 @@ export function createLine(text, label, append) {
 }
 
 export function signleLine(text, label, append) {
-    let p = $('prompt-line-' + label);
+    let p = $('.prompt-line-' + label);
     if (p.length <= 0) {
         p = createLine(text, label, append);
     } else {

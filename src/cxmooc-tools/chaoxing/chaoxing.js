@@ -2,7 +2,7 @@
  * 超星刷课功能集合
  */
 const common = require('../common');
-const until = require('./until');
+const util = require('./util');
 const Video = require('./video');
 const Topic = require('./topic');
 const Vcode = require('./vcode');
@@ -88,7 +88,7 @@ module.exports = function () {
         if (config.answer_ignore && self.list[self.index] instanceof Topic) {
             switchTask();
         } else {
-            if (until.isFinished(event.iframe) || !until.isTask(event.iframe)) {
+            if (util.isFinished(event.iframe) || !util.isTask(event.iframe)) {
                 //完成了,或者非任务点
                 switchTask();
             } else {
@@ -209,7 +209,7 @@ module.exports = function () {
         if ($(self.document.body).find('.prompt-line-cxmooc-notice').length > 0) {
             el = $(self.document.body).find('.prompt-line-cxmooc-notice')[0];
         } else {
-            el = until.createLine(text, 'cxmooc-notice');
+            el = util.createLine(text, 'cxmooc-notice');
             $(el).css('text-align', 'center');
             $(self.document.body).prepend(el);
         }

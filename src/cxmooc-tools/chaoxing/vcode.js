@@ -1,6 +1,6 @@
 const common = require('../common');
 const serverConfig = require('../../config');
-const until = require('./until');
+const until = require('./util');
 
 module.exports = function () {
     let self = this;
