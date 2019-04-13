@@ -70,6 +70,7 @@ module.exports = function () {
             common.post(serverConfig.url + 'vcode', 'img=' + encodeURIComponent(base64.substr('data:image/jpeg;base64,'.length)), false, function (ret) {
                 let json = JSON.parse(ret)
                 if (json.code == -2) {
+                    alert('进入打码已超限制,请手动输入');
                     callback(undefined, json.msg);
                     //TODO:无权限
                 } else if (json.msg) {
@@ -77,6 +78,9 @@ module.exports = function () {
                 } else {
                     getVcode(url, img, callback);
                 }
+            }).error(function () {
+                alert('网络请求失败,请手动输入验证码');
+                callback(undefined, '网络请求失败');
             });
         }
         vcodeimg.src = url;

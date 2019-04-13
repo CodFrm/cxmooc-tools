@@ -257,9 +257,9 @@ app.use('/vcode', function (req, res, next) {
     if (!ua) {
         return res.send({ code: -1, msg: 'ua null' });
     }
-    redis.vtoken(req.body.token || '', function (val) {
-        if (val) {
-            redis.callStatis('vcode-vtoken', req.body.token);
+    redis.vtoken(req.header('Authorization') || '', function (val) {
+        if (val > 0) {
+            redis.callStatis('vcode-vtoken', req.header('Authorization'));
             next();
         } else {
             redis.apiLimit('vcode', ua, 12, ip, function (uanum, ipnum) {

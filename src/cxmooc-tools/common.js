@@ -27,17 +27,16 @@ export function removeinjected(doc) {
  * @param {*} url 
  */
 export function get(url, success) {
-    try {
-        var xmlhttp = createRequest();
-        xmlhttp.open("GET", url, true);
-        xmlhttp.send();
-    } catch (e) {
-        return false;
-    }
+    let xmlhttp = createRequest();
+    xmlhttp.open("GET", url, true);
+    xmlhttp.send();
+
     xmlhttp.onreadystatechange = function () {
         if (this.readyState == 4) {
             if (this.status == 200) {
                 success && success(this.responseText, this.resource);
+            } else {
+                xmlhttp.errorCallback && xmlhttp.errorCallback(this);
             }
         }
     }
@@ -51,22 +50,22 @@ export function get(url, success) {
  * @param {*} json 
  */
 export function post(url, data, json = true, success) {
-    try {
-        var xmlhttp = createRequest();
-        xmlhttp.open("POST", url, true);
-        if (json) {
-            xmlhttp.setRequestHeader("Content-Type", "application/json");
-        } else {
-            xmlhttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-        }
-        xmlhttp.send(data);
-    } catch (e) {
-        return false;
+    let xmlhttp = createRequest();
+    xmlhttp.open("POST", url, true);
+    xmlhttp.setRequestHeader('Authorization', global.vtoken || '');
+    if (json) {
+        xmlhttp.setRequestHeader("Content-Type", "application/json");
+    } else {
+        xmlhttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
     }
+    xmlhttp.send(data);
+
     xmlhttp.onreadystatechange = function () {
         if (this.readyState == 4) {
             if (this.status == 200) {
                 success && success(this.responseText);
+            } else {
+                xmlhttp.errorCallback && xmlhttp.errorCallback(this);
             }
         }
     }
@@ -123,6 +122,10 @@ function createRequest() {
         xmlhttp = new XMLHttpRequest();
     } else {
         xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+    }
+    xmlhttp.error = function (callback) {
+        xmlhttp.errorCallback = callback;
+        return xmlhttp;
     }
     return xmlhttp;
 }

@@ -31,9 +31,9 @@ module.exports = function () {
     }
     this.vtoken = function (token, callback) {
         if(!token){
-            return callback();
+            return callback(0);
         }
-        client.get('cxmooc:vtoken:' + token, function (err, res) {
+        client.decr('cxmooc:vtoken:' + token, function (err, res) {
             callback(res);
         });
     }

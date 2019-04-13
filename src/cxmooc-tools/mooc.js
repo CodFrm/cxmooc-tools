@@ -3,6 +3,7 @@ const chaoxing = require('./chaoxing/chaoxing');
 
 common.removeinjected(document);
 global.config = JSON.parse(localStorage['config']);
+global.vtoken = localStorage['vtoken'] || 'user';
 global.timer = new Array();
 global.signle = {};
 if (window.location.href.indexOf('mycourse/studentstudy?') > 0) {
