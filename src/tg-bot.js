@@ -13,7 +13,7 @@ const tgBot = new TelegramBot(botToken, { polling: false });
 exec('git log --pretty=format:"%s" ' + (branch == tag ? tag + '..' : commit_range), (err, stdout, stderr) => {
     let sendText = '';
     let end = '';
-    if (branch == 'master' && tag) {
+    if (branch == tag) {
         sendText += "*有一个新版本发布*\n";
         end = '\n[前去release查看](https://github.com/CodFrm/cxmooc-tools/releases)';
     } else {
