@@ -31,8 +31,6 @@ deploy:
       - build/*.crx
       - build/*.zip
     skip_cleanup: true
-    name: $TRAVIS_TAG
-    body: $(git log --pretty=format:"%s" ${TRAVIS_TAG}..)
     on:
       tags: true
       branch: master

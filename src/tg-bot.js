@@ -10,7 +10,7 @@ const tag = process.env.TRAVIS_TAG || false;
 
 const tgBot = new TelegramBot(botToken, { polling: false });
 
-exec('git log --pretty=format:"%s" ' + (branch == 'master' && tag ? tag + '..' : commit_range), (err, stdout, stderr) => {
+exec('git log --pretty=format:"%s" ' + (branch == tag ? tag + '..' : commit_range), (err, stdout, stderr) => {
     let sendText = '';
     let end = '';
     if (branch == 'master' && tag) {
