@@ -38,6 +38,7 @@ deploy:
     body: $BODY
     on:
       tags: true
+      branch: master
       
   - provider: pages
     skip_cleanup: true
