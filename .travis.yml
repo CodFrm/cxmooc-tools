@@ -14,10 +14,6 @@ cache:
   directories:
     - node_modules
 
-env:
-  - BOT_TOKEN=$BOT_TOKEN
-  - GROUP_ID=$GROUP_ID
-
 before_install:
  - export TZ='Asia/Shanghai'
  - openssl aes-256-cbc -K $encrypted_b7d8153e3775_key -iv $encrypted_b7d8153e3775_iv -in ./build/cxmooc-tools.pem.enc -out ./build/cxmooc-tools.pem -d
@@ -28,25 +24,36 @@ script:
  - cd build/cxmooc-tools && zip ../cxmooc-tools.zip -r ./ && cd ../../
 
 deploy:
-  provider: releases
-  api_key: $GITHUB_TOKEN
-  file_glob: true
-  file: 
-    - build/tampermonkey.js
-    - build/*.crx
-    - build/*.zip
-  skip_cleanup: true
-  # draft: true
-  on:
-    tags: true
+  - provider: releases
+    api_key: $GITHUB_TOKEN
+    file_glob: true
+    file: 
+      - build/tampermonkey.js
+      - build/*.crx
+      - build/*.zip
+    skip_cleanup: true
+    # draft: true
+    on:
+      tags: true
+      
+  - provider: pages
+    skip_cleanup: true
+    committer-from-gh: true
+    github_token: $GITHUB_TOKEN
+    local_dir: docs/.vuepress/dist
+    keep-history: true
+    target-branch: gh-pages
+    on:
+      branch: master
 
-deploy:
-  provider: pages
-  skip_cleanup: true
-  committer-from-gh: true
-  github_token: $GITHUB_TOKEN
-  local_dir: docs/.vuepress/dist
-  keep-history: true
-  target-branch: gh-pages
-  on:
-    branch: master
+  - provider: script
+    script: node src/tg-bot.js
+    on:
+      all_branches: true
+      condition: $TRAVIS_BRANCH =~ ^master|develop$
+
+  - provider: npm
+    email: $NPM_EMAIL
+    api_key: $NPM_KEY
+    on:
+      tags: true
