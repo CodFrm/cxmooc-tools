@@ -5,12 +5,12 @@
   "main": "mooc.js",
   "scripts": {
     "test": "echo \"Hello,World\nDeveloper Blog:blog.icodef.com\" && exit 1",
-    "build": "webpack --mode production --config webpack.prod.js",
-    "dev": "webpack --mode development --config webpack.dev.js",
+    "build": "node_modules/.bin/webpack --mode production --config webpack.prod.js",
+    "dev": "node_modules/.bin/webpack --mode development --config webpack.dev.js",
     "server": "node src/server/listen.js",
     "pack": "npm run build && node src/pack-crx.js && npm run build",
-    "docs:dev": "vuepress dev docs",
-    "docs:build": "vuepress build docs"
+    "docs:dev": "node_modules/.bin/vuepress dev docs",
+    "docs:build": "node_modules/.bin/vuepress build docs"
   },
   "repository": {
     "type": "git",

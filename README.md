@@ -4,7 +4,7 @@
 ![GitHub tag (latest SemVer)](https://img.shields.io/github/tag/codfrm/cxmooc-tools.svg?label=version)
 
 ## 关于超星慕课小工具
-`cxmooc-tools`，一个可以辅助观看超星慕课的浏览器扩展，支持自动观看，自动答题等功能。兼容主流浏览器以及`Tampermonkey`脚本。
+一个超星慕课刷课工具,火狐,谷歌,油猴支持.全自动任务,视频倍速秒过,作业题库,验证码自动打码(੧ᐛ੭挂科模式,启动)
 
 ### 浏览器适配列表
  * [x] Chrome for PC

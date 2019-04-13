@@ -7,5 +7,6 @@ module.exports = {
         player: 'https://blog.icodef.com:8081/player/cxmooc-tools.swf',
         resplugin: 'https://blog.icodef.com:8081/player/ResourcePlug.swf'
     },
-    injection: ''
+    injection: '',
+    hotversion: 2.061
 }

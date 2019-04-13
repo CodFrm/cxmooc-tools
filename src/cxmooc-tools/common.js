@@ -8,7 +8,7 @@ export function injected(doc, url) {
     temp.setAttribute('type', 'text/javascript');
     temp.src = url;
     temp.className = "injected-js";
-    doc.head.appendChild(temp);
+    doc.documentElement.appendChild(temp);
     return temp;
 }
 
@@ -156,7 +156,6 @@ Date.prototype.format = function (fmt) {
 
 export function log(msg) {
     console.log("cxmooc-tools [" + (new Date()).format("yyyy-MM-dd hh:mm:ss") + "] " + msg)
-    console.trace()
 }
 
 export function getImageBase64(img, ext) {

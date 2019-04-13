@@ -3,7 +3,7 @@ const common = require('./common');
 
 window.onload = function () {
     //注入mooc.js
-    chrome.storage.local.get(['version', 'url', 'enforce'], function (items) {
+    chrome.storage.local.get(['version', 'url', 'enforce','hot_url'], function (items) {
         if (items.version > moocConfig.version) {
             if (items.enforce) {
                 alert('刷课扩展要求强制更新');
@@ -23,7 +23,7 @@ window.onload = function () {
             items.interval = items.interval >= 0 ? items.interval : 5;
             items.rand_answer = items.rand_answer || false;
             items.video_multiple = items.video_multiple || 1;
-            items.video_mute =  items.video_mute == undefined ? true : items.video_mute;
+            items.video_mute = items.video_mute == undefined ? true : items.video_mute;
             items.auto = items.auto == undefined ? true : items.auto;
             //设置一下配置
             localStorage['rand-answer'] = items.rand_answer;

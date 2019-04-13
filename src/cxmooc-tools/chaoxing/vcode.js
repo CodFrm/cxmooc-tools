@@ -39,6 +39,7 @@ module.exports = function () {
             }
         }
         //保障账号安全验证码
+        window.showChapterVerificationCodeTip = window.showChapterVerificationCode || 0;
         window.chapterVerifyCode = function () {
             let notic = until.signleLine('cxmooc自动打码中...', 'dama', $('.DySearch'));
             $(notic).css('float', 'left');

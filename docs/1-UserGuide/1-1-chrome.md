@@ -1,7 +1,7 @@
 ---
 title: Chrome插件
 ---
-## Chrome扩展:
+## Chrome扩展
 
 下载发布的版本[cxmooc-tools.crx](https://github.com/CodFrm/cxmooc-tools/releases)无需安装环境,下载即可使用。
 
@@ -25,12 +25,19 @@ title: Chrome插件
 
 加载完成后，打开超星慕课的课程或者题目页面之后就可以正常使用了。
 
-## 拖拽安装CRX模式:
+## 拖拽安装CRX模式
 
 下载[发布版本](https://github.com/CodFrm/cxmooc-tools/releases)cxmooc-tools.crx文件,直接拖入浏览器安装
 某些浏览器允许直接拖入扩展进行安装。(内核为Chromium,如果不行,请按照方法2来)
 
 - 支持列表
+> 可以通过下方**在 GitHub 上编辑此页**来进行补充
 
-* [x] 360极速浏览器
-* [x] QQ浏览器
+* 360极速浏览器
+* QQ浏览器
+
+## 打包版浏览器
+
+为了方便安装,我们还提供了一个浏览器打包的版本,请在[releases页面](https://github.com/CodFrm/cxmooc-tools/releases)查看详情,适合小白用户
+
+![](/img/4.webp)
