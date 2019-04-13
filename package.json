@@ -37,6 +37,7 @@
     "hashmap": "^2.3.0",
     "md5": "^2.2.1",
     "mongodb": "^3.1.10",
+    "node-telegram-bot-api": "^0.30.0",
     "redis": "^2.8.0"
   }
 }

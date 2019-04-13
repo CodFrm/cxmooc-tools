@@ -14,6 +14,10 @@ cache:
   directories:
     - node_modules
 
+env:
+  - BOT_TOKEN=$BOT_TOKEN
+  - GROUP_ID=$GROUP_ID
+
 before_install:
  - export TZ='Asia/Shanghai'
  - openssl aes-256-cbc -K $encrypted_b7d8153e3775_key -iv $encrypted_b7d8153e3775_iv -in ./build/cxmooc-tools.pem.enc -out ./build/cxmooc-tools.pem -d
