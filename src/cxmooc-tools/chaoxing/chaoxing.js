@@ -66,6 +66,11 @@ module.exports = function () {
         clearTimeout(lastTimeout);
         hookChangeDisplayContent(num, totalnum, chapterId, courseId, clazzid, knowledgestr);
     }
+    let hookGetTeacherAjax = window.getTeacherAjax;
+    window.getTeacherAjax = function (courseId, clazzid, chapterId, cpi, chapterVerCode) {
+        clearTimeout(lastTimeout);
+        hookGetTeacherAjax(courseId, clazzid, chapterId, cpi, chapterVerCode);
+    }
     /**
      * 延迟切换
      */

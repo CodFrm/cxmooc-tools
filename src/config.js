@@ -8,5 +8,7 @@ module.exports = {
         resplugin: 'https://blog.icodef.com:8081/player/ResourcePlug.swf'
     },
     injection: '',
-    hotversion: 2.061
+    hotversion: {
+        v2_06: 2.06,
+    }
 }

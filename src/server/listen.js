@@ -152,15 +152,23 @@ function mergeAnswer(source, answer) {
     return source;
 }
 
+function getHotVer(ver) {
+    let dealver = 'v' + ver.replace('.', '_');
+    hotversion = config.hotversion[dealver] || hotversion;
+    return hotversion;
+}
+
 app.get('/update', function (req, res) {
     redis.onlineNum(function (err, data) {
+        //分发各个版本热更新
+        let hotversion = getHotVer('' + (req.query.ver || config.version));
         res.send({
             version: config.version,
             url: config.update,
             enforce: config.enforce,
             injection: config.injection,
             onlinenum: data,
-            hotversion: config.hotversion
+            hotversion: hotversion
         });
     });
 })
