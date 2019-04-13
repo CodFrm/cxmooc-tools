@@ -22,9 +22,6 @@ script:
   - npm run pack
   - cd build/cxmooc-tools && zip ../cxmooc-tools.zip -r ./ && cd ../../
 
-before_deploy:
-  - export BODY=$(git log --pretty=format:"%s" $TRAVIS_COMMIT_RANGE)
-
 deploy:
   - provider: releases
     api_key: $GITHUB_TOKEN
@@ -35,7 +32,7 @@ deploy:
       - build/*.zip
     skip_cleanup: true
     name: $TRAVIS_TAG
-    body: $BODY
+    body: $(git log --pretty=format:"%s" ${TRAVIS_TAG}..)
     on:
       tags: true
       branch: master
@@ -54,11 +51,18 @@ deploy:
     script: node src/tg-bot.js
     skip_cleanup: true
     on:
-      all_branches: true
-      condition: $TRAVIS_BRANCH =~ ^master|develop$
+      branch: develop
+      
+  - provider: script
+    script: node src/tg-bot.js
+    skip_cleanup: true
+    on:
+      tags: true
+      branch: master
 
   - provider: npm
     email: $NPM_EMAIL
     api_key: $NPM_KEY
     on:
       tags: true
+      branch: master
