@@ -16,7 +16,7 @@ exec('git log --pretty=format:"%s" ' + commit_range, (err, stdout, stderr) => {
         end = '\n[前去release查看](https://github.com/CodFrm/cxmooc-tools/releases)';
     } else {
         sendText += "*有一个内测版本发布*\n";
-        end='如果发现有什么BUG,记得[*反馈*](https://github.com/CodFrm/cxmooc-tools/issues)哦';
+        end='如果发现有什么BUG,记得[反馈](https://github.com/CodFrm/cxmooc-tools/issues)哦';
     }
     sendText += "更新了以下内容:\n```" + stdout + "```" + end;
     tgBot.sendMessage(chat_id, sendText, { parse_mode: 'Markdown' });
