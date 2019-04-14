@@ -1,6 +1,6 @@
 ---
-name: 错误反馈
-about: 反馈错误给我们
+name: BUG反馈
+about: 将你所遇到的BUG反馈给我们
 
 ---
 
