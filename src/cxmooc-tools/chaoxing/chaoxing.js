@@ -190,6 +190,7 @@ module.exports = function () {
         self.list = new Array();
         self.index = 0;
         self.complete_num = 0;
+        clearTimeout(lastTimeout);
     }
 
     this.read = function () {

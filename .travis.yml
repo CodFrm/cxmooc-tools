@@ -49,7 +49,8 @@ deploy:
     script: node src/tg-bot.js
     skip_cleanup: true
     on:
-      branch: develop
+      all_branches: true
+      condition: $TRAVIS_BRANCH =~ ^hotfix|develop$
       
   - provider: script
     script: node src/tg-bot.js
