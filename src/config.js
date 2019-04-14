@@ -9,7 +9,7 @@ module.exports = {
     },
     injection: '',
     hotversion: {
-        v2_07: 2.07,
+        v2_07: 2.071,
         v2_06: 2.06,
     }
 }

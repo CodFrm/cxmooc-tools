@@ -11,7 +11,7 @@ const tag = process.env.TRAVIS_TAG || false;
 
 const tgBot = new TelegramBot(botToken, { polling: false });
 
-exec('git log --pretty=format:"%s" ' + (branch == tag ? tag + '..' : commit_range), (err, stdout, stderr) => {
+exec('git log --pretty=format:"%s" ' + (branch == tag ? tag + '..' : commit_range) + (commit_range.search('.') < 0 ? ' -1' : ''), (err, stdout, stderr) => {
     let sendText = '';
     let end = '';
     if (branch == tag) {
@@ -32,7 +32,7 @@ exec('git log --pretty=format:"%s" ' + (branch == tag ? tag + '..' : commit_rang
 
 function hotUpdate() {
     let ret = '热更新版本号为:' + (config.hotversion[('v' + config.version).replace('.', '_')]) + "\n";
-    tgBot.sendDocument(chat_id, fs.createReadStream('build/cxmooc-tools/mooc.js'));
+    tgBot.sendDocument(chat_id, fs.createReadStream('build/cxmooc-tools/src/mooc.js'));
     tgBot.sendDocument(chat_id, fs.createReadStream('build/tampermonkey.js'));
     return ret;
 }
