@@ -262,13 +262,7 @@ app.use('/vcode', function (req, res, next) {
             redis.callStatis('vcode-vtoken', req.header('Authorization'));
             next();
         } else {
-            redis.apiLimit('vcode', ua, 12, ip, function (uanum, ipnum) {
-                if (uanum > 12 || ipnum > 80) {
-                    res.send({ code: -2, msg: '超出限制' });
-                } else {
-                    next();
-                }
-            });
+            res.send({ code: -2, msg: '超出限制,<a href="https://github.com/CodFrm/cxmooc-tools/issues/74" target="_blank">请点击查看详情</a>' });
         }
     });
 });

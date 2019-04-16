@@ -10,6 +10,8 @@ title: 使用教程
 
 本扩展还支持手机刷课,[火狐手机版(Android)](/1-UserGuide/1-2-firefox.html#%E7%81%AB%E7%8B%90%E6%89%8B%E6%9C%BA%E7%89%88-android)
 
+也可以使用yandex浏览器手机刷课(文档待完善)
+
 [telegram群](https://t.me/joinchat/MHU8Gg2fP3Q51HLY2wqmQA) [QQ群](https://shang.qq.com/wpa/qunwpa?idkey=9bddd2564d84bd999940de422d1c0c70f87ecaf02fe9d7c60389fc2b376179eb)
 
 - 开发者
