@@ -30,12 +30,21 @@ module.exports = function () {
         });
     }
     this.vtoken = function (token, callback) {
-        if(!token){
-            return callback(0);
+        if (!token) {
+            callback && callback(0);
         }
         client.decr('cxmooc:vtoken:' + token, function (err, res) {
-            callback(res);
+            callback && callback(res);
         });
+    }
+    this.set = function (key, value) {
+        client.set(key, value);
+    }
+    this.hget = function (key, callback) {
+        client.hget(key, callback);
+    }
+    this.hincrby = function (key,num, callback) {
+        client.hincrby(key,num, callback);
     }
     return this
 }

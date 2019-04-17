@@ -61,7 +61,7 @@ app.use(function (req, res, next) {
     redis.onlineAdd(ip);
 
     res.header("Access-Control-Allow-Origin", req.headers['origin']);
-    res.header("Access-Control-Allow-Headers", "Content-Type,Content-Length, Authorization, Accept,X-Requested-With");
+    res.header("Access-Control-Allow-Headers", "Content-Type,Content-Length,Authorization,Accept,X-Requested-With");
     res.header("Access-Control-Allow-Methods", "PUT,POST,GET,DELETE,OPTIONS");
     if (req.method == "OPTIONS") {
         res.send(200);
@@ -262,13 +262,7 @@ app.use('/vcode', function (req, res, next) {
             redis.callStatis('vcode-vtoken', req.header('Authorization'));
             next();
         } else {
-            redis.apiLimit('vcode', ua, 12, ip, function (uanum, ipnum) {
-                if (uanum > 12 || ipnum > 80) {
-                    res.send({ code: -2, msg: '超出限制' });
-                } else {
-                    next();
-                }
-            });
+            res.send({ code: -2, msg: '超出限制' });
         }
     });
 });
@@ -283,6 +277,24 @@ app.post('/vcode', function (req, res) {
             res.send({ code: 0, msg: pack.data });
         } else {
             res.send({ code: -1, msg: 'error' });
+        }
+    });
+});
+
+app.use('/gen-token', function (req, res) {
+    if (req.query.token != serverConfig.genToken) {
+        return res.send('e');
+    }
+    if (!req.query.user) {
+        return res.send('e1');
+    }
+    redis.hincrby('cxmooc:genuser', 1, function (err, val) {
+        if (val > 1) {
+            return res.send({ code: -1 });
+        } else {
+            let retToken = Math.random().toString(36).substr(2);
+            redis.set('cxmooc:vtoken:' + retToken, 100);
+            res.send({ code: 1, token: retToken });
         }
     });
 });

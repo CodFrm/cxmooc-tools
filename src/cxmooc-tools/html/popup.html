@@ -274,6 +274,11 @@
         float: left;
         width: 80px;
     }
+
+    #token {
+        float: right;
+        width: 60%;
+    }
 </style>
 
 <body>
@@ -290,7 +295,9 @@
         </div>
     </div>
     <div class="content_bottom">
-        <h4 class="one_title"><span>插件配置:</span></h4>
+        <h4 class="one_title"><span>插件配置:</span>
+            <input type="text" class="input_text" id="token" placeholder="token">
+        </h4>
         <div class="config-item width_50">
             <input type="checkbox" id="rand-answer" class="rdo" />
             <label for="rand-answer" title="没有正确的答案会随机选择">随机答案</label>

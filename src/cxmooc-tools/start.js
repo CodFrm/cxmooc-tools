@@ -28,7 +28,6 @@ window.onload = function () {
             items.video_mute = items.video_mute == undefined ? true : items.video_mute;
             items.auto = items.auto == undefined ? true : items.auto;
             //设置一下配置
-            localStorage['rand-answer'] = items.rand_answer;
             localStorage['config'] = JSON.stringify(items);
             console.log(items);
             //热更新处理
