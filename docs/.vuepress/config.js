@@ -73,6 +73,13 @@ module.exports = {
     editLinkText: '在 GitHub 上编辑此页',
     lastUpdated: 'Last Updated', // string | boolean
   },
-
-  plugins: ['@vuepress/back-to-top']
+  plugins: [
+    ['@vuepress/back-to-top'],
+    [ 
+      '@vuepress/google-analytics',
+      {
+        'ga': 'UA-138255059-2' 
+      }
+    ]  
+  ] 
 }
