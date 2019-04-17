@@ -1,5 +1,6 @@
 const common = require('./common');
 const chaoxing = require('./chaoxing/chaoxing');
+const zhihuishu = require('./zhihuishu/zhihuishu');
 
 common.removeinjected(document);
 global.config = JSON.parse(localStorage['config']);
@@ -27,6 +28,8 @@ if (window.location.href.indexOf('mycourse/studentstudy?') > 0) {
 } else if (window.location.href.indexOf('antispiderShowVerify.ac') > 0 || window.location.href.indexOf('html/processVerify.ac') > 0) {
     //超星异常验证码
     signleFactory('chaoxing');
+} else if (window.location.href.indexOf('zhihuishu.com/learning/videoList') > 0) {
+    zhihuishu.video.start();
 }
 
 /**

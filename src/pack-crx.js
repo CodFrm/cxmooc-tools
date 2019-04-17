@@ -25,10 +25,10 @@ crx.load(['./build/cxmooc-tools/manifest.json',
 
 // build tampermonkey
 exec('webpack --mode development --config webpack.config.js', function () {
-    let tampermonkey = fs.readFileSync('tampermonkey.js')
+    let tampermonkey = fs.readFileSync('./src/tampermonkey/cxmooc.js')
     tampermonkey = tampermonkey.toString().replace(/@version\s+.*/, '@version ' + version)
     tampermonkey += fs.readFileSync('./build/cxmooc-tools/src/mooc.js')
-    fs.writeFileSync('./build/tampermonkey.js', tampermonkey)
+    fs.writeFileSync('./build/cxmooc.js', tampermonkey)
 })
 
 function dealVersion(version) {
