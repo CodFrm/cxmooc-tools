@@ -1,5 +1,27 @@
 ---
-title: 油猴脚本
+title: Tampermonkey 脚本
 ---
 
-不再赘述，请自行配置使用。[Greasy Fork/376190-cxmooc-tools](https://greasyfork.org/zh-CN/scripts/376190-cxmooc-tools)
+## 安装
+Tampermonkey,以下都称为油猴
+
+油猴脚本使用需要去安装另外一个**Tampermonkey**插件,然后在 **[Greasy Fork/376190-cxmooc-tools](https://greasyfork.org/zh-CN/scripts/376190-cxmooc-tools)** 页面获取本插件
+
+### 配置修改
+在油猴的管理面板中,选择编辑
+
+![](/img/5.webp)
+
+```js
+let config = {
+    answer_ignore: true,    //忽略题目
+    auto: true,              //全自动挂机
+    interval: "5",           //时间间隔
+    rand_answer: true,       //随机答案
+    video_multiple: "1",     //视频播放倍速
+    video_mute: true,        //视频静音
+};
+```
+根据代码中的说明进行配置,之后点击左上角文件,进行保存,或者快捷键 Ctrl+S 也可以保存,刷新一次页面就成功生效了.
+
+![](/img/6.webp)

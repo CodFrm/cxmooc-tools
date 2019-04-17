@@ -49,6 +49,9 @@ module.exports = function () {
             } else {
                 self.complete();
             }
+        }).error(function () {
+            $(self.hangBtn).text('网络错误跳过');
+            self.complete();
         });
     }
 

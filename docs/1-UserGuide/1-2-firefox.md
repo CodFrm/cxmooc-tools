@@ -9,6 +9,5 @@ title: FireFox插件
 
 **注意，本插件支持Firefox for Mobile,由于商店版本存在部分技术问题，推荐使用打包的`.crx`版本，安装流程与Chrome浏览器扩展类似**
 
-为了方便安装,我们还提供了一个浏览器打包的版本,请在[releases页面](https://github.com/CodFrm/cxmooc-tools/releases)查看详情
-
-![](/img/4.webp)
+## 火狐手机版(Android)
+> 待完善

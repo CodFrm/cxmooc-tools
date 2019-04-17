@@ -14,9 +14,9 @@ module.exports = function () {
             call(err, res)
         });
     }
-    this.callStatis = function (api) {
+    this.callStatis = function (api, param) {
         let date = new Date();
-        client.hincrby("cxmooc:api-statis", api + '_' + date.getFullYear() + '_' + (date.getMonth() + 1) + '_' + (date.getDate()), 1);
+        client.hincrby("cxmooc:api-statis-" + api, (param ? param + '_' : '') + date.getFullYear() + '_' + (date.getMonth() + 1) + '_' + (date.getDate()), 1);
     }
     this.apiLimit = function (api, ua, max, ip, numCall) {
         let key = "cxmooc:" + api + "-limit-" + (new Date()).getDate();
@@ -28,8 +28,14 @@ module.exports = function () {
                 numCall(num1, num2);
             });
         });
-        client.expire(key, 86400)
     }
-
+    this.vtoken = function (token, callback) {
+        if(!token){
+            return callback(0);
+        }
+        client.decr('cxmooc:vtoken:' + token, function (err, res) {
+            callback(res);
+        });
+    }
     return this
 }

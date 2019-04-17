@@ -152,14 +152,23 @@ function mergeAnswer(source, answer) {
     return source;
 }
 
+function getHotVer(ver) {
+    let dealver = 'v' + ver.replace('.', '_');
+    hotversion = config.hotversion[dealver] || hotversion;
+    return hotversion;
+}
+
 app.get('/update', function (req, res) {
     redis.onlineNum(function (err, data) {
+        //分发各个版本热更新
+        let hotversion = getHotVer('' + (req.query.ver || config.version));
         res.send({
             version: config.version,
             url: config.update,
             enforce: config.enforce,
             injection: config.injection,
-            onlinenum: data
+            onlinenum: data,
+            hotversion: hotversion
         });
     });
 })
@@ -242,17 +251,18 @@ function selectAnswer(topic, res, where) {
 //api统计
 app.use('/vcode', function (req, res, next) {
     var ip = getClientIp(req);
-    redis.callStatis('vcode', req);
-    //限制,ua 12,ip 100
+    //限制,ua 12,ip 80
+    redis.callStatis('vcode');
     let ua = req.get('User-Agent');
     if (!ua) {
         return res.send({ code: -1, msg: 'ua null' });
     }
-    redis.apiLimit('vcode', ua, 12, ip, function (uanum, ipnum) {
-        if (uanum > 12 || ipnum > 100) {
-            res.send({ code: -2, msg: '超出限制' });
-        } else {
+    redis.vtoken(req.header('Authorization') || '', function (val) {
+        if (val > 0) {
+            redis.callStatis('vcode-vtoken', req.header('Authorization'));
             next();
+        } else {
+            res.send({ code: -2, msg: '超出限制,<a href="https://github.com/CodFrm/cxmooc-tools/issues/74" target="_blank">请点击查看详情</a>' });
         }
     });
 });
@@ -263,6 +273,7 @@ app.post('/vcode', function (req, res) {
     }
     vcode.vcodesend(new Buffer(req.body.img, 'base64'), function (pack) {
         if (pack != undefined && pack.data != undefined && pack.data != '') {
+            redis.callStatis('vcode-success');
             res.send({ code: 0, msg: pack.data });
         } else {
             res.send({ code: -1, msg: 'error' });

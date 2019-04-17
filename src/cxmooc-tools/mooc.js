@@ -3,7 +3,9 @@ const chaoxing = require('./chaoxing/chaoxing');
 
 common.removeinjected(document);
 global.config = JSON.parse(localStorage['config']);
+global.vtoken = localStorage['vtoken'] || 'user';
 global.timer = new Array();
+global.signle = {};
 if (window.location.href.indexOf('mycourse/studentstudy?') > 0) {
     //超星异常验证码
     signleFactory('chaoxing');
@@ -33,14 +35,12 @@ if (window.location.href.indexOf('mycourse/studentstudy?') > 0) {
  * @return plugin
  */
 function signleFactory(object) {
-    signleFactory.signle = signleFactory.signle || {};
     switch (object) {
         case 'chaoxing': {
-            if (signleFactory.signle.cx == undefined) {
-                signleFactory.signle.cx = new chaoxing();
+            if (signle.cx == undefined) {
+                signle.cx = new chaoxing();
             }
-            return signleFactory.signle.cx;
+            return signle.cx;
         }
     }
 }
-signleFactory.signle = null;

@@ -2,11 +2,17 @@ const moocConfig = require('../config');
 window.onload = function () {
     document.getElementById('version').innerHTML = 'v' + moocConfig.version.toString();
     var xhr = new XMLHttpRequest();
-    xhr.open("GET", moocConfig.url + 'update', true);
+    xhr.open("GET", moocConfig.url + 'update?ver='+ moocConfig.version, true);
     xhr.onreadystatechange = function () {
         if (xhr.readyState == 4) {
             if (this.status == 200) {
                 var json = JSON.parse(this.responseText);
+                chrome.storage.local.set({
+                    'version': json.version,
+                    'url': json.url,
+                    'enforce': json.enforce,
+                    'hotversion': json.hotversion
+                });
                 if (moocConfig.version < json.version) {
                     var p = document.createElement('p');
                     p.style.color = "#ff0000";
@@ -14,7 +20,14 @@ window.onload = function () {
                     document.getElementsByTagName('body')[0].appendChild(p);
                 }
                 document.getElementById("injection").innerHTML = json.injection
+                document.getElementById('version').innerHTML = 'v' + json.hotversion;
             } else {
+                chrome.storage.local.set({
+                    'version': moocConfig.version,
+                    'url': moocConfig.url,
+                    'enforce': moocConfig.enforce,
+                    'hotversion': moocConfig.version,
+                });
                 document.getElementById("tiku").src = "https://img.shields.io/badge/%E9%A2%98%E5%BA%93-error-red.svg"
             }
         }

@@ -17,13 +17,15 @@ module.exports = {
       {
         text: '使用教程',
         items: [
-          { text: '开发者模式', link: '/1-UserGuide/1-0-developer' },
+          { text: '开发者', link: '/1-UserGuide/1-0-developer' },
           { text: 'Chrome 扩展', link: '/1-UserGuide/1-1-chrome.html' },
           { text: 'FireFox 扩展', link: '/1-UserGuide/1-2-firefox.html' },
-          { text: 'Tampermonkey 脚本', link: '/1-UserGuide/1-3-tampermonkey.html' }
+          { text: 'Tampermonkey 脚本', link: '/1-UserGuide/1-3-tampermonkey.html' },
+          { text: '使用说明', link: '/1-UserGuide/1-4-config.html' }
         ]
       },
       { text: '免责声明', link: '/3-Disclaimer/' },
+      { text: '捐赠', link: '/4-Reward/' },
       {
         text: '语言选项',
         items: [
@@ -40,7 +42,8 @@ module.exports = {
         '1-0-developer.html',
         '1-1-chrome.html',     /* /foo/ */
         '1-2-firefox.html',  /* /foo/one.html */
-        '1-3-tampermonkey.html'
+        '1-3-tampermonkey.html',
+        '1-4-config.html'
       ],
     },
     serviceWorker: {

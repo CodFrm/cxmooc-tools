@@ -13,9 +13,9 @@ module.exports = function () {
     this.index = 0;
     this.iframe = undefined;
     this.document = undefined;
-    this.tag = Math.random();
     this.complete_num = 0;
     this.vcode = new Vcode();
+    this.inSwitch = false;
     /**
      * 查找iframe
      * @param iframeElement 
@@ -59,14 +59,28 @@ module.exports = function () {
         }
     }
 
+    let lastTimeout = 0;
+    //hook
+    let hookChangeDisplayContent = window.changeDisplayContent;
+    window.changeDisplayContent = function (num, totalnum, chapterId, courseId, clazzid, knowledgestr) {
+        clearTimeout(lastTimeout);
+        hookChangeDisplayContent(num, totalnum, chapterId, courseId, clazzid, knowledgestr);
+    }
+    let hookGetTeacherAjax = window.getTeacherAjax;
+    window.getTeacherAjax = function (courseId, clazzid, chapterId, cpi, chapterVerCode) {
+        clearTimeout(lastTimeout);
+        hookGetTeacherAjax(courseId, clazzid, chapterId, cpi, chapterVerCode);
+    }
     /**
      * 延迟切换
      */
     function lazySwitch(callback) {
         //无任务
         config.auto && self.notice(config.interval + "分钟后插件将自动切换下一节任务");
+        config.auto && common.log(config.interval + " after switch")
         let duration = (config.interval || 1) * 60000;
-        setTimeout(function () {
+        clearTimeout(lastTimeout);
+        lastTimeout = setTimeout(function () {
             if (callback == undefined) {
                 switchTask();
             } else {
@@ -93,9 +107,6 @@ module.exports = function () {
                 switchTask();
             } else {
                 //判断是否切换了页面
-                if (localStorage['now_tag'] != self.tag) {
-                    return;
-                }
                 self.complete_num++;
                 event.start();
             }
@@ -107,9 +118,6 @@ module.exports = function () {
             return;
         }
         //判断是否切换了页面
-        if (localStorage['now_tag'] != self.tag) {
-            return;
-        }
         if (self.list[self.index] != undefined) {
             common.log(self.list[self.index].iframe.className + " " + self.index + " switch")
         } else {
@@ -123,7 +131,11 @@ module.exports = function () {
         }
         if (self.complete_num <= 0) {
             self.complete_num = 1;
-            lazySwitch();
+            if (self.list.length > 0) {
+                lazySwitch();
+            } else {
+                switchTask();
+            }
             return;
         }
         let folder = $('.tabtags').find('span');
@@ -162,7 +174,6 @@ module.exports = function () {
         varInit();
         let iframe = $('iframe');
         self.iframe = iframe;
-        localStorage['now_tag'] = self.tag;
         self.document = self.iframe[0].contentDocument
         self.notice(config.auto ? '正在自动挂机中' : '');
         findIframe(iframe);
@@ -171,17 +182,15 @@ module.exports = function () {
         }
         //无任务
         if (self.list.length <= 0) {
-            setTimeout(function () {
-                switchTask();
-            }, (config.interval || 0.1) * 60000);
+            lazySwitch();
         }
     }
 
     function varInit() {
         self.list = new Array();
         self.index = 0;
-        self.tag = Math.random();
         self.complete_num = 0;
+        clearTimeout(lastTimeout);
     }
 
     this.read = function () {
