@@ -43,8 +43,8 @@ module.exports = function () {
     this.hget = function (key, callback) {
         client.hget(key, callback);
     }
-    this.hincrby = function (key,num, callback) {
-        client.hincrby(key,num, callback);
+    this.hincrby = function (key, field, num, callback) {
+        client.hincrby(key, field, num, callback);
     }
     return this
 }

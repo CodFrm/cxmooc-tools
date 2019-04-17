@@ -1,10 +1,9 @@
 const common = require('./common');
 const chaoxing = require('./chaoxing/chaoxing');
-const config = require('../config');
 
 common.removeinjected(document);
 global.config = JSON.parse(localStorage['config']);
-global.vtoken = localStorage['vtoken'] || 'user|' + (localStorage['hot_version'] || config.version);
+global.vtoken = config.vtoken;
 global.timer = new Array();
 global.signle = {};
 if (window.location.href.indexOf('mycourse/studentstudy?') > 0) {
