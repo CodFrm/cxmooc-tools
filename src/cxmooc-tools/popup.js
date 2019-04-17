@@ -41,6 +41,18 @@ window.onload = function () {
         }
     });
 
+    chrome.storage.sync.get(['vtoken'], function (items) {
+        for (item in items) {
+            document.getElementById(item.replace('_', '-')).value = items[item];
+        }
+    });
+
+    document.getElementById('vtoken').onblur = function () {
+        chrome.storage.sync.set({
+            'vtoken': document.getElementById('vtoken').value
+        });
+    }
+
     chrome.storage.sync.get('interval', function (items) {
         document.getElementById('interval').value = items.interval == undefined ? 5 : items.interval;
     });

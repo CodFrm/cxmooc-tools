@@ -21,6 +21,7 @@ window.onload = function () {
             'video_mute',
             'answer_ignore',
             'video_multiple',
+            'vtoken',
         ], function (items) {
             items.interval = items.interval >= 0 ? items.interval : 5;
             items.rand_answer = items.rand_answer || false;
@@ -29,6 +30,7 @@ window.onload = function () {
             items.auto = items.auto == undefined ? true : items.auto;
             //设置一下配置
             localStorage['config'] = JSON.stringify(items);
+            localStorage['vtoken'] = items.vtoken;
             console.log(items);
             //热更新处理
             let littleVersion = serverConfig.hotversion - moocConfig.version
