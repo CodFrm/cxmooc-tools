@@ -35,4 +35,3 @@ npm run server
 1. 执行`npm run build`,此时会在`build/cxmooc-tools`目录下生成插件文件。
 2. 打开Chrome浏览器的更多工具选项，打开扩展程序页面并启用开发者模式。
 3. 加载已解压的扩展程序，路径选择`build/cxmooc-tools`
-
