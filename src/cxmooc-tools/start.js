@@ -1,7 +1,7 @@
 const moocConfig = require('../config');
 const common = require('./common');
 
-window.onload = function () {
+(function () {  
     //注入mooc.js
     chrome.storage.local.get(['version', 'url', 'enforce', 'hotversion'], function (items) {
         console.log(items);
@@ -48,4 +48,4 @@ window.onload = function () {
             }
         });
     })
-}
+})();

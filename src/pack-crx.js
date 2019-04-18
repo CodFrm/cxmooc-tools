@@ -23,15 +23,15 @@ crx.load(['./build/cxmooc-tools/manifest.json',
 });
 
 // build tampermonkey
-let tampermonkey_cx = fs.readFileSync('./src/tampermonkey/cxmooc.js')
-tampermonkey_cx = tampermonkey_cx.toString().replace(/@version\s+.*/, '@version ' + config.getHotVersion())
-tampermonkey_cx += fs.readFileSync('./build/tampermonkey-mooc.js')
-fs.writeFileSync('./build/cxmooc.js', tampermonkey_cx)
+let tampermonkey_cx = fs.readFileSync('./src/tampermonkey/cxmooc.js');
+tampermonkey_cx = tampermonkey_cx.toString().replace(/@version\s+.*/, '@version ' + config.getHotVersion());
+tampermonkey_cx += fs.readFileSync('./build/tampermonkey-cxmooc.js');
+fs.writeFileSync('./build/cxmooc.js', tampermonkey_cx);
 
-let tampermonkey_zhs = fs.readFileSync('./src/tampermonkey/zhihuishu.js')
-tampermonkey_zhs = tampermonkey_zhs.toString().replace(/@version\s+.*/, '@version ' + config.getHotVersion())
-tampermonkey_zhs += fs.readFileSync('./build/tampermonkey-zhihuishu.js')
-fs.writeFileSync('./build/zhihuishu.js', tampermonkey_zhs)
+let tampermonkey_zhs = fs.readFileSync('./src/tampermonkey/zhihuishu.js');
+tampermonkey_zhs = tampermonkey_zhs.toString().replace(/@version\s+.*/, '@version ' + config.getHotVersion());
+tampermonkey_zhs += fs.readFileSync('./build/tampermonkey-zhihuishu.js');
+fs.writeFileSync('./build/zhihuishu.js', tampermonkey_zhs);
 
 function dealVersion(version) {
     let reg = /\d/g;

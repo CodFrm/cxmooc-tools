@@ -1,6 +1,14 @@
-const video=require('./video');
+const video = require('./video');
 
 module.exports = {
-    video: video
+    video: function () {
+        video.hookAjax();
+        let timer = setInterval(function () {
+            try {
+                video.start();
+                clearInterval(timer);
+            } catch (e) { }
+        }, 499);
+    }
 };
 

@@ -4,6 +4,8 @@ const zhihuishu = require('./zhihuishu/zhihuishu');
 
 common.removeinjected(document);
 global.config = JSON.parse(localStorage['config']);
+config.duration = (this.interval || 0.1) * 60000;
+
 global.vtoken = config.vtoken;
 global.signle = {};
 if (window.location.href.indexOf('mycourse/studentstudy?') > 0) {
@@ -28,7 +30,7 @@ if (window.location.href.indexOf('mycourse/studentstudy?') > 0) {
     //超星异常验证码
     signleFactory('chaoxing');
 } else if (window.location.href.indexOf('zhihuishu.com/learning/videoList') > 0) {
-    zhihuishu.video.start();
+    zhihuishu.video();
 }
 
 /**
