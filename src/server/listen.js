@@ -152,16 +152,10 @@ function mergeAnswer(source, answer) {
     return source;
 }
 
-function getHotVer(ver) {
-    let dealver = 'v' + ver.replace('.', '_');
-    hotversion = config.hotversion[dealver] || hotversion;
-    return hotversion;
-}
-
 app.get('/update', function (req, res) {
     redis.onlineNum(function (err, data) {
         //分发各个版本热更新
-        let hotversion = getHotVer('' + (req.query.ver || config.version));
+        let hotversion = config.getHotVersion(req.query.ver || config.version);
         res.send({
             version: config.version,
             url: config.update,
@@ -258,6 +252,7 @@ app.use('/vcode', function (req, res, next) {
         return res.send({ code: -1, msg: 'ua null' });
     }
     redis.vtoken(req.header('Authorization') || '', function (val) {
+        redis.apiLimit('vcode', ua, 12, ip);
         if (val > 0) {
             redis.callStatis('vcode-vtoken', req.header('Authorization'));
             next();

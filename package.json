@@ -5,7 +5,8 @@
   "main": "mooc.js",
   "scripts": {
     "test": "echo \"Hello,World\nDeveloper Blog:blog.icodef.com\" && exit 1",
-    "build": "node_modules/.bin/webpack --mode production --config webpack.prod.js",
+    "build": "node_modules/.bin/webpack --mode production --config webpack.config.js",
+    "tampermonkey": "node_modules/.bin/webpack --config webpack.tampermonkey.js",
     "dev": "node_modules/.bin/webpack --mode development --config webpack.dev.js",
     "server": "node src/server/listen.js",
     "pack": "npm run build && node src/pack-crx.js && npm run build",

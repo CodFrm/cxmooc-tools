@@ -12,5 +12,10 @@ module.exports = {
         v2_08: 2.08,
         v2_07: 2.071,
         v2_06: 2.06,
+    },
+    getHotVersion: function (ver) {
+        let dealver = 'v' + ('' + ver || this.version).replace('.', '_');
+        hotversion = this.hotversion[dealver] || this.version;
+        return hotversion;
     }
 }

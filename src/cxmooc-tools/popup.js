@@ -2,7 +2,7 @@ const moocConfig = require('../config');
 window.onload = function () {
     document.getElementById('version').innerHTML = 'v' + moocConfig.version.toString();
     var xhr = new XMLHttpRequest();
-    xhr.open("GET", moocConfig.url + 'update?ver='+ moocConfig.version, true);
+    xhr.open("GET", moocConfig.url + 'update?ver=' + moocConfig.version, true);
     xhr.onreadystatechange = function () {
         if (xhr.readyState == 4) {
             if (this.status == 200) {
@@ -20,7 +20,7 @@ window.onload = function () {
                     document.getElementsByTagName('body')[0].appendChild(p);
                 }
                 document.getElementById("injection").innerHTML = json.injection
-                document.getElementById('version').innerHTML = 'v' + json.hotversion;
+                document.getElementById('version').innerHTML = 'v' + (moocConfig.version > json.hotversion ? moocConfig.version : json.hotversion);
             } else {
                 chrome.storage.local.set({
                     'version': moocConfig.version,
