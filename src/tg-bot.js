@@ -25,7 +25,7 @@ exec('git log --pretty=format:"%s" ' + (branch == tag ? tag + '..' : commit_rang
         sendText += "*有一个bug修复,准备热更新*\n";
         sendText += hotUpdate();
     }
-    sendText += "更新了以下内容:\n```" + stdout + "```\n" + end;
+    sendText += "更新了以下内容:\n```\n" + stdout + "\n```\n" + end;
     tgBot.sendMessage(chat_id, sendText, { parse_mode: 'Markdown' });
     tgBot.sendDocument(chat_id, fs.createReadStream('build/cxmooc-tools.crx'));
 });
