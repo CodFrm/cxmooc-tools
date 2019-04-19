@@ -8,5 +8,13 @@ module.exports = {
     output: {
         path: __dirname + '/build',
         filename: 'tampermonkey-[name].js'
+    },
+    module: {
+        rules: [
+            {
+                test: /\.css$/,
+                 use: ['style-loader', 'css-loader'],
+            }
+        ]
     }
 }

@@ -171,3 +171,12 @@ export function getImageBase64(img, ext) {
     canvas = null;
     return dataURL;
 }
+
+export function boom_btn(){
+    if (localStorage['boom_no_prompt'] == undefined || localStorage['boom_no_prompt'] != 1) {
+        let msg = prompt('秒过视频会产生不良记录,是否继续?如果以后不想再弹出本对话框请在下方填写yes')
+        if (msg === null) return false;
+        if (msg === 'yes') localStorage['boom_no_prompt'] = 1;
+    }
+    return true;
+}

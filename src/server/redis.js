@@ -22,10 +22,10 @@ module.exports = function () {
         let key = "cxmooc:" + api + "-limit-" + (new Date()).getDate();
         client.hincrby('u_i_' + key, ua + ip, 1, function (err1, num1) {
             if (num1 > max) {
-                return numCall(num1, 0);
+                return numCall && numCall(num1, 0);
             }
             client.hincrby('i_' + key, ip, 1, function (err2, num2) {
-                numCall(num1, num2);
+                numCall && numCall(num1, num2);
             });
         });
     }

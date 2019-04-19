@@ -4,7 +4,7 @@ const zhihuishu = require('./zhihuishu/zhihuishu');
 
 common.removeinjected(document);
 global.config = JSON.parse(localStorage['config']);
-config.duration = (this.interval || 0.1) * 60000;
+config.duration = (config.interval || 0.1) * 60000;
 
 global.vtoken = config.vtoken;
 global.signle = {};
