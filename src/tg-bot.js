@@ -32,7 +32,5 @@ exec('git log --pretty=format:"%s" ' + (branch == tag ? tag + '..' : commit_rang
 
 function hotUpdate() {
     let ret = '热更新版本号为:' + (config.hotversion[('v' + config.version).replace('.', '_')]) + "\n";
-    tgBot.sendDocument(chat_id, fs.createReadStream('build/cxmooc-tools/src/mooc.js'));
-    tgBot.sendDocument(chat_id, fs.createReadStream('build/tampermonkey.js'));
     return ret;
 }
