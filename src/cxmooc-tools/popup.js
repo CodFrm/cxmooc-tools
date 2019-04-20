@@ -1,38 +1,34 @@
 const moocConfig = require('../config');
+const common = require('./common');
+
 window.onload = function () {
     document.getElementById('version').innerHTML = 'v' + moocConfig.version.toString();
-    var xhr = new XMLHttpRequest();
-    xhr.open("GET", moocConfig.url + 'update?ver=' + moocConfig.version, true);
-    xhr.onreadystatechange = function () {
-        if (xhr.readyState == 4) {
-            if (this.status == 200) {
-                var json = JSON.parse(this.responseText);
-                chrome.storage.local.set({
-                    'version': json.version,
-                    'url': json.url,
-                    'enforce': json.enforce,
-                    'hotversion': json.hotversion
-                });
-                if (moocConfig.version < json.version) {
-                    var p = document.createElement('p');
-                    p.style.color = "#ff0000";
-                    p.innerHTML = '有新的版本更新:<a href="' + json.url + '" style="float:right;" target="_blank">点我去下载</a>  最新版本:v' + json.version;
-                    document.getElementsByTagName('body')[0].appendChild(p);
-                }
-                document.getElementById("injection").innerHTML = json.injection
-                document.getElementById('version').innerHTML = 'v' + (moocConfig.version > json.hotversion ? moocConfig.version : json.hotversion);
-            } else {
-                chrome.storage.local.set({
-                    'version': moocConfig.version,
-                    'url': moocConfig.url,
-                    'enforce': moocConfig.enforce,
-                    'hotversion': moocConfig.version,
-                });
-                document.getElementById("tiku").src = "https://img.shields.io/badge/%E9%A2%98%E5%BA%93-error-red.svg"
-            }
+    common.gm_get(moocConfig.url + 'update?ver=' + moocConfig.version, function (data) {
+        var json = JSON.parse(data);
+        chrome.storage.local.set({
+            'version': json.version,
+            'url': json.url,
+            'enforce': json.enforce,
+            'hotversion': json.hotversion
+        });
+        if (moocConfig.version < json.version) {
+            var p = document.createElement('p');
+            p.style.color = "#ff0000";
+            p.innerHTML = '有新的版本更新:<a href="' + json.url + '" style="float:right;" target="_blank">点我去下载</a>  最新版本:v' + json.version;
+            document.getElementsByTagName('body')[0].appendChild(p);
         }
-    }
-    xhr.send();
+        document.getElementById("injection").innerHTML = json.injection
+        document.getElementById('version').innerHTML = 'v' + (moocConfig.version > json.hotversion ? moocConfig.version : json.hotversion);
+    }).error(function(){
+        chrome.storage.local.set({
+            'version': moocConfig.version,
+            'url': moocConfig.url,
+            'enforce': moocConfig.enforce,
+            'hotversion': moocConfig.version,
+        });
+        document.getElementById("tiku").src = "https://img.shields.io/badge/%E9%A2%98%E5%BA%93-error-red.svg"
+    });
+
     chrome.storage.sync.get(['rand_answer', 'video_mute', 'answer_ignore'], function (items) {
         document.getElementById('video-mute').checked = (items.video_mute == undefined ? true : items.video_mute);
         delete items.video_mute;
@@ -120,3 +116,15 @@ window.onload = function () {
         });
     }
 }
+
+//实现GM_xmlhttpRequest(兼容油猴),完成跨域
+common.serverMessage('GM_xmlhttpRequest', function (param, sendResponse) {
+    //向background发送消息
+    let connect = chrome.runtime.connect({ name: 'tools' });
+    connect.postMessage({ type: "GM_xmlhttpRequest", param: param });
+    connect.onMessage.addListener(function (response) {
+        if (response.type == 'GM_xmlhttpRequest') {
+            sendResponse(response);
+        }
+    });
+});
