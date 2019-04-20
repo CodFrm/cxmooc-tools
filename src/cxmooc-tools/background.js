@@ -67,5 +67,5 @@ function GM_xmlhttpRequest(request) {
             responseText: xhr.responseText,
         });
     }
-    xhr.send(request.data || '');
+    xhr.send(request.data || null);
 }

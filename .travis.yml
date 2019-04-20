@@ -35,7 +35,6 @@ deploy:
     skip_cleanup: true
     on:
       tags: true
-      branch: master
       
   - provider: pages
     skip_cleanup: true
@@ -59,11 +58,9 @@ deploy:
     skip_cleanup: true
     on:
       tags: true
-      branch: master
 
   - provider: npm
     email: $NPM_EMAIL
     api_key: $NPM_KEY
     on:
       tags: true
-      branch: master

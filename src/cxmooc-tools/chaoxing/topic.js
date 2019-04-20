@@ -50,6 +50,7 @@ module.exports = function () {
                 self.complete();
             }
         }).error(function () {
+            common.log(self.iframe.className + " topic error")
             $(self.hangBtn).text('网络错误跳过');
             self.complete();
         });
@@ -153,10 +154,13 @@ module.exports = function () {
         let box = until.pop_prompt("√  答案自动记录成功");
         $(document.body).append(box);
         setTimeout(function () { box.style.opacity = "1"; }, 500);
-        common.gm_post(moocServer.url + 'answer', JSON.stringify(answer));
-
-        common.log(self.iframe.className + " topic answer complete")
-        self.complete(2);
+        common.gm_post(moocServer.url + 'answer', JSON.stringify(answer), true, function () {
+            common.log(self.iframe.className + " topic answer complete")
+            self.complete(2);
+        }).error(function () {
+            common.log(self.iframe.className + " topic answer complete")
+            self.complete(2);
+        });
     }
     return this;
 }

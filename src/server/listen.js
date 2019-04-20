@@ -55,7 +55,7 @@ app.get('/', function (req, res) {
     res.send(ret);
 })
 
-//在线人数中间件+允许跨域
+//在线人数中间件
 app.use(function (req, res, next) {
     var ip = getClientIp(req);
     redis.onlineAdd(ip);
