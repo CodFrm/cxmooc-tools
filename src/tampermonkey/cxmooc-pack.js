@@ -9,7 +9,6 @@ window.onload = function () {
             var ev = ev || event;
             var _this = ev.srcElement || ev.target;
             if (_this.id == 'iframe') {
-                cx.vcode.monitorVcode();
                 cx.studentstudy();
             }
         }, true);

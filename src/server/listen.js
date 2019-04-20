@@ -64,11 +64,11 @@ app.use(function (req, res, next) {
     res.header("Access-Control-Allow-Headers", "Content-Type,Content-Length,Authorization,Accept,X-Requested-With");
     res.header("Access-Control-Allow-Methods", "PUT,POST,GET,DELETE,OPTIONS");
     if (req.method == "OPTIONS") {
-        res.send(200);
+        return res.send(200,'success');
     } else {
-        next();
+        return next();
     }
-})
+});
 
 app.all('/player/*', function (req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");
@@ -81,11 +81,10 @@ app.post('/answer', function (req, res) {
     var ip = getClientIp(req);
     var ret = [];
     if (req.body.length <= 0) {
-        res.send({
+        return res.send({
             code: 0,
             msg: 'success'
         });
-        return;
     }
     for (let i in req.body) {
         let topic = req.body[i];
@@ -156,7 +155,7 @@ app.get('/update', function (req, res) {
     redis.onlineNum(function (err, data) {
         //分发各个版本热更新
         let hotversion = config.getHotVersion(req.query.ver || config.version);
-        res.send({
+        return res.send({
             version: config.version,
             url: config.update,
             enforce: config.enforce,
@@ -171,7 +170,7 @@ function getClientIp(req) {
     return req.headers['x-forwarded-for'] ||
         req.connection.remoteAddress ||
         req.socket.remoteAddress ||
-        req.connection.socket.remoteAddress;
+        req.connection.socket.remoteAddress || 'error-ip';
 }
 app.post('/v2/answer', function (req, res) {
     var topic = req.body.topic || [];
@@ -210,11 +209,10 @@ app.get('/answer', function (req, res) {
 function selectAnswer(topic, res, where) {
     var ret = [];
     if (topic.length <= 0) {
-        res.send({
+        return res.send({
             code: 0,
             msg: 'success'
         });
-        return;
     }
     for (let i = 0; i < topic.length; i++) {
         mooc.find('answer', where(i), {
@@ -236,7 +234,7 @@ function selectAnswer(topic, res, where) {
             }
             ret.push(pushData);
             if (ret.length == topic.length) {
-                res.send(ret);
+                return res.send(ret);
             }
         });
     }
