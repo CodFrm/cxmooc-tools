@@ -38,6 +38,6 @@ title: Chrome插件
 
 ## 打包版浏览器
 
-为了方便安装,我们还提供了一个浏览器打包的版本,请在[releases页面](https://github.com/CodFrm/cxmooc-tools/releases)查看详情,适合小白用户
+为了方便安装,我们还提供了一个浏览器打包的版本,请在[releases页面](https://github.com/CodFrm/cxmooc-tools/releases)查看详情,适合小白用户(但是版本更新可能较慢)
 
 ![](/img/4.webp)
