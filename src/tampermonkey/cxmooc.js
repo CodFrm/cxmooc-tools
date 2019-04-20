@@ -8,7 +8,7 @@
 // @match        *://*/ztnodedetailcontroller/visitnodedetail?*
 // @match        *://*/antispiderShowVerify.ac?*
 // @match        *://*/html/processVerify.ac?*
-// @grant        none
+// @grant        GM_xmlhttpRequest
 // @license      MIT
 // ==/UserScript==
 
