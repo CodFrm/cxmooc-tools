@@ -52,7 +52,7 @@ export function get(url, success) {
 export function post(url, data, json = true, success) {
     let xmlhttp = createRequest();
     xmlhttp.open("POST", url, true);
-    xmlhttp.setRequestHeader('Authorization', global.vtoken || '');
+    xmlhttp.setRequestHeader('Authorization', config.vtoken || '');
     if (json) {
         xmlhttp.setRequestHeader("Content-Type", "application/json");
     } else {
@@ -226,7 +226,7 @@ export function gm_post(url, data, json = true, success) {
         url: url,
         method: 'POST',
         headers: {
-            'Authorization': global.vtoken || '',
+            'Authorization': config.vtoken || '',
             'Content-Type': json ? 'application/json' : 'application/x-www-form-urlencoded',
         },
         data: data,
