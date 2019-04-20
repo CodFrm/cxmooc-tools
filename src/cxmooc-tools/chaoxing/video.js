@@ -75,7 +75,7 @@ module.exports = function () {
         initCdn(self.video);
         //点击切换记录cdn
         $(self.document).find("[title='Playline']+.vjs-menu .vjs-menu-content .vjs-menu-item-text").click(function () {
-            localStorage['cdn'] = $(self.document).find("[title='Playline']+.vjs-menu .vjs-menu-content .vjs-menu-item.vjs-selected .vjs-menu-item-text").text();
+            localStorage['cdn'] = $(this).text();
         });
         let play = function () {
             //静音和倍速选项
