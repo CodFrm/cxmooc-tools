@@ -6,7 +6,7 @@
 // @author       CodFrm
 // @match        *://*/mycourse/studentstudy?*
 // @match        *://*/ztnodedetailcontroller/visitnodedetail?*
-// @match        *://*/antispiderShowVerify.ac?*
+// @match        *://*/antispiderShowVerify.ac*
 // @match        *://*/html/processVerify.ac?*
 // @grant        GM_xmlhttpRequest
 // @license      MIT
