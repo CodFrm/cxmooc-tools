@@ -12,10 +12,10 @@ module.exports = function () {
             let img = document.getElementById('imgVerCode');
             getVcode('/img/code?' + new Date().getTime(), img, function (code, msg) {
                 if (code === undefined) {
-                    $(notic).text(msg);
+                    $(notic).html(msg);
                     return;
                 }
-                $(notic).text('提交验证码');
+                $(notic).html('cxmooc打码成功,准备提交');
                 $('input#code').val(code);
                 setTimeout(function () {
                     $('a#sub').click();
@@ -50,10 +50,10 @@ module.exports = function () {
             img = img[0];
             getVcode('/verifyCode/studychapter?' + (new Date()).valueOf(), img, function (code, msg) {
                 if (code === undefined) {
-                    $(notic).text(msg);
+                    $(notic).html(msg);
                     return;
                 }
-                $(notic).text(msg);
+                $(notic).html('cxmooc打码成功,准备提交');
                 $('input#identifyCodeRandom').val(code);
                 setTimeout(function () {
                     continueGetTeacherAjax();
@@ -70,7 +70,7 @@ module.exports = function () {
             common.post(serverConfig.url + 'vcode', 'img=' + encodeURIComponent(base64.substr('data:image/jpeg;base64,'.length)), false, function (ret) {
                 let json = JSON.parse(ret)
                 if (json.code == -2) {
-                    alert('进入打码已超限制,请手动输入');
+                    alert('cxmooc打码已超限制,请手动输入');
                     callback(undefined, json.msg);
                     //TODO:无权限
                 } else if (json.msg) {

@@ -61,7 +61,7 @@ app.use(function (req, res, next) {
     redis.onlineAdd(ip);
 
     res.header("Access-Control-Allow-Origin", req.headers['origin']);
-    res.header("Access-Control-Allow-Headers", "Content-Type,Content-Length, Authorization, Accept,X-Requested-With");
+    res.header("Access-Control-Allow-Headers", "Content-Type,Content-Length,Authorization,Accept,X-Requested-With");
     res.header("Access-Control-Allow-Methods", "PUT,POST,GET,DELETE,OPTIONS");
     if (req.method == "OPTIONS") {
         res.send(200);
@@ -152,16 +152,10 @@ function mergeAnswer(source, answer) {
     return source;
 }
 
-function getHotVer(ver) {
-    let dealver = 'v' + ver.replace('.', '_');
-    hotversion = config.hotversion[dealver] || hotversion;
-    return hotversion;
-}
-
 app.get('/update', function (req, res) {
     redis.onlineNum(function (err, data) {
         //分发各个版本热更新
-        let hotversion = getHotVer('' + (req.query.ver || config.version));
+        let hotversion = config.getHotVersion(req.query.ver || config.version);
         res.send({
             version: config.version,
             url: config.update,
@@ -258,6 +252,7 @@ app.use('/vcode', function (req, res, next) {
         return res.send({ code: -1, msg: 'ua null' });
     }
     redis.vtoken(req.header('Authorization') || '', function (val) {
+        redis.apiLimit('vcode', ua, 12, ip);
         if (val > 0) {
             redis.callStatis('vcode-vtoken', req.header('Authorization'));
             next();
@@ -277,6 +272,24 @@ app.post('/vcode', function (req, res) {
             res.send({ code: 0, msg: pack.data });
         } else {
             res.send({ code: -1, msg: 'error' });
+        }
+    });
+});
+
+app.use('/gen-token', function (req, res) {
+    if (req.query.token != serverConfig.genToken) {
+        return res.send('e');
+    }
+    if (!req.query.user) {
+        return res.send('e1');
+    }
+    redis.hincrby('cxmooc:genuser', req.query.user, 1, function (err, val) {
+        if (val > 1) {
+            return res.send({ code: -1 });
+        } else {
+            let retToken = Math.random().toString(36).substr(2);
+            redis.set('cxmooc:vtoken:' + retToken, 50);
+            res.send({ code: 1, token: retToken });
         }
     });
 });

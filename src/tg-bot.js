@@ -25,14 +25,12 @@ exec('git log --pretty=format:"%s" ' + (branch == tag ? tag + '..' : commit_rang
         sendText += "*有一个bug修复,准备热更新*\n";
         sendText += hotUpdate();
     }
-    sendText += "更新了以下内容:\n```" + stdout + "```\n" + end;
+    sendText += "更新了以下内容:\n```\n" + stdout + "\n```\n" + end;
     tgBot.sendMessage(chat_id, sendText, { parse_mode: 'Markdown' });
     tgBot.sendDocument(chat_id, fs.createReadStream('build/cxmooc-tools.crx'));
 });
 
 function hotUpdate() {
     let ret = '热更新版本号为:' + (config.hotversion[('v' + config.version).replace('.', '_')]) + "\n";
-    tgBot.sendDocument(chat_id, fs.createReadStream('build/cxmooc-tools/src/mooc.js'));
-    tgBot.sendDocument(chat_id, fs.createReadStream('build/tampermonkey.js'));
     return ret;
 }

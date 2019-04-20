@@ -12,6 +12,8 @@ title: 使用教程
 
 也可以使用yandex浏览器手机刷课(文档待完善)
 
+最近也发布了一个智慧树的版本,油猴脚本:[https://greasyfork.org/zh-CN/scripts/382037-%E6%99%BA%E6%85%A7%E6%A0%91%E5%B0%8F%E5%B7%A5%E5%85%B7](https://greasyfork.org/zh-CN/scripts/382037-%E6%99%BA%E6%85%A7%E6%A0%91%E5%B0%8F%E5%B7%A5%E5%85%B7),插件是全部整合的
+
 [telegram群](https://t.me/joinchat/MHU8Gg2fP3Q51HLY2wqmQA) [QQ群](https://shang.qq.com/wpa/qunwpa?idkey=9bddd2564d84bd999940de422d1c0c70f87ecaf02fe9d7c60389fc2b376179eb)
 
 - 开发者

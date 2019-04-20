@@ -171,3 +171,122 @@ export function getImageBase64(img, ext) {
     canvas = null;
     return dataURL;
 }
+
+export function boom_btn() {
+    if (localStorage['boom_no_prompt'] == undefined || localStorage['boom_no_prompt'] != 1) {
+        let msg = prompt('秒过视频会产生不良记录,是否继续?如果以后不想再弹出本对话框请在下方填写yes')
+        if (msg === null) return false;
+        if (msg === 'yes') localStorage['boom_no_prompt'] = 1;
+    }
+    return true;
+}
+
+//消息发送
+export function clientMessage(type, eventCallback) {
+    let self = {};
+    self.tag = Math.random();
+    window.addEventListener('message', function (event) {
+        if (event.data.recv_tag || event.data.recv_tag == self.tag) {
+            eventCallback && eventCallback(event.data.param, event);
+        }
+    });
+    self.send = function (param) {
+        window.postMessage({ type: type, send_tag: self.tag, param: param }, '*');
+        return self;
+    };
+    return self;
+}
+
+export function serverMessage(type, eventCallback) {
+    let self = {};
+    window.addEventListener('message', function (event) {
+        if ((event.data.type || event.data.type == type) && event.data.send_tag) {
+            eventCallback && eventCallback(event.data.param, function (param) {
+                self.send(param, event.data.send_tag);
+            });
+        }
+    });
+    self.send = function (param, tag) {
+        window.postMessage({ type: type, recv_tag: tag, param: param }, '*');
+        return self;
+    }
+    return self;
+}
+
+/**
+ * 跨域的post请求
+ * @param {*} url 
+ * @param {*} data 
+ * @param {*} json 
+ * @param {*} success 
+ */
+export function gm_post(url, data, json = true, success) {
+    let self = {};
+    GM_xmlhttpRequest({
+        url: url,
+        method: 'POST',
+        headers: {
+            'Authorization': global.vtoken || '',
+            'Content-Type': json ? 'application/json' : 'application/x-www-form-urlencoded',
+        },
+        data: data,
+        onreadystatechange: function (response) {
+            if (response.readyState == 4) {
+                if (response.status == 200) {
+                    success && success(response.responseText);
+                } else {
+                    self.errorCallback && self.errorCallback(response);
+                }
+            }
+        }
+    });
+    self.error = function (errorCallback) {
+        self.errorCallback = errorCallback;
+    }
+    return self;
+}
+
+
+/**
+ * 跨域的get请求
+ * @param {*} url 
+ * @param {*} data 
+ * @param {*} json 
+ * @param {*} success 
+ */
+export function gm_get(url, success) {
+    let self = {};
+    GM_xmlhttpRequest({
+        url: url,
+        method: 'GET',
+        onreadystatechange: function (response) {
+            if (response.readyState == 4) {
+                if (response.status == 200) {
+                    success && success(response.responseText);
+                } else {
+                    self.errorCallback && self.errorCallback(response);
+                }
+            }
+        }
+    });
+    self.error = function (errorCallback) {
+        self.errorCallback = errorCallback;
+    }
+    return self;
+}
+
+//实现GM_xmlhttpRequest
+if (window.GM_xmlhttpRequest == undefined) {
+    window.GM_xmlhttpRequest = function (param) {
+        let send = {};
+        send.url = param.url;
+        send.method = param.method;
+        send.data = param.data;
+        send.headers = param.headers;
+        clientMessage('GM_xmlhttpRequest', function (response, event) {
+            if (response.event || response.event == 'onreadystatechange') {
+                param.onreadystatechange && param.onreadystatechange(response);
+            }
+        }).send(send);
+    }
+}

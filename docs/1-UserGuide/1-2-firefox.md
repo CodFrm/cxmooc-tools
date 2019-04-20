@@ -7,7 +7,7 @@ title: FireFox插件
 [应用市场](https://addons.mozilla.org/zh-CN/firefox/addon/%E8%B6%85%E6%98%9F%E6%85%95%E8%AF%BE%E5%B0%8F%E5%B7%A5%E5%85%B7/)
 下载安装插件。
 
-**注意，本插件支持Firefox for Mobile,由于商店版本存在部分技术问题，推荐使用打包的`.crx`版本，安装流程与Chrome浏览器扩展类似**
+如果火狐出现题库错误等问题,请访问一次这个网址:[https://blog.icodef.com:8081/](https://blog.icodef.com:8081/),允许访问通过
 
 ## 火狐手机版(Android)
 > 待完善

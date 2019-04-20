@@ -29,7 +29,7 @@ module.exports = function () {
         for (let i in topic) {
             data += 'topic[' + i + ']=' + topic[i].topic + '&type[' + i + ']=' + topic[i].type + '&';
         }
-        common.post(moocServer.url + 'v2/answer', data, false, function (data) {
+        common.gm_post(moocServer.url + 'v2/answer', data, false, function (data) {
             let json = JSON.parse(data);
             let answer_null = false;
             for (let i = 0; i < json.length; i++) {
@@ -153,7 +153,7 @@ module.exports = function () {
         let box = until.pop_prompt("√  答案自动记录成功");
         $(document.body).append(box);
         setTimeout(function () { box.style.opacity = "1"; }, 500);
-        common.post(moocServer.url + 'answer', JSON.stringify(answer));
+        common.gm_post(moocServer.url + 'answer', JSON.stringify(answer));
 
         common.log(self.iframe.className + " topic answer complete")
         self.complete(2);

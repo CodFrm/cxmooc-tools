@@ -78,7 +78,6 @@ module.exports = function () {
         //无任务
         config.auto && self.notice(config.interval + "分钟后插件将自动切换下一节任务");
         config.auto && common.log(config.interval + " after switch")
-        let duration = (config.interval || 1) * 60000;
         clearTimeout(lastTimeout);
         lastTimeout = setTimeout(function () {
             if (callback == undefined) {
@@ -86,7 +85,7 @@ module.exports = function () {
             } else {
                 callback();
             }
-        }, duration);
+        }, config.duration);
     }
 
     this.loadover = function (event) {

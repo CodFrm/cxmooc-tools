@@ -19,6 +19,8 @@ before_install:
 
 script: 
   - npm run docs:build
+  - npm run build
+  - npm run tampermonkey
   - npm run pack
   - cd build/cxmooc-tools && zip ../cxmooc-tools.zip -r ./ && cd ../../
 

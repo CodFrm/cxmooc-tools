@@ -5,10 +5,11 @@
   "main": "mooc.js",
   "scripts": {
     "test": "echo \"Hello,World\nDeveloper Blog:blog.icodef.com\" && exit 1",
-    "build": "node_modules/.bin/webpack --mode production --config webpack.prod.js",
+    "build": "node_modules/.bin/webpack --mode production --config webpack.config.js",
+    "tampermonkey": "node_modules/.bin/webpack --config webpack.tampermonkey.js",
     "dev": "node_modules/.bin/webpack --mode development --config webpack.dev.js",
     "server": "node src/server/listen.js",
-    "pack": "npm run build && node src/pack-crx.js && npm run build",
+    "pack": "node src/pack-crx.js",
     "docs:dev": "node_modules/.bin/vuepress dev docs",
     "docs:build": "node_modules/.bin/vuepress build docs"
   },
@@ -26,7 +27,9 @@
     "@vuepress/plugin-back-to-top": "^1.0.0-alpha.47",
     "@vuepress/plugin-google-analytics": "^1.0.0-alpha.0",
     "crx": "^4.0.1",
+    "css-loader": "^2.1.1",
     "html-webpack-plugin": "^3.2.0",
+    "style-loader": "^0.23.1",
     "vuepress": "^1.0.0-alpha.47",
     "webpack": "^4.20.2",
     "webpack-cli": "^3.1.2",
