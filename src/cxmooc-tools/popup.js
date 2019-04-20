@@ -19,7 +19,7 @@ window.onload = function () {
         }
         document.getElementById("injection").innerHTML = json.injection
         document.getElementById('version').innerHTML = 'v' + (moocConfig.version > json.hotversion ? moocConfig.version : json.hotversion);
-    }).error(function(){
+    }).error(function () {
         chrome.storage.local.set({
             'version': moocConfig.version,
             'url': moocConfig.url,
@@ -44,6 +44,7 @@ window.onload = function () {
     });
 
     document.getElementById('vtoken').onblur = function () {
+        sendConfig('vtoken', document.getElementById('vtoken').value);
         chrome.storage.sync.set({
             'vtoken': document.getElementById('vtoken').value
         });
@@ -63,6 +64,7 @@ window.onload = function () {
     });
 
     document.getElementById('answer-ignore').onclick = function () {
+        sendConfig('answer_ignore', document.getElementById('answer-ignore').checked);
         chrome.storage.sync.set({
             'answer_ignore': document.getElementById('answer-ignore').checked
         });
@@ -70,6 +72,7 @@ window.onload = function () {
     }
 
     document.getElementById('rand-answer').onclick = function () {
+        sendConfig('rand_answer', document.getElementById('rand-answer').checked);
         chrome.storage.sync.set({
             'rand_answer': document.getElementById('rand-answer').checked
         });
@@ -77,6 +80,7 @@ window.onload = function () {
     }
 
     document.getElementById('video-mute').onclick = function () {
+        sendConfig('video_mute', document.getElementById('video-mute').checked);
         chrome.storage.sync.set({
             'video_mute': document.getElementById('video-mute').checked
         });
@@ -92,11 +96,13 @@ window.onload = function () {
             document.getElementById('auto-m').style.display = 'none';
             document.getElementById('ignore').style.display = 'none';
         }
+        sendConfig('auto', check.checked);
         chrome.storage.sync.set({
             'auto': check.checked
         });
     }
     document.getElementById('interval').onblur = function () {
+        sendConfig('interval', document.getElementById('interval').value);
         chrome.storage.sync.set({
             'interval': document.getElementById('interval').value
         });
@@ -111,6 +117,7 @@ window.onload = function () {
                 localStorage['boom_multiple'] = 1;
             }
         }
+        sendConfig('video_multiple', document.getElementById('video-multiple').value);
         chrome.storage.sync.set({
             'video_multiple': document.getElementById('video-multiple').value
         });
@@ -128,3 +135,12 @@ common.serverMessage('GM_xmlhttpRequest', function (param, sendResponse) {
         }
     });
 });
+
+//即时同步配置
+function sendConfig(key, value) {
+    chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+        for (let i = 0; i < tabs.length; i++) {
+            chrome.tabs.sendMessage(tabs[i].id, { type: 'config', 'key': key, 'value': value });
+        }
+    });
+}

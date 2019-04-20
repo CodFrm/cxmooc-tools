@@ -186,7 +186,7 @@ export function clientMessage(type, eventCallback) {
     let self = {};
     self.tag = Math.random();
     window.addEventListener('message', function (event) {
-        if (event.data.recv_tag || event.data.recv_tag == self.tag) {
+        if (event.data.recv_tag && event.data.recv_tag == self.tag) {
             eventCallback && eventCallback(event.data.param, event);
         }
     });
@@ -200,7 +200,7 @@ export function clientMessage(type, eventCallback) {
 export function serverMessage(type, eventCallback) {
     let self = {};
     window.addEventListener('message', function (event) {
-        if ((event.data.type || event.data.type == type) && event.data.send_tag) {
+        if (event.data.type && event.data.type == type && event.data.send_tag) {
             eventCallback && eventCallback(event.data.param, function (param) {
                 self.send(param, event.data.send_tag);
             });
@@ -245,7 +245,6 @@ export function gm_post(url, data, json = true, success) {
     }
     return self;
 }
-
 
 /**
  * 跨域的get请求
