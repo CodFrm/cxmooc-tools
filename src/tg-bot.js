@@ -14,15 +14,20 @@ const tgBot = new TelegramBot(botToken, { polling: false });
 let lastTag = '';
 if (branch == tag) {
     //获取上一个tag
-    exec('git describe --tags HEAD^', (err, stdout, stderr) => {
-        lastTag = stdout.toString().match(/([v\.\d]+)-/)[1];
+    exec('git describe --tags HEAD^^', (err, stdout, stderr) => {
+        let match = stdout.toString().match(/([v\.\d]+)-/);
+        lastTag = match[1];
         push();
     });
 } else {
     push();
 }
 function push() {
-    exec('git log --pretty=format:"%s" ' + (branch == tag ? tag + '..' + lastTag : commit_range) + (commit_range.search('.') < 0 ? ' -1' : ''), (err, stdout, stderr) => {
+    let range=commit_range;
+    if (branch == tag) {
+        range = tag + '...' + lastTag;
+    }
+    exec('git log --pretty=format:"%s" ' + range + (range.search('.') < 0 ? ' -1' : ''), (err, stdout, stderr) => {
         let sendText = '';
         let end = '';
         if (branch == tag) {
@@ -37,6 +42,7 @@ function push() {
             sendText += hotUpdate();
         }
         sendText += "更新了以下内容:\n```\n" + stdout + "\n```\n" + end;
+        console.log(sendText);
         tgBot.sendMessage(chat_id, sendText, { parse_mode: 'Markdown' });
         tgBot.sendDocument(chat_id, fs.createReadStream('build/cxmooc-tools.crx'));
     });
