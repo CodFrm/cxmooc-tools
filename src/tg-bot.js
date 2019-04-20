@@ -11,25 +11,36 @@ const tag = process.env.TRAVIS_TAG || false;
 
 const tgBot = new TelegramBot(botToken, { polling: false });
 
-exec('git log --pretty=format:"%s" ' + (branch == tag ? tag + '..' : commit_range) + (commit_range.search('.') < 0 ? ' -1' : ''), (err, stdout, stderr) => {
-    let sendText = '';
-    let end = '';
-    if (branch == tag) {
-        sendText += "*有一个新版本发布*\n";
-        end = '\n[前去release查看](https://github.com/CodFrm/cxmooc-tools/releases)';
-    } else if (branch == 'develop') {
-        sendText += "*有一个内测版本发布*\n";
-        end = '如果发现有什么BUG,记得[反馈](https://github.com/CodFrm/cxmooc-tools/issues)哦';
-    } else if (branch == 'hotfix') {
-        //热修复处理
-        sendText += "*有一个bug修复,准备热更新*\n";
-        sendText += hotUpdate();
-    }
-    sendText += "更新了以下内容:\n```\n" + stdout + "\n```\n" + end;
-    tgBot.sendMessage(chat_id, sendText, { parse_mode: 'Markdown' });
-    tgBot.sendDocument(chat_id, fs.createReadStream('build/cxmooc-tools.crx'));
-});
-
+let lastTag = '';
+if (branch == tag) {
+    //获取上一个tag
+    exec('git describe --tags HEAD^', (err, stdout, stderr) => {
+        lastTag = stdout.toString().match(/([v\.\d]+)-/)[1];
+        push();
+    });
+} else {
+    push();
+}
+function push() {
+    exec('git log --pretty=format:"%s" ' + (branch == tag ? tag + '..' + lastTag : commit_range) + (commit_range.search('.') < 0 ? ' -1' : ''), (err, stdout, stderr) => {
+        let sendText = '';
+        let end = '';
+        if (branch == tag) {
+            sendText += "*有一个新版本发布*\n";
+            end = '\n[前去release查看](https://github.com/CodFrm/cxmooc-tools/releases)';
+        } else if (branch == 'develop') {
+            sendText += "*有一个内测版本发布*\n";
+            end = '如果发现有什么BUG,记得[反馈](https://github.com/CodFrm/cxmooc-tools/issues)哦';
+        } else if (branch == 'hotfix') {
+            //热修复处理
+            sendText += "*有一个bug修复,准备热更新*\n";
+            sendText += hotUpdate();
+        }
+        sendText += "更新了以下内容:\n```\n" + stdout + "\n```\n" + end;
+        tgBot.sendMessage(chat_id, sendText, { parse_mode: 'Markdown' });
+        tgBot.sendDocument(chat_id, fs.createReadStream('build/cxmooc-tools.crx'));
+    });
+}
 function hotUpdate() {
     let ret = '热更新版本号为:' + (config.hotversion[('v' + config.version).replace('.', '_')]) + "\n";
     return ret;
