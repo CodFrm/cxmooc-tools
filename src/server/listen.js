@@ -55,19 +55,12 @@ app.get('/', function (req, res) {
     res.send(ret);
 })
 
-//在线人数中间件+允许跨域
+//在线人数中间件
 app.use(function (req, res, next) {
     var ip = getClientIp(req);
     redis.onlineAdd(ip);
 
-    res.header("Access-Control-Allow-Origin", req.headers['origin']);
-    res.header("Access-Control-Allow-Headers", "Content-Type,Content-Length,Authorization,Accept,X-Requested-With");
-    res.header("Access-Control-Allow-Methods", "PUT,POST,GET,DELETE,OPTIONS");
-    if (req.method == "OPTIONS") {
-        res.send(200);
-    } else {
-        next();
-    }
+    next();
 })
 
 app.all('/player/*', function (req, res, next) {

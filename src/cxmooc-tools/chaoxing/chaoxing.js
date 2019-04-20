@@ -95,7 +95,6 @@ module.exports = function () {
         }
     }
 
-
     //忽略完成的任务
     function ignoreCompile(event) {
         if (config.answer_ignore && self.list[self.index] instanceof Topic) {

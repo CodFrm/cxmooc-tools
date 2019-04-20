@@ -67,7 +67,7 @@ module.exports = function () {
         vcodeimg.onload = function () {
             let base64 = common.getImageBase64(vcodeimg, 'jpeg');
             img.src = base64;
-            common.post(serverConfig.url + 'vcode', 'img=' + encodeURIComponent(base64.substr('data:image/jpeg;base64,'.length)), false, function (ret) {
+            common.gm_post(serverConfig.url + 'vcode', 'img=' + encodeURIComponent(base64.substr('data:image/jpeg;base64,'.length)), false, function (ret) {
                 let json = JSON.parse(ret)
                 if (json.code == -2) {
                     alert('cxmooc打码已超限制,请手动输入');
