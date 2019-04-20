@@ -1,7 +1,7 @@
 const moocConfig = require('../config');
 const common = require('./common');
 
-(function () {  
+(function () {
     //注入mooc.js
     chrome.storage.local.get(['version', 'url', 'enforce', 'hotversion'], function (items) {
         console.log(items);
@@ -49,3 +49,15 @@ const common = require('./common');
         });
     })
 })();
+
+//实现GM_xmlhttpRequest(兼容油猴),完成跨域
+common.serverMessage('GM_xmlhttpRequest', function (param, sendResponse) {
+    //向background发送消息
+    let connect = chrome.runtime.connect({ name: 'tools' });
+    connect.postMessage({ type: "GM_xmlhttpRequest", param: param });
+    connect.onMessage.addListener(function (response) {
+        if (response.type == 'GM_xmlhttpRequest') {
+            sendResponse(response);
+        }
+    });
+});

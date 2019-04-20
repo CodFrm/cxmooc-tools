@@ -33,3 +33,39 @@ xhr.onreadystatechange = function () {
     }
 }
 xhr.send();
+
+//监听消息
+chrome.runtime.onConnect.addListener(function (port) {
+    if (port.name != 'tools') {
+        return;
+    }
+    port.onMessage.addListener(function (request) {
+        switch (request.type) {
+            case 'GM_xmlhttpRequest': {
+                request.param.onreadystatechange = function (req) {
+                    req.event = 'onreadystatechange';
+                    req.type = 'GM_xmlhttpRequest';
+                    port.postMessage(req);
+                }
+                GM_xmlhttpRequest(request.param);
+                break;
+            }
+        }
+    });
+});
+
+function GM_xmlhttpRequest(request) {
+    var xhr = new XMLHttpRequest();
+    xhr.open(request.method, request.url, true);
+    for (let key in request.headers) {
+        xhr.setRequestHeader(key, request.headers[key]);
+    }
+    xhr.onreadystatechange = function () {
+        request.onreadystatechange && request.onreadystatechange({
+            readyState: xhr.readyState,
+            status: xhr.status,
+            responseText: xhr.responseText,
+        });
+    }
+    xhr.send(request.data || '');
+}

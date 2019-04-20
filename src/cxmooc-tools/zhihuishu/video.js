@@ -28,7 +28,7 @@ module.exports = {
             self.id = $container.selector;
             let hookPause = callback.onPause;
             let hookComplete = callback.onComplete;
-            let hookReady = callback.onReady
+            let hookReady = callback.onReady;
             let video = undefined;
             callback.onReady = function () {
                 console.log('准备');
@@ -54,13 +54,10 @@ module.exports = {
             callback.onComplete = function () {
                 console.log('完成');
                 hookComplete();
-                self.compile();
             }
             if (config.video_mute) {
                 options.volume = 0;
             }
-            //TODO:内置倍速
-            options.rate = config.video_multiple || (config.video_multiple <= 1.5 ? config.video_multiple : 1);
             console.log(options);
             options.autostart = true;
             // options.control.nextBtn = true;

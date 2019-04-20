@@ -32,7 +32,7 @@
                 "*://*/work/selectWorkQuestionYiPiYue?*",
                 "*://*/exam/test/reVersionTestStartNew?*",
                 "*://*/ztnodedetailcontroller/visitnodedetail?*",
-                "*://*/antispiderShowVerify.ac?*",
+                "*://*/antispiderShowVerify.ac*",
                 "*://*/html/processVerify.ac?*",
                 "*://study.zhihuishu.com/learning/videoList*"
             ],
