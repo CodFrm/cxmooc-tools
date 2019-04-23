@@ -17,7 +17,7 @@ module.exports = {
       {
         text: '使用教程',
         items: [
-          { text: '开始', link: '/1-UserGuide' },
+          { text: '开始', link: '/1-UserGuide/' },
           { text: 'Chrome 扩展', link: '/1-UserGuide/1-1-chrome.html' },
           { text: 'FireFox 扩展', link: '/1-UserGuide/1-2-firefox.html' },
           { text: 'Tampermonkey 脚本', link: '/1-UserGuide/1-3-tampermonkey.html' },
