@@ -40,4 +40,11 @@ title: Chrome插件
 
 为了方便安装,我们还提供了一个浏览器打包的版本,请在[releases页面](https://github.com/CodFrm/cxmooc-tools/releases)查看详情,适合小白用户(但是版本更新可能较慢)
 
+如果更新插件版本,可以用[拖拽安装CRX模式](/1-UserGuide/1-1-chrome.html#%E6%8B%96%E6%8B%BD%E5%AE%89%E8%A3%85crx%E6%A8%A1%E5%BC%8F)的方式来更新
+
 ![](/img/4.webp)
+
+然后直接进入慕课网站直接开始
+
+## 手机版本
+> 待完善
