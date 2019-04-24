@@ -286,7 +286,7 @@ app.use('/gen-token', function (req, res) {
         } else {
             let retToken = Math.random().toString(36).substr(2);
             redis.hset('cxmooc:genuser', req.query.user, retToken);
-            redis.set('cxmooc:vtoken:' + retToken, 50);
+            redis.set('cxmooc:vtoken:' + retToken, 100);
             res.send({ code: 1, token: retToken });
         }
     });
