@@ -281,9 +281,9 @@ app.use('/gen-token', function (req, res) {
     if (!req.query.user) {
         return res.send('e1');
     }
-    redis.hincrby('cxmooc:genuser', req.query.user, 1, function (err, val) {
-        if (val > 1) {
-            return res.send({ code: -1 });
+    redis.hget('cxmooc:genuser', req.query.user, function (err, val) {
+        if (val != undefined) {
+            return res.send({ code: 1, token: val });
         } else {
             let retToken = Math.random().toString(36).substr(2);
             redis.set('cxmooc:vtoken:' + retToken, 50);

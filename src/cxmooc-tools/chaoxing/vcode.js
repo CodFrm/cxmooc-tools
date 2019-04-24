@@ -9,6 +9,10 @@ module.exports = function () {
         //作业处验证码
         if (document.getElementById('imgVerCode')) {
             $('#imgVerCode').on('load', function () {
+                if($('#imgVerCode').attr('src').indexOf('?')<0){
+                    //节约可能的一次打码
+                    return;
+                }
                 console.log('准备打码...');
                 let notic = until.signleLine('cxmooc自动打码中...', 'dama', $('#sub').parents('td'));
                 let img = document.getElementById('imgVerCode');
@@ -75,7 +79,6 @@ module.exports = function () {
             common.gm_post(serverConfig.url + 'vcode', 'img=' + encodeURIComponent(base64.substr('data:image/jpeg;base64,'.length)), false, function (ret) {
                 let json = JSON.parse(ret);
                 if (json.code == -2) {
-                    alert('cxmooc打码已超限制,请手动输入');
                     callback(undefined, json.msg);
                     //TODO:无权限
                 } else if (json.msg) {
@@ -84,7 +87,6 @@ module.exports = function () {
                     getVcode(url, img, callback);
                 }
             }).error(function () {
-                alert('网络请求失败,请手动输入验证码');
                 callback(undefined, '网络请求失败');
             });
         }
