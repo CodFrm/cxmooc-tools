@@ -6,10 +6,10 @@ module.exports = function () {
         console.log("Redis error:" + err);
     });
     this.onlineAdd = function (ip) {
-        client.zadd("cxmooc:online", [Date.parse(new Date()), ip]);
+        client.zadd("cxmooc:online", [(new Date()).valueOf(), ip]);
     }
     this.onlineNum = function (call) {
-        var time = Date.parse(new Date());
+        var time = (new Date()).valueOf();
         client.zcount("cxmooc:online", [time - (5 * 60 * 1000), time], function (err, res) {
             call(err, res)
         });
@@ -31,7 +31,7 @@ module.exports = function () {
     }
     this.vtoken = function (token, callback) {
         if (!token) {
-            callback && callback(0);
+            return callback && callback(0);
         }
         client.decr('cxmooc:vtoken:' + token, function (err, res) {
             callback && callback(res);
@@ -40,11 +40,20 @@ module.exports = function () {
     this.set = function (key, value) {
         client.set(key, value);
     }
-    this.hget = function (key, callback) {
-        client.hget(key, callback);
+    this.hget = function (key, field, callback) {
+        client.hget(key, field, callback);
+    }
+    this.hset = function (key, field, value, callback) {
+        client.hset(key, field, value, callback);
     }
     this.hincrby = function (key, field, num, callback) {
         client.hincrby(key, field, num, callback);
+    }
+    this.hexists = function (key, field, callback) {
+        client.hexists(key, field, callback);
+    }
+    this.exists = function (key, call) {
+        client.exists(key, call);
     }
     return this
 }

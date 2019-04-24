@@ -64,7 +64,7 @@ app.use(function (req, res, next) {
     res.header("Access-Control-Allow-Headers", "Content-Type,Content-Length,Authorization,Accept,X-Requested-With");
     res.header("Access-Control-Allow-Methods", "PUT,POST,GET,DELETE,OPTIONS");
     if (req.method == "OPTIONS") {
-        res.send(200);
+        return res.status(200).send('success');
     } else {
         next();
     }
@@ -168,10 +168,7 @@ app.get('/update', function (req, res) {
 })
 
 function getClientIp(req) {
-    return req.headers['x-forwarded-for'] ||
-        req.connection.remoteAddress ||
-        req.socket.remoteAddress ||
-        req.connection.socket.remoteAddress;
+    return req.ip || 'error-ip';
 }
 app.post('/v2/answer', function (req, res) {
     var topic = req.body.topic || [];
@@ -255,9 +252,9 @@ app.use('/vcode', function (req, res, next) {
         redis.apiLimit('vcode', ua, 12, ip);
         if (val > 0) {
             redis.callStatis('vcode-vtoken', req.header('Authorization'));
-            next();
+            return next();
         } else {
-            res.send({ code: -2, msg: '超出限制,<a href="https://github.com/CodFrm/cxmooc-tools/issues/74" target="_blank">请点击查看详情</a>' });
+            return res.send({ code: -2, msg: '超出限制,<a href="https://github.com/CodFrm/cxmooc-tools/issues/74" target="_blank">请点击查看详情</a>' });
         }
     });
 });
@@ -283,11 +280,12 @@ app.use('/gen-token', function (req, res) {
     if (!req.query.user) {
         return res.send('e1');
     }
-    redis.hincrby('cxmooc:genuser', req.query.user, 1, function (err, val) {
-        if (val > 1) {
-            return res.send({ code: -1 });
+    redis.hget('cxmooc:genuser', req.query.user, function (err, val) {
+        if (!val) {
+            return res.send({ code: 1, token: val });
         } else {
             let retToken = Math.random().toString(36).substr(2);
+            redis.hset('cxmooc:genuser', req.query.user, retToken);
             redis.set('cxmooc:vtoken:' + retToken, 50);
             res.send({ code: 1, token: retToken });
         }
