@@ -10,4 +10,5 @@ title: FireFox插件
 如果火狐出现题库错误等问题,请访问一次这个网址:[https://blog.icodef.com:8081/](https://blog.icodef.com:8081/),允许访问通过
 
 ## 火狐手机版(Android)
-> 待完善
+> 待完善,可以下载app后在商店安装,但是功能并不保证稳定(超星手机浏览器无法完成视频任务点)
+
