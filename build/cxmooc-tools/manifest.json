@@ -34,7 +34,8 @@
                 "*://*/ztnodedetailcontroller/visitnodedetail?*",
                 "*://*/antispiderShowVerify.ac*",
                 "*://*/html/processVerify.ac?*",
-                "*://study.zhihuishu.com/learning/videoList*"
+                "*://study.zhihuishu.com/learning/videoList*",
+                "*://*/exam/test/reVersionPaperMarkContentNew?*"
             ],
             "js": [
                 "src/start.js"

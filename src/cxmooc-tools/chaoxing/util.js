@@ -62,6 +62,9 @@ export function signleLine(text, label, append) {
     } else {
         $(p).text(text);
     }
+    p.text=function(text){
+        $(this).text(text);
+    }
     return p;
 }
 
@@ -82,7 +85,7 @@ export function isTask(el) {
 
 export function pop_prompt(text, sec = 4) {
     var box = document.createElement('div');
-    box.style.position = "absolute";
+    box.style.position = "fixed";
     box.style.background = "#aeffab";
     box.style.fontSize = "18px";
     box.style.padding = "4px 20px";
@@ -100,4 +103,8 @@ export function pop_prompt(text, sec = 4) {
         }, 1000)
     }, sec * 1000);
     return box;
+}
+
+export function getAnswer(){
+
 }
