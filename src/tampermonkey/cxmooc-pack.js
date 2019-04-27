@@ -9,7 +9,6 @@ window.onload = function () {
             var ev = ev || event;
             var _this = ev.srcElement || ev.target;
             if (_this.id == 'iframe') {
-                cx.vcode.monitorVcode();
                 cx.studentstudy();
             }
         }, true);
@@ -20,5 +19,9 @@ window.onload = function () {
     } else if (window.location.href.indexOf('ztnodedetailcontroller/visitnodedetail') > 0) {
         //超星阅读页面
         cx.read();
+    } else if (window.location.href.indexOf('exam/test/reVersionTestStartNew') > 0) {
+        cx.exam();
+    } else if (window.location.href.indexOf('exam/test/reVersionPaperMarkContentNew') > 0) {
+        cx.collectExam();
     }
 }

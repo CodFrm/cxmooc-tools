@@ -6,6 +6,7 @@ const util = require('./util');
 const Video = require('./video');
 const Topic = require('./topic');
 const Vcode = require('./vcode');
+const Exam = require('./exam');
 
 module.exports = function () {
     let self = this;
@@ -223,5 +224,12 @@ module.exports = function () {
         $(el).text(text);
     }
 
+    this.exam = function () {
+        Exam.exam();
+    }
+
+    this.collectExam = function () {
+        Exam.collect();
+    }
     return this;
 }

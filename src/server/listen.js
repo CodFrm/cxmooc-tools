@@ -33,12 +33,11 @@ if (serverConfig.env == 'prod') {
     httpsServer.listen(SSLPORT, function () {
         console.log('HTTPS Server is running on: https://localhost:%s', SSLPORT);
     });
+    var vcode = new vcodePack();
 }
 
 var mooc = new moocModel();
 var redis = new redisCli();
-var vcode = new vcodePack();
-
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
     extended: true
@@ -66,9 +65,9 @@ app.use(function (req, res, next) {
     if (req.method == "OPTIONS") {
         return res.status(200).send('success');
     } else {
-        next();
+        return next();
     }
-})
+});
 
 app.all('/player/*', function (req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");
@@ -81,17 +80,18 @@ app.post('/answer', function (req, res) {
     var ip = getClientIp(req);
     var ret = [];
     if (req.body.length <= 0) {
-        res.send({
+        return res.send({
             code: 0,
             msg: 'success'
         });
-        return;
     }
+    let num = 0;
     for (let i in req.body) {
         let topic = req.body[i];
         if (topic.correct == undefined || topic.type == undefined || topic.topic == undefined) {
             continue;
         }
+        num++;
         let type = parseInt(topic.type);
         let hash = md5(topic.topic + type.toString());
         let cond = {
@@ -106,8 +106,8 @@ app.post('/answer', function (req, res) {
                 data.ip = ip;
                 data.time = Date.parse(new Date());
                 mooc.insert('answer', data);
-            } else if (type == 4 && result.type == 4) {
-                //填空题,答案合并
+            } else if ((type == 4 && result.type == 4) || (type == 2 && result.type == 2)) {
+                //填空多选,答案合并
                 try {
                     let correct = mergeAnswer(result.correct, topic.correct);
                     mooc.updateOne('answer', cond, {
@@ -120,7 +120,7 @@ app.post('/answer', function (req, res) {
                 }
             }
             ret.push(cond);
-            if (ret.length == req.body.length) {
+            if (ret.length == num) {
                 res.send({
                     code: 0,
                     msg: 'success',
@@ -156,7 +156,7 @@ app.get('/update', function (req, res) {
     redis.onlineNum(function (err, data) {
         //分发各个版本热更新
         let hotversion = config.getHotVersion(req.query.ver || config.version);
-        res.send({
+        return res.send({
             version: config.version,
             url: config.update,
             enforce: config.enforce,
@@ -207,11 +207,10 @@ app.get('/answer', function (req, res) {
 function selectAnswer(topic, res, where) {
     var ret = [];
     if (topic.length <= 0) {
-        res.send({
+        return res.send({
             code: 0,
             msg: 'success'
         });
-        return;
     }
     for (let i = 0; i < topic.length; i++) {
         mooc.find('answer', where(i), {
@@ -233,7 +232,7 @@ function selectAnswer(topic, res, where) {
             }
             ret.push(pushData);
             if (ret.length == topic.length) {
-                res.send(ret);
+                return res.send(ret);
             }
         });
     }
@@ -281,7 +280,7 @@ app.use('/gen-token', function (req, res) {
         return res.send('e1');
     }
     redis.hget('cxmooc:genuser', req.query.user, function (err, val) {
-        if (!val) {
+        if (val != undefined) {
             return res.send({ code: 1, token: val });
         } else {
             let retToken = Math.random().toString(36).substr(2);

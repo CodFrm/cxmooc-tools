@@ -23,7 +23,7 @@ if (branch == tag) {
     push();
 }
 function push() {
-    let range=commit_range;
+    let range = commit_range;
     if (branch == tag) {
         range = tag + '...' + lastTag;
     }

@@ -7,19 +7,26 @@ module.exports = function () {
     this.monitorVcode = function () {
         //验证码监控加载
         //作业处验证码
-        window.getVarCode = function () {
-            let notic = until.signleLine('cxmooc自动打码中...', 'dama', $('#sub').parents('td'));
-            let img = document.getElementById('imgVerCode');
-            getVcode('/img/code?' + new Date().getTime(), img, function (code, msg) {
-                if (code === undefined) {
-                    $(notic).html(msg);
+        if (document.getElementById('imgVerCode')) {
+            $('#imgVerCode').on('load', function () {
+                if($('#imgVerCode').attr('src').indexOf('?')<0){
+                    //节约可能的一次打码
                     return;
                 }
-                $(notic).html('cxmooc打码成功,准备提交');
-                $('input#code').val(code);
-                setTimeout(function () {
-                    $('a#sub').click();
-                }, 2000);
+                console.log('准备打码...');
+                let notic = until.signleLine('cxmooc自动打码中...', 'dama', $('#sub').parents('td'));
+                let img = document.getElementById('imgVerCode');
+                getVcode('/img/code?' + new Date().getTime(), img, function (code, msg) {
+                    if (code === undefined) {
+                        $(notic).html(msg);
+                        return;
+                    }
+                    $(notic).html('cxmooc打码成功,准备提交');
+                    $('input#code').val(code);
+                    setTimeout(function () {
+                        $('a#sub').click();
+                    }, 2000);
+                }, true);
             });
         }
         //异常验证码
@@ -41,7 +48,7 @@ module.exports = function () {
         //保障账号安全验证码
         window.showChapterVerificationCodeTip = window.showChapterVerificationCode || 0;
         window.chapterVerifyCode = function () {
-            let notic = until.signleLine('cxmooc自动打码中...', 'dama', $('.DySearch'));
+            let notic = until.signleLine('cxmooc自动打码中...', 'dama1', $('.DySearch'));
             $(notic).css('float', 'left');
             let img = $('.fl[name=chapterNumVerCode]');
             if (img.length <= 0) {
@@ -62,15 +69,16 @@ module.exports = function () {
         }
     }
 
-    function getVcode(url, img, callback) {
-        let vcodeimg = document.createElement('img');
-        vcodeimg.onload = function () {
+    function getVcode(url, img, callback, show) {
+        let vcodeimg = show ? img : document.createElement('img');
+        let dmStart = function () {
             let base64 = common.getImageBase64(vcodeimg, 'jpeg');
-            img.src = base64;
+            if (!show) {
+                img.src = base64;
+            }
             common.gm_post(serverConfig.url + 'vcode', 'img=' + encodeURIComponent(base64.substr('data:image/jpeg;base64,'.length)), false, function (ret) {
-                let json = JSON.parse(ret)
+                let json = JSON.parse(ret);
                 if (json.code == -2) {
-                    alert('cxmooc打码已超限制,请手动输入');
                     callback(undefined, json.msg);
                     //TODO:无权限
                 } else if (json.msg) {
@@ -79,11 +87,15 @@ module.exports = function () {
                     getVcode(url, img, callback);
                 }
             }).error(function () {
-                alert('网络请求失败,请手动输入验证码');
                 callback(undefined, '网络请求失败');
             });
         }
-        vcodeimg.src = url;
+        if (show) {
+            dmStart();
+        } else {
+            vcodeimg.onload = dmStart;
+            vcodeimg.src = url;
+        }
     }
 
     self.monitorVcode();
