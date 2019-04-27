@@ -33,12 +33,11 @@ if (serverConfig.env == 'prod') {
     httpsServer.listen(SSLPORT, function () {
         console.log('HTTPS Server is running on: https://localhost:%s', SSLPORT);
     });
+    var vcode = new vcodePack();
 }
 
 var mooc = new moocModel();
 var redis = new redisCli();
-var vcode = new vcodePack();
-
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
     extended: true
@@ -64,7 +63,7 @@ app.use(function (req, res, next) {
     res.header("Access-Control-Allow-Headers", "Content-Type,Content-Length,Authorization,Accept,X-Requested-With");
     res.header("Access-Control-Allow-Methods", "PUT,POST,GET,DELETE,OPTIONS");
     if (req.method == "OPTIONS") {
-        return res.send(200,'success');
+        return res.send(200, 'success');
     } else {
         return next();
     }
@@ -86,11 +85,13 @@ app.post('/answer', function (req, res) {
             msg: 'success'
         });
     }
+    let num = 0;
     for (let i in req.body) {
         let topic = req.body[i];
         if (topic.correct == undefined || topic.type == undefined || topic.topic == undefined) {
             continue;
         }
+        num++;
         let type = parseInt(topic.type);
         let hash = md5(topic.topic + type.toString());
         let cond = {
@@ -105,8 +106,8 @@ app.post('/answer', function (req, res) {
                 data.ip = ip;
                 data.time = Date.parse(new Date());
                 mooc.insert('answer', data);
-            } else if (type == 4 && result.type == 4) {
-                //填空题,答案合并
+            } else if ((type == 4 && result.type == 4) || (type == 2 && result.type == 2)) {
+                //填空多选,答案合并
                 try {
                     let correct = mergeAnswer(result.correct, topic.correct);
                     mooc.updateOne('answer', cond, {
@@ -119,7 +120,7 @@ app.post('/answer', function (req, res) {
                 }
             }
             ret.push(cond);
-            if (ret.length == req.body.length) {
+            if (ret.length == num) {
                 res.send({
                     code: 0,
                     msg: 'success',
