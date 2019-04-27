@@ -41,4 +41,5 @@ footer: MIT Licensed | Copyright © 2018 CXmooc-tool developer Team
 * 自动答题
 * 自动阅读
 * 自动填写验证码
+* 考试答题
 

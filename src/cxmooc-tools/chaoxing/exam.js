@@ -93,13 +93,12 @@ module.exports = {
                     for (let n = 0; n < correct.length; n++) {
                         if (correct[n].option == pos) {
                             notic += ' 第' + pos + '空:' + correct[n].content + '<br/>';
-                            let ifDoc = $(options[i]).find('iframe');
-                            if (ifDoc.length <= 0) {
+                            var uedit = $(options[n]).find('textarea');
+                            if (uedit.length <= 0) {
                                 this.notic.text('答案搜索错误');
                                 return false;
                             }
-                            ifDoc = ifDoc[0].contentDocument;
-                            $(ifDoc.body).html('<p>' + correct[n].content + '</p>');
+                            UE.getEditor(uedit.attr('name')).setContent(correct[n].content);
                             break;
                         }
                     }

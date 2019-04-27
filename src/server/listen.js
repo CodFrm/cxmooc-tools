@@ -36,6 +36,7 @@ if (serverConfig.env == 'prod') {
     var vcode = new vcodePack();
 }
 
+app.set('trust proxy', 'loopback, 127.0.0.1/8');
 var mooc = new moocModel();
 var redis = new redisCli();
 app.use(bodyParser.json());
