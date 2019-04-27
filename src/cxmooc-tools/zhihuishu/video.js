@@ -89,10 +89,10 @@ module.exports = {
         time += common.randNumber(60, 666);
         let ev = [
             this.videoInfo.rid, this.videoInfo.chapterId, this.videoInfo.courseId, this.videoInfo.lessonId,
-            timeStr, time, this.videoInfo.videoId, this.videoInfo.lessonVideoId
+            timeStr, time, this.videoInfo.videoId, (this.videoInfo.lessonVideoId && this.videoInfo.lessonVideoId != null ? this.videoInfo.lessonVideoId : 0)
         ];
         let postData = '__learning_token__=' + encodeURIComponent(btoa('' + this.videoInfo.studiedLessonDto.id)) + '&watchPoint=' +
-            '&ev=' + evFun(ev) + '&lessonVideoId=' + this.videoInfo.lessonVideoId;
+            '&ev=' + evFun(ev) + (this.videoInfo.lessonVideoId && this.videoInfo.lessonVideoId != null ? '&lessonVideoId=' + this.videoInfo.lessonVideoId : '');
         common.post('/json/learning/saveCacheIntervalTime?time=' + (new Date().valueOf()), postData, false, function (res) {
             let json = JSON.parse(res);
             if (json.studyTotalTime >= time) {
