@@ -2,6 +2,32 @@ const moocConfig = require('../config');
 const common = require('./common');
 
 window.onload = function () {
+    let edit = document.getElementsByClassName('edit');
+    for (let i = 0; i < edit.length; i++) {
+        edit[i].onblur = function () {
+            sendConfig(edit[i].getAttribute('config-key'), edit[i].value);
+            chrome.storage.sync.set({
+                [edit[i].getAttribute('config-key')]: edit[i].value
+            });
+        }
+        chrome.storage.sync.get(edit[i].getAttribute('config-key'), function (items) {
+            edit[i].value = items[edit[i].getAttribute('config-key')] || '';
+        });
+    }
+
+    let check = document.getElementsByClassName('check');
+    for (let i = 0; i < check.length; i++) {
+        check[i].onchange = function () {
+            sendConfig(check[i].getAttribute('config-key'), check[i].checked);
+            chrome.storage.sync.set({
+                [check[i].getAttribute('config-key')]: check[i].checked
+            });
+        }
+        chrome.storage.sync.get(check[i].getAttribute('config-key'), function (items) {
+            check[i].checked = items[check[i].getAttribute('config-key')] || false;
+        });
+    }
+
     document.getElementById('version').innerHTML = 'v' + moocConfig.version.toString();
     common.gm_get(moocConfig.url + 'update?ver=' + moocConfig.version, function (data) {
         var json = JSON.parse(data);
@@ -29,6 +55,10 @@ window.onload = function () {
         document.getElementById("tiku").src = "https://img.shields.io/badge/%E9%A2%98%E5%BA%93-error-red.svg"
     });
 
+    document.getElementById('dama').onclick = function () {
+        document.getElementById('dama-config').style.height = document.getElementById('dama-config').style.height == '80px' ? '0' : '80px';
+    }
+
     chrome.storage.sync.get(['rand_answer', 'video_mute', 'answer_ignore'], function (items) {
         document.getElementById('video-mute').checked = (items.video_mute == undefined ? true : items.video_mute);
         delete items.video_mute;
@@ -36,19 +66,6 @@ window.onload = function () {
             document.getElementById(item.replace('_', '-')).checked = items[item];
         }
     });
-
-    chrome.storage.sync.get(['vtoken'], function (items) {
-        for (item in items) {
-            document.getElementById(item.replace('_', '-')).value = items[item];
-        }
-    });
-
-    document.getElementById('vtoken').onblur = function () {
-        sendConfig('vtoken', document.getElementById('vtoken').value);
-        chrome.storage.sync.set({
-            'vtoken': document.getElementById('vtoken').value
-        });
-    }
 
     chrome.storage.sync.get('interval', function (items) {
         document.getElementById('interval').value = items.interval == undefined ? 5 : items.interval;
@@ -88,7 +105,7 @@ window.onload = function () {
     }
 
     document.getElementById('auto').onchange = function () {
-        check = document.getElementById('auto');
+        let check = document.getElementById('auto');
         if (check.checked) {
             document.getElementById('auto-m').style.display = 'inline-block';
             document.getElementById('ignore').style.display = '';

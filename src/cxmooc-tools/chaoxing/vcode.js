@@ -9,7 +9,7 @@ module.exports = function () {
         //作业处验证码
         if (document.getElementById('imgVerCode')) {
             $('#imgVerCode').on('load', function () {
-                if($('#imgVerCode').attr('src').indexOf('?')<0){
+                if ($('#imgVerCode').attr('src').indexOf('?') < 0) {
                     //节约可能的一次打码
                     return;
                 }
@@ -18,6 +18,7 @@ module.exports = function () {
                 let img = document.getElementById('imgVerCode');
                 getVcode('/img/code?' + new Date().getTime(), img, function (code, msg) {
                     if (code === undefined) {
+                        alert(msg);
                         $(notic).html(msg);
                         return;
                     }
@@ -57,6 +58,7 @@ module.exports = function () {
             img = img[0];
             getVcode('/verifyCode/studychapter?' + (new Date()).valueOf(), img, function (code, msg) {
                 if (code === undefined) {
+                    alert(msg);
                     $(notic).html(msg);
                     return;
                 }
@@ -76,19 +78,23 @@ module.exports = function () {
             if (!show) {
                 img.src = base64;
             }
-            common.gm_post(serverConfig.url + 'vcode', 'img=' + encodeURIComponent(base64.substr('data:image/jpeg;base64,'.length)), false, function (ret) {
-                let json = JSON.parse(ret);
-                if (json.code == -2) {
-                    callback(undefined, json.msg);
-                    //TODO:无权限
-                } else if (json.msg) {
-                    callback(json.msg);
-                } else {
-                    getVcode(url, img, callback);
-                }
-            }).error(function () {
-                callback(undefined, '网络请求失败');
-            });
+            if (config.is_ruokuai) {
+                //若快打码
+            } else {
+                common.gm_post(serverConfig.url + 'vcode', 'img=' + encodeURIComponent(base64.substr('data:image/jpeg;base64,'.length)), false, function (ret) {
+                    let json = JSON.parse(ret);
+                    if (json.code == -2) {
+                        callback(undefined, json.msg);
+                        //TODO:无权限
+                    } else if (json.msg) {
+                        callback(json.msg);
+                    } else {
+                        getVcode(url, img, callback);
+                    }
+                }).error(function () {
+                    callback(undefined, '网络请求失败');
+                });
+            }
         }
         if (show) {
             dmStart();

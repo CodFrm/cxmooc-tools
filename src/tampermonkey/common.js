@@ -1,2 +1,7 @@
 global.config = JSON.parse(localStorage['config']);
-config.duration = (config.interval || 0.1) * 60000;
+
+Object.defineProperty(global.config, 'duration', {
+    get: function () {
+        return (config.interval || 0.1) * 60000;
+    }
+});

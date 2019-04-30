@@ -22,6 +22,7 @@ const common = require('./common');
             'answer_ignore',
             'video_multiple',
             'vtoken',
+            'is_ruokuai', 'ruokuai_user', 'ruokuai_pwd'
         ], function (items) {
             items.interval = items.interval >= 0 ? items.interval : 5;
             items.rand_answer = items.rand_answer || false;

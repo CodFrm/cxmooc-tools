@@ -275,9 +275,63 @@
         width: 80px;
     }
 
-    #vtoken {
+    #vtoken,
+    #dama {
         float: right;
-        width: 60%;
+    }
+
+    .edit {
+        width: 150px;
+    }
+
+    #vtoken {
+        margin-top: 1px;
+    }
+
+    .btn {
+        height: 20px;
+        line-height: 16px;
+        background-color: #008CBA;
+        border: none;
+        color: white;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+    }
+
+    #dama {
+        width: 80px;
+    }
+
+    #dama-confirm {
+        width: 40px;
+    }
+
+    #dama-pop {
+        position: absolute;
+        right: 0;
+    }
+
+    .page {
+        overflow: hidden;
+    }
+
+    #dama-config {
+        position: absolute;
+        margin-top: 10px;
+        z-index: 100;
+        width: 100%;
+        height: 40px;
+        background: #fff;
+        height: 0;
+        overflow: hidden;
+        transition: .4s;
+    }
+
+    .comment {
+        font-size: 12px;
+        color: #000000;
+        font-weight: normal;
     }
 </style>
 
@@ -296,33 +350,48 @@
     </div>
     <div class="content_bottom">
         <h4 class="one_title"><span>插件配置:</span>
-            <input type="text" class="input_text" id="vtoken" placeholder="token">
-        </h4>
-        <div class="config-item width_50">
-            <input type="checkbox" id="rand-answer" class="rdo" />
-            <label for="rand-answer" title="没有正确的答案会随机选择">随机答案</label>
-        </div>
-        <div class="config-item width_50">
-            <input type="checkbox" id="auto" class="rdo" />
-            <label for="auto" title="进入一个页面就会自动开始挂机,完成一个任务之后会自动进行下一个">自动挂机</label>
-        </div>
-        <br>
-        <div class="config-item width_50">
-            <input type="checkbox" id="video-mute" class="rdo" />
-            <label for="video-mute" title="播放视频时,自动开启静音">视频静音</label>
-        </div>
-        <div id="ignore" class="config-item width_50">
-            <input class="rdo" type="checkbox" id="answer-ignore" />
-            <label for="answer-ignore" title="自动挂机时,忽略掉题目不做,直接跳过">忽略题目</label>
-        </div>
-        <div>
-            <div class="config-item width_50" style="color:#ff0000">
-                <label for="video-multiple" title="视频播放的倍数,1为正常速度(最高16倍,该功能有一定危险)">倍速播放:</label>
-                <input type="text" class="input_text" id="video-multiple" placeholder="1" />倍
+            <button id="dama" class="btn">打码设置</button>
+            <input type="text" class="input_text edit" placeholder="token" config-key="vtoken" />
+            <div id="dama-config">
+                <span>若快打码设置:</span>
+                <br>
+                <p class="comment">请自行注册购买配置</p>
+                <input type="text" class="input_text edit" config-key="ruokuai_user" placeholder="若快账号" />
+                <input type="text" class="input_text edit" config-key="ruokuai_pwd" placeholder="若快密码" />
+                <div class="config-item">
+                    <input type="checkbox" id="ruokuai" class="rdo check" config-key="is_ruokuai" />
+                    <label for="ruokuai" title="打码调用若快打码,不使用token了">使用若快打码</label>
+                </div>
+                <button id="dama-confirm" class="btn">确定</button>
             </div>
-            <div id="auto-m" class="config-item width_50">
-                <label for="interval" title="播放(题目)完成后n分钟再继续下一个任务">间隔时间:</label>
-                <input type="text" class="input_text" id="interval" placeholder="5" />分
+        </h4>
+        <div id="config" class="page">
+            <div class="config-item width_50">
+                <input type="checkbox" id="rand-answer" class="rdo" />
+                <label for="rand-answer" title="没有正确的答案会随机选择">随机答案</label>
+            </div>
+            <div class="config-item width_50">
+                <input type="checkbox" id="auto" class="rdo" />
+                <label for="auto" title="进入一个页面就会自动开始挂机,完成一个任务之后会自动进行下一个">自动挂机</label>
+            </div>
+            <br>
+            <div class="config-item width_50">
+                <input type="checkbox" id="video-mute" class="rdo" />
+                <label for="video-mute" title="播放视频时,自动开启静音">视频静音</label>
+            </div>
+            <div id="ignore" class="config-item width_50">
+                <input class="rdo" type="checkbox" id="answer-ignore" />
+                <label for="answer-ignore" title="自动挂机时,忽略掉题目不做,直接跳过">忽略题目</label>
+            </div>
+            <div>
+                <div class="config-item width_50" style="color:#ff0000">
+                    <label for="video-multiple" title="视频播放的倍数,1为正常速度(最高16倍,该功能有一定危险)">倍速播放:</label>
+                    <input type="text" class="input_text" id="video-multiple" placeholder="1" />倍
+                </div>
+                <div id="auto-m" class="config-item width_50">
+                    <label for="interval" title="播放(题目)完成后n分钟再继续下一个任务">间隔时间:</label>
+                    <input type="text" class="input_text" id="interval" placeholder="5" />分
+                </div>
             </div>
         </div>
     </div>
