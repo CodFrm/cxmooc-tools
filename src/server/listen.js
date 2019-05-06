@@ -180,9 +180,9 @@ app.post('/v2/answer', function (req, res) {
         var topic_n = topic[i];
         // topic[i] = topic;
         if (type[i] != undefined) {
-            where = { topic: { $regex: topic_n }, type: parseInt(type[i]) };
+            where = { type: parseInt(type[i]), topic: { $regex: '^' + topic_n } };
         } else {
-            where = { topic: { $regex: topic_n } };
+            where = { topic: { $regex: '^' + topic_n } };
         }
         return where;
     });

@@ -78,7 +78,7 @@ module.exports = function () {
             localStorage['cdn'] = $(this).text();
         });
         //失败的切换记录
-        $(self.document).find('.vjs-error-display.vjs-modal-dialog').on('click','.ans-vjserrdisplay-opts li.ans-vjserrdisplay-opt label"',function(){
+        $(self.document).find('.vjs-error-display.vjs-modal-dialog').on('click', '.ans-vjserrdisplay-opts li.ans-vjserrdisplay-opt label"', function () {
             localStorage['cdn'] = $(this).text();
         });
         let play = function () {

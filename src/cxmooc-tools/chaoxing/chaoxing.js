@@ -29,6 +29,8 @@ module.exports = function () {
             let obj = undefined;
             if ($(iframeElement[i]).hasClass('ans-insertvideo-online')) {
                 obj = new Video();
+                //解锁phone
+                global.allowPhone && (iframeElement[i].contentWindow.Ext.isChaoxing = true);
             } else if ($(iframeElement[i]).attr('src') != undefined && $(iframeElement[i]).attr('src').indexOf('modules/work') > 0) {
                 obj = new Topic();
             }
@@ -226,6 +228,9 @@ module.exports = function () {
 
     this.exam = function () {
         Exam.exam();
+    }
+    this.homework=function(){
+        Exam.homework();
     }
 
     this.collectExam = function () {

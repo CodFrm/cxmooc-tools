@@ -158,7 +158,7 @@ Date.prototype.format = function (fmt) {
 }
 
 export function log(msg) {
-    console.log("cxmooc-tools [" + (new Date()).format("yyyy-MM-dd hh:mm:ss") + "] " + msg)
+    global.log += "cxmooc-tools [" + (new Date()).format("yyyy-MM-dd hh:mm:ss") + "] " + msg + "\n";
 }
 
 export function getImageBase64(img, ext) {
@@ -288,4 +288,8 @@ if (window.GM_xmlhttpRequest == undefined) {
             }
         }).send(send);
     }
+}
+
+export function isPhone() {
+    return /Android|iPhone/i.test(navigator.userAgent);
 }

@@ -1,6 +1,7 @@
 const util = require('./util');
 const common = require('../common');
 const moocServer = require('../../config');
+// const css = require('../html/common.css');
 
 module.exports = {
     notic: undefined,
@@ -15,11 +16,65 @@ module.exports = {
         text = text.substr(0, text.lastIndexOf('('));
         return text;
     },
-    exam: function () {
-        //生成按钮
-        let self = this;
+    geTHomeworkTopic: function () {
+        let topic = $('.Zy_TItle.clearfix .clearfix');
+        if (topic.length <= 0) {
+            this.notic.text('未搜索到题目');
+            return undefined;
+        }
+        let ret = '';
+        for (let i = 0; i < topic.length; i++) {
+            let text = common.removeHTML($(topic[i]).html());
+            let options = $(topic[i]).parent().next();
+            let elClass = $(options).attr('class');
+            let type = 0;
+            if (elClass.indexOf('clearfix') >= 0) {
+                //多选/单选
+                type = $(options).find('[type="radio"]').length > 0 ? 1 : 2;
+            } else if (elClass.indexOf('Zy_ulTk') >= 0 && /第.空/.test($(options).text())) {
+                type = 4;
+            } else if (elClass.indexOf('Zy_ulBottom') >= 0) {
+                type = 3;
+            } else {
+                continue;
+            }
+            ret += 'topic[' + i + ']=' + text + '&type[' + i + ']=' + type + '&';
+        }
+        return ret;
+    },
+    createBtn: function (className) {
         let btn = util.createBtn('搜索答案', '搜索题目答案');
-        $('.Cy_ulBottom.clearfix.w-buttom,.Cy_ulTk,.Cy_ulBottom.clearfix').after(btn);
+        $(className).append(btn);
+        return btn;
+    },
+    homework: function () {
+        let self = this;
+        let btn=self.createBtn('.CyTop');
+        btn.onclick = function () {
+            //搜索答案
+            self.notic = util.signleLine('搜索答案中...', 'answer', btn.parentElement);
+            let topic = self.geTHomeworkTopic();
+            if (topic == undefined) {
+                return false;
+            }
+            common.gm_post(moocServer.url + 'v2/answer', topic, false, function (data) {
+                let json = JSON.parse(data);
+                for (let i = 0; i < json.length; i++) {
+                    if (json[i].result.length <= 0) {
+                        return self.notic.text('未找到答案');
+                    }
+                    let answer = json[i].result[Math.floor(Math.random() * Math.floor(json[i].result.length))];
+                    self.fillAnswer(answer);
+                }
+            }).error(function () {
+                self.notic.text('网络错误');
+            });
+            return false;
+        }
+    },
+    exam: function () {
+        let self = this;
+        let btn=self.createBtn('.Cy_ulBottom.clearfix.w-buttom,.Cy_ulTk,.Cy_ulBottom.clearfix');
         btn.onclick = function () {
             //搜索答案
             self.notic = util.signleLine('搜索答案中...', 'answer', btn.parentElement);
