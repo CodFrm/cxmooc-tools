@@ -229,12 +229,15 @@ module.exports = function () {
     this.exam = function () {
         Exam.exam();
     }
-    this.homework=function(){
+    this.homework = function () {
         Exam.homework();
+    }
+    this.collectHomeWork = function () {
+        Exam.collect('home');
     }
 
     this.collectExam = function () {
-        Exam.collect();
+        Exam.collect('exam');
     }
     return this;
 }

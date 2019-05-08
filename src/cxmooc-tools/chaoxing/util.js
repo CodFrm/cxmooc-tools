@@ -43,27 +43,30 @@ export function dealTaskLabel(label) {
  * 创建一行
  * @param {string} text 
  */
-export function createLine(text, label, append) {
+export function createLine(text, label, append, after) {
     let p = $('<p></p>');
     p.css('color', 'red');
     p.css('font-size', '14px');
     p.attr('class', 'prompt-line-' + label);
-    p.text(text);
+    p.html(text);
     if (append != undefined) {
         $(append).append(p);
+    }
+    if (after != undefined) {
+        $(after).after(p);
     }
     return p;
 }
 
-export function signleLine(text, label, append) {
+export function signleLine(text, label, append, after) {
     let p = $('.prompt-line-' + label);
     if (p.length <= 0) {
-        p = createLine(text, label, append);
+        p = createLine(text, label, append, after);
     } else {
-        $(p).text(text);
+        $(p).html(text);
     }
-    p.text=function(text){
-        $(this).text(text);
+    p.text = function (text) {
+        $(this).html(text);
     }
     return p;
 }
@@ -105,6 +108,6 @@ export function pop_prompt(text, sec = 4) {
     return box;
 }
 
-export function getAnswer(){
+export function getAnswer() {
 
 }

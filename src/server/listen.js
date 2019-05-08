@@ -176,7 +176,7 @@ app.post('/v2/answer', function (req, res) {
     var type = req.body.type || [];
     selectAnswer(topic, res, function (i) {
         var where = {};
-        topic[i] = dealSymbol(topic[i]);
+        topic[i] = dealSymbol(topic[i].replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&'));
         var topic_n = topic[i];
         // topic[i] = topic;
         if (type[i] != undefined) {
