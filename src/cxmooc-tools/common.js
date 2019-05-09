@@ -1,3 +1,5 @@
+const moocServer = require('../config');
+
 /**
  * 注入js资源
  * @param doc 
@@ -227,6 +229,7 @@ export function gm_post(url, data, json = true, success) {
         method: 'POST',
         headers: {
             'Authorization': config.vtoken || '',
+            'X-Version': moocServer.version,
             'Content-Type': json ? 'application/json' : 'application/x-www-form-urlencoded',
         },
         data: data,
@@ -292,4 +295,178 @@ if (window.GM_xmlhttpRequest == undefined) {
 
 export function isPhone() {
     return /Android|iPhone/i.test(navigator.userAgent);
+}
+
+export function switchTopicType(typeTtile) {
+    let type = typeTtile;
+    switch (type) {
+        case '单选题': {
+            type = 1;
+            break;
+        }
+        case '多选题': {
+            type = 2;
+            break;
+        }
+        case '判断题': {
+            type = 3;
+            break;
+        }
+        case '填空题': {
+            type = 4;
+            break;
+        }
+        default: {
+            type = -1;
+            break;
+        }
+    }
+    return type;
+}
+
+export function postAnswer(topic, platform, collect, compile, error) {
+    let answer = [];
+    for (let i = 0; i < topic.length; i++) {
+        let tmp = collect(topic[i]);
+        if (tmp) {
+            answer.push(tmp);
+        }
+    }
+    console.log(answer);
+    // gm_post(moocServer.url + 'answer?platform='+platform, JSON.stringify(answer), true, compile, error);
+}
+
+export function requestAnswer(topic, platform, page, answer, compile, error, count, time) {
+    page = page || 0;
+    count = count || 5;
+    time = time || 2000;
+    let post = '';
+    for (let i = (page * count), n = 0; i < topic.length && n < count; i++ , n++) {
+        post += 'topic[' + n + ']=' + '正弦电流 ' + '&type[' + n + ']=' + topic[i].type + '&';
+    }
+    if (post == '') {
+        compile && compile();
+        return;
+    }
+    gm_post(moocServer.url + 'v2/answer?platform=' + platform, post, false, function (data) {
+        let json = JSON.parse(data);
+        for (let i = 0; i < json.length; i++) {
+            let index = json[i].index + page * count;
+            if (json[i].result.length <= 0) {
+                answer(topic[index]);
+                continue;
+            }
+            answer(topic[index], json[i].result[Math.floor(Math.random() * Math.floor(json[i].result.length))]);
+        }
+        setTimeout(() => { requestAnswer(topic, platform, page + 1, answer, compile, error); }, time);
+    }).error(function () {
+        error && error();
+    });
+}
+
+//数字转大写
+export function numToZh(num) {
+    const data = {
+        '0': '零',
+        '1': '一',
+        '2': '二',
+        '3': '三',
+        '4': '四',
+        '5': '五',
+        '6': '六',
+        '7': '七',
+        '8': '八',
+        '9': '九',
+    };
+    let result = ('' + num).split('').map(v => data[v] || v).join('');
+    return result;
+}
+
+export function fillAnswer(topic, answer, fill, findOption) {
+    let correct = answer.correct;
+    let noticText = '';
+    switch (topic.type) {
+        case 1:
+        case 2: {
+            let options = findOption(topic.options, 2);
+            noticText = fill.select(options, correct);
+            break;
+        }
+        case 3: {
+            let options = findOption(topic.options, 3);
+            noticText = fill.judge(options, correct);
+            break;
+        }
+        case 4: {
+            let options = findOption(topic.options, 4);
+            noticText = fill.text(options, correct);
+            break;
+        }
+        default: {
+            noticText = fill.other();
+        }
+    }
+    return noticText;
+}
+
+export function fillSelect(options, correct, isTrue) {
+    let noticText = '';
+    for (let i = 0; i < correct.length; i++) {
+        isTrue(options, correct[i], 2);
+        noticText += correct[i].option + ':' + correct[i].content + '<br/>';
+    }
+    return noticText;
+}
+
+export function fillJudge(options, correct) {
+    $(options).removeAttr('checked');
+    let index = 1;
+    if (correct[0].option) {
+        index = 0;
+    }
+    $(options[index]).click();
+}
+
+export function oaForEach(object, callback) {
+    for (let i = 0; i < object.length; i++) {
+        if (callback(object[i], i)) {
+            break;
+        }
+    }
+}
+
+// export function fillText(options, correct) {
+
+// }
+
+/**
+ * 创建一行
+ * @param {string} text 
+ */
+export function createLine(text, label, append, after) {
+    let p = $('<p></p>');
+    p.css('color', 'red');
+    p.css('font-size', '14px');
+    p.attr('class', 'prompt-line-' + label);
+    p.html(text);
+    if (append != undefined) {
+        $(append).append(p);
+    }
+    if (after != undefined) {
+        $(after).after(p);
+    }
+    return p;
+}
+
+export function signleLine(text, label, append, after) {
+    let p = $('.prompt-line-' + label);
+    if (p.length <= 0) {
+        p = createLine(text, label, append, after);
+    } else {
+        $(p).html(text);
+    }
+    p.text = function (text) {
+        $(this).html(text);
+    }
+    return p;
 }

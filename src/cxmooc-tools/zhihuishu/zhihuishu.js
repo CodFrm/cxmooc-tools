@@ -1,4 +1,5 @@
 const video = require('./video');
+const topic = require('./topic');
 
 module.exports = {
     video: function () {
@@ -9,6 +10,9 @@ module.exports = {
                 clearInterval(timer);
             } catch (e) { }
         }, 499);
+    },
+    stuExam: function () {
+        topic.stuExam();
     }
 };
 

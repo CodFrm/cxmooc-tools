@@ -1,6 +1,5 @@
 const common = require('../common');
 const serverConfig = require('../../config');
-const until = require('./util');
 
 module.exports = function () {
     let self = this;
@@ -13,8 +12,7 @@ module.exports = function () {
                     //节约可能的一次打码
                     return;
                 }
-                console.log('准备打码...');
-                let notic = until.signleLine('cxmooc自动打码中...', 'dama', $('#sub').parents('td'));
+                let notic = common.signleLine('cxmooc自动打码中...', 'dama', $('#sub').parents('td'));
                 let img = document.getElementById('imgVerCode');
                 getVcode('/img/code?' + new Date().getTime(), img, function (code, msg) {
                     if (code === undefined) {
@@ -49,7 +47,7 @@ module.exports = function () {
         //保障账号安全验证码
         window.showChapterVerificationCodeTip = window.showChapterVerificationCode || 0;
         window.chapterVerifyCode = function () {
-            let notic = until.signleLine('cxmooc自动打码中...', 'dama1', $('.DySearch'));
+            let notic = common.signleLine('cxmooc自动打码中...', 'dama1', $('.DySearch'));
             $(notic).css('float', 'left');
             let img = $('.fl[name=chapterNumVerCode]');
             if (img.length <= 0) {

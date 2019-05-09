@@ -13,3 +13,12 @@
 #zhs-video-boom:hover{
     background: #ff3838;
 }
+
+.zhs-search-answer{
+    border: 0;
+    outline: none;
+}
+
+.zhs-search-answer:hover{
+    opacity: .85;
+}

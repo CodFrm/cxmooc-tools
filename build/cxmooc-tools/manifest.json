@@ -35,7 +35,8 @@
                 "*://*/antispiderShowVerify.ac*",
                 "*://*/html/processVerify.ac?*",
                 "*://study.zhihuishu.com/learning/videoList*",
-                "*://*/exam/test/reVersionPaperMarkContentNew?*"
+                "*://*/exam/test/reVersionPaperMarkContentNew?*",
+                "*://examh5.zhihuishu.com/stuExamWeb.html*"
             ],
             "js": [
                 "src/start.js"

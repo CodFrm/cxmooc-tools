@@ -219,7 +219,7 @@ module.exports = function () {
         if ($(self.document.body).find('.prompt-line-cxmooc-notice').length > 0) {
             el = $(self.document.body).find('.prompt-line-cxmooc-notice')[0];
         } else {
-            el = util.createLine(text, 'cxmooc-notice');
+            el = common.createLine(text, 'cxmooc-notice');
             $(el).css('text-align', 'center');
             $(self.document.body).prepend(el);
         }

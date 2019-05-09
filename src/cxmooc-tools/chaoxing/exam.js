@@ -35,7 +35,7 @@ module.exports = {
                 //多选/单选
                 type = $(options).find('[type="radio"]').length > 0 ? 1 : 2;
             } else {
-                util.signleLine('暂不支持的类型', 'answer' + i, undefined, options);
+                common.signleLine('暂不支持的类型', 'answer' + i, undefined, options);
                 continue;
             }
             ret.push({
@@ -80,7 +80,7 @@ module.exports = {
                     for (let i = 0; i < json.length; i++) {
                         let index = json[i].index + page * 5;
                         if (json[i].result.length <= 0) {
-                            util.signleLine('无答案', 'answer' + index, undefined, topic[index].options);
+                            common.signleLine('无答案', 'answer' + index, undefined, topic[index].options);
                             continue;
                         }
                         self.fillHomeWorkAnswer(topic[index], json[i].result[Math.floor(Math.random() * Math.floor(json[i].result.length))]);
@@ -101,13 +101,13 @@ module.exports = {
             case 2: {
                 let options = $(topic.options).find('input');
                 let noticText = this.fillSelect(options, correct);
-                util.signleLine(noticText, 'answer' + topic.index, undefined, topic.options);
+                common.signleLine(noticText, 'answer' + topic.index, undefined, topic.options);
                 break;
             }
             case 3: {
                 let options = $(topic.options).find('input');
                 this.fillJudge(options, correct);
-                util.signleLine('答案:' + correct[0].option, 'answer' + topic.index, undefined, topic.options);
+                common.signleLine('答案:' + correct[0].option, 'answer' + topic.index, undefined, topic.options);
                 break;
             }
             case 4: {
@@ -123,7 +123,7 @@ module.exports = {
                         }
                     }
                 }
-                util.signleLine(notic, 'answer' + topic.index, undefined, topic.options);
+                common.signleLine(notic, 'answer' + topic.index, undefined, topic.options);
                 break;
             }
         }
@@ -133,7 +133,7 @@ module.exports = {
         let btn = self.createBtn('.Cy_ulBottom.clearfix.w-buttom,.Cy_ulTk,.Cy_ulBottom.clearfix', true);
         btn.onclick = function () {
             //搜索答案
-            self.notic = util.signleLine('搜索答案中...', 'answer', btn.parentElement);
+            self.notic = common.signleLine('搜索答案中...', 'answer', btn.parentElement);
             let topic = self.getTopic();
             if (topic == undefined) {
                 return false;
@@ -263,11 +263,7 @@ module.exports = {
                 //非选择
                 let is = false;
                 if ((is = correct.indexOf('√')) > 0 || correct.indexOf('×') > 0) {
-                    if (is > 0) {
-                        pushOption.correct.push({ option: true, content: true });
-                    } else {
-                        pushOption.correct.push({ option: false, content: false });
-                    }
+                    pushOption.correct.push({ option: (is > 0), content: (is > 0) });
                     pushOption.type = 3
                 } else {
                     let options = undefined;

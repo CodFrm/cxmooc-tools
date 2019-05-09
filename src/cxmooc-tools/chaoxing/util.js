@@ -39,38 +39,6 @@ export function dealTaskLabel(label) {
     span.css('margin-left', '0');
 }
 
-/**
- * 创建一行
- * @param {string} text 
- */
-export function createLine(text, label, append, after) {
-    let p = $('<p></p>');
-    p.css('color', 'red');
-    p.css('font-size', '14px');
-    p.attr('class', 'prompt-line-' + label);
-    p.html(text);
-    if (append != undefined) {
-        $(append).append(p);
-    }
-    if (after != undefined) {
-        $(after).after(p);
-    }
-    return p;
-}
-
-export function signleLine(text, label, append, after) {
-    let p = $('.prompt-line-' + label);
-    if (p.length <= 0) {
-        p = createLine(text, label, append, after);
-    } else {
-        $(p).html(text);
-    }
-    p.text = function (text) {
-        $(this).html(text);
-    }
-    return p;
-}
-
 export function isFinished(el) {
     if ($(el).parents('.ans-attach-ct.ans-job-finished').length > 0) {
         return true;
