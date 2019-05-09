@@ -78,6 +78,8 @@ app.all('/player/*', function (req, res, next) {
 });
 
 app.post('/answer', function (req, res) {
+    let token = req.header('Authorization') || '';
+    let platform = req.query('platform') || 'cx';
     var ip = getClientIp(req);
     var ret = [];
     if (req.body.length <= 0) {
@@ -89,7 +91,9 @@ app.post('/answer', function (req, res) {
     let num = 0;
     for (let i in req.body) {
         let topic = req.body[i];
-        if (topic.correct == undefined || topic.type == undefined || topic.topic == undefined) {
+        if (topic.correct == undefined || topic.type == undefined || topic.topic == undefined ||
+            topic.correct.length <= 0 || topic.type.length <= 0 || topic.topic.length <= 0
+        ) {
             continue;
         }
         num++;
@@ -106,6 +110,8 @@ app.post('/answer', function (req, res) {
                 cond.hash = data.hash;
                 data.ip = ip;
                 data.time = Date.parse(new Date());
+                data.platform = platform;
+                data.token = token;
                 mooc.insert('answer', data);
             } else if ((type == 4 && result.type == 4) || (type == 2 && result.type == 2)) {
                 //填空多选,答案合并
@@ -174,15 +180,14 @@ function getClientIp(req) {
 app.post('/v2/answer', function (req, res) {
     var topic = req.body.topic || [];
     var type = req.body.type || [];
+    let platform = req.query('platform') || 'cx';
     selectAnswer(topic, res, function (i) {
-        var where = {};
+        var where = { topic: { $regex: '^' + topic_n } };
         topic[i] = dealSymbol(topic[i].replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&'));
         var topic_n = topic[i];
         // topic[i] = topic;
         if (type[i] != undefined) {
-            where = { type: parseInt(type[i]), topic: { $regex: '^' + topic_n } };
-        } else {
-            where = { topic: { $regex: '^' + topic_n } };
+            where = { type: parseInt(type[i]) };
         }
         return where;
     });
@@ -200,6 +205,7 @@ function dealSymbol(topic) {
 
 app.get('/answer', function (req, res) {
     var topic = req.query.topic || [];
+    let platform = req.query('platform') || 'cx';
     selectAnswer(topic, res, function (i) {
         return { topic: topic[i] };
     });
