@@ -56,7 +56,7 @@ window.onload = function () {
     });
 
     document.getElementById('dama').onclick = function () {
-        document.getElementById('dama-config').style.height = document.getElementById('dama-config').style.height == '80px' ? '0' : '80px';
+        document.getElementById('dama-config').style.height = document.getElementById('dama-config').style.height == '90px' ? '0' : '90px';
     }
 
     chrome.storage.sync.get(['rand_answer', 'video_mute', 'answer_ignore'], function (items) {

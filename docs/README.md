@@ -21,7 +21,9 @@ footer: MIT Licensed | Copyright © 2018 CXmooc-tool developer Team
 ![GitHub tag (latest SemVer)](https://img.shields.io/github/tag/codfrm/cxmooc-tools.svg?label=version)
 
 ## 关于超星慕课小工具
-一个超星慕课刷课工具,火狐,谷歌,油猴支持.全自动任务,视频倍速秒过,作业题库,验证码自动打码(੧ᐛ੭挂科模式,启动)
+> 2.1版本以后开始支持智慧树,名字嘛不改了
+
+一个超星(学习通)和智慧树(知到)刷课工具,火狐,谷歌,油猴支持.全自动任务,视频倍速秒过,作业考试题库,验证码自动打码(੧ᐛ੭挂科模式,启动)
 
 ### 浏览器适配列表
 > 国内大多数浏览器使用的chrome内核,所以360,QQ等之类的也可以使用
