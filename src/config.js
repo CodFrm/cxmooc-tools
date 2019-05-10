@@ -1,6 +1,6 @@
 module.exports = {
     url: "https://cx.icodef.com/",
-    version: 2.09,
+    version: 2.10,
     update: 'https://github.com/CodFrm/cxmooc-tools/releases',
     enforce: false,
     cx: {

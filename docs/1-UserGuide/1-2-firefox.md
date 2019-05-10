@@ -7,8 +7,6 @@ title: FireFox插件
 [应用市场](https://addons.mozilla.org/zh-CN/firefox/addon/%E8%B6%85%E6%98%9F%E6%85%95%E8%AF%BE%E5%B0%8F%E5%B7%A5%E5%85%B7/)
 下载安装插件。
 
-如果火狐出现题库错误等问题,请访问一次这个网址:[https://blog.icodef.com:8081/](https://blog.icodef.com:8081/),允许访问通过
-
 ## 火狐手机版(Android)
 > 待完善,可以下载app后在商店安装,但是功能并不保证稳定(超星手机浏览器无法完成视频任务点)
 

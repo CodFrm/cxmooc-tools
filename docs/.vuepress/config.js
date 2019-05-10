@@ -21,6 +21,7 @@ module.exports = {
           { text: 'Chrome 扩展', link: '/1-UserGuide/1-1-chrome.html' },
           { text: 'FireFox 扩展', link: '/1-UserGuide/1-2-firefox.html' },
           { text: 'Tampermonkey 脚本', link: '/1-UserGuide/1-3-tampermonkey.html' },
+          { text: '功能说明', link: '/1-UserGuide/featured.html' },
           { text: '配置说明', link: '/1-UserGuide/1-4-config.html' }
         ]
       },
@@ -43,6 +44,7 @@ module.exports = {
         '1-1-chrome.html',     /* /foo/ */
         '1-2-firefox.html',  /* /foo/one.html */
         '1-3-tampermonkey.html',
+        'featured.html',
         '1-4-config.html'
       ],
     },
@@ -53,10 +55,10 @@ module.exports = {
       //    message: "New content is available.", 
       //    buttonText: "Refresh" 
       // }
-       updatePopup: { 
-          message: "文档有更新，新的内容已准备就绪", 
-          buttonText: "刷新获取新内容" 
-       }
+      updatePopup: {
+        message: "文档有更新，新的内容已准备就绪",
+        buttonText: "刷新获取新内容"
+      }
     },
     // 假定是 GitHub. 同时也可以是一个完整的 GitLab URL
     repo: 'CodFrm/cxmooc-tools',
@@ -78,11 +80,11 @@ module.exports = {
   },
   plugins: [
     ['@vuepress/back-to-top'],
-    [ 
+    [
       '@vuepress/google-analytics',
       {
-        'ga': 'UA-138255059-2' 
+        'ga': 'UA-138255059-2'
       }
-    ]  
-  ] 
+    ]
+  ]
 }

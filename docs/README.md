@@ -33,13 +33,4 @@ footer: MIT Licensed | Copyright © 2018 CXmooc-tool developer Team
  * Chrome 系浏览器
 
 ### 功能支持列表
-
-* 视频挂机
-* 视频秒过
-* 视频倍速
-* 静音播放
-* 自动答题
-* 自动阅读
-* 自动填写验证码
-* 考试答题
-
+**详情请看->[功能说明](/1-UserGuide/featured.html)**

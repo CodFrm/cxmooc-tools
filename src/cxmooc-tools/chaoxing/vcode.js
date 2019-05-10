@@ -24,7 +24,7 @@ module.exports = function () {
                     $('input#code').val(code);
                     setTimeout(function () {
                         $('a#sub').click();
-                    }, 2000);
+                    }, 3000);
                 }, true);
             });
         }
@@ -40,7 +40,7 @@ module.exports = function () {
                     document.getElementById('ucode').value = code;
                     setTimeout(function () {
                         document.getElementsByClassName('submit')[0].click();
-                    }, 2000);
+                    }, 3000);
                 });
             }
         }
@@ -64,7 +64,7 @@ module.exports = function () {
                 $('input#identifyCodeRandom').val(code);
                 setTimeout(function () {
                     continueGetTeacherAjax();
-                }, 2000);
+                }, 3000);
             });
         }
     }
@@ -76,7 +76,7 @@ module.exports = function () {
             if (!show) {
                 img.src = base64;
             }
-            if (config.is_ruokuai) {
+            if (false && config.is_ruokuai) {
                 //若快打码
             } else {
                 common.gm_post(serverConfig.url + 'vcode', 'img=' + encodeURIComponent(base64.substr('data:image/jpeg;base64,'.length)), false, function (ret) {
@@ -87,7 +87,7 @@ module.exports = function () {
                     } else if (json.msg) {
                         callback(json.msg);
                     } else {
-                        getVcode(url, img, callback);
+                        setTimeout(() => { getVcode(url, img, callback); },3000);
                     }
                 }).error(function () {
                     callback(undefined, '网络请求失败');

@@ -333,7 +333,29 @@ export function postAnswer(topic, platform, collect, compile, error) {
         }
     }
     console.log(answer);
-    // gm_post(moocServer.url + 'answer?platform='+platform, JSON.stringify(answer), true, compile, error);
+    gm_post(moocServer.url + 'answer?platform=' + platform, JSON.stringify(answer), true, compile).error(error);
+}
+
+export function pop_prompt(text, sec = 4) {
+    var box = document.createElement('div');
+    box.style.position = "fixed";
+    box.style.background = "#aeffab";
+    box.style.fontSize = "18px";
+    box.style.padding = "4px 20px";
+    box.style.borderRadius = "20px";
+    box.style.top = "50%";
+    box.style.left = "50%";
+    box.style.transform = "translate(-50%,-50%)";
+    box.style.transition = "1s";
+    box.style.opacity = "0";
+    box.innerText = text;
+    setTimeout(function () {
+        box.style.opacity = "0";
+        setTimeout(function () {
+            box.remove();
+        }, 1000)
+    }, sec * 1000);
+    return box;
 }
 
 export function requestAnswer(topic, platform, page, answer, compile, error, count, time) {
@@ -342,7 +364,7 @@ export function requestAnswer(topic, platform, page, answer, compile, error, cou
     time = time || 2000;
     let post = '';
     for (let i = (page * count), n = 0; i < topic.length && n < count; i++ , n++) {
-        post += 'topic[' + n + ']=' + '正弦电流 ' + '&type[' + n + ']=' + topic[i].type + '&';
+        post += 'topic[' + n + ']=' +  topic[i].topic + '&type[' + n + ']=' + topic[i].type + '&';
     }
     if (post == '') {
         compile && compile();

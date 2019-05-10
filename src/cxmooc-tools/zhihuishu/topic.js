@@ -119,7 +119,7 @@ module.exports = {
             if ($(topic.options).find('.key_yes').length <= 0) {
                 return undefined;
             }
-            let pushOption = { topic: topic.topic, type: topic.type, answer: [], correct: [] };
+            let pushOption = { topic: topic.topic, type: topic.type, answers: [], correct: [] };
             let options = self.findOption(topic.options, topic.type);
             switch (topic.type) {
                 case 1:
@@ -152,9 +152,9 @@ module.exports = {
             }
             return pushOption;
         }, function () {
-            alert('收集完成');
-        }, function () {
-            alert('网络错误');
+            let box = common.pop_prompt("√  答案自动记录成功");
+            $(document.body).append(box);
+            setTimeout(function () { box.style.opacity = "1"; }, 500);
         });
     }
 }

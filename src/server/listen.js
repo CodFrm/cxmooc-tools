@@ -79,7 +79,7 @@ app.all('/player/*', function (req, res, next) {
 
 app.post('/answer', function (req, res) {
     let token = req.header('Authorization') || '';
-    let platform = req.query('platform') || 'cx';
+    let platform = req.query.platform || 'cx';
     var ip = getClientIp(req);
     var ret = [];
     if (req.body.length <= 0) {
@@ -180,15 +180,15 @@ function getClientIp(req) {
 app.post('/v2/answer', function (req, res) {
     var topic = req.body.topic || [];
     var type = req.body.type || [];
-    let platform = req.query('platform') || 'cx';
+    let platform = req.query.platform || 'cx';
     selectAnswer(topic, res, function (i) {
-        var where = { topic: { $regex: '^' + topic_n } };
-        topic[i] = dealSymbol(topic[i].replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&'));
-        var topic_n = topic[i];
+        let where = {};
+        let topic_n = dealSymbol(topic[i].replace(/[-\/\\^$*+?.|[\]{}]/g, '\\$&'));
         // topic[i] = topic;
         if (type[i] != undefined) {
             where = { type: parseInt(type[i]) };
         }
+        where.topic = { $regex: '^'+topic_n };
         return where;
     });
 });
@@ -205,7 +205,7 @@ function dealSymbol(topic) {
 
 app.get('/answer', function (req, res) {
     var topic = req.query.topic || [];
-    let platform = req.query('platform') || 'cx';
+    let platform = req.query.platform || 'cx';
     selectAnswer(topic, res, function (i) {
         return { topic: topic[i] };
     });
@@ -229,7 +229,7 @@ function selectAnswer(topic, res, where) {
                 time: 1,
                 correct: 1
             }
-        }).limit(10).toArray(function (err, result) {
+        }).limit(5).toArray(function (err, result) {
             var pushData = {
                 topic: topic[i],
                 index: i

@@ -16,7 +16,7 @@ module.exports = {
         text = text.substr(0, text.lastIndexOf('('));
         return text;
     },
-    geTHomeworkTopic: function () {
+    getHomeworkTopic: function () {
         let topic = $('.Zy_TItle.clearfix .clearfix');
         if (topic.length <= 0) {
             return undefined;
@@ -62,35 +62,20 @@ module.exports = {
         btn.onclick = function () {
             $(btn).text('搜索中...');
             //搜索答案
-            let topic = self.geTHomeworkTopic();
+            let topic = self.getHomeworkTopic();
             if (topic == undefined) {
                 return false;
             }
-            function requestAnswer(page) {
-                let post = '';
-                for (let i = (page * 5), n = 0; i < topic.length && n < 5; i++ , n++) {
-                    post += 'topic[' + n + ']=' + topic[i].topic + '&type[' + n + ']=' + topic[i].type + '&';
-                }
-                if (post == '') {
-                    $(btn).text('搜索完成');
+            common.requestAnswer(topic, 'cx', 0, function (topic, answer) {
+                let index = topic.index;
+                if (answer == undefined) {
+                    common.signleLine('无答案', 'answer' + index, undefined, topic.options);
                     return;
                 }
-                common.gm_post(moocServer.url + 'v2/answer', post, false, function (data) {
-                    let json = JSON.parse(data);
-                    for (let i = 0; i < json.length; i++) {
-                        let index = json[i].index + page * 5;
-                        if (json[i].result.length <= 0) {
-                            common.signleLine('无答案', 'answer' + index, undefined, topic[index].options);
-                            continue;
-                        }
-                        self.fillHomeWorkAnswer(topic[index], json[i].result[Math.floor(Math.random() * Math.floor(json[i].result.length))]);
-                    }
-                    setTimeout(() => { requestAnswer(page + 1); }, 1000);
-                }).error(function () {
-                    $(btn).text('网络错误');
-                });
-            }
-            requestAnswer(0);
+                self.fillHomeWorkAnswer(topic, answer);
+            }, () => { $(btn).text('搜索完成'); },
+                () => { $(btn).text('网络错误'); }
+            );
             return false;
         }
     },
@@ -138,7 +123,7 @@ module.exports = {
             if (topic == undefined) {
                 return false;
             }
-            common.gm_post(moocServer.url + 'v2/answer', 'topic[0]=' + topic, false, function (data) {
+            common.gm_post(moocServer.url + 'v2/answer?platform=cx', 'topic[0]=' + topic, false, function (data) {
                 let json = JSON.parse(data);
                 if (json[0].result.length <= 0) {
                     return self.notic.text('未找到答案');
@@ -258,7 +243,7 @@ module.exports = {
                 options = $(timu[i]).find('.Cy_ulTop li');
                 topicText = topicText.substr(0, topicText.lastIndexOf('('));
             }
-            let pushOption = { topic: topicText, answer: [], correct: [] };
+            let pushOption = { topic: topicText, answers: [], correct: [] };
             if (options.length <= 0) {
                 //非选择
                 let is = false;
@@ -306,15 +291,15 @@ module.exports = {
                     if (correctText.indexOf(option) >= 0) {
                         pushOption.correct.push(tmp);
                     }
-                    pushOption.answer.push(tmp);
+                    pushOption.answers.push(tmp);
                 }
                 pushOption.type = correctText.length <= 1 ? 1 : 2;
             }
             answer.push(pushOption);
         }
         // console.log(answer);
-        common.gm_post(moocServer.url + 'answer', JSON.stringify(answer), true, function () {
-            let box = util.pop_prompt("√  答案自动记录成功");
+        common.gm_post(moocServer.url + 'answer?platform=cx', JSON.stringify(answer), true, function () {
+            let box = common.pop_prompt("√  答案自动记录成功");
             $(document.body).append(box);
             setTimeout(function () { box.style.opacity = "1"; }, 500);
         });

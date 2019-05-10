@@ -30,7 +30,7 @@ title: Chrome插件
 下载[发布版本](https://github.com/CodFrm/cxmooc-tools/releases)cxmooc-tools.crx文件,直接拖入浏览器安装
 某些浏览器允许直接拖入扩展进行安装。(内核为Chromium,如果不行,请按照方法2来)
 
-- 支持列表
+#### 支持列表
 > 可以通过下方**在 GitHub 上编辑此页**来进行补充
 
 * 360极速浏览器
