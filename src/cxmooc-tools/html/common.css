@@ -1,0 +1,24 @@
+#cxtools{
+    position: absolute;
+    left: 250px;
+    top: 2px;
+    width: 100px;   
+}
+
+#zhs-video-boom{
+    color:#fff;
+    background: #ff9d34;
+}
+
+#zhs-video-boom:hover{
+    background: #ff3838;
+}
+
+.zhs-search-answer{
+    border: 0;
+    outline: none;
+}
+
+.zhs-search-answer:hover{
+    opacity: .85;
+}

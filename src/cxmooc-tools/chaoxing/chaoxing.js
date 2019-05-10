@@ -2,16 +2,21 @@
  * 超星刷课功能集合
  */
 const common = require('../common');
-const until = require('./until');
+const util = require('./util');
 const Video = require('./video');
 const Topic = require('./topic');
+const Vcode = require('./vcode');
+const Exam = require('./exam');
 
 module.exports = function () {
     let self = this;
-    this.list = new Array();
+    this.list = undefined;
     this.index = 0;
     this.iframe = undefined;
-    this.tag = Math.random();
+    this.document = undefined;
+    this.complete_num = 0;
+    this.vcode = new Vcode();
+    this.inSwitch = false;
     /**
      * 查找iframe
      * @param iframeElement 
@@ -24,7 +29,9 @@ module.exports = function () {
             let obj = undefined;
             if ($(iframeElement[i]).hasClass('ans-insertvideo-online')) {
                 obj = new Video();
-            } else if ($(iframeElement[i]).attr('src').indexOf('modules/work') > 0) {
+                //解锁phone
+                global.allowPhone && (iframeElement[i].contentWindow.Ext.isChaoxing = true);
+            } else if ($(iframeElement[i]).attr('src') != undefined && $(iframeElement[i]).attr('src').indexOf('modules/work') > 0) {
                 obj = new Topic();
             }
             if (obj != undefined) {
@@ -55,25 +62,39 @@ module.exports = function () {
         }
     }
 
+    let lastTimeout = 0;
+    //hook
+    let hookChangeDisplayContent = window.changeDisplayContent;
+    window.changeDisplayContent = function (num, totalnum, chapterId, courseId, clazzid, knowledgestr) {
+        clearTimeout(lastTimeout);
+        hookChangeDisplayContent(num, totalnum, chapterId, courseId, clazzid, knowledgestr);
+    }
+    let hookGetTeacherAjax = window.getTeacherAjax;
+    window.getTeacherAjax = function (courseId, clazzid, chapterId, cpi, chapterVerCode) {
+        clearTimeout(lastTimeout);
+        hookGetTeacherAjax(courseId, clazzid, chapterId, cpi, chapterVerCode);
+    }
     /**
      * 延迟切换
      */
     function lazySwitch(callback) {
         //无任务
-        let duration = (config.interval || 1) * 60000;
-        setTimeout(function () {
+        config.auto && self.notice(config.interval + "分钟后插件将自动切换下一节任务");
+        config.auto && common.log(config.interval + " after switch")
+        clearTimeout(lastTimeout);
+        lastTimeout = setTimeout(function () {
             if (callback == undefined) {
                 switchTask();
             } else {
                 callback();
             }
-        }, duration);
+        }, config.duration);
     }
 
     this.loadover = function (event) {
         if (event == self.list[0]) {
             //第一个加载完成
-            config.auto && ignoreCompile(event);
+            event.pause && config.auto && ignoreCompile(event);
         }
     }
 
@@ -82,10 +103,12 @@ module.exports = function () {
         if (config.answer_ignore && self.list[self.index] instanceof Topic) {
             switchTask();
         } else {
-            if (until.isFinished(event.iframe) || !until.isTask(event.iframe)) {
+            if (util.isFinished(event.iframe) || !util.isTask(event.iframe)) {
                 //完成了,或者非任务点
                 switchTask();
             } else {
+                //判断是否切换了页面
+                self.complete_num++;
                 event.start();
             }
         }
@@ -96,14 +119,24 @@ module.exports = function () {
             return;
         }
         //判断是否切换了页面
-        console.log(self.iframe, self.tag);
-        if ($(self.iframe).attr('tag') != self.tag) {
-            return;
+        if (self.list[self.index] != undefined) {
+            common.log(self.list[self.index].iframe.className + " " + self.index + " switch")
+        } else {
+            common.log("null " + self.index + " switch")
         }
         //切换下一个未完成的任务
         if (self.list.length > 0 && self.index < self.list.length - 1) {
             self.index += 1;
             ignoreCompile(self.list[self.index]);
+            return;
+        }
+        if (self.complete_num <= 0) {
+            self.complete_num = 1;
+            if (self.list.length > 0) {
+                lazySwitch();
+            } else {
+                switchTask();
+            }
             return;
         }
         let folder = $('.tabtags').find('span');
@@ -138,19 +171,27 @@ module.exports = function () {
     }
 
     this.studentstudy = function () {
+        common.log("studentstudy load");
+        varInit();
         let iframe = $('iframe');
         self.iframe = iframe;
-        $(iframe).attr('tag', self.tag);
+        self.document = self.iframe[0].contentDocument
+        self.notice(config.auto ? '正在自动挂机中' : '');
         findIframe(iframe);
         for (let i = 0; i < self.list.length; i++) {
             self.list[i].init();
         }
         //无任务
         if (self.list.length <= 0) {
-            setTimeout(function () {
-                switchTask();
-            }, (config.interval || 0.1) * 60000);
+            lazySwitch();
         }
+    }
+
+    function varInit() {
+        self.list = new Array();
+        self.index = 0;
+        self.complete_num = 0;
+        clearTimeout(lastTimeout);
     }
 
     this.read = function () {
@@ -159,6 +200,7 @@ module.exports = function () {
             if (document.body.getScrollHeight() - document.body.getHeight() <= document.documentElement.scrollTop + 40) {
                 let next = $('.ml40.nodeItem.r');
                 if (next.length <= 0) {
+                    self.notice('看完啦~');
                     alert('看完啦~');
                 } else {
                     next[0].click();
@@ -172,5 +214,30 @@ module.exports = function () {
         slide();
     }
 
+    this.notice = function (text) {
+        let el = undefined;
+        if ($(self.document.body).find('.prompt-line-cxmooc-notice').length > 0) {
+            el = $(self.document.body).find('.prompt-line-cxmooc-notice')[0];
+        } else {
+            el = common.createLine(text, 'cxmooc-notice');
+            $(el).css('text-align', 'center');
+            $(self.document.body).prepend(el);
+        }
+        $(el).text(text);
+    }
+
+    this.exam = function () {
+        Exam.exam();
+    }
+    this.homework = function () {
+        Exam.homework();
+    }
+    this.collectHomeWork = function () {
+        Exam.collect('home');
+    }
+
+    this.collectExam = function () {
+        Exam.collect('exam');
+    }
     return this;
 }

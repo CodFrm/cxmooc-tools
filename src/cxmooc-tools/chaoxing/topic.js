@@ -1,5 +1,5 @@
 const common = require('../common');
-const until = require('./until');
+const until = require('./util');
 const moocServer = require('../../config');
 
 module.exports = function () {
@@ -8,16 +8,16 @@ module.exports = function () {
     this.document = undefined;
     this.complete = undefined;
     this.loadover = undefined;
-    this.topicBtn = undefined;
+    this.hangBtn = undefined;
     this.pause = true;
 
     this.searchAnswer = function () {
         if (self.pause) {
             self.pause = false;
-            config.auto && $(self.topicBtn).text('暂停挂机');
+            config.auto && $(self.hangBtn).text('暂停挂机');
         } else {
             self.pause = true;
-            $(self.topicBtn).text('搜索题目');
+            $(self.hangBtn).text('搜索题目');
             return;
         }
         let TiMu = $(self.document).find('.Zy_TItle.clearfix');
@@ -29,7 +29,7 @@ module.exports = function () {
         for (let i in topic) {
             data += 'topic[' + i + ']=' + topic[i].topic + '&type[' + i + ']=' + topic[i].type + '&';
         }
-        common.post(moocServer.url + 'v2/answer', data, false, function (data) {
+        common.gm_post(moocServer.url + 'v2/answer?platform=cx', data, false, function (data) {
             let json = JSON.parse(data);
             let answer_null = false;
             for (let i = 0; i < json.length; i++) {
@@ -38,17 +38,23 @@ module.exports = function () {
                 }
             }
             if (answer_null) {
-                alert('有题目没有找到答案,并且未设置随机答案,请手动填入');
+                //切换下一个任务点
+                $(self.hangBtn).text('答案不全跳过');
+                self.complete();
                 return;
             }
+            common.log(self.iframe.className + " topic complete")
             if (config.auto) {
                 self.complete(1);
             } else {
                 self.complete();
             }
+        }).error(function () {
+            common.log(self.iframe.className + " topic error")
+            $(self.hangBtn).text('网络错误跳过');
+            self.complete();
         });
     }
-
 
     this.pushTopic = function () {
         if (self.pause) {
@@ -61,17 +67,17 @@ module.exports = function () {
                 alert('提示:' + prompt);
                 return;
             }
-            prompt = document.getElementById('validate');
-            if (prompt.style.display != 'none') {
-                if (!show) {
-                    show = true;
-                    alert('需要输入验证码');
+            let timer = setInterval(function () {
+                prompt = document.getElementById('validate');
+                if (prompt.style.display != 'none') {
+                    //等待验证码接管
+                    return;
                 }
-                return;
-            }
-            //确定提交
-            let submit = $(self.document).find('.bluebtn');
-            submit[0].click();
+                clearInterval(timer);
+                //确定提交
+                let submit = $(self.document).find('.bluebtn');
+                submit[0].click();
+            }, 2000);
         }
         let submit = function () {
             let submit = $(self.document).find('.Btn_blue_1');
@@ -87,16 +93,16 @@ module.exports = function () {
      * 创建按钮
      */
     this.createButton = function () {
-        self.topicBtn = until.createBtn('搜索题目', '点击自动从网络上的题库中查找答案');
+        self.hangBtn = until.createBtn('搜索题目', '点击自动从网络上的题库中查找答案');
         let prev = $(self.iframe).prev();
         if (prev.length <= 0) {
             prev = $(self.iframe).parent();
-            $(prev).prepend(self.topicBtn);
+            $(prev).prepend(self.hangBtn);
         } else {
-            $(prev).append(self.topicBtn);
+            $(prev).append(self.hangBtn);
         }
         until.dealTaskLabel(prev);
-        self.topicBtn.onclick = self.searchAnswer;
+        self.hangBtn.onclick = self.searchAnswer;
     }
 
     this.init = function () {
@@ -106,6 +112,7 @@ module.exports = function () {
     }
 
     function reloadInit() {
+        common.log(self.iframe.className + " topic reload init")
         if (until.isFinished(self.iframe)) {
             self.collect();
         } else {
@@ -118,12 +125,16 @@ module.exports = function () {
     //监听框架,跳转抓取题目
     function listenIframe() {
         $($(self.iframe.contentDocument).find('#frame_content')[0]).on("load", function () {
-            self.document = this.contentDocument;
-            reloadInit();
+            common.log("topic load " + this.contentWindow.location.href);
+            if (this.contentWindow.location.href.indexOf('selectWorkQuestionYiPiYue') > 0) {
+                self.document = this.contentDocument;
+                reloadInit();
+            }
         });
     }
 
     this.start = function () {
+        common.log(self.iframe.className + " topic start")
         self.searchAnswer();
     }
 
@@ -140,11 +151,16 @@ module.exports = function () {
             }
             answer.push(tmp);
         }
-        let box = until.pop_prompt("√  答案自动记录成功");
+        let box = common.pop_prompt("√  答案自动记录成功");
         $(document.body).append(box);
         setTimeout(function () { box.style.opacity = "1"; }, 500);
-        common.post(moocServer.url + 'answer', JSON.stringify(answer));
-        self.complete(2);
+        common.gm_post(moocServer.url + 'answer?platform=cx', JSON.stringify(answer), true, function () {
+            common.log(self.iframe.className + " topic answer complete")
+            self.complete(2);
+        }).error(function () {
+            common.log(self.iframe.className + " topic answer complete")
+            self.complete(2);
+        });
     }
     return this;
 }
@@ -280,14 +296,14 @@ function fillTopic(TiMu, answer, sourceTopic) {
             result = genRandAnswer(sourceTopic[answer.index].type);
             rand = true;
         } else {
-            until.createLine('没有答案', 'answer', $(optionEl).next());
+            common.createLine('没有答案', 'answer', $(optionEl).next());
             return false;
         }
         if (result.correct.length <= 0) {
-            until.createLine('不支持的随机答案类型', 'answer', $(optionEl).next());
+            common.createLine('不支持的随机答案类型', 'answer', $(optionEl).next());
             return false;
         } else {
-            until.createLine('这是随机生成的答案', 'answer', $(optionEl).next());
+            common.createLine('这是随机生成的答案', 'answer', $(optionEl).next());
         }
     }
     let options = {}
@@ -311,7 +327,7 @@ function fillTopic(TiMu, answer, sourceTopic) {
                         if (!$(options[n]).attr('checked')) {
                             options[n].click();
                         }
-                        until.createLine(options[n].value + ':' + $(content).text(), 'answer', $(optionEl).next());
+                        common.createLine(options[n].value + ':' + $(content).text(), 'answer', $(optionEl).next());
                         options.splice(n, 1);
                         break;
                     } else if ($(options[n]).attr('checked')) {
@@ -323,10 +339,10 @@ function fillTopic(TiMu, answer, sourceTopic) {
             case 3: {
                 if (result.correct[0].option) {
                     options[0].click();
-                    until.createLine('对√', 'answer', $(optionEl).next());
+                    common.createLine('对√', 'answer', $(optionEl).next());
                 } else {
                     options[1].click();
-                    until.createLine('错×', 'answer', $(optionEl).next());
+                    common.createLine('错×', 'answer', $(optionEl).next());
                 }
                 break;
             }
@@ -334,7 +350,7 @@ function fillTopic(TiMu, answer, sourceTopic) {
                 for (let n = 0; n < options.length; n++) {
                     if (common.substrEx(options[n].innerText, '第', '空') == result.correct[i].option) {
                         $(options[n]).find('.inp').val(result.correct[i].content);
-                        until.createLine(options[n].innerText + ':' + result.correct[i].content, 'answer', $(optionEl).next());
+                        common.createLine(options[n].innerText + ':' + result.correct[i].content, 'answer', $(optionEl).next());
                         options.splice(n, 1);
                         break;
                     }
@@ -342,7 +358,7 @@ function fillTopic(TiMu, answer, sourceTopic) {
                 break;
             }
             default: {
-                until.createLine('不支持的类型', 'answer', $(optionEl).next());
+                common.createLine('不支持的类型', 'answer', $(optionEl).next());
                 break;
             }
         }

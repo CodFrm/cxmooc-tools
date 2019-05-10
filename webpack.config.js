@@ -22,5 +22,13 @@ module.exports = {
             },
             chunks: ['popup']
         })
-    ]
+    ],
+    module: {
+        rules: [
+            {
+                test: /\.css$/,
+                use: ['style-loader', 'css-loader'],
+            }
+        ]
+    }
 }

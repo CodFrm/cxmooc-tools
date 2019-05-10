@@ -1,5 +1,5 @@
 const common = require('../common');
-const until = require('./until');
+const until = require('./util');
 const md5 = require("md5");
 
 module.exports = function () {
@@ -73,8 +73,15 @@ module.exports = function () {
         }
         initVideoTopic();
         initCdn(self.video);
+        //点击切换记录cdn
+        $(self.document).find("[title='Playline']+.vjs-menu .vjs-menu-content .vjs-menu-item-text").click(function () {
+            localStorage['cdn'] = $(this).text();
+        });
+        //失败的切换记录
+        $(self.document).find('.vjs-error-display.vjs-modal-dialog').on('click', '.ans-vjserrdisplay-opts li.ans-vjserrdisplay-opt label"', function () {
+            localStorage['cdn'] = $(this).text();
+        });
         let play = function () {
-            localStorage['cdn'] = $(self.document).find("[title='Playline']+.vjs-menu .vjs-menu-content .vjs-menu-item.vjs-selected .vjs-menu-item-text").text();
             //静音和倍速选项
             self.video.muted = config.video_mute;
             self.video.playbackRate = config.video_multiple;
@@ -90,15 +97,27 @@ module.exports = function () {
                 }
             }
         });
+        let tag = Math.random();
+        localStorage['now_video_tag'] = tag;
+        let pauseTimer = setInterval(function () {
+            //以防万一的暂停- -
+            if (!self.pause && localStorage['now_video_tag'] == tag) {
+                self.video.paused && self.video.play();
+            } else if (localStorage['now_video_tag'] != tag) {
+                clearInterval(pauseTimer);
+            }
+        }, 10000);
 
         $(self.video).on('ended', function () {
             if (undefined != self.complete) {
                 self.complete();
             }
+            clearInterval(pauseTimer);
         });
     }
 
     this.start = function () {
+        common.log(self.iframe.className + " video start")
         self.startPlay();
     }
 
@@ -116,7 +135,6 @@ module.exports = function () {
         setTimeout(function () {
             self.video.play();
         }, 0);
-
     }
 
     /**

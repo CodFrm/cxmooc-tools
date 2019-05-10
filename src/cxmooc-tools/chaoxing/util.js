@@ -39,22 +39,6 @@ export function dealTaskLabel(label) {
     span.css('margin-left', '0');
 }
 
-/**
- * 创建一行
- * @param {string} text 
- */
-export function createLine(text, label, append) {
-    let p = $('<p></p>');
-    p.css('color', 'red');
-    p.css('font-size', '14px');
-    p.attr('class', 'prompt-line-' + label);
-    p.text(text);
-    if (append != undefined) {
-        $(append).append(p);
-    }
-    return p;
-}
-
 export function isFinished(el) {
     if ($(el).parents('.ans-attach-ct.ans-job-finished').length > 0) {
         return true;
@@ -67,27 +51,4 @@ export function isTask(el) {
         return true;
     }
     return false;
-}
-
-
-export function pop_prompt(text, sec = 4) {
-    var box = document.createElement('div');
-    box.style.position = "absolute";
-    box.style.background = "#aeffab";
-    box.style.fontSize = "18px";
-    box.style.padding = "4px 20px";
-    box.style.borderRadius = "20px";
-    box.style.top = "50%";
-    box.style.left = "50%";
-    box.style.transform = "translate(-50%,-50%)";
-    box.style.transition = "1s";
-    box.style.opacity = "0";
-    box.innerText = text;
-    setTimeout(function () {
-        box.style.opacity = "0";
-        setTimeout(function () {
-            box.remove();
-        }, 1000)
-    }, sec * 1000);
-    return box;
 }
