@@ -4,6 +4,8 @@
 ![GitHub tag (latest SemVer)](https://img.shields.io/github/tag/codfrm/cxmooc-tools.svg?label=version)
 
 ## 关于超星慕课小工具
+> **[使用文档](https://cx-doc.xloli.top/)**
+
 一个超星(学习通)和智慧树(知到)刷课工具,火狐,谷歌,油猴支持.全自动任务,视频倍速秒过,作业考试题库,验证码自动打码(੧ᐛ੭挂科模式,启动)
 
 ### 浏览器适配列表
@@ -24,7 +26,7 @@
 * [x] 自动阅读
 * [x] 自动填写验证码
 * [x] 考试答题
-* [ ] 作业答题
+* [x] 作业答题
 
 ## 参与开发
 > 如果你想参与开发,请阅读下面内容,如果只是使用本插件,请移步 **[使用文档](https://cx-doc.xloli.top/)**
