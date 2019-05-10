@@ -332,7 +332,6 @@ export function postAnswer(topic, platform, collect, compile, error) {
             answer.push(tmp);
         }
     }
-    console.log(answer);
     gm_post(moocServer.url + 'answer?platform=' + platform, JSON.stringify(answer), true, compile).error(error);
 }
 

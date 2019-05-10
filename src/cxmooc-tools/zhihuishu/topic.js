@@ -130,7 +130,7 @@ module.exports = {
                             option: String.fromCharCode((65 + i)),
                             content: tmpContent
                         };
-                        pushOption.answer.push(tmp);
+                        pushOption.answers.push(tmp);
                         if ($(options[i]).parent().find('input').attr('checked')) {
                             pushOption.correct.push(tmp);
                         }
