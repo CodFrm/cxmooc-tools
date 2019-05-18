@@ -54,7 +54,7 @@ module.exports = {
                 let tmpContent = common.removeHTML($(options[i]).html());
                 if (tmpContent == correct.content) {
                     $(options[i]).parent().find('input').click();
-                    return true;
+                    return $(options[i]).text();
                 }
             }
         }
@@ -94,7 +94,7 @@ module.exports = {
                             common.oaForEach(correct, function (item2) {
                                 if (common.numToZh(index + 1) == item2.option) {
                                     $(item).val(item2.content);
-                                    retNotic += '第' + item2.option + '空:' + item2.content+'<br/>';
+                                    retNotic += '第' + item2.option + '空:' + item2.content + '<br/>';
                                 }
                             });
                         });
@@ -105,7 +105,7 @@ module.exports = {
                 if (text == '') {
                     return common.signleLine('没有合适的答案', 'answer' + index, undefined, topic.options);;
                 }
-                common.signleLine(text, 'answer' + index, undefined, topic.options[topic.options.length-1]);
+                common.signleLine(text, 'answer' + index, undefined, topic.options[topic.options.length - 1]);
             },
             () => { $(self.btn).text('搜索完成'); },
             () => { $(self.btn).text('网络错误'); },
