@@ -94,11 +94,11 @@ export function removeHTML(html) {
  * @param {*} topic 
  */
 function dealSymbol(topic) {
-    topic = topic.replace('，', ',');
-    topic = topic.replace('（', '(');
-    topic = topic.replace('）', ')');
-    topic = topic.replace('？', '?');
-    topic = topic.replace('：', ':');
+    topic = topic.replace(/，/g, ',');
+    topic = topic.replace(/（/g, '(');
+    topic = topic.replace(/）/g, ')');
+    topic = topic.replace(/？/g, '?');
+    topic = topic.replace(/：/g, ':');
     topic = topic.replace(/[“”]/g, '"');
     return topic;
 }
@@ -433,8 +433,7 @@ export function fillAnswer(topic, answer, fill, findOption) {
 export function fillSelect(options, correct, isTrue) {
     let noticText = '';
     for (let i = 0; i < correct.length; i++) {
-        isTrue(options, correct[i], 2);
-        noticText += correct[i].option + ':' + correct[i].content + '<br/>';
+        noticText += isTrue(options, correct[i], 2) + ':' + correct[i].content + '<br/>';
     }
     return noticText;
 }

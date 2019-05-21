@@ -84,7 +84,7 @@ module.exports = {
         switch (topic.type) {
             case 1:
             case 2: {
-                let options = $(topic.options).find('input');
+                let options = $(topic.options).find('li input');
                 let noticText = this.fillSelect(options, correct);
                 common.signleLine(noticText, 'answer' + topic.index, undefined, topic.options);
                 break;
@@ -143,12 +143,20 @@ module.exports = {
     fillSelect: function (options, correct) {
         let noticText = '';
         $(options).removeAttr('checked');
-        for (let i = 0; i < correct.length; i++) {
-            let index = (correct[i].option.charCodeAt() | 32) - 97;
-            $(options[index]).click();
-            noticText += correct[i].option + ':' + correct[i].content + '<br/>';
+        let optionContent = $('.Cy_ulTop.w-top li div');
+        if (optionContent.length <= 0) {
+            optionContent = $(options).parents('li').find('a');
         }
-        return noticText;
+        for (let i = 0; i < correct.length; i++) {
+            for (let n = 0; n < options.length; n++) {
+                let option = common.removeHTML($(optionContent[n]).html());
+                if (option == correct[i].option) {
+                    $(options[n]).click();
+                    noticText += correct[i].option + ':' + correct[i].content + '<br/>';
+                }
+            }
+        }
+        return noticText || '没有符合的答案';
     },
     fillJudge: function (options, correct) {
         $(options).removeAttr('checked');

@@ -1,6 +1,6 @@
 module.exports = {
-    url: "http://cx.icodef.com/",
-    version: 2.10,
+    url: "https://cx.icodef.com/",
+    version: 2.11,
     update: 'https://github.com/CodFrm/cxmooc-tools/releases',
     enforce: false,
     cx: {
@@ -15,8 +15,16 @@ module.exports = {
         v2_06: 2.06,
     },
     getHotVersion: function (ver) {
-        let dealver = 'v' + ('' + ver || this.version).replace('.', '_');
+        let dealver = 'v' + pushZero(ver || this.version).replace('.', '_');
         hotversion = this.hotversion[dealver] || this.version;
         return hotversion;
     }
+}
+
+function pushZero(num) {
+    num = "" + num;
+    for (; num.length < 4;) {
+        num = num + "0";
+    }
+    return num;
 }

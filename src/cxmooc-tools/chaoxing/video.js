@@ -72,21 +72,33 @@ module.exports = function () {
             }
         }
         initVideoTopic();
-        initCdn(self.video);
+        // initCdn(self.video);
         //点击切换记录cdn
-        $(self.document).find("[title='Playline']+.vjs-menu .vjs-menu-content .vjs-menu-item-text").click(function () {
-            localStorage['cdn'] = $(this).text();
-        });
-        //失败的切换记录
-        $(self.document).find('.vjs-error-display.vjs-modal-dialog').on('click', '.ans-vjserrdisplay-opts li.ans-vjserrdisplay-opt label"', function () {
-            localStorage['cdn'] = $(this).text();
-        });
+        // $(self.document).find("[title='Playline']+.vjs-menu .vjs-menu-content .vjs-menu-item-text").click(function () {
+        //     localStorage['cdn'] = $(this).text();
+        // });
+        // //失败的切换记录
+        // $(self.document).find('.vjs-error-display.vjs-modal-dialog').on('click', '.ans-vjserrdisplay-opts li.ans-vjserrdisplay-opt label"', function () {
+        //     localStorage['cdn'] = $(this).text();
+        // });
         let play = function () {
             //静音和倍速选项
             self.video.muted = config.video_mute;
             self.video.playbackRate = config.video_multiple;
+            let cdn = self.video.currentSrc;
+            cdn = cdn.substr(0, cdn.indexOf('/video/', 10));
+            localStorage['cdn_url'] = cdn;
             self.loadover && self.loadover(self);
         }
+         /**
+         * 对cdn进行处理
+         */
+        if (localStorage['cdn_url'] != undefined) {
+            let url =  self.video.src;
+            url = url.substr(url.indexOf('/video/'));
+            self.video.src = localStorage['cdn_url'] + url;
+        }
+
         $(self.video).on('loadstart', play);
 
         $(self.video).on('pause', function () {
