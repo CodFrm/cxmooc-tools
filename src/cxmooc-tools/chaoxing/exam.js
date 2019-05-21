@@ -149,10 +149,11 @@ module.exports = {
         }
         for (let i = 0; i < correct.length; i++) {
             for (let n = 0; n < options.length; n++) {
-                let option = common.removeHTML($(optionContent[n]).html());
-                if (option == correct[i].option) {
+                let content = common.removeHTML($(optionContent[n]).html());
+                if (content == correct[i].content) {
                     $(options[n]).click();
                     noticText += correct[i].option + ':' + correct[i].content + '<br/>';
+                    break;
                 }
             }
         }
