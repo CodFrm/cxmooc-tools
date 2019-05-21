@@ -45,7 +45,7 @@ app.use(bodyParser.urlencoded({
 }));
 
 app.use(express.static(path.join(__dirname, 'static'), {
-    maxage: '7d'
+    maxage: '1d'
 }));
 
 app.get('/', function (req, res) {
@@ -89,6 +89,7 @@ app.post('/answer', function (req, res) {
         });
     }
     let num = 0;
+    let addTokenNum = 0;
     for (let i in req.body) {
         let topic = req.body[i];
         if (topic.correct == undefined || topic.type == undefined || topic.topic == undefined ||
@@ -113,6 +114,8 @@ app.post('/answer', function (req, res) {
                 data.platform = platform;
                 data.token = token;
                 mooc.insert('answer', data);
+                //增加token次数
+                addTokenNum += 10;
             } else if ((type == 4 && result.type == 4) || (type == 2 && result.type == 2)) {
                 //填空多选,答案合并
                 try {
@@ -128,10 +131,15 @@ app.post('/answer', function (req, res) {
             }
             ret.push(cond);
             if (ret.length == num) {
-                res.send({
-                    code: 0,
-                    msg: 'success',
-                    result: ret
+                redis.getTokenNum(token, function (num) {
+                    redis.setToken(token, num + addTokenNum)
+                    res.send({
+                        code: 0,
+                        msg: 'success',
+                        result: ret,
+                        token_num: num + addTokenNum,
+                        add_token_num: addTokenNum
+                    });
                 });
             }
         });
@@ -188,7 +196,7 @@ app.post('/v2/answer', function (req, res) {
         if (type[i] != undefined) {
             where = { type: parseInt(type[i]) };
         }
-        where.topic = { $regex: '^'+topic_n };
+        where.topic = { $regex: '^' + topic_n };
         return where;
     });
 });
