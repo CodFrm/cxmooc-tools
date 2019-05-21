@@ -45,7 +45,7 @@ app.use(bodyParser.urlencoded({
 }));
 
 app.use(express.static(path.join(__dirname, 'static'), {
-    maxage: '7d'
+    maxage: '1d'
 }));
 
 app.get('/', function (req, res) {

@@ -363,7 +363,7 @@ export function requestAnswer(topic, platform, page, answer, compile, error, cou
     time = time || 2000;
     let post = '';
     for (let i = (page * count), n = 0; i < topic.length && n < count; i++ , n++) {
-        post += 'topic[' + n + ']=' +  topic[i].topic + '&type[' + n + ']=' + topic[i].type + '&';
+        post += 'topic[' + n + ']=' + topic[i].topic + '&type[' + n + ']=' + topic[i].type + '&';
     }
     if (post == '') {
         compile && compile();

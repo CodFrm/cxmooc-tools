@@ -79,8 +79,8 @@ module.exports = function () {
      */
     function lazySwitch(callback) {
         //无任务
-        config.auto && self.notice(config.interval + "分钟后插件将自动切换下一节任务");
-        config.auto && common.log(config.interval + " after switch")
+        config.auto && self.notice((config.duration / 60000).toFixed(2) + "分钟后插件将自动切换下一节任务");
+        config.auto && common.log((config.duration / 60000).toFixed(2) + " after switch")
         clearTimeout(lastTimeout);
         lastTimeout = setTimeout(function () {
             if (callback == undefined) {
