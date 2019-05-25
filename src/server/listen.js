@@ -45,7 +45,7 @@ app.use(bodyParser.urlencoded({
 }));
 
 app.use(express.static(path.join(__dirname, 'static'), {
-    maxage: '1d'
+    maxage: '10m'
 }));
 
 app.get('/', function (req, res) {
@@ -191,7 +191,7 @@ app.post('/v2/answer', function (req, res) {
     let platform = req.query.platform || 'cx';
     selectAnswer(topic, res, function (i) {
         let where = {};
-        let topic_n = dealSymbol(topic[i].replace(/[-\/\\^$*+?.|[\]{}]/g, '\\$&'));
+        let topic_n = dealSymbol(topic[i].replace(/[-\/\\^$*+.|[\]{}]/g, '\\$&'));
         // topic[i] = topic;
         if (type[i] != undefined) {
             where = { type: parseInt(type[i]) };
