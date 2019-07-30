@@ -45,7 +45,7 @@ app.use(bodyParser.urlencoded({
 }));
 
 app.use(express.static(path.join(__dirname, 'static'), {
-    maxage: '7d'
+    maxage: '1d'
 }));
 
 app.get('/', function (req, res) {
@@ -61,7 +61,7 @@ app.use(function (req, res, next) {
     redis.onlineAdd(ip);
 
     res.header("Access-Control-Allow-Origin", req.headers['origin']);
-    res.header("Access-Control-Allow-Headers", "Content-Type,Content-Length,Authorization,Accept,X-Requested-With");
+    res.header("Access-Control-Allow-Headers", "Content-Type,Content-Length,Authorization,Accept,X-Requested-With,X-Version");
     res.header("Access-Control-Allow-Methods", "PUT,POST,GET,DELETE,OPTIONS");
     if (req.method == "OPTIONS") {
         return res.status(200).send('success');
@@ -89,6 +89,7 @@ app.post('/answer', function (req, res) {
         });
     }
     let num = 0;
+    let addTokenNum = 0;
     for (let i in req.body) {
         let topic = req.body[i];
         if (topic.correct == undefined || topic.type == undefined || topic.topic == undefined ||
@@ -113,6 +114,8 @@ app.post('/answer', function (req, res) {
                 data.platform = platform;
                 data.token = token;
                 mooc.insert('answer', data);
+                //增加token次数
+                addTokenNum += 10;
             } else if ((type == 4 && result.type == 4) || (type == 2 && result.type == 2)) {
                 //填空多选,答案合并
                 try {
@@ -128,10 +131,15 @@ app.post('/answer', function (req, res) {
             }
             ret.push(cond);
             if (ret.length == num) {
-                res.send({
-                    code: 0,
-                    msg: 'success',
-                    result: ret
+                redis.getTokenNum(token, function (num) {
+                    redis.setToken(token, parseInt(num) + addTokenNum)
+                    res.send({
+                        code: 0,
+                        msg: 'success',
+                        result: ret,
+                        token_num: parseInt(num) + addTokenNum,
+                        add_token_num: addTokenNum
+                    });
                 });
             }
         });
@@ -183,12 +191,12 @@ app.post('/v2/answer', function (req, res) {
     let platform = req.query.platform || 'cx';
     selectAnswer(topic, res, function (i) {
         let where = {};
-        let topic_n = dealSymbol(topic[i].replace(/[-\/\\^$*+?.|[\]{}]/g, '\\$&'));
+        let topic_n = dealSymbol(topic[i].replace(/[-\/\\^$*+.|[\]{}]/g, '\\$&'));
         // topic[i] = topic;
         if (type[i] != undefined) {
             where = { type: parseInt(type[i]) };
         }
-        where.topic = { $regex: '^'+topic_n };
+        where.topic = { $regex: '^' + topic_n };
         return where;
     });
 });
