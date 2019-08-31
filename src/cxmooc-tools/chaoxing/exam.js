@@ -145,7 +145,11 @@ module.exports = {
         $(options).removeAttr('checked');
         let optionContent = $('.Cy_ulTop.w-top li div');
         if (optionContent.length <= 0) {
-            optionContent = $(options).parents('li').find('a');
+            optionContent=[];
+            for(let i=0;i<options.length;i++){
+                optionContent.push($(options[i]).parents('li').find('a')[0]);
+            }
+            // optionContent = $(options).parents('li').find('a'); //顺序不知道为什么反了
         }
         for (let i = 0; i < correct.length; i++) {
             for (let n = 0; n < options.length; n++) {
