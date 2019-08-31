@@ -146,7 +146,7 @@ module.exports = function () {
         let answer = [];
         for (let i = 0; i < TiMu.length; i++) {
             let tmp = getAnswerInfo(TiMu[i]);
-            if (tmp == {}) {
+            if (tmp == false) {
                 continue;
             }
             answer.push(tmp);
@@ -173,11 +173,11 @@ function getAnswerInfo(TiMu) {
     let answer = $(TiMu).find('.Zy_TItle.clearfix');
     let correct = $(TiMu).find('.Py_answer.clearfix');
     if (correct.length <= 0) {
-        return {};
+        return false;
     }
     if ($(correct).html().indexOf('正确答案') < 0) {
         if ($(correct).find('.fr.dui').length <= 0 || $(correct).find('.fr.bandui').length) {
-            return {};
+            return false;
         }
     }
     //验证正确
