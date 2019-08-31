@@ -1,7 +1,10 @@
+const common = require('../cxmooc-tools/common')
+
 global.config = JSON.parse(localStorage['config']);
 
 Object.defineProperty(global.config, 'duration', {
     get: function () {
-        return (config.interval || 0.1) * 60000;
+        let interval = (config.interval || 0.1) * 60000;
+        return common.randNumber(interval - interval / 2, interval + interval * 2);
     }
 });

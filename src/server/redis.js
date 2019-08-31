@@ -29,6 +29,7 @@ module.exports = function () {
             });
         });
     }
+
     this.vtoken = function (token, callback) {
         if (!token) {
             return callback && callback(0);
@@ -37,6 +38,20 @@ module.exports = function () {
             callback && callback(res);
         });
     }
+
+    this.getTokenNum = function (token, callback) {
+        if (!token) {
+            return callback && callback(0);
+        }
+        client.get('cxmooc:vtoken:' + token, function (err, res) {
+            callback && callback(res)
+        });
+    }
+
+    this.setToken = function (token, num) {
+        client.set('cxmooc:vtoken:' + token, num);
+    }
+
     this.set = function (key, value) {
         client.set(key, value);
     }

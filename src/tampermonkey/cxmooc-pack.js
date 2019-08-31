@@ -32,7 +32,7 @@ window.onload = function () {
         cx.collectExam();
     } else if (window.location.href.indexOf('work/doHomeWorkNew') > 0) {
         cx.homework();
-    }else if(window.location.href.indexOf('work/selectWorkQuestionYiPiYue')>0){
-cx.collectHomeWork();
+    } else if (window.location.href.indexOf('work/selectWorkQuestionYiPiYue') > 0) {
+        cx.collectHomeWork();
     }
 }

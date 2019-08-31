@@ -4,5 +4,5 @@ const common = require('./common');
 common.removeinjected(document);
 
 common.serverMessage('cxconfig', function (param) {
-    global.config[param.key] = param.value
+    global.config[param.key] = param.value;
 });

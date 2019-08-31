@@ -79,8 +79,8 @@ module.exports = function () {
      */
     function lazySwitch(callback) {
         //无任务
-        config.auto && self.notice(config.interval + "分钟后插件将自动切换下一节任务");
-        config.auto && common.log(config.interval + " after switch")
+        config.auto && self.notice((config.duration / 60000).toFixed(2) + "分钟后插件将自动切换下一节任务");
+        config.auto && common.log((config.duration / 60000).toFixed(2) + " after switch")
         clearTimeout(lastTimeout);
         lastTimeout = setTimeout(function () {
             if (callback == undefined) {
@@ -152,7 +152,7 @@ module.exports = function () {
     }
 
     function nextTaskPoint() {
-        let undone = $('.ncells .currents').parents(".cells,.ncells").nextAll(".ncells,.cells").find("[class*='orange']");
+        let undone = $('.ncells .currents').parents(".cells,.ncells").nextAll(".ncells,.cells").find("[class*='orange'],.orange01");
         if (undone.length <= 0) {
             //扫描锁
             if ($('.roundpointStudent.lock').length > 0) {
@@ -163,7 +163,12 @@ module.exports = function () {
             return;
         }
         undone = undone[0];
-        let a = $(undone).parents('a')[0];
+        let a = $(undone).parents('a');
+        if (a.length <= 0) {
+            a = $(undone).nextAll('a')[0];
+        } else {
+            a = a[0];
+        }
         a.click();
         //为了好看
         $(".currents[id*='cur']").removeClass('currents');

@@ -1,5 +1,5 @@
 module.exports = {
-    url: "http://cx.icodef.com/",
+    url: "https://cx.icodef.com/",
     version: 2.10,
     update: 'https://github.com/CodFrm/cxmooc-tools/releases',
     enforce: false,
@@ -9,14 +9,22 @@ module.exports = {
     },
     injection: '',
     hotversion: {
-        v2_10: 2.10,
+        v2_10: 2.104,
         v2_08: 2.083,
         v2_07: 2.071,
         v2_06: 2.06,
     },
     getHotVersion: function (ver) {
-        let dealver = 'v' + ('' + ver || this.version).replace('.', '_');
+        let dealver = 'v' + pushZero(ver || this.version).replace('.', '_');
         hotversion = this.hotversion[dealver] || this.version;
         return hotversion;
     }
+}
+
+function pushZero(num) {
+    num = "" + num;
+    for (; num.length < 4;) {
+        num = num + "0";
+    }
+    return num;
 }
