@@ -67,9 +67,20 @@ window.onload = function () {
         }
     });
 
-    chrome.storage.sync.get('interval', function (items) {
+    chrome.storage.sync.get(['video_cdn', 'interval'], function (items) {
         document.getElementById('interval').value = items.interval == undefined ? 5 : items.interval;
+        document.getElementById('video-cdn').value = items.video_cdn == undefined ? '' : items.video_cdn;
     });
+    let inputText = document.getElementsByClassName('tconfig');
+    for (let i = 0; i < inputText.length; i++) {
+        inputText[i].onblur = function () {
+            let id = this.id.replace('-', '_');
+            sendConfig(id, this.value);
+            let v = {};
+            v[id] = this.value;
+            chrome.storage.sync.set(v);
+        }
+    }
 
     chrome.storage.sync.get('auto', function (items) {
         document.getElementById('auto').checked = (items.auto == undefined ? true : items.auto);
@@ -118,12 +129,7 @@ window.onload = function () {
             'auto': check.checked
         });
     }
-    document.getElementById('interval').onblur = function () {
-        sendConfig('interval', document.getElementById('interval').value);
-        chrome.storage.sync.set({
-            'interval': document.getElementById('interval').value
-        });
-    }
+
     document.getElementById('video-multiple').onblur = function () {
         if (localStorage['boom_multiple'] == undefined || localStorage['boom_multiple'] != 1) {
             let msg = prompt('这是一个很危险的功能,建议不要进行调整,如果你想调整播放速度请在下方填写yes')
