@@ -6,6 +6,7 @@
 // @author       CodFrm
 // @run-at       document-start
 // @match        *://study.zhihuishu.com/learning/videoList*
+// @match        *://study.zhihuishu.com/learningNew/videoList*
 // @grant        none
 // @license      MIT
 // ==/UserScript==

@@ -74,13 +74,13 @@ module.exports = {
                 self.sendBoomPack();
             }
         });
-        $('.videotop_box.clearfix').append(tools);
+        $('.videotop_box.clearfix,.videotop_box.fl').append(tools);
     },
     sendBoomPack: function () {
         //发送秒过包
         //ev算法
         let evFun = D26666.Z;
-        let timeStr = $('#video-' + this.videoInfo.videoId + ' .time.fl').text();
+        let timeStr = $('#video-' + this.videoInfo.videoId + ' .time.fl,.nPlayTime .duration').text();
         let time = 0;
         let temp = timeStr.match(/[\d]+/ig);
         for (let i = 0; i < 3; i++) {
@@ -109,7 +109,7 @@ module.exports = {
             let retAjax = new window.hookXMLHttpRequest();
             retAjax.hookOpen = retAjax.open;
             retAjax.open = function (p1, p2, p3, p4, p5) {
-                if (p2.indexOf('learning/loadVideoPointerInfo') >= 0) {
+                if (p2.indexOf('learning/loadVideoPointerInfo') >= 0 || p2.indexOf('learningNew/loadVideoPointerInfo') >= 0) {
                     console.log('题目来了');
                     //TODO:先实现屏蔽题目,后面实现自动填充(虽然这好像没有意义)
                     Object.defineProperty(retAjax, 'responseText', {
@@ -118,7 +118,7 @@ module.exports = {
                             return retText;
                         }
                     });
-                } else if (p2.indexOf('learning/prelearningNote') >= 0) {
+                } else if (p2.indexOf('learning/prelearningNote') >= 0 || p2.indexOf('learningNew/prelearningNote') >= 0) {
                     //拦截数据
                     Object.defineProperty(retAjax, 'responseText', {
                         get: function () {

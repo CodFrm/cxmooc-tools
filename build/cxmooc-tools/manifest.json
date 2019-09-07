@@ -36,7 +36,8 @@
                 "*://*/html/processVerify.ac?*",
                 "*://study.zhihuishu.com/learning/videoList*",
                 "*://*/exam/test/reVersionPaperMarkContentNew?*",
-                "*://examh5.zhihuishu.com/stuExamWeb.html*"
+                "*://examh5.zhihuishu.com/stuExamWeb.html*",
+                "*://study.zhihuishu.com/learningNew/videoList*"
             ],
             "js": [
                 "src/start.js"
