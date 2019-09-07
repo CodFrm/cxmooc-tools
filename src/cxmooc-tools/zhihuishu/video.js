@@ -6,9 +6,6 @@ module.exports = {
     innerTimer: undefined,
     videoInfo: undefined,
     compile: function () {
-        if ($('.progressbar_box_tip').text().indexOf('100%') < 0) {
-            return;
-        }
         //完成切换
         common.log('zhs video switch');
         let self = this;

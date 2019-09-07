@@ -18,15 +18,15 @@ module.exports = {
                 $(self.btn).click(() => { self.searchAnswer() });
             }
             clearInterval(timer);
-        }, 1000);
+        }, 2000);
     },
     getTopicList: function () {
-        let topic = $('.examPaper_subject.mt20');
+        let topic = $('.examPaper_subject.mt20,.questionType');
         let ret = [];
         for (let i = 0; i < topic.length; i++) {
-            let text = common.removeHTML($(topic[i]).find('.subject_stem.clearfix').html());
+            let text = common.removeHTML($(topic[i]).find('.subject_stem.clearfix,.subject_type_describe').html());
             let type = common.switchTopicType(common.substrEx(text, '【', '】'));
-            let options = $(topic[i]).find('.subject_node.mt10');
+            let options = $(topic[i]).find('.subject_node.mt10,.subject_node');
             if (type == -1) {
                 common.signleLine('暂不支持的类型', 'answer' + i, undefined, topic.options);
                 continue;
@@ -116,7 +116,7 @@ module.exports = {
         let self = this;
         let topic = option = this.getTopicList();
         common.postAnswer(topic, 'zhs', function (topic) {
-            if ($(topic.options).find('.key_yes').length <= 0) {
+            if ($(topic.options).find('.key_yes,.nodeLab').length <= 0) {
                 return undefined;
             }
             let pushOption = { topic: topic.topic, type: topic.type, answers: [], correct: [] };
