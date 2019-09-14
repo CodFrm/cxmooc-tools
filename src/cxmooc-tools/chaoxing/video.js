@@ -46,7 +46,10 @@ module.exports = function () {
 
     function initCdn() {
         let cdn = undefined;
-        if (localStorage['cdn'] != undefined) {
+        if (config.video_cdn != undefined || config.video_cdn != '默认') {
+            cdn = $(self.document).find("[title='Playline']+.vjs-menu .vjs-menu-content .vjs-menu-item .vjs-menu-item-text:contains('" +
+                config.video_cdn + "')");
+        } else if (localStorage['cdn'] != undefined) {
             cdn = $(self.document).find("[title='Playline']+.vjs-menu .vjs-menu-content .vjs-menu-item .vjs-menu-item-text:contains('" +
                 localStorage['cdn'] + "')");
         }
@@ -90,9 +93,9 @@ module.exports = function () {
             // localStorage['cdn_url'] = cdn;
             self.loadover && self.loadover(self);
         }
-         /**
-         * 对cdn进行处理
-         */
+        /**
+        * 对cdn进行处理
+        */
         // if (localStorage['cdn_url'] != undefined) {
         //     let url =  self.video.src;
         //     url = url.substr(url.indexOf('/video/'));
