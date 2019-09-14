@@ -6,6 +6,8 @@
 // @author       CodFrm
 // @run-at       document-start
 // @match        *://study.zhihuishu.com/learning/videoList*
+// @match        *://study.zhihuishu.com/learningNew/videoList*
+// @match        *://onlineexamh5new.zhihuishu.com/stuExamWeb.html*
 // @grant        none
 // @license      MIT
 // ==/UserScript==

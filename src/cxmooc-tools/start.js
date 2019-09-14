@@ -21,9 +21,10 @@ const common = require('./common');
             'video_mute',
             'answer_ignore',
             'video_multiple',
-            'vtoken',
+            'vtoken', 'video_cdn',
             'is_ruokuai', 'ruokuai_user', 'ruokuai_pwd'
         ], function (items) {
+            items.video_cdn = items.video_cdn == undefined ? '默认' : items.video_cdn;
             items.interval = items.interval >= 0 ? items.interval : 5;
             items.rand_answer = items.rand_answer || false;
             items.video_multiple = items.video_multiple || 1;
