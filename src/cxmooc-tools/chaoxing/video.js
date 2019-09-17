@@ -45,19 +45,8 @@ module.exports = function () {
     }
 
     function initCdn() {
-        let cdn = undefined;
-        if (config.video_cdn != undefined || config.video_cdn != '默认') {
-            cdn = $(self.document).find("[title='Playline']+.vjs-menu .vjs-menu-content .vjs-menu-item .vjs-menu-item-text:contains('" +
-                config.video_cdn + "')");
-        } else if (localStorage['cdn'] != undefined) {
-            cdn = $(self.document).find("[title='Playline']+.vjs-menu .vjs-menu-content .vjs-menu-item .vjs-menu-item-text:contains('" +
-                localStorage['cdn'] + "')");
-        }
-        if (cdn == undefined || cdn.length <= 0) {
-            cdn = $(self.document).find("[title='Playline']+.vjs-menu .vjs-menu-content .vjs-menu-item .vjs-menu-item-text");
-        }
-        cdn = cdn[0];
-        $(cdn).parent().click();
+        let cdn = config.video_cdn || localStorage['cdn'];
+        $('.vjs-playline-button .vjs-menu-item-text:contains(' + cdn + '):eq(0)', self.document).parent().click();
     }
 
     /**
