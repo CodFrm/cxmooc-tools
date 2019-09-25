@@ -45,7 +45,8 @@ module.exports = function () {
     }
 
     function initCdn() {
-        let cdn = config.video_cdn || localStorage['cdn'];
+        config.video_cdn = (config.video_cdn == '默认' ? '' : config.video_cdn);//临时处理默认的bug
+        let cdn = config.video_cdn || localStorage['cdn'] || '公网1';
         $('.vjs-playline-button .vjs-menu-item-text:contains(' + cdn + '):eq(0)', self.document).parent().click();
     }
 
