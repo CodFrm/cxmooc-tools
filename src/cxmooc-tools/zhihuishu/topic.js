@@ -151,8 +151,9 @@ module.exports = {
                 }
             }
             return pushOption;
-        }, function () {
-            let box = common.pop_prompt("√  答案自动记录成功");
+        }, function (res) {
+            let json = JSON.parse(res)
+            let box = common.pop_prompt("√  答案自动记录成功" + " 成功获得:" + json.add_token_num + "个打码数量 剩余数量:" + json.token_num);
             $(document.body).append(box);
             setTimeout(function () { box.style.opacity = "1"; }, 500);
         });
