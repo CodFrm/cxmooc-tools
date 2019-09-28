@@ -1,4 +1,6 @@
-var htmlWebpackPlugin = require('html-webpack-plugin');
+const htmlWebpackPlugin = require('html-webpack-plugin');
+const webpack = require('webpack');
+
 var home = __dirname + '/src/cxmooc-tools';
 module.exports = {
     entry: {
@@ -21,6 +23,10 @@ module.exports = {
                 removeComments: true
             },
             chunks: ['popup']
+        }), new webpack.ProvidePlugin({
+            $: "jquery",
+            jQuery: "jquery",
+            'window.jQuery': 'jquery'
         })
     ],
     module: {
@@ -28,10 +34,14 @@ module.exports = {
             {
                 test: /\.css$/,
                 use: ['style-loader', 'css-loader'],
+            }, {
+                test: /\.tsx$/,
+                use: 'ts-loader',
+                exclude: /node_modules/,
             }
         ]
     },
     resolve: {
-        extensions: ['.ts', '.js']
+        extensions: ['.tsx', '.js']
     }
 }
