@@ -54,7 +54,7 @@ module.exports = {
                 let tmpContent = common.removeHTML($(options[i]).html());
                 if (tmpContent == correct.content) {
                     $(options[i]).parent().find('input').click();
-                    return $(options[i]).text();
+                    return $(options[i]).prev().text();
                 }
             }
         }

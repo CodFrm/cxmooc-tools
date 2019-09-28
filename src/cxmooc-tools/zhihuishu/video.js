@@ -77,7 +77,8 @@ module.exports = {
         //发送秒过包
         //ev算法
         let evFun = D26666.Z;
-        let timeStr = $('#video-' + this.videoInfo.videoId + ' .time.fl,.nPlayTime .duration').text();
+        let timeStr = $('#video-' + this.videoInfo.videoId + ' .time.fl').text();
+        // let timeStr = $('#video-' + this.videoInfo.videoId + ' .time.fl,.nPlayTime .duration').text();
         let time = 0;
         let temp = timeStr.match(/[\d]+/ig);
         for (let i = 0; i < 3; i++) {
@@ -86,11 +87,11 @@ module.exports = {
         time += common.randNumber(60, 666);
         let ev = [
             this.videoInfo.rid, this.videoInfo.chapterId, this.videoInfo.courseId, this.videoInfo.lessonId,
-            timeStr, time, this.videoInfo.videoId, (this.videoInfo.lessonVideoId && this.videoInfo.lessonVideoId != null ? this.videoInfo.lessonVideoId : 0)
+            timeStr, time, this.videoInfo.videoId, (this.videoInfo.lessonVideoId && this.videoInfo.lessonVideoId != null ? this.videoInfo.lessonVideoId : 0), 15
         ];
         let postData = '__learning_token__=' + encodeURIComponent(btoa('' + this.videoInfo.studiedLessonDto.id)) + '&watchPoint=' +
             '&ev=' + evFun(ev) + (this.videoInfo.lessonVideoId && this.videoInfo.lessonVideoId != null ? '&lessonVideoId=' + this.videoInfo.lessonVideoId : '');
-        common.post('/json/learning/saveCacheIntervalTime?time=' + (new Date().valueOf()), postData, false, function (res) {
+        common.post('/json/learningNew/saveCacheIntervalTime?time=' + (new Date().valueOf()), postData, false, function (res) {
             let json = JSON.parse(res);
             if (json.studyTotalTime >= time) {
                 alert('秒过成功,刷新后查看效果');
