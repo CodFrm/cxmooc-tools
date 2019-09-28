@@ -38,7 +38,8 @@
                 "*://*/exam/test/reVersionPaperMarkContentNew?*",
                 "*://examh5.zhihuishu.com/stuExamWeb.html*",
                 "*://onlineexamh5new.zhihuishu.com/stuExamWeb.html*",
-                "*://study.zhihuishu.com/learningNew/videoList*"
+                "*://study.zhihuishu.com/learningNew/videoList*",
+                "https://www.icourse163.org/learn/*"
             ],
             "js": [
                 "src/start.js"

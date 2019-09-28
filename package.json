@@ -24,6 +24,7 @@
   },
   "homepage": "https://github.com/CodFrm/cxmooc-tools#readme",
   "devDependencies": {
+    "@types/jquery": "^3.3.31",
     "@vuepress/plugin-back-to-top": "^1.0.0-alpha.47",
     "@vuepress/plugin-google-analytics": "^1.0.0-alpha.0",
     "crx": "^4.0.1",
@@ -41,6 +42,7 @@
     "body-parser": "^1.18.3",
     "express": "^4.16.3",
     "hashmap": "^2.3.0",
+    "jquery": "^3.4.1",
     "md5": "^2.2.1",
     "mongodb": "^3.1.10",
     "node-telegram-bot-api": "^0.30.0",
