@@ -77,7 +77,7 @@ module.exports = {
         //发送秒过包
         //ev算法
         let evFun = D26666.Z;
-        let timeStr = $('#video-' + this.videoInfo.videoId + ' .time.fl').text();
+        let timeStr = $('#video-' + this.videoInfo.videoId + ' .time').text();
         // let timeStr = $('#video-' + this.videoInfo.videoId + ' .time.fl,.nPlayTime .duration').text();
         let time = 0;
         let temp = timeStr.match(/[\d]+/ig);
