@@ -145,8 +145,8 @@ module.exports = {
         $(options).removeAttr('checked');
         let optionContent = $('.Cy_ulTop.w-top li div');
         if (optionContent.length <= 0) {
-            optionContent=[];
-            for(let i=0;i<options.length;i++){
+            optionContent = [];
+            for (let i = 0; i < options.length; i++) {
                 optionContent.push($(options[i]).parents('li').find('a')[0]);
             }
             // optionContent = $(options).parents('li').find('a'); //顺序不知道为什么反了
@@ -243,7 +243,8 @@ module.exports = {
             }
             let correct = $(timu[i]).find('.Py_answer.clearfix,.Py_tk');
             if ($(correct).text().indexOf('正确答案') >= 0 ||
-                $(correct).find('.dui').length > 0) {
+                $(correct).find('.dui').length > 0 ||
+                ($(timu[i]).find('.font18.fb').length > 0 && $(timu[i]).find('.font18.fb').text() > 0)) {
                 correct = common.removeHTML($(correct).find('span:first,p:first').html());
             } else {
                 continue;
@@ -311,8 +312,9 @@ module.exports = {
             answer.push(pushOption);
         }
         // console.log(answer);
-        common.gm_post(moocServer.url + 'answer?platform=cx', JSON.stringify(answer), true, function () {
-            let box = common.pop_prompt("√  答案自动记录成功");
+        common.gm_post(moocServer.url + 'answer?platform=cx', JSON.stringify(answer), true, function (res) {
+            let json = JSON.parse(res)
+            let box = common.pop_prompt("√  答案自动记录成功" + " 成功获得:" + json.add_token_num + "个打码数量 剩余数量:" + json.token_num);
             $(document.body).append(box);
             setTimeout(function () { box.style.opacity = "1"; }, 500);
         });
