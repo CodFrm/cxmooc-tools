@@ -314,7 +314,7 @@ app.use('/check-in', function (req, res) {
     if (!req.query.user) {
         return res.send('e1');
     }
-    let add = Math.round(Math.random() * 90);
+    let add = Math.round(Math.random() * 50);
     redis.hget('cxmooc:genuser', req.query.user, function (err, val) {
         if (val != undefined) {
             redis.getTokenNum(val, function (num) {
