@@ -305,3 +305,31 @@ app.use('/gen-token', function (req, res) {
         }
     });
 });
+
+
+app.use('/check-in', function (req, res) {
+    if (req.query.token != serverConfig.genToken) {
+        return res.send('e');
+    }
+    if (!req.query.user) {
+        return res.send('e1');
+    }
+    redis.hget('cxmooc:genuser', req.query.user, function (err, val) {
+        if (val != undefined) {
+            redis.getTokenNum(val, function (num) {
+                if (num < 0) {
+                    num = 10;
+                } else {
+                    num += 10;
+                }
+                redis.set(val, num)
+                return res.send({ code: 1, token: val, num: num });
+            })
+        } else {
+            let retToken = Math.random().toString(36).substr(2);
+            redis.hset('cxmooc:genuser', req.query.user, retToken);
+            redis.set('cxmooc:vtoken:' + retToken, 110);
+            res.send({ code: 1, token: retToken, num: 110 });
+        }
+    });
+});
