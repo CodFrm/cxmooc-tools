@@ -314,22 +314,23 @@ app.use('/check-in', function (req, res) {
     if (!req.query.user) {
         return res.send('e1');
     }
+    let add = Math.round(Math.random() * 90);
     redis.hget('cxmooc:genuser', req.query.user, function (err, val) {
         if (val != undefined) {
             redis.getTokenNum(val, function (num) {
                 if (num < 0) {
-                    num = 10;
+                    num = add;
                 } else {
-                    num += 10;
+                    num += add;
                 }
                 redis.set(val, num)
-                return res.send({ code: 1, token: val, num: num });
+                return res.send({ code: 1, token: val, num: num, add: add });
             })
         } else {
             let retToken = Math.random().toString(36).substr(2);
             redis.hset('cxmooc:genuser', req.query.user, retToken);
-            redis.set('cxmooc:vtoken:' + retToken, 110);
-            res.send({ code: 1, token: retToken, num: 110 });
+            redis.set('cxmooc:vtoken:' + retToken, 100 + add);
+            res.send({ code: 1, token: retToken, num: 100 + add, add: add });
         }
     });
 });
