@@ -16,7 +16,7 @@ npm install
 npm run build
 # 开发模式请使用
 npm run dev
-# 打包生成crx和油猴脚本
+# 打包生成crx和油猴脚本,需要注意,打包要一个pem密钥文件放在build目录下,文件名为:cxmooc-tools.pem(手动打包一次chrome浏览器会生成)
 npm run pack
 ```
 

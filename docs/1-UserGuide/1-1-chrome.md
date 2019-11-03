@@ -1,5 +1,5 @@
 ---
-title: Chrome插件
+title: Chrome(内核)浏览器安装
 ---
 ## Chrome扩展
 
