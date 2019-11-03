@@ -10,18 +10,18 @@ dist: xenial
 node_js: stable
 
 cache:
-  - npm
+  - yarn
 
 before_install:
   - export TZ='Asia/Shanghai'
   - openssl aes-256-cbc -K $encrypted_b7d8153e3775_key -iv $encrypted_b7d8153e3775_iv -in ./build/cxmooc-tools.pem.enc -out ./build/cxmooc-tools.pem -d
-  - npm install
+  - yarn
 
 script: 
-  - npm run docs:build
-  - npm run build
-  - npm run tampermonkey
-  - npm run pack
+  - yarn run docs:build
+  - yarn run build
+  - yarn run tampermonkey
+  - yarn run pack
   - cd build/cxmooc-tools && zip ../cxmooc-tools.zip -r ./ && cd ../../
 
 deploy:
