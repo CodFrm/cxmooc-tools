@@ -1,6 +1,9 @@
 ---
-title: Chrome插件
+title: Chrome(内核)浏览器安装
 ---
+
+如果觉得步骤过于复杂或者繁琐,进直接下载[releases页面](https://github.com/CodFrm/cxmooc-tools/releases)的打包版本,适合小白用户(但是版本更新可能较慢)
+
 ## Chrome扩展
 
 下载发布的版本[cxmooc-tools.crx](https://github.com/CodFrm/cxmooc-tools/releases)无需安装环境,下载即可使用。
@@ -28,7 +31,7 @@ title: Chrome插件
 ## 拖拽安装CRX模式
 
 下载[发布版本](https://github.com/CodFrm/cxmooc-tools/releases)cxmooc-tools.crx文件,直接拖入浏览器安装
-某些浏览器允许直接拖入扩展进行安装。(内核为Chromium,如果不行,请按照方法2来)
+某些浏览器允许直接拖入扩展进行安装。(内核为Chromium,如果不行,请按照上述方法安装)
 
 #### 支持列表
 > 可以通过下方**在 GitHub 上编辑此页**来进行补充
@@ -36,7 +39,7 @@ title: Chrome插件
 * 360极速浏览器
 * QQ浏览器
 
-## 打包版浏览器
+## 打包版浏览器(小白推荐)
 
 为了方便安装,我们还提供了一个浏览器打包的版本,请在[releases页面](https://github.com/CodFrm/cxmooc-tools/releases)查看详情,适合小白用户(但是版本更新可能较慢)
 
