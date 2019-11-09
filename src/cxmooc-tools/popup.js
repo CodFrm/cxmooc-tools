@@ -68,7 +68,7 @@ window.onload = function () {
     });
 
     chrome.storage.sync.get(['video_cdn', 'interval'], function (items) {
-        document.getElementById('interval').value = items.interval == undefined ? 5 : items.interval;
+        document.getElementById('interval').value = items.interval == undefined ? 2 : items.interval;
         document.getElementById('video-cdn').value = items.video_cdn == undefined ? '' : items.video_cdn;
     });
     let inputText = document.getElementsByClassName('tconfig');
