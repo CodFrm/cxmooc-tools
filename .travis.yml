@@ -49,10 +49,7 @@ deploy:
     script: node src/tg-bot.js
     skip_cleanup: true
     on:
-      branches:
-        only:
-          - develop
-          - hotfix
+      branch: develop
       
   - provider: script
     script: node src/tg-bot.js
