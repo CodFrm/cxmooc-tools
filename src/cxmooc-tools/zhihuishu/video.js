@@ -32,7 +32,8 @@ module.exports = {
                 hookReady();
                 //倍速,启动!
                 video = $(self.id + ' video')[0]
-                video.playbackRate = config.video_multiple;
+                $('.speedList .speedTab:contains(' + config.video_multiple + '):eq(0)').click()
+                // video.playbackRate = config.video_multiple;
                 //又是以防万一的暂停,顺带检测进度
                 self.innerTimer = setInterval(function () {
                     try {
@@ -84,14 +85,14 @@ module.exports = {
         for (let i = 0; i < 3; i++) {
             time += temp[i] * Math.pow(60, 2 - i);
         }
-        time += common.randNumber(60, 666);
+        time += common.randNumber(30, 300);
         let ev = [
-            this.videoInfo.rid, this.videoInfo.chapterId, this.videoInfo.courseId, this.videoInfo.lessonId,
-            timeStr, time, this.videoInfo.videoId, (this.videoInfo.lessonVideoId && this.videoInfo.lessonVideoId != null ? this.videoInfo.lessonVideoId : 0), 15
+            this.videoInfo.rid,
+            this.videoInfo.lessonId, 0, this.videoInfo.videoId, 1, 0, 5 * ((time / 5) - common.randNumber(2, 8)), time, timeStr
         ];
-        let postData = '__learning_token__=' + encodeURIComponent(btoa('' + this.videoInfo.studiedLessonDto.id)) + '&watchPoint=' +
-            '&ev=' + evFun(ev) + (this.videoInfo.lessonVideoId && this.videoInfo.lessonVideoId != null ? '&lessonVideoId=' + this.videoInfo.lessonVideoId : '');
-        common.post('/json/learningNew/saveCacheIntervalTime?time=' + (new Date().valueOf()), postData, false, function (res) {
+        let postData = '__learning_token__=' + encodeURIComponent(btoa('' + this.videoInfo.studiedLessonDto.id)) +
+            '&ev=' + evFun(ev);
+        common.post('/json/learningNew/saveDatabaseIntervalTime?time=' + (new Date().valueOf()), postData, false, function (res) {
             let json = JSON.parse(res);
             if (json.studyTotalTime >= time) {
                 alert('秒过成功,刷新后查看效果');

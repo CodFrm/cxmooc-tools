@@ -132,7 +132,7 @@ window.onload = function () {
 
     document.getElementById('video-multiple').onblur = function () {
         if (localStorage['boom_multiple'] == undefined || localStorage['boom_multiple'] != 1) {
-            let msg = prompt('这是一个很危险的功能,建议不要进行调整,如果你想调整播放速度请在下方填写yes')
+            let msg = prompt('这是一个很危险的功能,建议不要进行调整,如果你想调整播放速度请在下方填写yes(智慧树平台播放速度和视频进度无关,最高只能1.5倍速)')
             if (msg === null || msg !== 'yes') {
                 document.getElementById('video-multiple').value = 1;
                 return;
