@@ -183,6 +183,15 @@ export function boom_btn() {
     return true;
 }
 
+export function ytbn_btn() {
+    if (localStorage['ytbn_btn'] == undefined || localStorage['ytbn_btn'] != 1) {
+        let msg = prompt('吉良吉影将为你点赞,让你的课程回到未刷完的时候,当然也存在未知的风险,如果你确定请在下方填写yes,以后将不再弹出本对话框')
+        if (msg === null) return false;
+        if (msg === 'yes') localStorage['ytbn_btn'] = 1;
+    }
+    return true;
+}
+
 //消息发送
 export function clientMessage(type, eventCallback) {
     let self = {};
