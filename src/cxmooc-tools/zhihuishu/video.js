@@ -96,13 +96,13 @@ module.exports = {
         if (enterTime != undefined) {
             time = enterTime;
         }
-        let tn = 5 * ((time / 5) - common.randNumber(2, 8))
+        let tn = 5 * parseInt((time / 5) - common.randNumber(2, 8))
         if (tn < 0) {
             tn = 0;
         }
         let ev = [
             this.videoInfo.rid,
-            this.videoInfo.lessonId, 0, this.videoInfo.videoId, 1, 0, tn, time, timeStr
+            this.videoInfo.lessonId, this.videoInfo.lessonVideoId || 0, this.videoInfo.videoId, 1, 0, tn, time, timeStr
         ];
         let postData = '__learning_token__=' + encodeURIComponent(btoa('' + this.videoInfo.studiedLessonDto.id)) +
             '&ev=' + evFun(ev);
