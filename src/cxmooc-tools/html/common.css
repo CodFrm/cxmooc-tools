@@ -2,7 +2,7 @@
     position: absolute;
     left: 250px;
     top: 2px;
-    width: 100px;   
+    width: 120px;   
 }
 
 #zhs-video-boom{
@@ -12,6 +12,15 @@
 
 #zhs-video-boom:hover{
     background: #ff3838;
+}
+
+#zhs-ytbn{
+    color:#fff;
+    background: #e777ff;
+}
+
+#zhs-ytbn:hover{
+    background: #e7b7f1;
 }
 
 .zhs-search-answer{

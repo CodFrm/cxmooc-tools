@@ -25,7 +25,7 @@ const common = require('./common');
             'is_ruokuai', 'ruokuai_user', 'ruokuai_pwd'
         ], function (items) {
             items.video_cdn = items.video_cdn;
-            items.interval = items.interval >= 0 ? items.interval : 5;
+            items.interval = items.interval >= 0 ? items.interval : 2;
             items.rand_answer = items.rand_answer || false;
             items.video_multiple = items.video_multiple || 1;
             items.video_mute = items.video_mute == undefined ? true : items.video_mute;
