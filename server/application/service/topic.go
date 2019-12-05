@@ -16,11 +16,15 @@ func NewTopicService() *Topic {
 	}
 }
 
-func (t *Topic) SearchTopicList(topic []string) [][]dto.Topic {
+func (t *Topic) SearchTopicList(topic []string) []dto.TopicSet {
 	for _, v := range topic {
 		if v == "" {
 			return nil
 		}
 	}
 	return t.topic.SearchTopicList(topic)
+}
+
+func (t *Topic) SubmitTopic(topic []dto.SubmitTopic, ip, platform string) ([]dto.TopicHash, error) {
+	return t.topic.SubmitTopic(topic, ip, platform)
 }

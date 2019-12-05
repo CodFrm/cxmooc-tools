@@ -9,16 +9,16 @@ func NewTopicRepository() *topic {
 	return &topic{}
 }
 
-func (t *topic) SearchTopic(topic string) []entity.TopicEntity {
+func (t *topic) SearchTopic(topic *entity.TopicEntity) []entity.TopicEntity {
 
 	return nil
 }
 
-func (t *topic) Save(topicEntity entity.TopicEntity) bool {
-	return false
+func (t *topic) Save(topicEntity *entity.TopicEntity) error {
+	return nil
 }
 
-func (t *topic) Exist(topicEntity entity.Entity) bool {
+func (t *topic) Exist(topicEntity *entity.TopicEntity) error {
 
-	return false
+	return nil
 }
