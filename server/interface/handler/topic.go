@@ -29,17 +29,12 @@ func (t *topic) SearchTopic() func(http.ResponseWriter, *http.Request) {
 			http.NotFound(writer, request)
 			return
 		}
-
-		if err := request.ParseForm(); err != nil {
-			writerError(writer, err)
-			return
-		}
 		topic := make([]string, 0)
 		for i := 0; ; i++ {
-			if v, ok := request.PostForm["topic["+strconv.Itoa(i)+"]"]; ok {
-				topic = append(topic, v[0])
-			} else {
+			if v := request.PostFormValue("topic[" + strconv.Itoa(i) + "]"); v == "" {
 				break
+			} else {
+				topic = append(topic, v)
 			}
 		}
 		if len(topic) > 20 {
@@ -48,7 +43,7 @@ func (t *topic) SearchTopic() func(http.ResponseWriter, *http.Request) {
 		}
 		set, err := t.topic.SearchTopicList(topic)
 		if err != nil {
-			writerError(writer, err)
+			serverError(writer, err)
 			return
 		}
 		w, _ := json.Marshal(set)
@@ -64,17 +59,17 @@ func (t *topic) SubmitTopic() func(http.ResponseWriter, *http.Request) {
 		}
 		submit := make([]dto.SubmitTopic, 0)
 		if b, err := ioutil.ReadAll(request.Body); err != nil {
-			writerError(writer, err)
+			serverError(writer, err)
 			return
 		} else {
 			if err := json.Unmarshal(b, &submit); err != nil {
-				writerError(writer, err)
+				serverError(writer, err)
 				return
 			}
 		}
 		token := request.Header.Get("Authorization")
 		if _, add, err := t.topic.SubmitTopic(submit, utils.ClientIP(request), request.URL.Query().Get("platform"), token); err != nil {
-			writerError(writer, err)
+			serverError(writer, err)
 			return
 		} else {
 			t, _ := json.Marshal(struct {

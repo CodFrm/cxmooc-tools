@@ -9,6 +9,7 @@ import (
 type Config struct {
 	MySQL MySQL
 	Redis Redis
+	VCode string
 }
 
 type Redis struct {
