@@ -75,17 +75,17 @@ type TopicSet struct {
 	Topic  string
 }
 
-func ToSearchResult(topic entity.TopicEntity) SearchResult {
+func ToSearchResult(topic *entity.TopicEntity) SearchResult {
 	return SearchResult{
 		Correct: ToAnswers(topic.Correct),
 		Hash:    topic.Hash,
 		Time:    topic.CreateTime,
-		Topic:   topic.GetTopicSource(),
+		Topic:   topic.GetTopic(),
 		Type:    topic.Type,
 	}
 }
 
-func ToSearchResults(topic []entity.TopicEntity) []SearchResult {
+func ToSearchResults(topic []*entity.TopicEntity) []SearchResult {
 	ret := make([]SearchResult, 0)
 	for _, v := range topic {
 		ret = append(ret, ToSearchResult(v))

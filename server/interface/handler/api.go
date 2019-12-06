@@ -12,3 +12,7 @@ func NewApi() http.Handler {
 
 	return r
 }
+
+func writerError(writer http.ResponseWriter, err error) {
+	http.Error(writer, err.Error(), http.StatusInternalServerError)
+}

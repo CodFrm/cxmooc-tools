@@ -31,7 +31,7 @@ func (t *topic) SearchTopic() func(http.ResponseWriter, *http.Request) {
 		}
 
 		if err := request.ParseForm(); err != nil {
-			http.Error(writer, err.Error(), http.StatusInternalServerError)
+			writerError(writer, err)
 			return
 		}
 		topic := make([]string, 0)
@@ -46,7 +46,12 @@ func (t *topic) SearchTopic() func(http.ResponseWriter, *http.Request) {
 			http.Error(writer, "too many topic", http.StatusBadRequest)
 			return
 		}
-		w, _ := json.Marshal(t.topic.SearchTopicList(topic))
+		set, err := t.topic.SearchTopicList(topic)
+		if err != nil {
+			writerError(writer, err)
+			return
+		}
+		w, _ := json.Marshal(set)
 		writer.Write(w)
 	}
 }
@@ -59,20 +64,25 @@ func (t *topic) SubmitTopic() func(http.ResponseWriter, *http.Request) {
 		}
 		submit := make([]dto.SubmitTopic, 0)
 		if b, err := ioutil.ReadAll(request.Body); err != nil {
-			http.Error(writer, err.Error(), http.StatusInternalServerError)
+			writerError(writer, err)
 			return
 		} else {
 			if err := json.Unmarshal(b, &submit); err != nil {
-				http.Error(writer, err.Error(), http.StatusInternalServerError)
+				writerError(writer, err)
 				return
 			}
 		}
-
-		if _, err := t.topic.SubmitTopic(submit, utils.ClientIP(request), request.URL.Query().Get("platfrom")); err != nil {
-			http.Error(writer, err.Error(), http.StatusInternalServerError)
+		token := request.Header.Get("Authorization")
+		if _, add, err := t.topic.SubmitTopic(submit, utils.ClientIP(request), request.URL.Query().Get("platform"), token); err != nil {
+			writerError(writer, err)
 			return
 		} else {
-
+			t, _ := json.Marshal(struct {
+				*dto.JsonMsg
+				*dto.InternalAddMsg
+			}{&dto.JsonMsg{Code: 0, Msg: "success"}, &add})
+			writer.Write(t)
+			return
 		}
 
 	}

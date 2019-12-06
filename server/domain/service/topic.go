@@ -7,36 +7,57 @@ import (
 )
 
 type Topic struct {
-	repo repository.TopicRepository
+	topicRepo    repository.TopicRepository
+	integralRepo repository.IntegralRepository
+	userRepo     repository.UserRepository
 }
 
-func NewTopicDomainService(repository repository.TopicRepository) *Topic {
+func NewTopicDomainService(topicRepo repository.TopicRepository, integralRepo repository.IntegralRepository, userRepo repository.UserRepository) *Topic {
 	return &Topic{
-		repo: repository,
+		topicRepo:    topicRepo,
+		integralRepo: integralRepo,
+		userRepo:     userRepo,
 	}
 }
 
-func (t *Topic) SearchTopicList(topic []string) []dto.TopicSet {
+func (t *Topic) SearchTopicList(topic []string) ([]dto.TopicSet, error) {
 	ret := make([]dto.TopicSet, 0)
 	for k, v := range topic {
 		entity := new(entity.TopicEntity)
 		entity.SetTopic(v)
-		ret = append(ret, dto.TopicSet{
-			Index:  k,
-			Result: dto.ToSearchResults(t.repo.SearchTopic(entity)),
-			Topic:  v,
-		})
-	}
-	return ret
-}
-
-func (t *Topic) SubmitTopic(topic []dto.SubmitTopic, ip, platform string) ([]dto.TopicHash, error) {
-	ret := make([]dto.TopicHash, 0)
-	for _, v := range topic {
-		et := dto.ToTopicEntity(v, ip, platform)
-		if err := t.repo.Save(et); err != nil {
+		if entity, err := t.topicRepo.SearchTopic(entity); err != nil {
 			return nil, err
+		} else {
+			ret = append(ret, dto.TopicSet{
+				Index:  k,
+				Result: dto.ToSearchResults(entity),
+				Topic:  v,
+			})
 		}
 	}
 	return ret, nil
+}
+
+func (t *Topic) SubmitTopic(topic []dto.SubmitTopic, ip, platform, token string) ([]dto.TopicHash, dto.InternalAddMsg, error) {
+	ret := make([]dto.TopicHash, 0)
+	user, _ := t.userRepo.FindByToken(token)
+	addNum := dto.InternalAddMsg{}
+	for _, v := range topic {
+		et := dto.ToTopicEntity(v, ip, platform)
+		if ok, err := t.topicRepo.Exist(et); err != nil {
+			return nil, addNum, err
+		} else if !ok {
+			if err := t.topicRepo.Save(et); err != nil {
+				return nil, addNum, err
+			}
+			addNum.AddTokenNum += 10
+		}
+	}
+	if user != nil {
+		integral, _ := t.integralRepo.GetIntegral(user)
+		integral.Num += addNum.AddTokenNum
+		addNum.TokenNum = integral.Num + addNum.AddTokenNum
+		t.integralRepo.Update(integral)
+	}
+	return ret, addNum, nil
 }

@@ -8,6 +8,13 @@ import (
 
 type Config struct {
 	MySQL MySQL
+	Redis Redis
+}
+
+type Redis struct {
+	Addr     string
+	Password string
+	DB       int
 }
 
 type MySQL struct {
