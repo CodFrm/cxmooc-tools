@@ -11,8 +11,11 @@ type TopicRepository interface {
 type IntegralRepository interface {
 	GetIntegral(user *entity.UserEntity) (*entity.IntegralEntity, error)
 	Update(integral *entity.IntegralEntity) error
+	Create(integral *entity.IntegralEntity) error
 }
 
 type UserRepository interface {
 	FindByToken(token string) (*entity.UserEntity, error)
+	FindByUser(user string) (*entity.UserEntity, error)
+	Create(userEntity *entity.UserEntity) error
 }

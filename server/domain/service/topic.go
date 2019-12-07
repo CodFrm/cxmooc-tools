@@ -38,17 +38,17 @@ func (t *Topic) SearchTopicList(topic []string) ([]dto.TopicSet, error) {
 	return ret, nil
 }
 
-func (t *Topic) SubmitTopic(topic []dto.SubmitTopic, ip, platform, token string) ([]dto.TopicHash, dto.InternalAddMsg, error) {
+func (t *Topic) SubmitTopic(topic []dto.SubmitTopic, ip, platform, token string) ([]dto.TopicHash, *dto.InternalAddMsg, error) {
 	ret := make([]dto.TopicHash, 0)
 	user, _ := t.userRepo.FindByToken(token)
-	addNum := dto.InternalAddMsg{}
+	addNum := &dto.InternalAddMsg{}
 	for _, v := range topic {
 		et := dto.ToTopicEntity(v, ip, platform)
 		if ok, err := t.topicRepo.Exist(et); err != nil {
-			return nil, addNum, err
+			return nil, nil, err
 		} else if !ok {
 			if err := t.topicRepo.Save(et); err != nil {
-				return nil, addNum, err
+				return nil, nil, err
 			}
 			addNum.AddTokenNum += 10
 		}

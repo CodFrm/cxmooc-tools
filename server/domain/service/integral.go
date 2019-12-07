@@ -1,6 +1,7 @@
 package service
 
 import (
+	"github.com/CodFrm/cxmooc-tools/server/application/dto"
 	"github.com/CodFrm/cxmooc-tools/server/domain/repository"
 	"github.com/CodFrm/cxmooc-tools/server/internal/errs"
 )
@@ -34,4 +35,24 @@ func (i *Integral) Consumption(token string, rule int) error {
 		return errs.IntegralInsufficient
 	}
 	return nil
+}
+
+func (i *Integral) UserAddIntegral(usr string, num int) (*dto.TokenTransaction, error) {
+	user, err := i.userRepo.FindByUser(usr)
+	if err != nil {
+		return nil, err
+	}
+	integral, err := i.integralRepo.GetIntegral(user)
+	if err != nil {
+		return nil, err
+	}
+	integral.Num += num
+	if err := i.integralRepo.Update(integral); err != nil {
+		return nil, err
+	}
+	return &dto.TokenTransaction{
+		Token:  integral.User.Token,
+		Num:    num,
+		AddNum: integral.Num,
+	}, nil
 }

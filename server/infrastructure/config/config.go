@@ -7,9 +7,10 @@ import (
 )
 
 type Config struct {
-	MySQL MySQL
-	Redis Redis
-	VCode string
+	MySQL       MySQL
+	Redis       Redis
+	VCodeServer string
+	ClientToken string
 }
 
 type Redis struct {

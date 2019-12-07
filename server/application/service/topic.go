@@ -30,6 +30,6 @@ func (t *Topic) SearchTopicList(topic []string) ([]dto.TopicSet, error) {
 	return t.topic.SearchTopicList(topic)
 }
 
-func (t *Topic) SubmitTopic(topic []dto.SubmitTopic, ip, platform, token string) ([]dto.TopicHash, dto.InternalAddMsg, error) {
+func (t *Topic) SubmitTopic(topic []dto.SubmitTopic, ip, platform, token string) ([]dto.TopicHash, *dto.InternalAddMsg, error) {
 	return t.topic.SubmitTopic(topic, ip, platform, token)
 }

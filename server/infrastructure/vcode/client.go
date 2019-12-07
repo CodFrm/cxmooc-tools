@@ -21,7 +21,7 @@ func init() {
 		for {
 			p := <-vcode
 			go func(pkg *pack) {
-				conn, err := net.Dial("tcp", config.AppConfig.VCode)
+				conn, err := net.Dial("tcp", config.AppConfig.VCodeServer)
 				if err != nil {
 					p.callback <- err
 					return

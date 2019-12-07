@@ -75,7 +75,7 @@ func (t *topic) SubmitTopic() func(http.ResponseWriter, *http.Request) {
 			t, _ := json.Marshal(struct {
 				*dto.JsonMsg
 				*dto.InternalAddMsg
-			}{&dto.JsonMsg{Code: 0, Msg: "success"}, &add})
+			}{&dto.JsonMsg{Code: 0, Msg: "success"}, add})
 			writer.Write(t)
 			return
 		}

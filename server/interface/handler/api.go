@@ -15,6 +15,7 @@ func NewApi() http.Handler {
 
 	newTopicHandler(r)
 	newVCodeHandler(r)
+	newUserHandler(r)
 
 	return r
 }
@@ -50,5 +51,10 @@ func json_info(writer http.ResponseWriter, code int, msg string, info string) {
 		Code: code,
 		Msg:  msg,
 	}, info})
+	writer.Write(b)
+}
+
+func json_map(writer http.ResponseWriter, m interface{}) {
+	b, _ := json.Marshal(m)
 	writer.Write(b)
 }

@@ -11,5 +11,14 @@ func NewUserRepository() *user {
 
 func (i *user) FindByToken(token string) (*entity.UserEntity, error) {
 
-	return &entity.UserEntity{}, nil
+	return nil, nil
+}
+
+func (u *user) FindByUser(mobile string) (*entity.UserEntity, error) {
+
+	return nil, nil
+}
+
+func (u *user) Create(userEntity *entity.UserEntity) error {
+	return nil
 }

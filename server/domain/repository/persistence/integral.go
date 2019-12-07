@@ -17,3 +17,8 @@ func (i *integral) GetIntegral(user *entity.UserEntity) (*entity.IntegralEntity,
 func (i *integral) Update(integral *entity.IntegralEntity) error {
 	return nil
 }
+
+func (i *integral) Create(integral *entity.IntegralEntity) error {
+
+	return nil
+}

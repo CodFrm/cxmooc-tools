@@ -1,6 +1,6 @@
 package entity
 
 type IntegralEntity struct {
-	User UserEntity
+	User *UserEntity
 	Num  int
 }
