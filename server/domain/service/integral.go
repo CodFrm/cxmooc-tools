@@ -11,47 +11,47 @@ const (
 )
 
 type Integral struct {
-	userRepo     repository.UserRepository
-	integralRepo repository.IntegralRepository
+	repo repository.IntegralRepository
 }
 
-func NewIntegralService(userRepo repository.UserRepository, integralRepo repository.IntegralRepository) *Integral {
+func NewIntegralService(integralRepo repository.IntegralRepository) *Integral {
 	return &Integral{
-		userRepo:     userRepo,
-		integralRepo: integralRepo,
+		repo: integralRepo,
 	}
 }
 
-func (i *Integral) Consumption(token string, rule int) error {
-	user, err := i.userRepo.FindByToken(token)
-	if err != nil {
-		return err
-	}
-	integral, err := i.integralRepo.GetIntegral(user)
+func (i *Integral) TokenConsumption(token string, rule int) error {
+	tran := i.repo.Transaction()
+	defer tran.Close()
+	integral, err := tran.LockIntegral(token)
 	if err != nil {
 		return err
 	}
 	if integral.Num < rule {
 		return errs.IntegralInsufficient
 	}
+	integral.Num -= rule
+	if err := tran.Update(integral); err != nil {
+		return err
+	}
+	tran.Commit()
 	return nil
 }
 
-func (i *Integral) UserAddIntegral(usr string, num int) (*dto.TokenTransaction, error) {
-	user, err := i.userRepo.FindByUser(usr)
-	if err != nil {
-		return nil, err
-	}
-	integral, err := i.integralRepo.GetIntegral(user)
+func (i *Integral) TokenAddIntegral(token string, num int) (*dto.TokenTransaction, error) {
+	tran := i.repo.Transaction()
+	defer tran.Close()
+	integral, err := tran.LockIntegral(token)
 	if err != nil {
 		return nil, err
 	}
 	integral.Num += num
-	if err := i.integralRepo.Update(integral); err != nil {
+	if err := tran.Update(integral); err != nil {
 		return nil, err
 	}
+	tran.Commit()
 	return &dto.TokenTransaction{
-		Token:  integral.User.Token,
+		Token:  integral.Token,
 		Num:    num,
 		AddNum: integral.Num,
 	}, nil

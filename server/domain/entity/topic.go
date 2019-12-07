@@ -12,6 +12,7 @@ type TopicEntity struct {
 	CreateTime int64
 	UpdateTime int64
 	Platform   string
+	Token      string
 }
 
 type Answer struct {

@@ -12,11 +12,9 @@ type Topic struct {
 	userRepo     repository.UserRepository
 }
 
-func NewTopicDomainService(topicRepo repository.TopicRepository, integralRepo repository.IntegralRepository, userRepo repository.UserRepository) *Topic {
+func NewTopicDomainService(topicRepo repository.TopicRepository) *Topic {
 	return &Topic{
-		topicRepo:    topicRepo,
-		integralRepo: integralRepo,
-		userRepo:     userRepo,
+		topicRepo: topicRepo,
 	}
 }
 
@@ -40,10 +38,9 @@ func (t *Topic) SearchTopicList(topic []string) ([]dto.TopicSet, error) {
 
 func (t *Topic) SubmitTopic(topic []dto.SubmitTopic, ip, platform, token string) ([]dto.TopicHash, *dto.InternalAddMsg, error) {
 	ret := make([]dto.TopicHash, 0)
-	user, _ := t.userRepo.FindByToken(token)
 	addNum := &dto.InternalAddMsg{}
 	for _, v := range topic {
-		et := dto.ToTopicEntity(v, ip, platform)
+		et := dto.ToTopicEntity(v, ip, platform, token)
 		if ok, err := t.topicRepo.Exist(et); err != nil {
 			return nil, nil, err
 		} else if !ok {
@@ -52,12 +49,6 @@ func (t *Topic) SubmitTopic(topic []dto.SubmitTopic, ip, platform, token string)
 			}
 			addNum.AddTokenNum += 10
 		}
-	}
-	if user != nil {
-		integral, _ := t.integralRepo.GetIntegral(user)
-		integral.Num += addNum.AddTokenNum
-		addNum.TokenNum = integral.Num + addNum.AddTokenNum
-		t.integralRepo.Update(integral)
 	}
 	return ret, addNum, nil
 }

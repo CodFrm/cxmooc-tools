@@ -97,13 +97,14 @@ type TopicHash struct {
 	Hash string
 }
 
-func ToTopicEntity(topic SubmitTopic, ip, platform string) *entity.TopicEntity {
+func ToTopicEntity(topic SubmitTopic, ip, platform, token string) *entity.TopicEntity {
 	ret := &entity.TopicEntity{
 		Type:     topic.Type,
 		Answer:   mapToAnswerValue(topic.Answer, topic.Type),
 		Correct:  mapToAnswerValue(topic.Correct, topic.Type),
 		Ip:       ip,
 		Platform: platform,
+		Token:    token,
 	}
 	ret.SetTopic(topic.Topic)
 	return ret

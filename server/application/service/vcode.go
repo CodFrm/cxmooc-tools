@@ -13,13 +13,13 @@ type VCode struct {
 
 func NewVCodeService() *VCode {
 	return &VCode{
-		integral: service.NewIntegralService(persistence.NewUserRepository(), persistence.NewIntegralRepository()),
+		integral: service.NewIntegralService(persistence.NewIntegralRepository()),
 	}
 }
 
 // 打码
 func (v *VCode) Do(token string, image []byte) (string, error) {
-	if err := v.integral.Consumption(token, service.INTEGRAL_VCODE); err != nil {
+	if err := v.integral.TokenConsumption(token, service.INTEGRAL_VCODE); err != nil {
 		return "", err
 	}
 	code, err := vcode.SendImage(image)

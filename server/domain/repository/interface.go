@@ -9,9 +9,18 @@ type TopicRepository interface {
 }
 
 type IntegralRepository interface {
-	GetIntegral(user *entity.UserEntity) (*entity.IntegralEntity, error)
+	GetIntegral(token string) (*entity.IntegralEntity, error)
 	Update(integral *entity.IntegralEntity) error
 	Create(integral *entity.IntegralEntity) error
+	Transaction() IntegerTransactionRepository
+}
+
+type IntegerTransactionRepository interface {
+	Rollback()
+	Commit()
+	Close()
+	LockIntegral(token string) (*entity.IntegralEntity, error)
+	Update(integral *entity.IntegralEntity) error
 }
 
 type UserRepository interface {
