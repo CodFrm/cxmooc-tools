@@ -23,12 +23,12 @@ func (t *Topic) SearchTopicList(topic []string) ([]dto.TopicSet, error) {
 	for k, v := range topic {
 		entity := new(entity.TopicEntity)
 		entity.SetTopic(v)
-		if entity, err := t.topicRepo.SearchTopic(entity); err != nil {
+		if entities, err := t.topicRepo.SearchTopic(entity); err != nil {
 			return nil, err
 		} else {
 			ret = append(ret, dto.TopicSet{
 				Index:  k,
-				Result: dto.ToSearchResults(entity),
+				Result: dto.ToSearchResults(entities),
 				Topic:  v,
 			})
 		}
@@ -49,6 +49,7 @@ func (t *Topic) SubmitTopic(topic []dto.SubmitTopic, ip, platform, token string)
 			}
 			addNum.AddTokenNum += 10
 		}
+		ret = append(ret, dto.TopicHash{Hash: et.GetHash()})
 	}
 	return ret, addNum, nil
 }

@@ -56,3 +56,17 @@ func (i *Integral) TokenAddIntegral(token string, num int) (*dto.TokenTransactio
 		AddNum: integral.Num,
 	}, nil
 }
+
+func (i *Integral) GetTokenNum(token string) (*dto.TokenTransaction, error) {
+	integral, err := i.repo.GetIntegral(token)
+	if err != nil {
+		return nil, err
+	}
+	if integral != nil {
+		return &dto.TokenTransaction{
+			Token: integral.Token,
+			Num:   integral.Num,
+		}, nil
+	}
+	return nil, errs.TokenNotExist
+}

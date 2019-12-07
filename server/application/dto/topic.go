@@ -6,25 +6,25 @@ type Topic struct {
 	Hash       string
 	Topic      string
 	Type       int32
-	Answer     []Answer
-	Correct    []Answer
+	Answer     []*Answer
+	Correct    []*Answer
 	Ip         string
 	CreateTime int64
 	UpdateTime int64
 }
 
 type Answer struct {
-	Option  string
-	Content string
+	Option  interface{}
+	Content interface{}
 }
 
 func ToTopic(topic entity.TopicEntity) Topic {
 	return Topic{
-		Hash:       topic.Hash,
+		Hash:       topic.GetHash(),
 		Topic:      topic.GetTopic(),
 		Type:       topic.Type,
-		Answer:     ToAnswers(topic.Answer),
-		Correct:    ToAnswers(topic.Correct),
+		Answer:     ToAnswers(topic.Answer, topic.Type),
+		Correct:    ToAnswers(topic.Correct, topic.Type),
 		Ip:         topic.Ip,
 		CreateTime: topic.CreateTime,
 		UpdateTime: topic.UpdateTime,
@@ -39,23 +39,38 @@ func ToTopics(topic []entity.TopicEntity) []Topic {
 	return ret
 }
 
-func ToAnswer(answer entity.Answer) Answer {
-	return Answer{
-		Option:  answer.Option,
-		Content: answer.Content,
+func ToAnswer(answer *entity.Answer, t int32) *Answer {
+	var ret *Answer = nil
+	if t == 3 {
+		//选择
+		opt := false
+		if answer.Option == "true" {
+			opt = true
+		}
+		ret = &Answer{
+			Option:  opt,
+			Content: opt,
+		}
+	} else {
+		ret = &Answer{
+			Option:  answer.Option,
+			Content: answer.Content,
+		}
 	}
+
+	return ret
 }
 
-func ToAnswers(answer []entity.Answer) []Answer {
-	ret := make([]Answer, 0)
+func ToAnswers(answer []*entity.Answer, t int32) []*Answer {
+	ret := make([]*Answer, 0)
 	for _, v := range answer {
-		ret = append(ret, ToAnswer(v))
+		ret = append(ret, ToAnswer(v, t))
 	}
 	return ret
 }
 
 type SearchResult struct {
-	Correct []Answer
+	Correct []*Answer
 	Hash    string
 	Time    int64
 	Topic   string
@@ -71,22 +86,22 @@ type SubmitTopic struct {
 
 type TopicSet struct {
 	Index  int
-	Result []SearchResult
+	Result []*SearchResult
 	Topic  string
 }
 
-func ToSearchResult(topic *entity.TopicEntity) SearchResult {
-	return SearchResult{
-		Correct: ToAnswers(topic.Correct),
-		Hash:    topic.Hash,
-		Time:    topic.CreateTime,
+func ToSearchResult(topic *entity.TopicEntity) *SearchResult {
+	return &SearchResult{
+		Correct: ToAnswers(topic.Correct, topic.Type),
+		Hash:    topic.GetHash(),
+		Time:    topic.UpdateTime,
 		Topic:   topic.GetTopic(),
 		Type:    topic.Type,
 	}
 }
 
-func ToSearchResults(topic []*entity.TopicEntity) []SearchResult {
-	ret := make([]SearchResult, 0)
+func ToSearchResults(topic []*entity.TopicEntity) []*SearchResult {
+	ret := make([]*SearchResult, 0)
 	for _, v := range topic {
 		ret = append(ret, ToSearchResult(v))
 	}
@@ -110,10 +125,10 @@ func ToTopicEntity(topic SubmitTopic, ip, platform, token string) *entity.TopicE
 	return ret
 }
 
-func mapToAnswerValue(answer []map[string]interface{}, tp int32) []entity.Answer {
-	ret := make([]entity.Answer, 0)
+func mapToAnswerValue(answer []map[string]interface{}, tp int32) []*entity.Answer {
+	ret := make([]*entity.Answer, 0)
 	for _, v := range answer {
-		a := entity.Answer{}
+		a := &entity.Answer{}
 		if option, ok := v["option"]; ok {
 			if tp == 3 {
 				if option.(bool) {
@@ -124,19 +139,17 @@ func mapToAnswerValue(answer []map[string]interface{}, tp int32) []entity.Answer
 			} else {
 				a.Option = option.(string)
 			}
-			continue
 		}
 		if content, ok := v["content"]; ok {
 			if tp == 3 {
 				if content.(bool) {
-					a.Option = "true"
+					a.Content = "true"
 				} else {
-					a.Option = "false"
+					a.Content = "false"
 				}
 			} else {
-				a.Option = content.(string)
+				a.Content = content.(string)
 			}
-			continue
 		}
 		ret = append(ret, a)
 	}

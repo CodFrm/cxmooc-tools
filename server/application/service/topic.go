@@ -9,13 +9,14 @@ import (
 )
 
 type Topic struct {
-	topic *domain.Topic
-	user  *domain.User
+	topic    *domain.Topic
+	integral *domain.Integral
 }
 
 func NewTopicService() *Topic {
 	return &Topic{
-		topic: domain.NewTopicDomainService(persistence.NewTopicRepository()),
+		topic:    domain.NewTopicDomainService(persistence.NewTopicRepository()),
+		integral: domain.NewIntegralService(persistence.NewIntegralRepository()),
 	}
 }
 
@@ -33,6 +34,13 @@ func (t *Topic) SubmitTopic(topic []dto.SubmitTopic, ip, platform, token string)
 	if err != nil {
 		return nil, nil, err
 	}
+
+	internal, _ := t.integral.GetTokenNum(token)
+	add.TokenNum = add.AddTokenNum
+	if internal != nil {
+		add.TokenNum += internal.Num
+	}
+
 	if add.AddTokenNum > 0 {
 		event.SubmitTopic(token, add.AddTokenNum/10)
 	}
