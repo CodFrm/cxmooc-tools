@@ -1,9 +1,9 @@
 package config
 
 import (
+	"fmt"
 	"gopkg.in/yaml.v2"
 	"io/ioutil"
-	"log"
 )
 
 type Config struct {
@@ -25,13 +25,15 @@ type MySQL struct {
 
 var AppConfig Config
 
-func init() {
-	file, err := ioutil.ReadFile("config.yaml")
+func Init(filename string) error {
+	file, err := ioutil.ReadFile(filename)
 	if err != nil {
-		log.Fatalf("config read error: %v", err)
+		return fmt.Errorf("config read error: %v", err)
+
 	}
 	err = yaml.Unmarshal(file, AppConfig)
 	if err != nil {
-		log.Fatalf("unmarshal error: %v", err)
+		return fmt.Errorf("unmarshal error: %v", err)
 	}
+	return nil
 }
