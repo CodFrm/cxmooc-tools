@@ -52,7 +52,7 @@ func (_m *IntegerTransactionRepository) Rollback() {
 
 // Update provides a mock function with given fields: integral
 func (_m *IntegerTransactionRepository) Update(integral *entity.IntegralEntity) error {
-	ret := _m.Called(integral)
+	ret := _m.Called(integral.Token)
 
 	var r0 error
 	if rf, ok := ret.Get(0).(func(*entity.IntegralEntity) error); ok {

@@ -2,6 +2,7 @@ package utils
 
 import (
 	"crypto/md5"
+	"encoding/json"
 	"fmt"
 	"math/rand"
 	"net"
@@ -44,4 +45,9 @@ func RandStringRunes(n int) string {
 
 func Md5(s string) string {
 	return fmt.Sprintf("%x", md5.Sum([]byte(s)))
+}
+
+func Json(m interface{}) string {
+	b, _ := json.Marshal(m)
+	return string(b)
 }

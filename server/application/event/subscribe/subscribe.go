@@ -1,16 +1,12 @@
-package event
+package subscribe
 
 import (
 	"github.com/CodFrm/cxmooc-tools/server/domain/event"
 	"github.com/CodFrm/cxmooc-tools/server/domain/repository/persistence"
-	"github.com/asaskevich/EventBus"
+	"github.com/CodFrm/cxmooc-tools/server/internal/mq"
 )
 
-// 应该依靠mq来保证最终一致的,这里就简单点了
-var evbus EventBus.Bus
-
-func Init(ev EventBus.Bus) {
-	evbus = ev
+func Init() {
 	newIntegralEvent()
 }
 
@@ -22,11 +18,11 @@ func newIntegralEvent() *integral {
 	i := &integral{
 		integral: event.NewIntegralDomainEvent(persistence.NewIntegralRepository()),
 	}
-	if err := evbus.Subscribe("user:create", i.UserCreate()); err != nil {
+	if err := mq.Evbus.Subscribe("user:create", i.UserCreate()); err != nil {
 		panic(err)
 	}
 
-	if err := evbus.Subscribe("topic:submit_new_topic", i.SubmitTopic()); err != nil {
+	if err := mq.Evbus.Subscribe("topic:submit_new_topic", i.SubmitTopic()); err != nil {
 		panic(err)
 	}
 

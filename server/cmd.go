@@ -1,14 +1,16 @@
 package main
 
 import (
-	"github.com/CodFrm/cxmooc-tools/server/application/event"
-	"github.com/CodFrm/cxmooc-tools/server/infrastructure/config"
-	"github.com/asaskevich/EventBus"
+	"github.com/CodFrm/cxmooc-tools/server/application/event/subscribe"
 	"log"
 	"net"
 	"net/http"
 
+	"github.com/CodFrm/cxmooc-tools/server/domain/repository/persistence"
+	"github.com/CodFrm/cxmooc-tools/server/infrastructure/config"
 	"github.com/CodFrm/cxmooc-tools/server/interface/handler"
+	"github.com/CodFrm/cxmooc-tools/server/internal/mq"
+	"github.com/asaskevich/EventBus"
 )
 
 var listen net.Listener
@@ -19,7 +21,11 @@ func main() {
 	if err != nil {
 		log.Fatalf("config error: %v", err)
 	}
-	event.Init(EventBus.New())
+
+	persistence.Init()
+	mq.Init(EventBus.New())
+	subscribe.Init()
+
 	listen, err = net.Listen("tcp", ":8080")
 	if err != nil {
 		log.Fatalf("listen tcp error: %v", err)

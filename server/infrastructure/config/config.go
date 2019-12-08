@@ -9,8 +9,8 @@ import (
 type Config struct {
 	MySQL       MySQL
 	Redis       Redis
-	VCodeServer string
-	ClientToken string
+	VCodeServer string `yaml:"vcode-server"`
+	ClientToken string `yaml:"client-token"`
 }
 
 type Redis struct {
@@ -31,7 +31,7 @@ func Init(filename string) error {
 		return fmt.Errorf("config read error: %v", err)
 
 	}
-	err = yaml.Unmarshal(file, AppConfig)
+	err = yaml.Unmarshal(file, &AppConfig)
 	if err != nil {
 		return fmt.Errorf("unmarshal error: %v", err)
 	}

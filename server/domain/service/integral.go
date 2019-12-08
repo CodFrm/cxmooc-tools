@@ -52,8 +52,8 @@ func (i *Integral) TokenAddIntegral(token string, num int) (*dto.TokenTransactio
 	tran.Commit()
 	return &dto.TokenTransaction{
 		Token:  integral.Token,
-		Num:    num,
-		AddNum: integral.Num,
+		Num:    integral.Num,
+		AddNum: num,
 	}, nil
 }
 

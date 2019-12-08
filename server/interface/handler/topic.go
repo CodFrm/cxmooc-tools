@@ -46,8 +46,7 @@ func (t *topic) SearchTopic() func(http.ResponseWriter, *http.Request) {
 			serverError(writer, err)
 			return
 		}
-		w, _ := json.Marshal(set)
-		writer.Write(w)
+		json_map(writer, set)
 	}
 }
 
@@ -68,17 +67,16 @@ func (t *topic) SubmitTopic() func(http.ResponseWriter, *http.Request) {
 			}
 		}
 		token := request.Header.Get("Authorization")
-		if _, add, err := t.topic.SubmitTopic(submit, utils.ClientIP(request), request.URL.Query().Get("platform"), token); err != nil {
+		if hash, add, err := t.topic.SubmitTopic(submit, utils.ClientIP(request), request.URL.Query().Get("platform"), token); err != nil {
 			serverError(writer, err)
 			return
 		} else {
-			t, _ := json.Marshal(struct {
+			json_map(writer, struct {
 				*dto.JsonMsg
 				*dto.InternalAddMsg
-			}{&dto.JsonMsg{Code: 0, Msg: "success"}, add})
-			writer.Write(t)
+				Result []dto.TopicHash `json:"result"`
+			}{&dto.JsonMsg{Code: 0, Msg: "success"}, add, hash})
 			return
 		}
-
 	}
 }

@@ -3,24 +3,24 @@ package persistence
 import (
 	"log"
 
-	"database/sql"
 	"github.com/CodFrm/cxmooc-tools/server/infrastructure/config"
 	goRedis "github.com/go-redis/redis/v7"
 	_ "github.com/go-sql-driver/mysql"
+	"github.com/jinzhu/gorm"
 )
 
-var mysql *sql.DB
+var mysql *gorm.DB
 
 var redis *goRedis.Client
 
-func init() {
-	db, err := sql.Open("mysql", config.AppConfig.MySQL.Dsn)
+func Init() {
+	db, err := gorm.Open("mysql", config.AppConfig.MySQL.Dsn)
 	if err != nil {
 		log.Fatalf("sql open error: %v", err)
 	}
 	mysql = db
 
-	redis := goRedis.NewClient(&goRedis.Options{
+	redis = goRedis.NewClient(&goRedis.Options{
 		Addr:     config.AppConfig.Redis.Addr,
 		Password: config.AppConfig.Redis.Password,
 		DB:       config.AppConfig.Redis.DB,

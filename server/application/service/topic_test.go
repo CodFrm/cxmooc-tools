@@ -2,16 +2,16 @@ package service
 
 import (
 	"errors"
+	"testing"
+
 	"github.com/CodFrm/cxmooc-tools/server/application/dto"
-	"github.com/CodFrm/cxmooc-tools/server/application/event"
 	"github.com/CodFrm/cxmooc-tools/server/domain/entity"
+	"github.com/CodFrm/cxmooc-tools/server/domain/repository/mocks"
+	domain "github.com/CodFrm/cxmooc-tools/server/domain/service"
+	"github.com/CodFrm/cxmooc-tools/server/internal/mq"
 	"github.com/CodFrm/cxmooc-tools/server/internal/utils"
 	"github.com/asaskevich/EventBus"
 	"github.com/stretchr/testify/assert"
-	"testing"
-
-	"github.com/CodFrm/cxmooc-tools/server/domain/repository/mocks"
-	domain "github.com/CodFrm/cxmooc-tools/server/domain/service"
 )
 
 // 屏蔽evbus
@@ -23,7 +23,7 @@ func (e *ev) Publish(topic string, args ...interface{}) {
 }
 
 func TestMain(m *testing.M) {
-	event.Init(&ev{EventBus.New()})
+	mq.Init(&ev{EventBus.New()})
 	m.Run()
 }
 
@@ -101,13 +101,13 @@ func TestTopic_SubmitTopic(t *testing.T) {
 		integral: domain.NewIntegralService(mocki),
 	}
 
-	topic1 := dto.SubmitTopic{Answer: []map[string]interface{}{
+	topic1 := dto.SubmitTopic{Answers: []map[string]interface{}{
 		{"option": "A", "content": "选项A"}, {"option": "B", "content": "选项B"}, {"option": "C", "content": "选项C"},
 	}, Correct: []map[string]interface{}{
 		{"option": "A", "content": "选项A"}, {"option": "B", "content": "选项B"},
 	}, Topic: "多选,中文标点。（）", Type: 2}
 
-	topic2 := dto.SubmitTopic{Answer: []map[string]interface{}{
+	topic2 := dto.SubmitTopic{Answers: []map[string]interface{}{
 		{"option": true, "content": true},
 	}, Correct: []map[string]interface{}{
 		{"option": true, "content": true},
@@ -140,4 +140,9 @@ func TestTopic_SubmitTopic(t *testing.T) {
 	_, _, err = topic.SubmitTopic([]dto.SubmitTopic{topic1, topic2}, "localhost", "cx", "tk")
 	assert.Error(t, err)
 
+}
+
+func TestNewTopicService(t *testing.T) {
+	topic := NewTopicService()
+	assert.IsType(t, &Topic{}, topic)
 }

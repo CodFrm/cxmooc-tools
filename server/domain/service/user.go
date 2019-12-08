@@ -2,6 +2,7 @@ package service
 
 import (
 	"github.com/CodFrm/cxmooc-tools/server/application/dto"
+	"github.com/CodFrm/cxmooc-tools/server/application/event/publish"
 	"github.com/CodFrm/cxmooc-tools/server/domain/entity"
 	"github.com/CodFrm/cxmooc-tools/server/domain/repository"
 	"github.com/CodFrm/cxmooc-tools/server/internal/errs"
@@ -34,6 +35,7 @@ func (u *User) CreateUser(usr string) (*dto.User, error) {
 	if err := u.userRepo.Create(user); err != nil {
 		return nil, err
 	}
+	publish.UserCreate(user.User, user.Token)
 	return &dto.User{
 		Token: user.Token,
 	}, nil

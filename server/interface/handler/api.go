@@ -16,7 +16,7 @@ func NewApi() http.Handler {
 	newTopicHandler(r)
 	newVCodeHandler(r)
 	newUserHandler(r)
-
+	newSystemHandler()
 	return r
 }
 
@@ -36,6 +36,7 @@ func serverError(writer http.ResponseWriter, err error) {
 }
 
 func json_msg(writer http.ResponseWriter, code int, msg string) {
+	writer.Header().Add("Content-Type", "application/json; charset=utf-8")
 	b, _ := json.Marshal(dto.JsonMsg{
 		Code: code,
 		Msg:  msg,
@@ -44,6 +45,7 @@ func json_msg(writer http.ResponseWriter, code int, msg string) {
 }
 
 func json_info(writer http.ResponseWriter, code int, msg string, info string) {
+	writer.Header().Add("Content-Type", "application/json; charset=utf-8")
 	b, _ := json.Marshal(struct {
 		*dto.JsonMsg
 		info string
@@ -55,6 +57,7 @@ func json_info(writer http.ResponseWriter, code int, msg string, info string) {
 }
 
 func json_map(writer http.ResponseWriter, m interface{}) {
+	writer.Header().Add("Content-Type", "application/json; charset=utf-8")
 	b, _ := json.Marshal(m)
 	writer.Write(b)
 }

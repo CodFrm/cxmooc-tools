@@ -1,5 +1,5 @@
 module.exports = {
-    url: "https://cx.icodef.com/",
+    url: "http://127.0.0.1:8080/",
     version: 2.12,
     update: 'https://github.com/CodFrm/cxmooc-tools/releases',
     enforce: false,

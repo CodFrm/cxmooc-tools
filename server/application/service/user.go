@@ -2,7 +2,6 @@ package service
 
 import (
 	"github.com/CodFrm/cxmooc-tools/server/application/dto"
-	"github.com/CodFrm/cxmooc-tools/server/application/event"
 	"github.com/CodFrm/cxmooc-tools/server/domain/repository/persistence"
 	"github.com/CodFrm/cxmooc-tools/server/domain/service"
 	"github.com/CodFrm/cxmooc-tools/server/internal/errs"
@@ -22,10 +21,9 @@ func NewUserService() *User {
 }
 
 func (u *User) GenToken(usr string) (*dto.User, error) {
-	if user, err := u.user.CreateUser(usr); err != nil {
+	if user, err := u.user.CreateUser(usr); err != nil && err != errs.UserIsExist {
 		return nil, err
 	} else {
-		event.UserCreate(user.User, user.Token)
 		return user, nil
 	}
 }

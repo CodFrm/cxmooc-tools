@@ -3,19 +3,19 @@ package dto
 import "github.com/CodFrm/cxmooc-tools/server/domain/entity"
 
 type Topic struct {
-	Hash       string
-	Topic      string
-	Type       int32
-	Answer     []*Answer
-	Correct    []*Answer
-	Ip         string
-	CreateTime int64
-	UpdateTime int64
+	Hash       string    `json:"hash"`
+	Topic      string    `json:"topic"`
+	Type       int32     `json:"type"`
+	Answer     []*Answer `json:"answer"`
+	Correct    []*Answer `json:"correct"`
+	Ip         string    `json:"ip"`
+	CreateTime int64     `json:"create_time"`
+	UpdateTime int64     `json:"update_time"`
 }
 
 type Answer struct {
-	Option  interface{}
-	Content interface{}
+	Option  interface{} `json:"option"`
+	Content interface{} `json:"content"`
 }
 
 func ToTopic(topic entity.TopicEntity) Topic {
@@ -70,24 +70,24 @@ func ToAnswers(answer []*entity.Answer, t int32) []*Answer {
 }
 
 type SearchResult struct {
-	Correct []*Answer
-	Hash    string
-	Time    int64
-	Topic   string
-	Type    int32
+	Correct []*Answer `json:"correct"`
+	Hash    string    `json:"hash"`
+	Time    int64     `json:"time"`
+	Topic   string    `json:"topic"`
+	Type    int32     `json:"type"`
 }
 
 type SubmitTopic struct {
-	Answer  []map[string]interface{} //同一个字段不同类型留下的坑...
-	Correct []map[string]interface{}
-	Topic   string
-	Type    int32
+	Answers []map[string]interface{} `json:"answers"` //同一个字段不同类型留下的坑...
+	Correct []map[string]interface{} `json:"correct"`
+	Topic   string                   `json:"topic"`
+	Type    int32                    `json:"type"`
 }
 
 type TopicSet struct {
-	Index  int
-	Result []*SearchResult
-	Topic  string
+	Index  int             `json:"index"`
+	Result []*SearchResult `json:"result"`
+	Topic  string          `json:"topic"`
 }
 
 func ToSearchResult(topic *entity.TopicEntity) *SearchResult {
@@ -109,23 +109,30 @@ func ToSearchResults(topic []*entity.TopicEntity) []*SearchResult {
 }
 
 type TopicHash struct {
-	Hash string
+	Hash string `json:"hash"`
 }
 
 func ToTopicEntity(topic SubmitTopic, ip, platform, token string) *entity.TopicEntity {
 	ret := &entity.TopicEntity{
 		Type:     topic.Type,
-		Answer:   mapToAnswerValue(topic.Answer, topic.Type),
-		Correct:  mapToAnswerValue(topic.Correct, topic.Type),
+		Answer:   MapToAnswerValue(topic.Answers, topic.Type),
+		Correct:  MapToAnswerValue(topic.Correct, topic.Type),
 		Ip:       ip,
-		Platform: platform,
+		Platform: platForm(platform),
 		Token:    token,
 	}
 	ret.SetTopic(topic.Topic)
 	return ret
 }
 
-func mapToAnswerValue(answer []map[string]interface{}, tp int32) []*entity.Answer {
+func platForm(p string) string {
+	if p == "" {
+		return "cx"
+	}
+	return p
+}
+
+func MapToAnswerValue(answer []map[string]interface{}, tp int32) []*entity.Answer {
 	ret := make([]*entity.Answer, 0)
 	for _, v := range answer {
 		a := &entity.Answer{}

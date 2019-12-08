@@ -3,7 +3,6 @@ package service
 import (
 	"errors"
 	"github.com/CodFrm/cxmooc-tools/server/application/dto"
-	"github.com/CodFrm/cxmooc-tools/server/application/event"
 	"github.com/CodFrm/cxmooc-tools/server/domain/repository/persistence"
 	domain "github.com/CodFrm/cxmooc-tools/server/domain/service"
 )
@@ -41,8 +40,5 @@ func (t *Topic) SubmitTopic(topic []dto.SubmitTopic, ip, platform, token string)
 		add.TokenNum += internal.Num
 	}
 
-	if add.AddTokenNum > 0 {
-		event.SubmitTopic(token, add.AddTokenNum/10)
-	}
 	return topicHash, add, nil
 }
