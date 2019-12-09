@@ -60,6 +60,9 @@ module.exports = {
         let self = this;
         let btn = self.createBtn('.CyTop');
         btn.onclick = function () {
+            if ($(btn).text() == '搜索中...') {
+                return false;
+            }
             $(btn).text('搜索中...');
             //搜索答案
             let topic = self.getHomeworkTopic();
@@ -67,14 +70,18 @@ module.exports = {
                 return false;
             }
             common.requestAnswer(topic, 'cx', 0, function (topic, answer) {
-                let index = topic.index;
-                if (answer == undefined) {
-                    common.signleLine('无答案', 'answer' + index, undefined, topic.options);
-                    return;
+                    let index = topic.index;
+                    if (answer == undefined) {
+                        common.signleLine('无答案', 'answer' + index, undefined, topic.options);
+                        return;
+                    }
+                    self.fillHomeWorkAnswer(topic, answer);
+                }, () => {
+                    $(btn).text('搜索完成');
+                },
+                () => {
+                    $(btn).text('网络错误');
                 }
-                self.fillHomeWorkAnswer(topic, answer);
-            }, () => { $(btn).text('搜索完成'); },
-                () => { $(btn).text('网络错误'); }
             );
             return false;
         }
@@ -154,7 +161,7 @@ module.exports = {
         for (let i = 0; i < correct.length; i++) {
             for (let n = 0; n < options.length; n++) {
                 let content = common.removeHTML($(optionContent[n]).html());
-                if (content == correct[i].content) {
+                if (util.dealSpecialSymbol(content) == util.dealSpecialSymbol(correct[i].content)) {
                     $(options[n]).click();
                     noticText += correct[i].option + ':' + correct[i].content + '<br/>';
                     break;
@@ -257,12 +264,12 @@ module.exports = {
                 options = $(timu[i]).find('.Cy_ulTop li');
                 topicText = topicText.substr(0, topicText.lastIndexOf('('));
             }
-            let pushOption = { topic: topicText, answers: [], correct: [] };
+            let pushOption = {topic: topicText, answers: [], correct: []};
             if (options.length <= 0) {
                 //非选择
                 let is = false;
                 if ((is = correct.indexOf('√')) > 0 || correct.indexOf('×') > 0) {
-                    pushOption.correct.push({ option: (is > 0), content: (is > 0) });
+                    pushOption.correct.push({option: (is > 0), content: (is > 0)});
                     pushOption.type = 3
                 } else {
                     let options = undefined;
@@ -286,7 +293,7 @@ module.exports = {
                         } else {
                             content = $(options[n]).find('div.fl').html();
                         }
-                        pushOption.correct.push({ option: option, content: common.removeHTML(content) });
+                        pushOption.correct.push({option: option, content: common.removeHTML(content)});
                     }
                     pushOption.type = 4;
                 }
@@ -316,7 +323,9 @@ module.exports = {
             let json = JSON.parse(res)
             let box = common.pop_prompt("√  答案自动记录成功" + " 成功获得:" + json.add_token_num + "个打码数量 剩余数量:" + json.token_num);
             $(document.body).append(box);
-            setTimeout(function () { box.style.opacity = "1"; }, 500);
+            setTimeout(function () {
+                box.style.opacity = "1";
+            }, 500);
         });
     }
 };
