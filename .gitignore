@@ -1,3 +1,5 @@
+.idea
+config.yaml
 node_modules
 build/cxmooc-tools/src/*.*
 build/*.js
