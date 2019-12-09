@@ -66,7 +66,7 @@ func (t *topic) doToEntity(do *topicDO) *entity.TopicEntity {
 }
 
 func (t *topic) Save(topicEntity *entity.TopicEntity) error {
-	topicDo := &topicDO{
+	do := &topicDO{
 		ID:         topicEntity.Id,
 		Topic:      topicEntity.GetTopic(),
 		Hash:       topicEntity.GetHash(),
@@ -79,7 +79,10 @@ func (t *topic) Save(topicEntity *entity.TopicEntity) error {
 		Platform:   topicEntity.Platform,
 		Token:      topicEntity.Token,
 	}
-	return mysql.Save(topicDo).Error
+	if do.ID > 0 {
+		return mysql.Update(do).Error
+	}
+	return mysql.Save(do).Error
 }
 
 func (t *topic) Exist(topicEntity *entity.TopicEntity) (bool, error) {
