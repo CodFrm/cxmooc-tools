@@ -1,5 +1,5 @@
 const common = require('../common');
-const until = require('./util');
+const util = require('./util');
 const moocServer = require('../../config');
 
 module.exports = function () {
@@ -93,7 +93,7 @@ module.exports = function () {
      * 创建按钮
      */
     this.createButton = function () {
-        self.hangBtn = until.createBtn('搜索题目', '点击自动从网络上的题库中查找答案');
+        self.hangBtn = util.createBtn('搜索题目', '点击自动从网络上的题库中查找答案');
         let prev = $(self.iframe).prev();
         if (prev.length <= 0) {
             prev = $(self.iframe).parent();
@@ -101,7 +101,7 @@ module.exports = function () {
         } else {
             $(prev).append(self.hangBtn);
         }
-        until.dealTaskLabel(prev);
+        util.dealTaskLabel(prev);
         self.hangBtn.onclick = self.searchAnswer;
     }
 
@@ -113,7 +113,7 @@ module.exports = function () {
 
     function reloadInit() {
         common.log(self.iframe.className + " topic reload init")
-        if (until.isFinished(self.iframe)) {
+        if (util.isFinished(self.iframe)) {
             self.collect();
         } else {
             self.createButton();
@@ -323,7 +323,7 @@ function fillTopic(TiMu, answer, sourceTopic) {
                 for (let n = 0; n < options.length; n++) {
                     let content = $(options[n]).parent().next()[0];
                     if (options[n].value == result.correct[i].option ||
-                        common.removeHTML($(content).text()) == result.correct[i].content
+                        util.dealSpecialSymbol(common.removeHTML($(content).text())) == util.dealSpecialSymbol(result.correct[i].content)
                     ) {
                         if (!$(options[n]).attr('checked')) {
                             options[n].click();
