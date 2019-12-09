@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"github.com/CodFrm/cxmooc-tools/server/application/dto"
 	"github.com/CodFrm/cxmooc-tools/server/internal/errs"
+	"github.com/CodFrm/cxmooc-tools/server/internal/utils"
 	"net/http"
 )
 
@@ -16,8 +17,12 @@ func NewApi() http.Handler {
 	newTopicHandler(r)
 	newVCodeHandler(r)
 	newUserHandler(r)
-	newSystemHandler()
-	return r
+	system := newSystemHandler(r)
+
+	return http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
+		system.Statistics(utils.ClientIP(req))
+		r.ServeHTTP(w, req)
+	})
 }
 
 func serverError(writer http.ResponseWriter, err error) {

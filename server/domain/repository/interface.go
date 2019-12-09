@@ -28,3 +28,12 @@ type UserRepository interface {
 	FindByUser(user string) (*entity.UserEntity, error)
 	Create(userEntity *entity.UserEntity) error
 }
+
+type SystemRepository interface {
+	HotVersion(ver string) (string, error)
+	NowVersion() (string, error)
+	OnlineNumber() (int64, error)
+	Statistics(ip string, time int64) error
+	GetNotice() (string, error)
+	GetUpdateUrl() (string, error)
+}

@@ -5,6 +5,7 @@ import (
 	"github.com/CodFrm/cxmooc-tools/server/application/event/publish"
 	"github.com/CodFrm/cxmooc-tools/server/domain/entity"
 	"github.com/CodFrm/cxmooc-tools/server/domain/repository"
+	"time"
 )
 
 type Topic struct {
@@ -52,10 +53,12 @@ func (t *Topic) SubmitTopic(topic []dto.SubmitTopic, ip, platform, token string)
 				return nil, nil, err
 			}
 			et = t.mergeAnswer(et, v)
+			et.UpdateTime = time.Now().Unix()
 			if err := t.topicRepo.Save(et); err != nil {
 				return nil, nil, err
 			}
 		} else if !ok {
+			et.CreateTime = time.Now().Unix()
 			if err := t.topicRepo.Save(et); err != nil {
 				return nil, nil, err
 			}
@@ -74,12 +77,16 @@ func (t *Topic) mergeAnswer(et *entity.TopicEntity, d dto.SubmitTopic) *entity.T
 		return et
 	}
 	source := dto.MapToAnswerValue(d.Correct, d.Type)
-	for _, old := range et.Correct {
-		for _, new := range source {
+	for _, new := range source {
+		flag := true
+		for _, old := range et.Correct {
 			if old.Option == new.Option {
-				et.Correct = append(et.Correct, new)
+				flag = false
 				break
 			}
+		}
+		if flag {
+			et.Correct = append(et.Correct, new)
 		}
 	}
 	return et

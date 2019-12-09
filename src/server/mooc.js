@@ -35,6 +35,10 @@ module.exports = function () {
     this.updateOne = function (set, cond, data, callback) {
         return dbase.collection(set).updateOne(cond, data, callback);
     }
-    return this;
 
+    this.traversal = function (set) {
+        return dbase.collection(set).find()
+    }
+
+    return this;
 }

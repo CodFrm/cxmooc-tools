@@ -48,7 +48,7 @@ func (t *topic) doToEntity(do *topicDO) *entity.TopicEntity {
 	answer := make([]*entity.Answer, 0)
 	json.Unmarshal([]byte(do.Answer), &answer)
 	correct := make([]*entity.Answer, 0)
-	json.Unmarshal([]byte(do.Answer), &correct)
+	json.Unmarshal([]byte(do.Correct), &correct)
 	tmp := &entity.TopicEntity{
 		Id:         do.ID,
 		Type:       do.Type,

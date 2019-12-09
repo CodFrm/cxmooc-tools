@@ -18,6 +18,8 @@ func Init() {
 	if err != nil {
 		log.Fatalf("sql open error: %v", err)
 	}
+	db.DB().SetMaxOpenConns(5000)
+	db.DB().SetMaxIdleConns(100)
 	mysql = db
 
 	redis = goRedis.NewClient(&goRedis.Options{
