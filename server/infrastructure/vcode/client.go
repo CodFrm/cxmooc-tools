@@ -1,7 +1,11 @@
 package vcode
 
 import (
+	"bytes"
+	"encoding/binary"
 	"github.com/CodFrm/cxmooc-tools/server/infrastructure/config"
+	"github.com/CodFrm/cxmooc-tools/server/internal/utils"
+	"io"
 	"net"
 	"time"
 )
@@ -10,13 +14,17 @@ type callback chan interface{}
 
 type pack struct {
 	callback callback
-	image    []byte
+	version  [4]byte
+	len      int32
+	tag      [8]byte
+	time     int64
+	data     []byte
 }
 
 var vcode chan *pack
 
 func init() {
-	vcode = make(chan *pack, 100)
+	vcode = make(chan *pack, 10)
 	go func() {
 		for {
 			p := <-vcode
@@ -31,7 +39,12 @@ func init() {
 					p.callback <- err
 					return
 				}
-				if _, err := conn.Write(packData(pkg.image)); err != nil {
+				b, err := packData(pkg)
+				if err != nil {
+					p.callback <- err
+					return
+				}
+				if _, err := conn.Write(b); err != nil {
 					p.callback <- err
 					return
 				}
@@ -43,7 +56,11 @@ func init() {
 				if n, err := conn.Read(buf); err != nil {
 					p.callback <- err
 				} else {
-					p.callback <- unpackData(buf[0:n])
+					if pkg, err := unpackData(bytes.NewReader(buf[0:n])); err != nil {
+						p.callback <- err
+					} else {
+						p.callback <- pkg
+					}
 				}
 			}(p)
 		}
@@ -51,9 +68,15 @@ func init() {
 }
 
 func SendImage(image []byte) (string, error) {
+	var tag [8]byte
+	for k, v := range utils.RandStringRunes(8) {
+		tag[k] = byte(v)
+	}
 	pkg := &pack{
+		version:  [4]byte{'v', '1', 0, 0},
+		tag:      tag,
 		callback: make(chan interface{}),
-		image:    image,
+		data:     image,
 	}
 	vcode <- pkg
 	//接收
@@ -61,18 +84,35 @@ func SendImage(image []byte) (string, error) {
 	switch data.(type) {
 	case error:
 		return "", data.(error)
-	case string:
-		return data.(string), nil
+	case *pack:
+		return string(data.(*pack).data), nil
 	}
 	return "", nil
 }
 
-func packData(data []byte) []byte {
-	//TODO: 打包数据发送
-	return nil
+func packData(pack *pack) ([]byte, error) {
+	pack.len = int32(24 + len(pack.data))
+	pack.time = time.Now().Unix()
+	var ret = make([]byte, pack.len)
+	var err error
+	io := new(bytes.Buffer)
+	err = binary.Write(io, binary.BigEndian, &pack.version)
+	err = binary.Write(io, binary.BigEndian, &pack.len)
+	err = binary.Write(io, binary.BigEndian, &pack.tag)
+	err = binary.Write(io, binary.BigEndian, &pack.time)
+	err = binary.Write(io, binary.BigEndian, &pack.data)
+	_, err = io.Read(ret)
+	return ret, err
 }
 
-func unpackData(data []byte) string {
-	//TODO: 解码接收数据,返回验证码
-	return ""
+func unpackData(io io.Reader) (*pack, error) {
+	var err error
+	ret := pack{}
+	err = binary.Read(io, binary.BigEndian, &ret.version)
+	err = binary.Read(io, binary.BigEndian, &ret.len)
+	err = binary.Read(io, binary.BigEndian, &ret.tag)
+	err = binary.Read(io, binary.BigEndian, &ret.time)
+	ret.data = make([]byte, ret.len-24)
+	err = binary.Read(io, binary.BigEndian, &ret.data)
+	return &ret, err
 }

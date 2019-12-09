@@ -46,6 +46,7 @@ type integralTransaction struct {
 	repo   *integral
 	token  string
 	commit bool
+	oldNum *entity.IntegralEntity
 }
 
 func (i *integralTransaction) Rollback() error {
@@ -53,7 +54,7 @@ func (i *integralTransaction) Rollback() error {
 		return err
 	}
 	i.commit = true
-	return nil
+	return i.repo.Update(i.oldNum)
 }
 
 func (i *integralTransaction) Close() error {
@@ -77,7 +78,11 @@ func (i *integralTransaction) LockIntegral(token string) (*entity.IntegralEntity
 		return nil, err
 	}
 	i.token = token
-	return i.repo.GetIntegral(token)
+	ret, err := i.repo.GetIntegral(token)
+	if err != nil {
+		i.oldNum = ret
+	}
+	return ret, err
 }
 
 func (i *integralTransaction) Update(integral *entity.IntegralEntity) error {

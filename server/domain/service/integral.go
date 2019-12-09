@@ -4,10 +4,11 @@ import (
 	"github.com/CodFrm/cxmooc-tools/server/application/dto"
 	"github.com/CodFrm/cxmooc-tools/server/domain/repository"
 	"github.com/CodFrm/cxmooc-tools/server/internal/errs"
+	goRedis "github.com/go-redis/redis/v7"
 )
 
 const (
-	INTEGRAL_VCODE = 10
+	INTEGRAL_VCODE = 1
 )
 
 type Integral struct {
@@ -25,6 +26,9 @@ func (i *Integral) TokenConsumption(token string, rule int) error {
 	defer tran.Close()
 	integral, err := tran.LockIntegral(token)
 	if err != nil {
+		if err == goRedis.Nil {
+			return errs.TokenNotExist
+		}
 		return err
 	}
 	if integral.Num < rule {

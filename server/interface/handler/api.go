@@ -19,6 +19,7 @@ func NewApi() http.Handler {
 	newUserHandler(r)
 	system := newSystemHandler(r)
 
+	r.HandleFunc("/", http.FileServer(http.Dir("static")).ServeHTTP)
 	return http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
 		system.Statistics(utils.ClientIP(req))
 		r.ServeHTTP(w, req)
@@ -53,7 +54,7 @@ func json_info(writer http.ResponseWriter, code int, msg string, info string) {
 	writer.Header().Add("Content-Type", "application/json; charset=utf-8")
 	b, _ := json.Marshal(struct {
 		*dto.JsonMsg
-		info string
+		Info string `json:"info"`
 	}{&dto.JsonMsg{
 		Code: code,
 		Msg:  msg,

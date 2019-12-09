@@ -20,11 +20,14 @@ func NewVCodeService() *VCode {
 // 打码
 func (v *VCode) Do(token string, image []byte) (string, error) {
 	if err := v.integral.TokenConsumption(token, service.INTEGRAL_VCODE); err != nil {
-		return "", err
+		if err == errs.TokenNotExist {
+			return "", errs.IntegralInsufficient
+		}
+		return "", errs.VCodeServerException(err)
 	}
 	code, err := vcode.SendImage(image)
 	if err != nil {
-		return "", errs.VCodeServerException(err)
+		return "", errs.VCodeServerException(nil)
 	}
 	return code, nil
 }
