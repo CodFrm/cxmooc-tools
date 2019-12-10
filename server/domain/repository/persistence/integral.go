@@ -54,7 +54,10 @@ func (i *integralTransaction) Rollback() error {
 		return err
 	}
 	i.commit = true
-	return i.repo.Update(i.oldNum)
+	if i.oldNum != nil {
+		return i.repo.Update(i.oldNum)
+	}
+	return nil
 }
 
 func (i *integralTransaction) Close() error {
