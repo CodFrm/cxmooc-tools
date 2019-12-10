@@ -27,7 +27,7 @@ module.exports = function () {
         }
         let data = '';
         for (let i in topic) {
-            data += 'topic[' + i + ']=' + topic[i].topic + '&type[' + i + ']=' + topic[i].type + '&';
+            data += 'topic[' + i + ']=' + encodeURIComponent(topic[i].topic) + '&type[' + i + ']=' + topic[i].type + '&';
         }
         common.gm_post(moocServer.url + 'v2/answer?platform=cx', data, false, function (data) {
             let json = JSON.parse(data);
