@@ -80,7 +80,7 @@ func (t *topic) Save(topicEntity *entity.TopicEntity) error {
 		Token:      topicEntity.Token,
 	}
 	if do.ID > 0 {
-		return mysql.Update(do).Error
+		return mysql.Model(do).Update(do).Error
 	}
 	return mysql.Save(do).Error
 }
