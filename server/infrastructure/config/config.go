@@ -11,6 +11,7 @@ type Config struct {
 	Redis       Redis
 	VCodeServer string `yaml:"vcode-server"`
 	ClientToken string `yaml:"client-token"`
+	Listen      string `yaml:"listen"`
 }
 
 type Redis struct {

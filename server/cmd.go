@@ -1,10 +1,11 @@
 package main
 
 import (
-	"github.com/CodFrm/cxmooc-tools/server/application/event/subscribe"
 	"log"
 	"net"
 	"net/http"
+
+	"github.com/CodFrm/cxmooc-tools/server/application/event/subscribe"
 
 	"github.com/CodFrm/cxmooc-tools/server/domain/repository/persistence"
 	"github.com/CodFrm/cxmooc-tools/server/infrastructure/config"
@@ -26,7 +27,7 @@ func main() {
 	mq.Init(EventBus.New())
 	subscribe.Init()
 
-	listen, err = net.Listen("tcp", ":8080")
+	listen, err = net.Listen("tcp", config.AppConfig.Listen)
 	if err != nil {
 		log.Fatalf("listen tcp error: %v", err)
 	}
