@@ -117,11 +117,17 @@ func TestTopic_SubmitTopic(t *testing.T) {
 	mock.On("Exist", "判断,").Return(false, nil)
 
 	mock.On("Save", "判断,").Return(nil)
+	mock.On("Save", "多选,中文标点.()").Return(nil)
 
 	mocki.On("GetIntegral", "tk").Return(&entity.IntegralEntity{
 		Token: "tk",
 		Num:   100,
 	}, nil)
+
+	et := &entity.TopicEntity{Type: 2}
+	et.SetTopic("多选,中文标点.()")
+	mock.On("FindByHash", "05d901980b216c5f8c6b8d6e1f6820b6").Return(et, nil)
+
 	hash, add, err := topic.SubmitTopic([]dto.SubmitTopic{topic1, topic2}, "localhost", "cx", "tk")
 	assert.Nil(t, err)
 

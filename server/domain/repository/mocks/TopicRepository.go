@@ -15,16 +15,16 @@ type TopicRepository struct {
 func (_m *TopicRepository) FindByHash(hash string) (*entity.TopicEntity, error) {
 	ret := _m.Called(hash)
 
-	var r0 bool
-	if rf, ok := ret.Get(0).(func(*entity.TopicEntity) *entity.TopicEntity); ok {
-		r0 = rf(topicEntity)
+	var r0 *entity.TopicEntity
+	if rf, ok := ret.Get(0).(func(string) *entity.TopicEntity); ok {
+		r0 = rf(hash)
 	} else {
 		r0 = ret.Get(0).(*entity.TopicEntity)
 	}
 
 	var r1 error
-	if rf, ok := ret.Get(1).(func(*entity.TopicEntity) error); ok {
-		r1 = rf(topicEntity)
+	if rf, ok := ret.Get(1).(func(string) error); ok {
+		r1 = rf(hash)
 	} else {
 		r1 = ret.Error(1)
 	}

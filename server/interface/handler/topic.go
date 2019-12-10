@@ -20,7 +20,14 @@ func newTopicHandler(r *http.ServeMux) *topic {
 	}
 	r.HandleFunc("/v2/answer", t.SearchTopic())
 	r.HandleFunc("/answer", t.SubmitTopic())
+	r.HandleFunc("/topic/import", t.Import())
 	return t
+}
+
+func (t *topic) Import() func(http.ResponseWriter, *http.Request) {
+	return func(writer http.ResponseWriter, request *http.Request) {
+
+	}
 }
 
 func (t *topic) SearchTopic() func(http.ResponseWriter, *http.Request) {
