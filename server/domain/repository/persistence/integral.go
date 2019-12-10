@@ -3,6 +3,7 @@ package persistence
 import (
 	"github.com/CodFrm/cxmooc-tools/server/domain/entity"
 	"github.com/CodFrm/cxmooc-tools/server/domain/repository"
+	goRedis "github.com/go-redis/redis/v7"
 	"strconv"
 	"time"
 )
@@ -22,7 +23,7 @@ func (i *integral) GetIntegral(token string) (*entity.IntegralEntity, error) {
 	val := cmd.Val()
 	num, err := strconv.Atoi(val)
 	if err != nil {
-		return nil, err
+		return nil, goRedis.Nil
 	}
 	return &entity.IntegralEntity{
 		Token: token,

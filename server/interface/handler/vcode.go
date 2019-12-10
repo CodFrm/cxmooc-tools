@@ -3,6 +3,7 @@ package handler
 import (
 	"encoding/base64"
 	"github.com/CodFrm/cxmooc-tools/server/application/service"
+	"github.com/CodFrm/cxmooc-tools/server/internal/errs"
 	"net/http"
 )
 
@@ -29,6 +30,10 @@ func (d *vcode) VCode() func(http.ResponseWriter, *http.Request) {
 
 		imageBase64 := request.PostFormValue("img")
 		token := request.Header.Get("Authorization")
+		if token == "" || token[0:5] == "user|" {
+			serverError(writer, errs.TokenNotExist)
+			return
+		}
 		if image, err := base64.StdEncoding.DecodeString(imageBase64); err != nil {
 			serverError(writer, err)
 		} else {
