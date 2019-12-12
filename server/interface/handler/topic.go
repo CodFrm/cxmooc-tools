@@ -37,7 +37,7 @@ func (t *topic) SearchTopic() func(http.ResponseWriter, *http.Request) {
 				topic = append(topic, v)
 			}
 		}
-		if len(topic) > 20 {
+		if len(topic) > 100 {
 			http.Error(writer, "too many topic", http.StatusBadRequest)
 			return
 		}

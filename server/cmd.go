@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/CodFrm/cxmooc-tools/server/internal/middleware"
 	"log"
 	"net"
 	"net/http"
@@ -26,14 +27,15 @@ func main() {
 	persistence.Init()
 	mq.Init(EventBus.New())
 	subscribe.Init()
-
-	listen, err = net.Listen("tcp", config.AppConfig.Listen)
+	handle := handler.NewApi()
+	handle, listen, err := middleware.HotRestart(handle, config.AppConfig.Listen)
 	if err != nil {
 		log.Fatalf("listen tcp error: %v", err)
 	}
 	httpServer := http.Server{
-		Handler: handler.NewApi(),
+		Handler: handle,
 	}
+
 	if err := httpServer.Serve(listen); err != nil {
 		log.Fatalf("server start error: %v", err)
 	}
