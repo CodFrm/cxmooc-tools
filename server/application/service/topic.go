@@ -42,3 +42,7 @@ func (t *Topic) SubmitTopic(topic []dto.SubmitTopic, ip, platform, token string)
 
 	return topicHash, add, nil
 }
+
+func (t *Topic) Import(topic []dto.SubmitTopic, user, ip, token string) {
+
+}
