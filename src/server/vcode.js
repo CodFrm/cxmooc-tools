@@ -9,11 +9,13 @@ module.exports = function () {
     let task = new HashMap();
     for (let i = 0; i < MAX_CONNECT; i++) {
         client[i] = net.Socket();
+
         function connect() {
             client[i].connect(config.vcodeport, config.vcodehost, function () {
                 console.log('client connect success');
             });
         }
+
         connect();
         client[i].on('data', function (data) {
             //解包
@@ -57,6 +59,7 @@ module.exports = function () {
         }
         return last;
     }
+
     //定时删除超时任务
     setInterval(function () {
         let now = timestamp();

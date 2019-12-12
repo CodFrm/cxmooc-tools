@@ -1,26 +1,26 @@
 ---
-title: 开始
+title: 快速开始
 ---
-本插件提供多种使用方式,请按照需求查阅相应的文档支持
 
-## 小白
-小白用户建议使用FireFox浏览器,前往FireFox商店下载更新:[**FireFox**](/1-UserGuide/1-2-firefox.html)
+## ⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠
+本插件提供多种使用方式,暂时只**支持`超星/学习通`与`智慧树/知到`**,请按照需求查阅相应的文档支持,**遇到问题请优先查看文档/常见问题**,如果文档没有说明/无法解决问题再qq群询问或者发issue.
 
-或者使用已经打包好了的浏览器版本使用:[**打包版浏览器**](/1-UserGuide/1-1-chrome.html#打包版浏览器),但是这个更新速度较慢,也可以自己手动更新
+## 安装
+### 小白(推荐)
+小白用户使用已经打包好了的浏览器版本使用:[**打包版浏览器**](/1-UserGuide/1-1-chrome.html#打包版浏览器),但是这个更新速度较慢,也可以自己手动更新
 
-## 油猴
+或者使用FireFox浏览器,前往FireFox商店下载更新:[**FireFox**](/1-UserGuide/1-2-firefox.html)
 
-超星油猴脚本:[https://greasyfork.org/zh-CN/scripts/376190-超星慕课小工具](https://greasyfork.org/zh-CN/scripts/376190-%E8%B6%85%E6%98%9F%E6%85%95%E8%AF%BE%E5%B0%8F%E5%B7%A5%E5%85%B7)
+## 刷课
 
-智慧树油猴脚本:[https://greasyfork.org/zh-CN/scripts/382037-智慧树小工具](https://greasyfork.org/zh-CN/scripts/382037-%E6%99%BA%E6%85%A7%E6%A0%91%E5%B0%8F%E5%B7%A5%E5%85%B7)
+直接进入相对于的刷课平台(超星:[http://mooc.chaoxing.com/](http://mooc.chaoxing.com/),智慧树:[https://passport.zhihuishu.com/login](https://passport.zhihuishu.com/login)),直接打开课程即可.
 
-**插件是全部整合的**
+成功标志:
+![](/img/soft/soft_01.webp)
+![](/img/soft/soft_02.webp)
 
-[telegram群](https://t.me/joinchat/MHU8Gg2fP3Q51HLY2wqmQA) [QQ群](https://shang.qq.com/wpa/qunwpa?idkey=9bddd2564d84bd999940de422d1c0c70f87ecaf02fe9d7c60389fc2b376179eb)
+## Join us
 
-- 开发者
-- Chrome插件
-- FireFox插件
-- 油猴脚本
-- 功能说明
-- 使用说明
+* [telegram群](https://t.me/joinchat/MHU8Gg2fP3Q51HLY2wqmQA),会优先发布版本,更新进度也会进行通知.
+
+* [QQ群](https://shang.qq.com/wpa/qunwpa?idkey=9bddd2564d84bd999940de422d1c0c70f87ecaf02fe9d7c60389fc2b376179eb),询问问题之前最好请先看看文档,大部分都是你自己的使用问题!(聊天水群必备,主题混乱)

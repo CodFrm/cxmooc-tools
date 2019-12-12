@@ -84,10 +84,12 @@ module.exports = function () {
                     if (json.code == -2) {
                         callback(undefined, json.msg);
                         //TODO:无权限
+                    } else if (json.code == -1) {
+                        callback(undefined, "打码服务器发生错误")
                     } else if (json.msg) {
                         callback(json.msg);
                     } else {
-                        setTimeout(() => { getVcode(url, img, callback); },3000);
+                        setTimeout(() => { getVcode(url, img, callback); }, 3000);
                     }
                 }).error(function () {
                     callback(undefined, '网络请求失败');

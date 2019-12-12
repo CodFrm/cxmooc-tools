@@ -71,9 +71,15 @@ module.exports = function () {
             localStorage['cdn'] = $(this).text();
         });
         //失败的切换记录
-        $(self.document).find('.vjs-error-display.vjs-modal-dialog').on('click', '.ans-vjserrdisplay-opts li.ans-vjserrdisplay-opt label"', function () {
+        $(self.document).find('.vjs-error-display.vjs-modal-dialog').on('click', '.ans-vjserrdisplay-opts li.ans-vjserrdisplay-opt label', function () {
             localStorage['cdn'] = $(this).text();
         });
+        //检测'视频因格式不支持或者服务器或网络的问题无法加载'
+        setTimeout(function () {
+            if ($(self.document).find('.ans-vjserrdisplay-title').length > 0) {
+                $(self.document).find('.ans-vjserrdisplay-opts input[type="radio"]:not([disabled]):eq(0)').click();
+            }
+        }, 5 * 1000);
         let play = function () {
             //静音和倍速选项
             self.video.muted = config.video_mute;

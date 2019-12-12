@@ -2,7 +2,7 @@ const chaoxing = require('./chaoxing');
 
 /**
  * 创建一个按钮
- * @param {*} title 
+ * @param {*} title
  */
 export function createBtn(title, description = '', id = '') {
     let btn = document.createElement('button');
@@ -29,7 +29,7 @@ export function createBtn(title, description = '', id = '') {
 
 /**
  * 处理任务点标签
- * @param string label 
+ * @param string label
  */
 export function dealTaskLabel(label) {
     $(label).css('text-align', 'center');
@@ -51,4 +51,21 @@ export function isTask(el) {
         return true;
     }
     return false;
+}
+
+let symbolMap = {
+    "，": ",", "。": ".", "（": "(", "）": ")",
+    "？": "?", "：": ":", "“": "\"", "”": "\"",
+}
+
+export function dealSpecialSymbol(str) {
+    let ret = ""
+    for (var i = 0; i < str.length; i++) {
+        if (symbolMap[str[i]] !== undefined) {
+            ret += symbolMap[str[i]]
+        } else {
+            ret += str[i]
+        }
+    }
+    return ret
 }

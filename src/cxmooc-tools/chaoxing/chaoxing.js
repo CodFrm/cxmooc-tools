@@ -154,6 +154,12 @@ module.exports = function () {
     function nextTaskPoint() {
         let undone = $('.ncells .currents').parents(".cells,.ncells").nextAll(".ncells,.cells").find("[class*='orange'],.orange01");
         if (undone.length <= 0) {
+            undone = $('.ncells .currents').parents(".cells,.ncells").nextAll(".ncells,.cells").find(".noJob");
+            if (undone.length <= 0) {
+                undone = $('.ncells .currents').parents(".cells,.ncells").find(".ncells,.cells").find("[class*='orange'],.orange01");
+            }
+        }
+        if (undone.length <= 0) {
             //扫描锁
             if ($('.roundpointStudent.lock').length > 0) {
                 setTimeout(nextTaskPoint, 4000);

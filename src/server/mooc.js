@@ -1,10 +1,12 @@
 /**
  * 慕课数据库模型
  */
+const serverConfig = require('./config');
 
 var mongodb = require('mongodb');
 module.exports = function () {
-    var url = "mongodb://localhost:27017/cxmooc";
+    // var url = "mongodb://localhost:27017/cxmooc";
+    var url = serverConfig.mongoDB;
     var db;
     var dbase;
     mongodb.connect(url, (err, _db) => {
@@ -33,6 +35,10 @@ module.exports = function () {
     this.updateOne = function (set, cond, data, callback) {
         return dbase.collection(set).updateOne(cond, data, callback);
     }
-    return this;
 
+    this.traversal = function (set) {
+        return dbase.collection(set).find()
+    }
+
+    return this;
 }

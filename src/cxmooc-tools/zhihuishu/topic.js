@@ -36,7 +36,8 @@ module.exports = {
                 topic: text,
                 type: type,
                 options: options,
-                index: i
+                index: i,
+                el: topic[i],
             });
         }
         return ret;
@@ -54,7 +55,7 @@ module.exports = {
                 let tmpContent = common.removeHTML($(options[i]).html());
                 if (tmpContent == correct.content) {
                     $(options[i]).parent().find('input').click();
-                    return $(options[i]).text();
+                    return $(options[i]).prev().text();
                 }
             }
         }
@@ -114,9 +115,9 @@ module.exports = {
     },
     collect: function () {
         let self = this;
-        let topic = option = this.getTopicList();
+        let topic = this.getTopicList();
         common.postAnswer(topic, 'zhs', function (topic) {
-            if ($(topic.options).find('.key_yes,.nodeLab').length <= 0) {
+            if ($(topic.el).find('.key_yes').length <= 0) {
                 return undefined;
             }
             let pushOption = { topic: topic.topic, type: topic.type, answers: [], correct: [] };

@@ -245,7 +245,7 @@
             $.ajax({
                 url: 'v2/answer',
                 method: 'post',
-                data: 'topic[0]=' + $('.topic').val(),
+                data: 'topic[0]=' + encodeURIComponent($('.topic').val()),
                 success: function (json) {
                     result = json[0].result;
                     $('.answer').empty();
