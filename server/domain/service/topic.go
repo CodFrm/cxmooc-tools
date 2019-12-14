@@ -38,7 +38,7 @@ func (t *Topic) SearchTopicList(topic []string) ([]dto.TopicSet, error) {
 	return ret, nil
 }
 
-func (t *Topic) SubmitTopic(topic []dto.SubmitTopic, ip, platform, token string) ([]dto.TopicHash, *dto.InternalAddMsg, error) {
+func (t *Topic) SubmitTopic(topic []*dto.SubmitTopic, ip, platform, token string, isImport bool) ([]dto.TopicHash, *dto.InternalAddMsg, error) {
 	ret := make([]dto.TopicHash, 0)
 	addNum := &dto.InternalAddMsg{}
 	for _, v := range topic {
@@ -67,12 +67,16 @@ func (t *Topic) SubmitTopic(topic []dto.SubmitTopic, ip, platform, token string)
 		ret = append(ret, dto.TopicHash{Hash: et.GetHash()})
 	}
 	if addNum.AddTokenNum > 0 {
-		publish.SubmitTopic(token, addNum.AddTokenNum/10)
+		if isImport {
+			publish.ImportTopic(token, addNum.AddTokenNum/10)
+		} else {
+			publish.SubmitTopic(token, addNum.AddTokenNum/10)
+		}
 	}
 	return ret, addNum, nil
 }
 
-func (t *Topic) mergeAnswer(et *entity.TopicEntity, d dto.SubmitTopic) *entity.TopicEntity {
+func (t *Topic) mergeAnswer(et *entity.TopicEntity, d *dto.SubmitTopic) *entity.TopicEntity {
 	if len(et.Correct) >= len(d.Correct) {
 		return et
 	}

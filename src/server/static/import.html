@@ -5,15 +5,44 @@
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
     <title>题库导入</title>
 </head>
 <body>
 
-<form action="/topic-import" method="post">
-    QQ: <input type="text" name="qq"> <br>
+<form id="import" name="import" action="/topic/import" method="post" enctype="multipart/form-data"
+      onsubmit="return upload();">
+    QQ: <input type="text" name="user"> <br>
     Token: <input type="text" name="token"> <br>
-    Excel文件: <input type="file">
+    Excel文件: <input type="file" name="topic" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet">
+    <input type="submit">
 </form>
-
+<script>
+    function upload() {
+        var formData = new FormData(document.getElementById('import'));
+        $.ajax({
+            url: "/topic/import",
+            type: "POST",
+            data: formData,
+            processData: false,
+            contentType: false,
+            xhrFields: {
+                withCredentials: true
+            },
+            crossDomain: true,
+            dataType: "json",
+            success: function (obj) {
+                alert(obj.msg)
+                if(obj.code==0){
+                    location.reload()
+                }
+            },
+            error: function (obj) {
+                alert('服务器请求失败');
+            }
+        })
+        return false
+    }
+</script>
 </body>
 </html>

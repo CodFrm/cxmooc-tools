@@ -36,7 +36,18 @@ func (u *User) CreateUser(usr string) (*dto.User, error) {
 		return nil, err
 	}
 	publish.UserCreate(user.User, user.Token)
-	return &dto.User{
-		Token: user.Token,
-	}, nil
+	return dto.ToUser(user), nil
+}
+
+func (u *User) VerifyUserToken(user, token string) (*dto.User, error) {
+	m, err := u.userRepo.FindByUser(user)
+	if err != nil {
+		return nil, err
+	} else if m == nil {
+		return nil, errs.TokenNotExist
+	}
+	if m.Token == token {
+		return dto.ToUser(m), nil
+	}
+	return nil, errs.TokenNotExist
 }
