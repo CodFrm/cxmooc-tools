@@ -105,8 +105,8 @@ func (t *topic) excelToTopic(line int, row []string) (*dto.ImportTopic, error) {
 			}
 			for k := range row[3] {
 				ret.Correct = append(ret.Correct, map[string]interface{}{
-					"Option":  string(row[3][k]),
-					"Content": "",
+					"option":  string(row[3][k]),
+					"content": "",
 				})
 			}
 			if len(ret.Correct) > 1 {
@@ -126,8 +126,8 @@ func (t *topic) excelToTopic(line int, row []string) (*dto.ImportTopic, error) {
 	if row[2] == "判断" {
 		ret.Type = 3
 		ret.Correct = append(ret.Correct, map[string]interface{}{
-			"Option":  row[3] == "1",
-			"Content": row[3] == "1",
+			"option":  row[3] == "1",
+			"content": row[3] == "1",
 		})
 	} else if iter != nil {
 		for i := 3; i < len(row); i++ {
@@ -135,8 +135,8 @@ func (t *topic) excelToTopic(line int, row []string) (*dto.ImportTopic, error) {
 				break
 			}
 			ret.Correct = append(ret.Correct, map[string]interface{}{
-				"Option":  iter.Value(),
-				"Content": row[i],
+				"option":  iter.Value(),
+				"content": row[i],
 			})
 			iter = iter.Next()
 		}
