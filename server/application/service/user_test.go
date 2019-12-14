@@ -30,8 +30,8 @@ func TestUser_CheckIn(t *testing.T) {
 		Token: "tk",
 		Num:   20,
 	}, nil)
-	mockt.On("Commit").Return()
-	mockt.On("Close").Return()
+	mockt.On("Commit").Return(nil)
+	mockt.On("Close").Return(nil)
 
 	token, err := user.CheckIn("qq")
 	assert.Nil(t, err)

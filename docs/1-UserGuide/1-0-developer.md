@@ -7,6 +7,7 @@ title: 开发者
 ### 环境:
 * Node.js
 * webpack
+* Yarn
 
 ### Build
 ```bash
@@ -35,3 +36,10 @@ yarn run server
 1. 执行`yarn run build`,此时会在`build/cxmooc-tools`目录下生成插件文件。
 2. 打开Chrome浏览器的更多工具选项，打开扩展程序页面并启用开发者模式。
 3. 加载已解压的扩展程序，路径选择`build/cxmooc-tools`
+
+## 其它
+你也可以加入tg群组或者qq群或者在github上发送issue来交流:
+
+[telegram群组](https://t.me/joinchat/MHU8Gg2fP3Q51HLY2wqmQA)
+
+[QQ群790774208](https://jq.qq.com/?_wv=1027&k=5e10NSV)

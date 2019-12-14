@@ -2,9 +2,12 @@
 title: Chrome(内核)浏览器安装
 ---
 
+**chrome商店:[超星慕课小工具](https://chrome.google.com/webstore/detail/%E8%B6%85%E6%98%9F%E6%85%95%E8%AF%BE%E5%B0%8F%E5%B7%A5%E5%85%B7/kkicgcijebblepmephnfganiiochecfl?hl=zh-CN)**
+
 如果觉得步骤过于复杂或者繁琐,进直接下载[releases页面](https://github.com/CodFrm/cxmooc-tools/releases)的打包版本,适合小白用户(但是版本更新可能较慢)
 
 ## Chrome扩展
+> 如果你可以进入chrome商店,那么推荐你直接使用上面的chrome商店链接安装
 
 下载发布的版本[cxmooc-tools.crx](https://github.com/CodFrm/cxmooc-tools/releases)无需安装环境,下载即可使用。
 

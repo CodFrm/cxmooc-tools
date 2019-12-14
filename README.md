@@ -2,11 +2,20 @@
 [![Build Status](https://www.travis-ci.org/CodFrm/cxmooc-tools.svg?branch=master)](https://www.travis-ci.org/CodFrm/cxmooc-tools)
 ![GitHub All Releases](https://img.shields.io/github/downloads/codfrm/cxmooc-tools/total.svg)
 ![GitHub tag (latest SemVer)](https://img.shields.io/github/tag/codfrm/cxmooc-tools.svg?label=version)
+![[Chrome](https://chrome.google.com/webstore/detail/%E8%B6%85%E6%98%9F%E6%85%95%E8%AF%BE%E5%B0%8F%E5%B7%A5%E5%85%B7/kkicgcijebblepmephnfganiiochecfl?hl=zh-CN)](https://img.shields.io/badge/chrome-success-brightgreen)
+![[FireFox](https://addons.mozilla.org/zh-CN/firefox/addon/%E8%B6%85%E6%98%9F%E6%85%95%E8%AF%BE%E5%B0%8F%E5%B7%A5%E5%85%B7/)](https://img.shields.io/badge/firefox-success-brightgreen)
+![[tampermonkey](https://greasyfork.org/zh-CN/scripts/376190-%E8%B6%85%E6%98%9F%E6%85%95%E8%AF%BE%E5%B0%8F%E5%B7%A5%E5%85%B7)](https://img.shields.io/badge/tampermonkey-success-yellowgreen)
+
 
 ## 关于超星慕课小工具
 > **[使用文档](https://cx-doc.xloli.top/)**
 
 一个超星(学习通)和智慧树(知到)刷课工具,火狐,谷歌,油猴支持.全自动任务,视频倍速秒过,作业考试题库,验证码自动打码(੧ᐛ੭挂科模式,启动)
+
+### 应用商店
+[Chrome商店](https://chrome.google.com/webstore/detail/%E8%B6%85%E6%98%9F%E6%85%95%E8%AF%BE%E5%B0%8F%E5%B7%A5%E5%85%B7/kkicgcijebblepmephnfganiiochecfl?hl=zh-CN)
+[FireFox商店](https://addons.mozilla.org/zh-CN/firefox/addon/%E8%B6%85%E6%98%9F%E6%85%95%E8%AF%BE%E5%B0%8F%E5%B7%A5%E5%85%B7/)
+[greasyfork](https://greasyfork.org/zh-CN/scripts/376190-%E8%B6%85%E6%98%9F%E6%85%95%E8%AF%BE%E5%B0%8F%E5%B7%A5%E5%85%B7)
 
 ### 浏览器适配列表
  * [x] Chrome for PC
@@ -87,6 +96,8 @@ Blog地址:[http://blog.icodef.com/2018/01/25/1304](http://blog.icodef.com/2018/
 
 ## 赞助
 微信扫一扫,赏个鸡腿?
+
+[赞助列表](https://cx-doc.xloli.top/4-Reward/)
 
 ![](docs/.vuepress/public/img/reward.png)
 

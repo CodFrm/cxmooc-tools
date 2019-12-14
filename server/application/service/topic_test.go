@@ -101,13 +101,13 @@ func TestTopic_SubmitTopic(t *testing.T) {
 		integral: domain.NewIntegralService(mocki),
 	}
 
-	topic1 := dto.SubmitTopic{Answers: []map[string]interface{}{
+	topic1 := &dto.SubmitTopic{Answers: []map[string]interface{}{
 		{"option": "A", "content": "选项A"}, {"option": "B", "content": "选项B"}, {"option": "C", "content": "选项C"},
 	}, Correct: []map[string]interface{}{
 		{"option": "A", "content": "选项A"}, {"option": "B", "content": "选项B"},
 	}, Topic: "多选,中文标点。（）", Type: 2}
 
-	topic2 := dto.SubmitTopic{Answers: []map[string]interface{}{
+	topic2 := &dto.SubmitTopic{Answers: []map[string]interface{}{
 		{"option": true, "content": true},
 	}, Correct: []map[string]interface{}{
 		{"option": true, "content": true},
@@ -128,7 +128,7 @@ func TestTopic_SubmitTopic(t *testing.T) {
 	et.SetTopic("多选,中文标点.()")
 	mock.On("FindByHash", "05d901980b216c5f8c6b8d6e1f6820b6").Return(et, nil)
 
-	hash, add, err := topic.SubmitTopic([]dto.SubmitTopic{topic1, topic2}, "localhost", "cx", "tk")
+	hash, add, err := topic.SubmitTopic([]*dto.SubmitTopic{topic1, topic2}, "localhost", "cx", "tk")
 	assert.Nil(t, err)
 
 	assert.Equal(t, utils.Md5("多选,中文标点.()2"), hash[0].Hash)
@@ -137,13 +137,13 @@ func TestTopic_SubmitTopic(t *testing.T) {
 
 	topic2.Topic = "error"
 	mock.On("Exist", "error").Return(false, errors.New("error"))
-	_, _, err = topic.SubmitTopic([]dto.SubmitTopic{topic1, topic2}, "localhost", "cx", "tk")
+	_, _, err = topic.SubmitTopic([]*dto.SubmitTopic{topic1, topic2}, "localhost", "cx", "tk")
 	assert.Error(t, err)
 
 	topic2.Topic = "save error"
 	mock.On("Exist", "save error").Return(false, nil)
 	mock.On("Save", "save error").Return(errors.New("error"))
-	_, _, err = topic.SubmitTopic([]dto.SubmitTopic{topic1, topic2}, "localhost", "cx", "tk")
+	_, _, err = topic.SubmitTopic([]*dto.SubmitTopic{topic1, topic2}, "localhost", "cx", "tk")
 	assert.Error(t, err)
 
 }

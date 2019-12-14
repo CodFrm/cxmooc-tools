@@ -148,7 +148,7 @@ func (t *topic) excelToTopic(line int, row []string) (*dto.ImportTopic, error) {
 	if row[0] != "超星" {
 		// 检测是否有答案内容
 		for _, val := range ret.Correct {
-			if v, ok := val["Content"].(string); ok && v == "" {
+			if v, ok := val["content"].(string); ok && v == "" {
 				return nil, errs.New(200, -1, strconv.Itoa(line)+"行错误,超星考试和智慧树要求必须有选项内容")
 			}
 		}

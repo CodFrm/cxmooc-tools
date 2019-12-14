@@ -13,13 +13,31 @@ type IntegerTransactionRepository struct {
 }
 
 // Close provides a mock function with given fields:
-func (_m *IntegerTransactionRepository) Close() {
-	_m.Called()
+func (_m *IntegerTransactionRepository) Close() error {
+	ret := _m.Called()
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func() error); ok {
+		r0 = rf()
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
 }
 
 // Commit provides a mock function with given fields:
-func (_m *IntegerTransactionRepository) Commit() {
-	_m.Called()
+func (_m *IntegerTransactionRepository) Commit() error {
+	ret := _m.Called()
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func() error); ok {
+		r0 = rf()
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
 }
 
 // LockIntegral provides a mock function with given fields: token
@@ -46,8 +64,17 @@ func (_m *IntegerTransactionRepository) LockIntegral(token string) (*entity.Inte
 }
 
 // Rollback provides a mock function with given fields:
-func (_m *IntegerTransactionRepository) Rollback() {
-	_m.Called()
+func (_m *IntegerTransactionRepository) Rollback() error {
+	ret := _m.Called()
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func() error); ok {
+		r0 = rf()
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
 }
 
 // Update provides a mock function with given fields: integral
