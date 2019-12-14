@@ -9,3 +9,7 @@ func UserCreate(user, token string) {
 func SubmitTopic(token string, num int) {
 	mq.Evbus.Publish("topic:submit_new_topic", token, num)
 }
+
+func ImportTopic(token string, num int) {
+	mq.Evbus.Publish("topic:import_new_topic", token, num)
+}

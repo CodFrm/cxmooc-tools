@@ -84,6 +84,11 @@ type SubmitTopic struct {
 	Type    int32                    `json:"type"`
 }
 
+type ImportTopic struct {
+	*SubmitTopic
+	Platform string `json:"platform"`
+}
+
 type TopicSet struct {
 	Index  int             `json:"index"`
 	Result []*SearchResult `json:"result"`
@@ -112,7 +117,7 @@ type TopicHash struct {
 	Hash string `json:"hash"`
 }
 
-func ToTopicEntity(topic SubmitTopic, ip, platform, token string) *entity.TopicEntity {
+func ToTopicEntity(topic *SubmitTopic, ip, platform, token string) *entity.TopicEntity {
 	ret := &entity.TopicEntity{
 		Type:     topic.Type,
 		Answer:   MapToAnswerValue(topic.Answers, topic.Type),
