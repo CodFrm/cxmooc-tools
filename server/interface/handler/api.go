@@ -21,6 +21,15 @@ func NewApi() http.Handler {
 
 	r.HandleFunc("/", http.FileServer(http.Dir("static")).ServeHTTP)
 	return http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
+		//跨域处理
+		if origin, ok := req.Header["Origin"]; ok {
+			w.Header().Set("Access-Control-Allow-Origin", origin[0])
+			w.Header().Set("Access-Control-Allow-Headers", "Content-Type,Content-Length,Authorization,Accept,X-Requested-With,X-Version")
+			w.Header().Set("Access-Control-Allow-Methods", "PUT,POST,GET,DELETE,OPTIONS")
+		}
+		if req.Method == http.MethodOptions {
+			return
+		}
 		system.Statistics(utils.ClientIP(req))
 		r.ServeHTTP(w, req)
 	})
