@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>
+        <%= htmlWebpackPlugin.options.title %>
+    </title>
+</head>
+<style>
+    p {
+        margin: 0;
+    }
+
+    label {
+        font-family: FangSong_GB2312;
+        font-size: 14px;
+    }
+
+    .ps {
+        text-align: right;
+        color: #cccccc;
+    }
+
+    h4 {
+        margin: 0;
+        margin-top: 4px;
+    }
+
+    a {
+        text-decoration: none;
+        color: #336699;
+        transition: all .3s;
+        border-bottom: 1px solid white;
+    }
+
+    a:hover {
+        border-bottom: 1px solid;
+        color: #CCCC33;
+
+    }
+
+    .config-item {
+        display: inline-block;
+        width: 50%;
+        float: left;
+        height: 26px;
+        line-height: 26px;
+        font-size: 14px;
+    }
+
+    .rdo {
+        width: 0px;
+        height: 12px;
+        appearance: none;
+        -webkit-appearance: none;
+        outline: none;
+        background-color: #888;
+        margin-right: 30px;
+        border-radius: 50%;
+        position: relative;
+    }
+
+    .rdo:hover:before {
+        border: 1px solid #ea879a;
+    }
+
+    .rdo:hover:after {
+        background-color: #ea879a;
+    }
+
+    .rdo:hover {
+        border-color: #ea879a;
+    }
+
+    .rdo:before,
+    .rdo:after {
+        content: '';
+        display: block;
+        position: absolute;
+        border-radius: 50%;
+        transition: .3s ease;
+    }
+
+    .rdo:before {
+        top: 0px;
+        left: 0px;
+        width: 18px;
+        height: 18px;
+        background-color: #fff;
+        border: 1px solid #888;
+        cursor: pointer;
+    }
+
+    .rdo:after {
+        top: 6px;
+        left: 6px;
+        width: 8px;
+        height: 8px;
+        background-color: #fff;
+        cursor: pointer;
+    }
+
+    .rdo:checked:after {
+        top: 4px;
+        left: 4px;
+        width: 12px;
+        height: 12px;
+        background-color: #ea879a;
+        cursor: pointer;
+    }
+
+    .rdo:checked:before {
+        border-color: #ea879a;
+    }
+
+    /*input倍数对齐*/
+    .input_text {
+        margin-top: -2px;
+        margin-bottom: 1px;
+        vertical-align: middle;
+        text-align: center;
+        margin-left: 5px;
+        margin-right: 5px;
+        font-size: 10px;
+        transition: .3s ease;
+        width: 30px;
+        border-radius: 1px;
+        border: 1px solid #ccc;
+        height: 15px;
+    }
+
+    #dama-config .input_text {
+        margin-left: 0;
+        width: 130px;
+    }
+
+    .input_text:hover {
+        border: 1px solid #CCFFFF;
+        box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 4px;
+        -moz-box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 4px;
+        -webkit-box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 4px;
+    }
+
+    /*新的*/
+    body {
+        width: 400px;
+        margin: 0 auto;
+        /*background-color: #ECEFF1;*/
+    }
+
+    .title {
+        font-family: STZhongsong;
+        color: #ffffff;
+        font-size: 16px;
+        margin: 0;
+        margin-left: 30px;
+    }
+
+    .title span {
+        color: #3399CC;
+    }
+
+    /*字体*/
+    .two_font {
+        font-family: SimHei;
+        font-size: 18px;
+        padding-bottom: 10px;
+        text-align: left;
+    }
+
+    .three_font {
+        font-family: FangSong_GB2312;
+        font-size: 14px;
+        text-align: left;
+        margin-bottom: 7px;
+    }
+
+    /*头部*/
+    .head {
+        width: 100%;
+        height: 72px;
+        line-height: 72px;
+        text-align: left;
+        background-image: url("../img/navtu.webp");
+    }
+
+    /*居中对齐*/
+    .center-float-left {
+        display: -webkit-box;
+        display: -moz-box;
+        display: -ms-flexbox;
+        display: -webkit-flex;
+        display: -o-flex;
+        display: flex;
+        -webkit-align-items: center;
+        -moz-align-items: center;
+        -ms-align-items: center;
+        -o-align-items: center;
+        align-items: center;
+        line-height: 1.4;
+        justify-content: center
+    }
+
+    .content_top {
+        width: 100%;
+        margin-top: 0px;
+    }
+
+    /*内容第一层*/
+    .content_topleft {
+        color: #003366;
+        width: 100%;
+        padding: 0 20px;
+    }
+
+    .content_topright {
+        width: 40%;
+        height: 130px;
+        /*直接设置固定高度了，要加内容注意看高度*/
+        color: #003366;
+    }
+
+    /*分类标题*/
+    .one_title {
+        border-bottom: 1px solid #CCCCCC;
+        font-family: STHeiti;
+        padding: 4px 0;
+        font-size: 14px;
+    }
+
+    /*标题下内容*/
+    .three_font span {
+        color: #333333;
+    }
+
+    .mt10 {
+        margin-top: 10px;
+    }
+
+    /*底部分类*/
+    .content_bottom {
+        overflow: hidden;
+        padding: 0 20px;
+        margin: 0 auto;
+        color: #003366;
+        /*margin-top: 10px;*/
+    }
+
+    .content_bottom .one_title {
+        margin-bottom: 10px;
+        padding-bottom: 10px;
+    }
+
+    .width_50 {
+        margin-top: 10px;
+    }
+
+    /*底部项目链接*/
+    .bottom_div {
+        padding: 0 20px;
+        margin: 0 auto;
+        color: #003366;
+        margin-top: 10px;
+    }
+
+    .bottom_div ul {
+        width: 100%;
+        height: auto;
+        position: relative;
+        top: 0;
+        padding: 0;
+        left: 0;
+        list-style: none;
+    }
+
+    li {
+        width: 50%;
+        margin-bottom: 8px;
+        float: left;
+    }
+
+    /*移上去变手*/
+    .shou {
+        cursor: pointer;
+    }
+
+    #tiku {
+        float: left;
+        width: 80px;
+    }
+
+    /*渲染的公告*/
+    #injection p {
+        font-size: 13px;
+        line-height: 18px;
+        margin-bottom: 8px;
+    }
+
+    #vtoken,
+    #dama {
+        float: right;
+    }
+
+    .edit {
+        width: 100px;
+        margin-left: 25px;
+        height: 24.8px;
+        margin-top: 0;
+    }
+
+    #vtoken {
+        margin-top: 1px;
+    }
+
+    .btn {
+        height: 20px;
+        line-height: 16px;
+        background-color: #008CBA;
+        border: none;
+        color: white;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+    }
+
+    .page {
+        overflow: hidden;
+    }
+
+    /*以下为按钮样式*/
+    .one_title .button {
+        /*float: left;*/
+        display: block;
+        padding: 0.5em 1em;
+        border: none;
+        background: none;
+        color: inherit;
+        vertical-align: middle;
+        position: relative;
+        z-index: 1;
+        -webkit-backface-visibility: hidden;
+        -moz-osx-font-smoothing: grayscale;
+    }
+
+    .one_title .button:focus {
+        outline: none;
+    }
+
+    .one_title .button > span {
+        vertical-align: middle;
+    }
+
+    .bg-1 .button {
+        color: #37474f;
+        border-color: #37474f;
+    }
+
+    .button--tamaya {
+        overflow: hidden;
+        color: #003366;
+        min-width: 150px;
+    }
+
+    .button--tamaya.button--inverted {
+        color: #37474f;
+        border-color: #37474f;
+    }
+
+    .button--tamaya::before,
+    .button--tamaya::after {
+        content: attr(data-text);
+        position: absolute;
+        width: 100%;
+        height: 50%;
+        left: 0;
+        background: #003366;
+        color: #fff;
+        /*overflow: hidden;*/
+        -webkit-transition: -webkit-transform 0.3s;
+        transition: transform 0.3s;
+        -webkit-transition-timing-function: cubic-bezier(0.2, 1, 0.3, 1);
+        transition-timing-function: cubic-bezier(0.2, 1, 0.3, 1);
+    }
+
+    .button--tamaya.button--inverted::before,
+    .button--tamaya.button--inverted::after {
+        background: #fff;
+        color: #37474f;
+    }
+
+    .button--tamaya::before {
+        top: 0;
+        padding-top: 1em;
+    }
+
+    .button--tamaya::after {
+        bottom: 0;
+        line-height: 0;
+    }
+
+    .button--tamaya > span {
+        display: block;
+        -webkit-transform: scale3d(0.2, 0.2, 1);
+        transform: scale3d(0.2, 0.2, 1);
+        opacity: 0;
+        -webkit-transition: -webkit-transform 0.3s, opacity 0.3s;
+        transition: transform 0.3s, opacity 0.3s;
+        -webkit-transition-timing-function: cubic-bezier(0.2, 1, 0.3, 1);
+        transition-timing-function: cubic-bezier(0.2, 1, 0.3, 1);
+    }
+
+    .button--tamaya:hover::before {
+        -webkit-transform: translate3d(0, -100%, 0);
+        transform: translate3d(0, -100%, 0);
+    }
+
+    .button--tamaya:hover::after {
+        -webkit-transform: translate3d(0, 100%, 0);
+        transform: translate3d(0, 100%, 0);
+    }
+
+    .button--tamaya:hover > span {
+        opacity: 1;
+        -webkit-transform: scale3d(1, 1, 1);
+        transform: scale3d(1, 1, 1);
+    }
+
+    .one_title_show .button--border-thick {
+        border: 3px solid;
+    }
+
+    .button--size-s {
+        font-size: 10px;
+    }
+
+    @-webkit-keyframes anim-moema-1 {
+        60% {
+            -webkit-transform: scale3d(0.8, 0.8, 1);
+            transform: scale3d(0.8, 0.8, 1);
+        }
+        85% {
+            -webkit-transform: scale3d(1.1, 1.1, 1);
+            transform: scale3d(1.1, 1.1, 1);
+        }
+        100% {
+            -webkit-transform: scale3d(1, 1, 1);
+            transform: scale3d(1, 1, 1);
+        }
+    }
+
+    @keyframes anim-moema-1 {
+        60% {
+            -webkit-transform: scale3d(0.8, 0.8, 1);
+            transform: scale3d(0.8, 0.8, 1);
+        }
+        85% {
+            -webkit-transform: scale3d(1.1, 1.1, 1);
+            transform: scale3d(1.1, 1.1, 1);
+        }
+        100% {
+            -webkit-transform: scale3d(1, 1, 1);
+            transform: scale3d(1, 1, 1);
+        }
+    }
+
+    @-webkit-keyframes anim-moema-2 {
+        to {
+            opacity: 0;
+            -webkit-transform: scale3d(1, 1, 1);
+            transform: scale3d(1, 1, 1);
+        }
+    }
+
+    @keyframes anim-moema-2 {
+        to {
+            opacity: 0;
+            -webkit-transform: scale3d(1, 1, 1);
+            transform: scale3d(1, 1, 1);
+        }
+    }
+</style>
+
+<body>
+<div class="head">
+    <h3 class="title"><span>超星慕课</span>小工具</h3>
+
+</div>
+<div class="content_top center-float-left">
+    <div class="content_topleft">
+        <h4 class="one_title">公告</h4>
+        <div id="injection" class="mt10">
+
+        </div>
+    </div>
+</div>
+<!--插件配置盒子-->
+<div class="content_bottom">
+    <h4 class="one_title">
+        <div class="one_title_show">
+            <span>插件配置:</span>
+            <input type="text" class="input_text edit" placeholder="token" config-key="vtoken">
+        </div>
+    </h4>
+    <div id="config" class="page">
+        <div class="config-item width_50">
+            <input type="checkbox" id="rand-answer" class="rdo" config-key="rand_answer">
+            <label class="shou" for="rand-answer" title="没有正确的答案会随机选择">随机答案</label>
+        </div>
+        <div class="config-item width_50">
+            <input type="checkbox" id="auto" class="rdo" config-key="auto">
+            <label class="shou" for="auto" title="进入一个页面就会自动开始挂机,完成一个任务之后会自动进行下一个">自动挂机</label>
+        </div>
+        <br>
+        <div class="config-item width_50">
+            <input type="checkbox" id="video-mute" class="rdo" config-key="video_mute">
+            <label class="shou" for="video-mute" title="播放视频时,自动开启静音">视频静音</label>
+        </div>
+        <div id="ignore" class="config-item width_50">
+            <input class="rdo" type="checkbox" id="answer-ignore" config-key="answer_ignore">
+            <label class="shou" for="answer-ignore" title="自动挂机时,忽略掉题目不做,直接跳过">忽略题目</label>
+        </div>
+        <div>
+            <div class="config-item width_50">
+                <label for="video-cdn" title="播放源,为空默认选择最后一次播放源">播放源:</label>
+                <input type="text" class="input_text" id="video-cdn" placeholder="默认" config-key="video_cdn">
+            </div>
+            <div class="config-item width_50" style="color:#ff0000">
+                <label for="video-multiple" title="视频播放的倍数,1为正常速度(最高16倍,该功能有一定危险)">倍速播放:</label>
+                <input type="text" class="input_text" id="video-multiple" placeholder="1" config-key="video_multiple"
+                       prompt="这是一个很危险的功能,建议不要进行调整,如果你想调整播放速度请在下方填写yes(智慧树平台播放速度和视频进度无关,最高只能1.5倍速)">倍
+            </div>
+            <div id="auto-m" class="config-item width_50">
+                <label for="interval" title="播放(题目)完成后n分钟再继续下一个任务">间隔时间:</label>
+                <input type="text" class="input_text" id="interval" placeholder="2" config-key="interval">分
+            </div>
+        </div>
+    </div>
+</div>
+<!--其他模块盒子-->
+<div class="bottom_div">
+    <h4 class="one_title"><span>其他:</span></h4>
+    <ul>
+        <li><a class="three_font" href="https://github.com/CodFrm/cxmooc-tools" target="_black">GitHub开源地址</a></li>
+        <li><a class="three_font" href="https://cx-doc.xloli.top" target="_black">使用文档</a></li>
+        <li><a class="three_font" href="https://github.com/CodFrm/cxmooc-tools/issues" target="_black">Bug/意见/题目反馈地址</a>
+        </li>
+        <li><a class="three_font" target="_blank"
+               href="https://shang.qq.com/wpa/qunwpa?idkey=9bddd2564d84bd999940de422d1c0c70f87ecaf02fe9d7c60389fc2b376179eb">交流qq群&nbsp614202391</a>
+        </li>
+    </ul>
+</div>
+<div style="padding:0 20px;margin-top: 10px;">
+    <img id="tiku" src="https://img.shields.io/badge/%E9%A2%98%E5%BA%93-success-brightgreen.svg">
+    <p class="ps">PS:本扩展全部是免费的</p>
+    <p id="version" class="ps"></p>
+</div>
+</body>
+
+</html>

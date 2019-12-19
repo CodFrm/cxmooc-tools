@@ -9,7 +9,7 @@
     "tampermonkey": "node_modules/.bin/webpack --config webpack.tampermonkey.js",
     "dev": "node_modules/.bin/webpack --mode development --config webpack.dev.js",
     "server": "node src/server/listen.js",
-    "pack": "node src/pack-crx.js",
+    "pack": "node src/internal/pack-crx.js",
     "docs:dev": "node_modules/.bin/vuepress dev docs",
     "docs:build": "node_modules/.bin/vuepress build docs"
   },
@@ -24,6 +24,7 @@
   },
   "homepage": "https://github.com/CodFrm/cxmooc-tools#readme",
   "devDependencies": {
+    "@types/chrome": "^0.0.91",
     "@vuepress/plugin-back-to-top": "^1.0.0-alpha.47",
     "@vuepress/plugin-google-analytics": "^1.0.0-alpha.0",
     "crx": "^4.0.1",

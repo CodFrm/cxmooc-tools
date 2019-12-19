@@ -1,5 +1,5 @@
 const common = require('../common');
-const serverConfig = require('../../config');
+const serverConfig = require('../../internal/utils/config');
 
 module.exports = function () {
     let self = this;

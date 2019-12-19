@@ -1,11 +1,11 @@
-var htmlWebpackPlugin = require('html-webpack-plugin');
-var home = __dirname + '/src/cxmooc-tools';
+const htmlWebpackPlugin = require('html-webpack-plugin');
+const home = __dirname + '/src';
 module.exports = {
     entry: {
-        mooc: home + '/mooc.js',
-        start: home + '/start.js',
-        background: home + '/background.js',
-        popup: home + '/popup.js'
+        mooc: home + '/mooc.ts',
+        start: home + '/start.ts',
+        background: home + '/background.ts',
+        popup: home + '/popup.ts'
     },
     output: {
         path: __dirname + '/build/cxmooc-tools/src',
@@ -14,7 +14,7 @@ module.exports = {
     plugins: [
         new htmlWebpackPlugin({
             filename: __dirname + '/build/cxmooc-tools/src/popup.html',
-            template: home + '/html/popup.html',
+            template: home + '/views/popup.html',
             inject: 'head',
             title: '弹出页面',
             minify: {
@@ -28,10 +28,14 @@ module.exports = {
             {
                 test: /\.css$/,
                 use: ['style-loader', 'css-loader'],
+            }, {
+                test: /\.ts$/,
+                use: 'ts-loader',
+                exclude: /node_modules/,
             }
         ]
     },
     resolve: {
         extensions: ['.ts', '.js']
     }
-}
+};
