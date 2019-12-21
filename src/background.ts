@@ -1,6 +1,7 @@
 import {Config} from './internal/utils/config'
 import {NewExtensionServerMessage} from "./internal/utils/message";
 import {HttpUtils} from "./internal/utils/utils";
+import {CheckUpdate} from "./internal/application";
 
 class background {
 
@@ -14,33 +15,17 @@ class background {
                 }
             }
         });
-        this.update();
-    }
-
-
-    protected update() {
-        HttpUtils.HttpGet(Config.url + "update?ver=" + Config.version, {
-            json: true,
-            success: function (json) {
-                console.log(json);
-                chrome.storage.local.set({
-                    'version': json.version,
-                    'url': json.url,
-                    'enforce': json.enforce,
-                    'hotversion': json.hotversion
+        CheckUpdate(function (isnew, data) {
+            if (isnew) {
+                chrome.browserAction.setBadgeText({
+                    text: 'new'
                 });
-                if (Config.version < json.version) {
-                    chrome.browserAction.setBadgeText({
-                        text: 'new'
-                    });
-                    chrome.browserAction.setBadgeBackgroundColor({
-                        color: [255, 0, 0, 255]
-                    });
-                }
+                chrome.browserAction.setBadgeBackgroundColor({
+                    color: [255, 0, 0, 255]
+                });
             }
-        })
+        });
     }
-
 }
 
 new background().start();

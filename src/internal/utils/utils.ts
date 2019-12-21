@@ -1,5 +1,5 @@
 import {Client} from "./message";
-import {AppName, DefaultClient, IsBackground, IsExtension} from "../application";
+import {AppName, DefaultClient, IsBackground, IsFrontend} from "../application";
 
 export type RequestCallback = (body: any) => void
 export type ErrorCallback = () => void
@@ -14,7 +14,7 @@ export interface RequestInfo extends RequestInit {
 export class HttpUtils {
 
     public static Request(info: RequestInfo): void {
-        if (IsExtension) {
+        if (IsFrontend) {
             fetch(info.url, info).then(body => {
                 if (info.json) {
                     return body.json();

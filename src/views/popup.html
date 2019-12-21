@@ -506,20 +506,20 @@
     </h4>
     <div id="config" class="page">
         <div class="config-item width_50">
-            <input type="checkbox" id="rand-answer" class="rdo" config-key="rand_answer">
+            <input type="checkbox" id="rand-answer" class="rdo" config-key="rand_answer" default-val="false">
             <label class="shou" for="rand-answer" title="没有正确的答案会随机选择">随机答案</label>
         </div>
         <div class="config-item width_50">
-            <input type="checkbox" id="auto" class="rdo" config-key="auto">
+            <input type="checkbox" id="auto" class="rdo" config-key="auto" default-val="true">
             <label class="shou" for="auto" title="进入一个页面就会自动开始挂机,完成一个任务之后会自动进行下一个">自动挂机</label>
         </div>
         <br>
         <div class="config-item width_50">
-            <input type="checkbox" id="video-mute" class="rdo" config-key="video_mute">
+            <input type="checkbox" id="video-mute" class="rdo" config-key="video_mute" default-val="true">
             <label class="shou" for="video-mute" title="播放视频时,自动开启静音">视频静音</label>
         </div>
         <div id="ignore" class="config-item width_50">
-            <input class="rdo" type="checkbox" id="answer-ignore" config-key="answer_ignore">
+            <input class="rdo" type="checkbox" id="answer-ignore" config-key="answer_ignore" default-val="false">
             <label class="shou" for="answer-ignore" title="自动挂机时,忽略掉题目不做,直接跳过">忽略题目</label>
         </div>
         <div>
@@ -530,11 +530,13 @@
             <div class="config-item width_50" style="color:#ff0000">
                 <label for="video-multiple" title="视频播放的倍数,1为正常速度(最高16倍,该功能有一定危险)">倍速播放:</label>
                 <input type="text" class="input_text" id="video-multiple" placeholder="1" config-key="video_multiple"
+                       default-val="1"
                        prompt="这是一个很危险的功能,建议不要进行调整,如果你想调整播放速度请在下方填写yes(智慧树平台播放速度和视频进度无关,最高只能1.5倍速)">倍
             </div>
             <div id="auto-m" class="config-item width_50">
                 <label for="interval" title="播放(题目)完成后n分钟再继续下一个任务">间隔时间:</label>
-                <input type="text" class="input_text" id="interval" placeholder="2" config-key="interval">分
+                <input type="text" class="input_text" id="interval" placeholder="2" config-key="interval"
+                       default-val="2">分
             </div>
         </div>
     </div>
