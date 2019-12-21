@@ -23,7 +23,7 @@ func (v *VCode) Do(token string, image []byte) (string, error) {
 		if err == errs.TokenNotExist {
 			return "", errs.IntegralInsufficient
 		}
-		return "", errs.VCodeServerException(err)
+		return "", err
 	}
 	code, err := vcode.SendImage(image)
 	if err != nil {
