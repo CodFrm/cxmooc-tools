@@ -1,4 +1,3 @@
-import {Config} from './internal/utils/config'
 import {NewExtensionServerMessage} from "./internal/utils/message";
 import {HttpUtils} from "./internal/utils/utils";
 import {CheckUpdate} from "./internal/application";

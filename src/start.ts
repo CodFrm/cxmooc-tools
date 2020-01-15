@@ -1,7 +1,7 @@
-import {Config} from "./internal/utils/config";
 import {NewChromeServerMessage} from "./internal/utils/message";
 import {HttpUtils, Injected} from "./internal/utils/utils";
 import {CheckUpdate} from "./internal/application";
+import {SystemConfig} from "./internal/utils/config";
 
 class start {
 
@@ -15,13 +15,13 @@ class start {
                 }
                 case "config": {
                     if (data.key) {
-                        Config.SendConfig(client, data.key);
+                        SystemConfig.SendConfig(client, data.key);
                     }
                     break;
                 }
             }
         });
-        CheckUpdate(function (isnew, data) {
+        CheckUpdate((isnew, data) => {
             if (isnew) {
                 if (data.enforce) {
                     alert('刷课扩展要求强制更新');
@@ -37,7 +37,7 @@ class start {
                 isHotUpdate = true;
             }
             if (isHotUpdate) {
-                Injected(document, Config.url + 'js/' + hotVersion + '.js');
+                Injected(document, SystemConfig.url + 'js/' + hotVersion + '.js');
             } else {
                 Injected(document, chrome.extension.getURL('src/mooc.js'));
             }

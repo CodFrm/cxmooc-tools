@@ -1,6 +1,6 @@
 import {Client, NewChromeClientMessage, NewExtensionClientMessage} from "./utils/message";
 import {HttpUtils} from "./utils/utils";
-import {Config} from "./utils/config";
+import {SystemConfig} from "./utils/config";
 
 export const IsFrontend = (chrome.storage !== undefined);
 export const IsBackground = (chrome.browserAction !== undefined);
@@ -28,11 +28,11 @@ export interface UpdateData {
 export function CheckUpdate(callback: (isnew: boolean, data: UpdateData) => void) {
     if (IsContent) {
         chrome.storage.local.get(["version", "enforce", "hotversion", "url"], function (item) {
-            callback((Config.version < item.version), item as UpdateData);
+            callback((SystemConfig.version < item.version), item as UpdateData);
         });
         return;
     }
-    HttpUtils.HttpGet(Config.url + "update?ver=" + Config.version, {
+    HttpUtils.HttpGet(SystemConfig.url + "update?ver=" + SystemConfig.version, {
         json: true,
         success: function (json) {
             let data: UpdateData = {
@@ -43,7 +43,7 @@ export function CheckUpdate(callback: (isnew: boolean, data: UpdateData) => void
                 injection: json.injection,
             };
             chrome.storage.local.set(data);
-            callback((Config.version < data.version), data);
+            callback((SystemConfig.version < data.version), data);
         }, error: function () {
             callback(false, undefined);
         }

@@ -1,42 +1,70 @@
 import {Client} from "./message";
 import {AppName, DefaultClient, IsFrontend} from "../application";
 
-export class Config {
-    public static version: number = 2.12;
-    public static url: string = "https://cx.icodef.com/";
+export interface GetConfig {
+    GetConfig(key: string): any
+}
 
-    public static async GetConfig(client: Client | string, key?: string): Promise<any> {
-        if (!IsFrontend) {
-            // 接收
-            let inclient = client;
-            let k = key;
-            if (typeof client === "string") {
-                inclient = DefaultClient(AppName);
-                k = client;
-            }
-            let p = new Promise<any>(resolve => ((<Client>inclient).Recv((data) => {
-                resolve(data.val);
-            })));
-            (<Client>inclient).Send({type: "config", key: k});
-            return p;
-        }
-        return new Promise<any>(resolve => (chrome.storage.sync.get(client, (value) => {
-            if (value.hasOwnProperty(<string>client)) {
-                resolve(<any>value[<string>client])
+export interface SetConfig {
+    SetConfig(key: string, val: any): void
+}
+
+export function NewBackendConfig(): backendConfig {
+    return new backendConfig();
+}
+
+class backendConfig implements GetConfig, SetConfig {
+    public GetConfig(key: string): Promise<any> {
+        return new Promise<any>(resolve => (chrome.storage.sync.get(key, (value) => {
+            if (value.hasOwnProperty(<string>key)) {
+                resolve(<any>value[<string>key])
             } else {
                 resolve(undefined)
             }
         })));
     }
 
-    public static SetConfig(key: string, val: any): void {
-        let info = new Map<string, any>();
-        info.set(key, val);
+    public SetConfig(key: string, val: any): void {
+        let info: { [key: string]: number; } = {};
+        info[key] = val;
         chrome.storage.sync.set(info);
     }
+}
 
-    public static async SendConfig(client: Client, key: string): Promise<void> {
-        client.Send({val: await this.GetConfig(key)})
+export function NewFrontendGetConfig(): GetConfig {
+    return new frontendGetConfig();
+}
+
+class frontendGetConfig implements GetConfig {
+    public async GetConfig(key: string): Promise<any> {
+        let client = DefaultClient(AppName);
+        let p = new Promise<any>(resolve => ((<Client>client).Recv((data) => {
+            resolve(data.val);
+        })));
+        (<Client>client).Send({type: "config", key: key});
+        return p;
+    }
+}
+
+export class SystemConfig {
+    public static version = 2.12;
+    public static url = "https://cx.icodef.com/";
+    public static configMap: any = {
+        version: SystemConfig.version,
+        url: SystemConfig.url,
+    };
+
+    public static GetConfig(key: string): Promise<any> {
+        return SystemConfig.configMap[key];
+    }
+
+    public static SetConfig(key: string, val: any): void {
+        SystemConfig.configMap[key] = val;
+    }
+
+    public static SendConfig(client: Client, key: string): void {
+        client.Send({val: SystemConfig.GetConfig(key)})
     }
 
 }
+

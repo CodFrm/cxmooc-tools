@@ -1,42 +1,53 @@
 import {HttpUtils} from "./internal/utils/utils";
-import {Config} from "./internal/utils/config";
+import {GetConfig, NewBackendConfig, SetConfig, SystemConfig} from "./internal/utils/config";
 import {CheckUpdate} from "./internal/application";
 
 class popup {
+
+    private getConfig: GetConfig;
+
+    private setConfig: SetConfig;
+
+    constructor(getconf: GetConfig, setconf: SetConfig) {
+        this.getConfig = getconf;
+        this.setConfig = setconf;
+    }
+
     public async main() {
         let cfg = document.getElementsByTagName("input");
         for (let i = 0; i < cfg.length; i++) {
             let el = cfg.item(i);
             let key = el.getAttribute("config-key");
             if (key != "") {
+                let pop = this;
                 el.onchange = async function (ev) {
                     let promptMsg = (<HTMLElement>this).getAttribute("prompt");
-                    if (promptMsg !== null && await Config.GetConfig(key + "_prompt") == false) {
+                    if (promptMsg !== null && await pop.getConfig.GetConfig(key + "_prompt") == false) {
                         let msg = prompt(promptMsg);
                         if (msg !== "yes") {
-                            (<HTMLInputElement>this).value = await Config.GetConfig(key) || 1;
+                            (<HTMLInputElement>this).value = await pop.getConfig.GetConfig(key) || 1;
                             return;
                         }
-                        Config.SetConfig(key + "_prompt", true);
+                        pop.setConfig.SetConfig(key + "_prompt", true);
                     }
                     switch ((<HTMLInputElement>this).type) {
                         case"checkbox": {
-                            Config.SetConfig(key, (<HTMLInputElement>this).checked);
+                            pop.setConfig.SetConfig(key, (<HTMLInputElement>this).checked);
                             break;
                         }
                         default: {
-                            Config.SetConfig(key, (<HTMLInputElement>this).value);
+                            pop.setConfig.SetConfig(key, (<HTMLInputElement>this).value);
                         }
                     }
                 };
-                popup.defaultVal(el, key);
+                this.defaultVal(el, key);
             }
         }
         CheckUpdate(function (isnew, data) {
             let v: number;
             if (data === undefined) {
                 (<HTMLImageElement>document.getElementById("tiku")).src = "https://img.shields.io/badge/%E9%A2%98%E5%BA%93-error-red.svg";
-                v = Config.version;
+                v = SystemConfig.version;
             } else {
                 if (isnew) {
                     var p = document.createElement('p');
@@ -45,25 +56,25 @@ class popup {
                     document.getElementsByTagName('body')[0].appendChild(p);
                 }
                 document.getElementById("injection").innerHTML = data.injection;
-                v = (Config.version > data.hotversion ? Config.version : data.hotversion);
+                v = (SystemConfig.version > data.hotversion ? SystemConfig.version : data.hotversion);
             }
             document.getElementById('version').innerHTML = 'v' + v;
         });
     }
 
-    private static async defaultVal(el: HTMLInputElement, key: string) {
+    private async defaultVal(el: HTMLInputElement, key: string) {
         let def = el.getAttribute("default-val");
         switch (el.type) {
             case"checkbox": {
                 if (def === "true") {
-                    el.checked = await Config.GetConfig(key) || true;
+                    el.checked = await this.getConfig.GetConfig(key) || true;
                     return;
                 }
-                el.checked = await Config.GetConfig(key) || false;
+                el.checked = await this.getConfig.GetConfig(key) || false;
                 return;
             }
             default: {
-                el.value = await Config.GetConfig(key) || def || "";
+                el.value = await this.getConfig.GetConfig(key) || def || "";
                 return;
             }
         }
@@ -71,5 +82,6 @@ class popup {
 }
 
 window.onload = function () {
-    new popup().main();
+    let config = NewBackendConfig();
+    new popup(config, config).main();
 };

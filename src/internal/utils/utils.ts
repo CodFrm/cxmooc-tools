@@ -33,7 +33,6 @@ export class HttpUtils {
 
     private static crossDomainRequest(info: RequestInfo): void {
         if (window.hasOwnProperty('GM_xmlhttpRequest')) {
-            //TODO: 兼容油猴GM_xmlhttpRequest
             let oldGM_xmlhttpRequest = (<any>window).GM_xmlhttpRequest;
             (<any>window).GM_xmlhttpRequest = (info: RequestInfo) => {
                 oldGM_xmlhttpRequest(info);
