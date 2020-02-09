@@ -1,11 +1,12 @@
-import {NewChromeServerMessage} from "./internal/utils/message";
-import {HttpUtils, Injected} from "./internal/utils/utils";
-import {CheckUpdate} from "./internal/application";
-import {SystemConfig} from "./internal/utils/config";
+import { NewChromeServerMessage } from "./internal/utils/message";
+import { HttpUtils, Injected } from "./internal/utils/utils";
+import { Application, Content } from "./internal/application";
+import { SystemConfig } from "./internal/utils/config";
 
+new Application(Content);
 class start {
 
-    public start() {
+    public main() {
         let msg = NewChromeServerMessage("cxmooc-tools");
         msg.Accept((client, data) => {
             switch (data.type) {
@@ -21,7 +22,7 @@ class start {
                 }
             }
         });
-        CheckUpdate((isnew, data) => {
+        Application.CheckUpdate((isnew, data) => {
             if (isnew) {
                 if (data.enforce) {
                     alert('刷课扩展要求强制更新');
@@ -45,4 +46,4 @@ class start {
     }
 }
 
-new start().start();
+new start().main();

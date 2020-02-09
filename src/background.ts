@@ -1,10 +1,11 @@
-import {NewExtensionServerMessage} from "./internal/utils/message";
-import {HttpUtils} from "./internal/utils/utils";
-import {CheckUpdate} from "./internal/application";
+import { NewExtensionServerMessage } from "./internal/utils/message";
+import { HttpUtils } from "./internal/utils/utils";
+import { Application, Backend } from "./internal/application";
 
+new Application(Backend);
 class background {
 
-    public start() {
+    public main() {
         let server = NewExtensionServerMessage("cxmooc-tools");
         server.Accept((client, data) => {
             switch (data.type) {
@@ -14,7 +15,7 @@ class background {
                 }
             }
         });
-        CheckUpdate(function (isnew, data) {
+        Application.CheckUpdate(function (isnew, data) {
             if (isnew) {
                 chrome.browserAction.setBadgeText({
                     text: 'new'
@@ -27,4 +28,4 @@ class background {
     }
 }
 
-new background().start();
+new background().main();

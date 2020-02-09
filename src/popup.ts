@@ -1,7 +1,7 @@
-import {HttpUtils} from "./internal/utils/utils";
-import {GetConfig, NewBackendConfig, SetConfig, SystemConfig} from "./internal/utils/config";
-import {CheckUpdate} from "./internal/application";
+import { GetConfig, NewBackendConfig, SetConfig, SystemConfig } from "./internal/utils/config";
+import { Application, Backend } from "./internal/application";
 
+new Application(Backend);
 class popup {
 
     private getConfig: GetConfig;
@@ -31,7 +31,7 @@ class popup {
                         pop.setConfig.SetConfig(key + "_prompt", true);
                     }
                     switch ((<HTMLInputElement>this).type) {
-                        case"checkbox": {
+                        case "checkbox": {
                             pop.setConfig.SetConfig(key, (<HTMLInputElement>this).checked);
                             break;
                         }
@@ -43,7 +43,7 @@ class popup {
                 this.defaultVal(el, key);
             }
         }
-        CheckUpdate(function (isnew, data) {
+        Application.CheckUpdate(function (isnew, data) {
             let v: number;
             if (data === undefined) {
                 (<HTMLImageElement>document.getElementById("tiku")).src = "https://img.shields.io/badge/%E9%A2%98%E5%BA%93-error-red.svg";
@@ -65,7 +65,7 @@ class popup {
     private async defaultVal(el: HTMLInputElement, key: string) {
         let def = el.getAttribute("default-val");
         switch (el.type) {
-            case"checkbox": {
+            case "checkbox": {
                 if (def === "true") {
                     el.checked = await this.getConfig.GetConfig(key) || true;
                     return;

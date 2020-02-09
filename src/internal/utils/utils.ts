@@ -1,5 +1,5 @@
-import {Client} from "./message";
-import {AppName, DefaultClient, IsBackground, IsFrontend} from "../application";
+import { Client } from "./message";
+import { AppName, Application } from "../application";
 
 export type RequestCallback = (body: any) => void
 export type ErrorCallback = () => void
@@ -14,7 +14,7 @@ export interface RequestInfo extends RequestInit {
 export class HttpUtils {
 
     public static Request(info: RequestInfo): void {
-        if (IsFrontend) {
+        if (Application.App().IsBackend) {
             fetch(info.url, info).then(body => {
                 if (info.json) {
                     return body.json();
@@ -39,7 +39,7 @@ export class HttpUtils {
             }
         } else {
             (<any>window).GM_xmlhttpRequest = (info: RequestInfo) => {
-                let client: Client = DefaultClient(AppName);
+                let client: Client = Application.App().Client;
                 client.Recv((data) => {
                     if (data.code == 0) {
                         info.success && info.success(data.body);
@@ -75,18 +75,18 @@ export class HttpUtils {
             return
         }
         let info = <RequestInfo>data.info;
-        if (IsBackground) {
+        if (Application.App().IsBackend) {
             info.success = (body) => {
-                client.Send({body: body, code: 0})
+                client.Send({ body: body, code: 0 })
             };
             info.error = () => {
-                client.Send({code: -1})
+                client.Send({ code: -1 })
             };
             HttpUtils.Request(info)
         } else {
             // content 做转发
-            let extClient = DefaultClient("cxmooc-tools");
-            extClient.Send({type: "GM_xmlhttpRequest", info: info});
+            let extClient = Application.App().Client;
+            extClient.Send({ type: "GM_xmlhttpRequest", info: info });
             extClient.Recv((data) => {
                 client.Send(data)
             })
@@ -122,3 +122,13 @@ export function RemoveInjected(doc: Document) {
     }
 }
 
+export function randNumber(minNum: number, maxNum: number): number {
+    switch (arguments.length) {
+        case 1:
+            return Math.ceil(Math.random() * minNum + 1);
+        case 2:
+            return Math.ceil(Math.random() * (maxNum - minNum + 1) + minNum);
+        default:
+            return 0;
+    }
+}

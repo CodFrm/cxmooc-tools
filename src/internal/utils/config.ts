@@ -1,5 +1,6 @@
-import {Client} from "./message";
-import {AppName, DefaultClient, IsFrontend} from "../application";
+import { Client } from "./message";
+import { AppName, Application } from "../application";
+import { randNumber } from "./utils";
 
 export interface GetConfig {
     GetConfig(key: string): any
@@ -9,6 +10,7 @@ export interface SetConfig {
     SetConfig(key: string, val: any): void
 }
 
+// 后台环境中使用
 export function NewBackendConfig(): backendConfig {
     return new backendConfig();
 }
@@ -17,9 +19,9 @@ class backendConfig implements GetConfig, SetConfig {
     public GetConfig(key: string): Promise<any> {
         return new Promise<any>(resolve => (chrome.storage.sync.get(key, (value) => {
             if (value.hasOwnProperty(<string>key)) {
-                resolve(<any>value[<string>key])
+                resolve(<any>value[<string>key]);
             } else {
-                resolve(undefined)
+                resolve(undefined);
             }
         })));
     }
@@ -31,17 +33,23 @@ class backendConfig implements GetConfig, SetConfig {
     }
 }
 
+// 前端环境使用
 export function NewFrontendGetConfig(): GetConfig {
     return new frontendGetConfig();
 }
 
 class frontendGetConfig implements GetConfig {
     public async GetConfig(key: string): Promise<any> {
-        let client = DefaultClient(AppName);
+        let client = Application.App().Client;
         let p = new Promise<any>(resolve => ((<Client>client).Recv((data) => {
-            resolve(data.val);
+            if (key == "interval") {
+                let interval = (data.val || 0.1) * 60000;
+                resolve(randNumber(interval - (interval / 2), interval + (interval / 2)));
+            } else {
+                resolve(data.val);
+            }
         })));
-        (<Client>client).Send({type: "config", key: key});
+        (<Client>client).Send({ type: "config", key: key });
         return p;
     }
 }
@@ -55,15 +63,19 @@ export class SystemConfig {
     };
 
     public static GetConfig(key: string): Promise<any> {
-        return SystemConfig.configMap[key];
+        let ret = SystemConfig.configMap[key];
+        if (ret == undefined) {
+            return new backendConfig().GetConfig(key);
+        }
+        return ret;
     }
 
     public static SetConfig(key: string, val: any): void {
         SystemConfig.configMap[key] = val;
     }
 
-    public static SendConfig(client: Client, key: string): void {
-        client.Send({val: SystemConfig.GetConfig(key)})
+    public static async SendConfig(client: Client, key: string): Promise<void> {
+        client.Send({ val: await SystemConfig.GetConfig(key) })
     }
 
 }

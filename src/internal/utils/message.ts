@@ -56,6 +56,7 @@ abstract class msg {
     }
 }
 
+// 扩展中使用
 export function NewExtensionClientMessage(tag: string): Client {
     return new extensionClientMessage(tag)
 }
@@ -88,6 +89,7 @@ class extensionClientMessage extends msg implements Client {
     }
 }
 
+// 浏览器中使用
 export function NewChromeServerMessage(tag: string): Server {
     return new chromeServerMessage(tag)
 }
