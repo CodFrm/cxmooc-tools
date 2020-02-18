@@ -1,7 +1,7 @@
-import { NewChromeServerMessage } from "./internal/utils/message";
-import { HttpUtils, Injected } from "./internal/utils/utils";
-import { Application, Content } from "./internal/application";
-import { SystemConfig } from "./internal/utils/config";
+import { NewChromeServerMessage } from "@App/internal/utils/message";
+import { HttpUtils, Injected } from "@App/internal/utils/utils";
+import { Application, Content } from "@App/internal/application";
+import { SystemConfig } from "@App/internal/utils/config";
 
 new Application(Content);
 class start {

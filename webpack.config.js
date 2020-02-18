@@ -1,3 +1,4 @@
+const path = require('path');
 const htmlWebpackPlugin = require('html-webpack-plugin');
 const home = __dirname + '/src';
 module.exports = {
@@ -36,6 +37,9 @@ module.exports = {
         ]
     },
     resolve: {
-        extensions: ['.ts', '.js']
+        extensions: ['.ts', '.js'],
+        alias: {
+            "@App": path.resolve(__dirname, 'src/'),
+        }
     }
 };
