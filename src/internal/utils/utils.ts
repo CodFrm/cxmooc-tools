@@ -14,7 +14,7 @@ export interface RequestInfo extends RequestInit {
 export class HttpUtils {
 
     public static Request(info: RequestInfo): void {
-        if (Application.App().IsBackend) {
+        if (Application.App.IsBackend) {
             fetch(info.url, info).then(body => {
                 if (info.json) {
                     return body.json();
@@ -39,7 +39,7 @@ export class HttpUtils {
             }
         } else {
             (<any>window).GM_xmlhttpRequest = (info: RequestInfo) => {
-                let client: Client = Application.App().Client;
+                let client: Client = Application.App.Client;
                 client.Recv((data) => {
                     if (data.code == 0) {
                         info.success && info.success(data.body);
@@ -75,7 +75,7 @@ export class HttpUtils {
             return
         }
         let info = <RequestInfo>data.info;
-        if (Application.App().IsBackend) {
+        if (Application.App.IsBackend) {
             info.success = (body) => {
                 client.Send({ body: body, code: 0 })
             };
@@ -85,7 +85,7 @@ export class HttpUtils {
             HttpUtils.Request(info)
         } else {
             // content 做转发
-            let extClient = Application.App().Client;
+            let extClient = Application.App.Client;
             extClient.Send({ type: "GM_xmlhttpRequest", info: info });
             extClient.Recv((data) => {
                 client.Send(data)

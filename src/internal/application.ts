@@ -1,15 +1,19 @@
 import { Client, NewChromeClientMessage, NewExtensionClientMessage } from "./utils/message";
 import { HttpUtils } from "./utils/utils";
-import { SystemConfig } from "./utils/config";
+import { SystemConfig, ConfigItems } from "./utils/config";
 
 export const Backend = "backend";
 export const Frontend = "frontend";
 export const Content = "content";
 export const AppName = "cxmooc-tools";
 
+export interface Launcher {
+    start(): void
+}
+
 export class Application {
     protected static app: Application;
-    public static App(): Application {
+    public static get App(): Application {
         return Application.app;
     }
     protected static env: string;
@@ -17,10 +21,22 @@ export class Application {
     protected static IsBackend: boolean;
     protected static IsContent: boolean;
 
-    constructor(env: string) {
+    protected launcher: Launcher;
+    protected component: Map<string, any>
+    constructor(env: string, launcher: Launcher, component?: Map<string, any>) {
         Application.app = this;
         Application.env = env;
         this.EnvSwitch(env);
+        this.launcher = launcher;
+        this.component = component;
+    }
+
+    public get config(): ConfigItems {
+        return this.component.get("config") as ConfigItems;
+    }
+
+    public run(): void {
+        this.launcher.start();
     }
 
     public get IsFrontend(): boolean {

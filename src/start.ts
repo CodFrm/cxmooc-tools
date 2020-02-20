@@ -1,12 +1,11 @@
 import { NewChromeServerMessage } from "@App/internal/utils/message";
-import { HttpUtils, Injected } from "@App/internal/utils/utils";
-import { Application, Content } from "@App/internal/application";
+import { HttpUtils, Injected, randNumber } from "@App/internal/utils/utils";
+import { Application, Content, Launcher } from "@App/internal/application";
 import { SystemConfig } from "@App/internal/utils/config";
 
-new Application(Content);
-class start {
+class start implements Launcher {
 
-    public main() {
+    public start() {
         let msg = NewChromeServerMessage("cxmooc-tools");
         msg.Accept((client, data) => {
             switch (data.type) {
@@ -46,4 +45,5 @@ class start {
     }
 }
 
-new start().main();
+let application = new Application(Content, new start());
+application.run();

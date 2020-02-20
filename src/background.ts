@@ -1,11 +1,11 @@
 import { NewExtensionServerMessage } from "./internal/utils/message";
 import { HttpUtils } from "./internal/utils/utils";
-import { Application, Backend } from "./internal/application";
+import { Application, Backend, Launcher } from "./internal/application";
 
-new Application(Backend);
-class background {
 
-    public main() {
+class background implements Launcher {
+
+    public start() {
         let server = NewExtensionServerMessage("cxmooc-tools");
         server.Accept((client, data) => {
             switch (data.type) {
@@ -28,4 +28,5 @@ class background {
     }
 }
 
-new background().main();
+let application = new Application(Backend, new background());
+application.run();

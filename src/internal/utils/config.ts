@@ -1,6 +1,93 @@
 import { Client } from "./message";
-import { AppName, Application } from "../application";
+import { Application } from "../application";
 import { randNumber } from "./utils";
+
+export interface ConfigItems {
+    vtoken: string
+    rand_answer: boolean
+    auto: boolean
+    video_mute: boolean
+    answer_ignore: boolean
+    video_cdn: string
+    video_multiple: number
+    interval: number
+    get(key: string): any
+    set(key: string, val: any): void
+}
+
+export class ChromeConfigItems implements ConfigItems {
+    protected setConfig: SetConfig;
+    protected getConfig: GetConfig;
+    constructor(getConfig: GetConfig, setConfig?: SetConfig) {
+        this.setConfig = setConfig;
+        this.getConfig = getConfig;
+    }
+
+    public get(key: string): any {
+        return this.getConfig.GetConfig(key);
+    }
+
+    public set(key: string, val: any): any {
+        return this.setConfig.SetConfig(key, val);
+    }
+
+    public get vtoken() {
+        return this.getConfig.GetConfig("vtoken");
+    }
+    public set vtoken(val) {
+        this.setConfig.SetConfig("vtoken", val);
+    }
+
+    public get rand_answer() {
+        return this.getConfig.GetConfig("rand_answer");
+    }
+    public set rand_answer(val) {
+        this.setConfig.SetConfig("rand_answer", val);
+    }
+
+    public get auto() {
+        return this.getConfig.GetConfig("auto");
+    }
+    public set auto(val) {
+        this.setConfig.SetConfig("auto", val);
+    }
+
+    public get video_mute() {
+        return this.getConfig.GetConfig("video_mute");
+    }
+    public set video_mute(val) {
+        this.setConfig.SetConfig("video_mute", val);
+    }
+
+    public get answer_ignore() {
+        return this.getConfig.GetConfig("answer_ignore");
+    }
+    public set answer_ignore(val) {
+        this.setConfig.SetConfig("answer_ignore", val);
+    }
+
+    public get video_cdn() {
+        return this.getConfig.GetConfig("video_cdn");
+    }
+    public set video_cdn(val) {
+        this.setConfig.SetConfig("video_cdn", val);
+    }
+
+    public get video_multiple() {
+        return this.getConfig.GetConfig("video_multiple");
+    }
+    public set video_multiple(val) {
+        this.setConfig.SetConfig("video_multiple", val);
+    }
+
+    public get interval() {
+        return this.getConfig.GetConfig("interval");
+    }
+    public set interval(val) {
+        this.setConfig.SetConfig("interval", val);
+    }
+
+}
 
 export interface GetConfig {
     GetConfig(key: string): any
@@ -40,14 +127,9 @@ export function NewFrontendGetConfig(): GetConfig {
 
 class frontendGetConfig implements GetConfig {
     public async GetConfig(key: string): Promise<any> {
-        let client = Application.App().Client;
+        let client = Application.App.Client;
         let p = new Promise<any>(resolve => ((<Client>client).Recv((data) => {
-            if (key == "interval") {
-                let interval = (data.val || 0.1) * 60000;
-                resolve(randNumber(interval - (interval / 2), interval + (interval / 2)));
-            } else {
-                resolve(data.val);
-            }
+            resolve(data.val);
         })));
         (<Client>client).Send({ type: "config", key: key });
         return p;

@@ -1,42 +1,32 @@
-import { GetConfig, NewBackendConfig, SetConfig, SystemConfig } from "./internal/utils/config";
-import { Application, Backend } from "./internal/application";
+import { GetConfig, NewBackendConfig, SetConfig, SystemConfig, ChromeConfigItems } from "./internal/utils/config";
+import { Application, Backend, Launcher } from "./internal/application";
 
-new Application(Backend);
-class popup {
+class popup implements Launcher {
 
-    private getConfig: GetConfig;
-
-    private setConfig: SetConfig;
-
-    constructor(getconf: GetConfig, setconf: SetConfig) {
-        this.getConfig = getconf;
-        this.setConfig = setconf;
-    }
-
-    public async main() {
+    public async start() {
         let cfg = document.getElementsByTagName("input");
         for (let i = 0; i < cfg.length; i++) {
             let el = cfg.item(i);
             let key = el.getAttribute("config-key");
             if (key != "") {
                 let pop = this;
-                el.onchange = async function (ev) {
+                el.onchange = async function () {
                     let promptMsg = (<HTMLElement>this).getAttribute("prompt");
-                    if (promptMsg !== null && await pop.getConfig.GetConfig(key + "_prompt") == false) {
+                    if (promptMsg !== null && !localStorage[key + "_prompt"]) {
                         let msg = prompt(promptMsg);
                         if (msg !== "yes") {
-                            (<HTMLInputElement>this).value = await pop.getConfig.GetConfig(key) || 1;
+                            (<HTMLInputElement>this).value = await Application.App.config.get(key) || 1;
                             return;
                         }
-                        pop.setConfig.SetConfig(key + "_prompt", true);
+                        localStorage[key + "_prompt"] = true;
                     }
                     switch ((<HTMLInputElement>this).type) {
                         case "checkbox": {
-                            pop.setConfig.SetConfig(key, (<HTMLInputElement>this).checked);
+                            Application.App.config.set(key, (<HTMLInputElement>this).checked);
                             break;
                         }
                         default: {
-                            pop.setConfig.SetConfig(key, (<HTMLInputElement>this).value);
+                            Application.App.config.set(key, (<HTMLInputElement>this).value);
                         }
                     }
                 };
@@ -46,7 +36,7 @@ class popup {
         Application.CheckUpdate(function (isnew, data) {
             let v: number;
             if (data === undefined) {
-                (<HTMLImageElement>document.getElementById("tiku")).src = "https://img.shields.io/badge/%E9%A2%98%E5%BA%93-error-red.svg";
+                (<HTMLImageElement>document.getElementById("tiku")).src = "./../img/error.svg";
                 v = SystemConfig.version;
             } else {
                 if (isnew) {
@@ -64,17 +54,18 @@ class popup {
 
     private async defaultVal(el: HTMLInputElement, key: string) {
         let def = el.getAttribute("default-val");
+        let val = await Application.App.config.get(key);
         switch (el.type) {
             case "checkbox": {
                 if (def === "true") {
-                    el.checked = await this.getConfig.GetConfig(key) || true;
+                    el.checked = val == undefined || val;
                     return;
                 }
-                el.checked = await this.getConfig.GetConfig(key) || false;
+                el.checked = val || false;
                 return;
             }
             default: {
-                el.value = await this.getConfig.GetConfig(key) || def || "";
+                el.value = val || def;
                 return;
             }
         }
@@ -83,5 +74,8 @@ class popup {
 
 window.onload = function () {
     let config = NewBackendConfig();
-    new popup(config, config).main();
+    let component = new Map<string, any>().
+        set("config", new ChromeConfigItems(config, config));
+    let app = new Application(Backend, new popup(), component);
+    app.run();
 };

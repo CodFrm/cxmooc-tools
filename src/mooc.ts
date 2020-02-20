@@ -1,10 +1,26 @@
 import { RemoveInjected } from "./internal/utils/utils";
-import { MoocFactory } from "./mooc/factory";
-import { NewFrontendGetConfig } from "./internal/utils/config";
-import { Application, Frontend } from "./internal/application";
+import { Application, Frontend, Launcher } from "./internal/application";
+import { ChromeConfigItems, NewFrontendGetConfig } from "./internal/utils/config";
+import { Mooc, MoocFactory } from "./mooc/factory";
+import { CxCourseFactory } from "./mooc/chaoxing/course";
 
 RemoveInjected(document);
 
-new Application(Frontend);
+class mooc implements Launcher {
+    async start(): Promise<void> {
+        let url = document.URL;
+        let factory: MoocFactory;
+        let mooc: Mooc;
+        if (url.indexOf("mycourse/studentstudy?") > 0) {
+            factory = new CxCourseFactory();
+        }
+        mooc = factory.CreateMooc();
+        mooc.Start();
+    }
+}
 
-MoocFactory.CreateMooc(document.URL).Start();
+let component = new Map<string, any>().
+    set("config", new ChromeConfigItems(NewFrontendGetConfig()));
+
+let app = new Application(Frontend, new mooc(), component);
+app.run()
