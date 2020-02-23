@@ -1,7 +1,8 @@
 import { NewChromeServerMessage } from "@App/internal/utils/message";
 import { HttpUtils, Injected, randNumber } from "@App/internal/utils/utils";
 import { Application, Content, Launcher } from "@App/internal/application";
-import { SystemConfig } from "@App/internal/utils/config";
+import { SystemConfig, ChromeConfigItems, NewFrontendGetConfig } from "@App/internal/utils/config";
+import { ConsoleLog } from "./internal/utils/log";
 
 class start implements Launcher {
 
@@ -33,17 +34,32 @@ class start implements Launcher {
             let littleVersion = hotVersion - data.version;
             let isHotUpdate: boolean = false;
             if (littleVersion < 0.01 && littleVersion > 0) {
-                console.log('use hot update version:' + hotVersion);
+                Application.App.log.Info("使用热更新版本:" + hotVersion);
                 isHotUpdate = true;
             }
-            if (isHotUpdate) {
-                Injected(document, SystemConfig.url + 'js/' + hotVersion + '.js');
-            } else {
-                Injected(document, chrome.extension.getURL('src/mooc.js'));
+            //注入config
+            let configKeyList: string[] = new Array();
+            for (let key in Application.App.config) {
+                configKeyList.push(key);
             }
+            chrome.storage.sync.get(configKeyList, function (items) {
+                for (let key in items) {
+                    if (items[key] == undefined) { continue; }
+                    localStorage[key] = items[key] || Application.App.config.get(key);
+                }
+                if (isHotUpdate) {
+                    Injected(document, SystemConfig.url + 'js/' + hotVersion + '.js');
+                } else {
+                    Injected(document, chrome.extension.getURL('src/mooc.js'));
+                }
+            });
         });
     }
 }
 
-let application = new Application(Content, new start());
+let component = new Map<string, any>().
+    set("config", new ChromeConfigItems(NewFrontendGetConfig())).
+    set("logger", new ConsoleLog());
+
+let application = new Application(Content, new start(), component);
 application.run();

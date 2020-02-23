@@ -1,6 +1,7 @@
 import { Client, NewChromeClientMessage, NewExtensionClientMessage } from "./utils/message";
 import { HttpUtils } from "./utils/utils";
 import { SystemConfig, ConfigItems } from "./utils/config";
+import { Logger } from "./utils/log";
 
 export const Backend = "backend";
 export const Frontend = "frontend";
@@ -33,6 +34,10 @@ export class Application {
 
     public get config(): ConfigItems {
         return this.component.get("config") as ConfigItems;
+    }
+
+    public get log(): Logger {
+        return this.component.get("logger") as Logger;
     }
 
     public run(): void {

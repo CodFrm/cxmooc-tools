@@ -1,33 +1,49 @@
-#cxtools{
+#cxtools {
     position: absolute;
     left: 250px;
     top: 2px;
-    width: 120px;   
+    width: 120px;
 }
 
-#zhs-video-boom{
-    color:#fff;
+.cx-btn {
+    outline: none;
+    border: 0;
+    background: #7d9d35;
+    color: #fff;
+    border-radius: 4px;
+    padding: 2px 8px;
+    cursor: pointer;
+    font-size: 12px;
+    margin-left: 4px;
+}
+
+.cx-btn:hover {
+    box-shadow: 1px 1px 1px 1px #ccc;
+}
+
+#zhs-video-boom {
+    color: #fff;
     background: #ff9d34;
 }
 
-#zhs-video-boom:hover{
+#zhs-video-boom:hover {
     background: #ff3838;
 }
 
-#zhs-ytbn{
-    color:#fff;
+#zhs-ytbn {
+    color: #fff;
     background: #e777ff;
 }
 
-#zhs-ytbn:hover{
+#zhs-ytbn:hover {
     background: #e7b7f1;
 }
 
-.zhs-search-answer{
+.zhs-search-answer {
     border: 0;
     outline: none;
 }
 
-.zhs-search-answer:hover{
+.zhs-search-answer:hover {
     opacity: .85;
 }

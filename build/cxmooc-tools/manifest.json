@@ -24,28 +24,28 @@
             "src/background.js"
         ]
     },
-    "content_scripts": [
-        {
-            "matches": [
-                "*://*/mycourse/studentstudy?*",
-                "*://*/work/doHomeWorkNew?*",
-                "*://*/work/selectWorkQuestionYiPiYue?*",
-                "*://*/exam/test/reVersionTestStartNew?*",
-                "*://*/ztnodedetailcontroller/visitnodedetail?*",
-                "*://*/antispiderShowVerify.ac*",
-                "*://*/html/processVerify.ac?*",
-                "*://study.zhihuishu.com/learning/videoList*",
-                "*://*/exam/test/reVersionPaperMarkContentNew?*",
-                "*://examh5.zhihuishu.com/stuExamWeb.html*",
-                "*://onlineexamh5new.zhihuishu.com/stuExamWeb.html*",
-                "*://study.zhihuishu.com/learningNew/videoList*"
-            ],
-            "js": [
-                "src/start.js"
-            ],
-            "run_at": "document_start"
-        }
-    ],
+    "content_scripts": [{
+        "matches": [
+            "*://*/mycourse/studentstudy?*",
+            "*://*/work/doHomeWorkNew?*",
+            "*://*/work/selectWorkQuestionYiPiYue?*",
+            "*://*/exam/test/reVersionTestStartNew?*",
+            "*://*/ztnodedetailcontroller/visitnodedetail?*",
+            "*://*/antispiderShowVerify.ac*",
+            "*://*/html/processVerify.ac?*",
+            "*://study.zhihuishu.com/learning/videoList*",
+            "*://*/exam/test/reVersionPaperMarkContentNew?*",
+            "*://examh5.zhihuishu.com/stuExamWeb.html*",
+            "*://onlineexamh5new.zhihuishu.com/stuExamWeb.html*",
+            "*://study.zhihuishu.com/learningNew/videoList*",
+            "*://*/knowledge/cards?*"
+        ],
+        "js": [
+            "src/start.js"
+        ],
+        "run_at": "document_start",
+        "all_frames": true
+    }],
     "permissions": [
         "contextMenus",
         "tabs",

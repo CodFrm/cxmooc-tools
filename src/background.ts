@@ -1,6 +1,7 @@
 import { NewExtensionServerMessage } from "./internal/utils/message";
 import { HttpUtils } from "./internal/utils/utils";
 import { Application, Backend, Launcher } from "./internal/application";
+import { ConsoleLog } from "./internal/utils/log";
 
 
 class background implements Launcher {
@@ -25,8 +26,28 @@ class background implements Launcher {
                 });
             }
         });
+
+        let configKeyList: string[] = new Array();
+        for (let key in Application.App.config) {
+            configKeyList.push(key);
+        }
+        let configDefaultValue = new Map<string, any>().
+            set("vtoken", "").set("rand_answer", false).set("auto", true).
+            set("video_mute", true).set("answer_ignore", false).set("video_cdn", "").
+            set("video_multiple", 1).set("interval", 2).set("danmu", false);
+
+        chrome.storage.sync.get(configKeyList, function (items) {
+            for (let key in items) {
+                if (items[key] == undefined) {
+                    chrome.storage.sync.set(key, configDefaultValue.get(key));
+                }
+            }
+        });
     }
 }
 
-let application = new Application(Backend, new background());
+let component = new Map<string, any>().
+    set("logger", new ConsoleLog());
+
+let application = new Application(Backend, new background(), component);
 application.run();

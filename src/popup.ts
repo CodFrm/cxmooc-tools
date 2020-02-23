@@ -30,7 +30,7 @@ class popup implements Launcher {
                         }
                     }
                 };
-                this.defaultVal(el, key);
+                this.setVal(el, key);
             }
         }
         Application.CheckUpdate(function (isnew, data) {
@@ -52,20 +52,15 @@ class popup implements Launcher {
         });
     }
 
-    private async defaultVal(el: HTMLInputElement, key: string) {
-        let def = el.getAttribute("default-val");
+    private async setVal(el: HTMLInputElement, key: string) {
         let val = await Application.App.config.get(key);
         switch (el.type) {
             case "checkbox": {
-                if (def === "true") {
-                    el.checked = val == undefined || val;
-                    return;
-                }
-                el.checked = val || false;
+                el.checked = val;
                 return;
             }
             default: {
-                el.value = val || def;
+                el.value = val;
                 return;
             }
         }

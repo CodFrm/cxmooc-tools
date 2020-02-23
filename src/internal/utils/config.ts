@@ -1,6 +1,4 @@
 import { Client } from "./message";
-import { Application } from "../application";
-import { randNumber } from "./utils";
 
 export interface ConfigItems {
     vtoken: string
@@ -11,6 +9,7 @@ export interface ConfigItems {
     video_cdn: string
     video_multiple: number
     interval: number
+    danmu: boolean
     get(key: string): any
     set(key: string, val: any): void
 }
@@ -29,6 +28,13 @@ export class ChromeConfigItems implements ConfigItems {
 
     public set(key: string, val: any): any {
         return this.setConfig.SetConfig(key, val);
+    }
+
+    public get danmu() {
+        return this.getConfig.GetConfig("danmu");
+    }
+    public set danmu(val) {
+        this.setConfig.SetConfig("danmu", val);
     }
 
     public get vtoken() {
@@ -126,13 +132,8 @@ export function NewFrontendGetConfig(): GetConfig {
 }
 
 class frontendGetConfig implements GetConfig {
-    public async GetConfig(key: string): Promise<any> {
-        let client = Application.App.Client;
-        let p = new Promise<any>(resolve => ((<Client>client).Recv((data) => {
-            resolve(data.val);
-        })));
-        (<Client>client).Send({ type: "config", key: key });
-        return p;
+    public GetConfig(key: string): any {
+        return localStorage[key];
     }
 }
 

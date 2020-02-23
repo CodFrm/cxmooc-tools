@@ -132,3 +132,19 @@ export function randNumber(minNum: number, maxNum: number): number {
             return 0;
     }
 }
+
+
+/**
+ * 创建一个按钮
+ * @param title 
+ * @param description 
+ * @param id 
+ */
+export function createBtn(title: string, description: string = "", className: string = "", id: string = ""): HTMLElement {
+    let btn = document.createElement('button');
+    btn.innerText = title;
+    btn.id = id;
+    btn.title = description;
+    btn.className = className;
+    return btn;
+}
