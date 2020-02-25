@@ -500,13 +500,13 @@
         <h4 class="one_title">
             <div class="one_title_show">
                 <span>插件配置:</span>
-                <input type="text" class="input_text edit" placeholder="token" config-key="vtoken">
+                <input type="password" class="input_text edit" placeholder="token" config-key="vtoken" style="font-size: 18px;">
             </div>
         </h4>
         <div id="config" class="page">
             <div class="config-item width_50">
                 <input type="checkbox" id="rand-answer" class="rdo" config-key="rand_answer">
-                <label class="shou" for="rand-answer" title="没有正确的答案会随机选择">随机答案</label>
+                <label class="shou" for="rand-answer" title="如果题库没有正确的答案会随机选择">随机答案</label>
             </div>
             <div class="config-item width_50">
                 <input type="checkbox" id="auto" class="rdo" config-key="auto">
@@ -531,7 +531,7 @@
                     <input type="text" class="input_text" id="video-multiple" placeholder="1" config-key="video_multiple" prompt="这是一个很危险的功能,建议不要进行调整,如果你想调整播放速度请在下方填写yes(智慧树平台播放速度和视频进度无关,最高只能1.5倍速)">倍
                 </div>
                 <div id="auto-m" class="config-item width_50">
-                    <label for="interval" title="播放(题目)完成后n分钟再继续下一个任务">间隔时间:</label>
+                    <label for="interval" title="播放(题目)完成后n分钟再继续下一个任务,可以有小数点,例如:0.5=30秒">间隔时间:</label>
                     <input type="text" class="input_text" id="interval" placeholder="2" config-key="interval">分
                 </div>
             </div>

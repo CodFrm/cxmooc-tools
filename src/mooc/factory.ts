@@ -1,4 +1,4 @@
-import { CxCourseFactory, CxCourseCardFactory } from "./chaoxing/course";
+import { CxCourseFactory, CxVideoOptimizationFactory } from "./chaoxing/course";
 
 export interface Mooc {
     Start(): void
@@ -20,8 +20,8 @@ export function PlatformChaoXing(): MoocFactory {
     let factory: MoocFactory = null;
     if (url.indexOf("mycourse/studentstudy?") > 0) {
         factory = new CxCourseFactory();
-    } else if (url.indexOf("knowledge/cards") > 0) {
-        factory = new CxCourseCardFactory();
+    } else if (url.indexOf("ananas/modules/video/index.html") > 0) {
+        factory = new CxVideoOptimizationFactory();
     }
     return factory;
 }

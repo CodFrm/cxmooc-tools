@@ -38,7 +38,7 @@
             "*://examh5.zhihuishu.com/stuExamWeb.html*",
             "*://onlineexamh5new.zhihuishu.com/stuExamWeb.html*",
             "*://study.zhihuishu.com/learningNew/videoList*",
-            "*://*/knowledge/cards?*"
+            "*://*/ananas/modules/video/index.html?*"
         ],
         "js": [
             "src/start.js"

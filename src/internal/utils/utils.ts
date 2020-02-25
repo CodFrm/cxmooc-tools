@@ -140,11 +140,83 @@ export function randNumber(minNum: number, maxNum: number): number {
  * @param description 
  * @param id 
  */
-export function createBtn(title: string, description: string = "", className: string = "", id: string = ""): HTMLElement {
+export function createBtn(title: string, description: string = "", className: string = "", id: string = ""): HTMLButtonElement {
     let btn = document.createElement('button');
     btn.innerText = title;
     btn.id = id;
     btn.title = description;
     btn.className = className;
     return btn;
+}
+
+/**
+ * get请求
+ * @param {*} url 
+ */
+export function get(url: string, success: Function) {
+    let xmlhttp = createRequest();
+    xmlhttp.open("GET", url, true);
+    xmlhttp.send();
+
+    xmlhttp.onreadystatechange = function () {
+        if (this.readyState == 4) {
+            if (this.status == 200) {
+                success && success(this.responseText, (<any>this).resource);
+            } else {
+                (<any>xmlhttp).errorCallback && (<any>xmlhttp).errorCallback(this);
+            }
+        }
+    }
+    return xmlhttp;
+}
+
+/**
+ * post请求
+ * @param {*} url 
+ * @param {*} data 
+ * @param {*} json 
+ */
+export function post(url: string, data: any, json = true, success: Function) {
+    let xmlhttp = createRequest();
+    xmlhttp.open("POST", url, true);
+    xmlhttp.setRequestHeader('Authorization', Application.App.config.vtoken || '');
+    if (json) {
+        xmlhttp.setRequestHeader("Content-Type", "application/json");
+    } else {
+        xmlhttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+    }
+    xmlhttp.send(data);
+
+    xmlhttp.onreadystatechange = function () {
+        if (this.readyState == 4) {
+            if (this.status == 200) {
+                success && success(this.responseText);
+            } else {
+                (<any>xmlhttp).errorCallback && (<any>xmlhttp).errorCallback(this);
+            }
+        }
+    }
+    return xmlhttp;
+}
+
+declare namespace Express {
+    interface XMLHttpRequest {
+        error: any; // 不要用 any.
+    }
+}
+/**
+ * 创建http请求
+ */
+function createRequest(): XMLHttpRequest {
+    let xmlhttp: XMLHttpRequest;
+    if (window.XMLHttpRequest) {
+        xmlhttp = new XMLHttpRequest();
+    } else {
+        xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+    }
+    (<any>xmlhttp).error = function (callback: Function) {
+        (<any>xmlhttp).errorCallback = callback;
+        return xmlhttp;
+    }
+    return xmlhttp;
 }

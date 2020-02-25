@@ -34,7 +34,7 @@ class background implements Launcher {
         let configDefaultValue = new Map<string, any>().
             set("vtoken", "").set("rand_answer", false).set("auto", true).
             set("video_mute", true).set("answer_ignore", false).set("video_cdn", "").
-            set("video_multiple", 1).set("interval", 2).set("danmu", false);
+            set("video_multiple", 1).set("interval", 1);
 
         chrome.storage.sync.get(configKeyList, function (items) {
             for (let key in items) {

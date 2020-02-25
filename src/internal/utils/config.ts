@@ -9,7 +9,6 @@ export interface ConfigItems {
     video_cdn: string
     video_multiple: number
     interval: number
-    danmu: boolean
     get(key: string): any
     set(key: string, val: any): void
 }
@@ -30,11 +29,11 @@ export class ChromeConfigItems implements ConfigItems {
         return this.setConfig.SetConfig(key, val);
     }
 
-    public get danmu() {
-        return this.getConfig.GetConfig("danmu");
-    }
-    public set danmu(val) {
-        this.setConfig.SetConfig("danmu", val);
+    public bool(val: any): boolean {
+        if (typeof val == "boolean") {
+            return val;
+        }
+        return val == "true";
     }
 
     public get vtoken() {
@@ -45,28 +44,28 @@ export class ChromeConfigItems implements ConfigItems {
     }
 
     public get rand_answer() {
-        return this.getConfig.GetConfig("rand_answer");
+        return this.bool(this.getConfig.GetConfig("rand_answer"));
     }
     public set rand_answer(val) {
         this.setConfig.SetConfig("rand_answer", val);
     }
 
     public get auto() {
-        return this.getConfig.GetConfig("auto");
+        return this.bool(this.getConfig.GetConfig("auto"));
     }
     public set auto(val) {
         this.setConfig.SetConfig("auto", val);
     }
 
     public get video_mute() {
-        return this.getConfig.GetConfig("video_mute");
+        return this.bool(this.getConfig.GetConfig("video_mute"));
     }
     public set video_mute(val) {
         this.setConfig.SetConfig("video_mute", val);
     }
 
     public get answer_ignore() {
-        return this.getConfig.GetConfig("answer_ignore");
+        return this.bool(this.getConfig.GetConfig("answer_ignore"));
     }
     public set answer_ignore(val) {
         this.setConfig.SetConfig("answer_ignore", val);

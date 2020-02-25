@@ -1,8 +1,7 @@
 import { RemoveInjected } from "./internal/utils/utils";
 import { Application, Frontend, Launcher } from "./internal/application";
 import { ChromeConfigItems, NewFrontendGetConfig } from "./internal/utils/config";
-import { Mooc, MoocFactory, CreateMooc } from "./mooc/factory";
-import { CxCourseFactory } from "./mooc/chaoxing/course";
+import { CreateMooc } from "./mooc/factory";
 import { ConsoleLog } from "./internal/utils/log";
 
 RemoveInjected(document);

@@ -1,7 +1,7 @@
 import { NewChromeServerMessage } from "@App/internal/utils/message";
 import { HttpUtils, Injected, randNumber } from "@App/internal/utils/utils";
 import { Application, Content, Launcher } from "@App/internal/application";
-import { SystemConfig, ChromeConfigItems, NewFrontendGetConfig } from "@App/internal/utils/config";
+import { SystemConfig, ChromeConfigItems, NewFrontendGetConfig, NewBackendConfig } from "@App/internal/utils/config";
 import { ConsoleLog } from "./internal/utils/log";
 
 class start implements Launcher {
@@ -42,11 +42,12 @@ class start implements Launcher {
             for (let key in Application.App.config) {
                 configKeyList.push(key);
             }
-            chrome.storage.sync.get(configKeyList, function (items) {
+            chrome.storage.sync.get(configKeyList, async function (items) {
                 for (let key in items) {
                     if (items[key] == undefined) { continue; }
-                    localStorage[key] = items[key] || Application.App.config.get(key);
+                    localStorage[key] = items[key] || await Application.App.config.get(key);
                 }
+                Application.App.log.Debug("注入脚本", document.URL);
                 if (isHotUpdate) {
                     Injected(document, SystemConfig.url + 'js/' + hotVersion + '.js');
                 } else {
@@ -58,7 +59,7 @@ class start implements Launcher {
 }
 
 let component = new Map<string, any>().
-    set("config", new ChromeConfigItems(NewFrontendGetConfig())).
+    set("config", new ChromeConfigItems(NewBackendConfig())).
     set("logger", new ConsoleLog());
 
 let application = new Application(Content, new start(), component);
