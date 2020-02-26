@@ -17,19 +17,27 @@ export class Application {
     public static get App(): Application {
         return Application.app;
     }
-    protected static env: string;
+    protected static runEnv: string;
     protected static IsFrontend: boolean;
     protected static IsBackend: boolean;
     protected static IsContent: boolean;
 
     protected launcher: Launcher;
     protected component: Map<string, any>
-    constructor(env: string, launcher: Launcher, component?: Map<string, any>) {
+    constructor(runEnv: string, launcher: Launcher, component?: Map<string, any>) {
         Application.app = this;
-        Application.env = env;
-        this.EnvSwitch(env);
+        Application.runEnv = runEnv;
+        this.runEnvSwitch(runEnv);
         this.launcher = launcher;
         this.component = component;
+    }
+
+    public get debug(): boolean {
+        return process.env.NODE_ENV == "development";
+    }
+
+    public get prod(): boolean {
+        return process.env.NODE_ENV == "production";
     }
 
     public get config(): ConfigItems {
@@ -56,7 +64,7 @@ export class Application {
         return Application.IsContent;
     }
 
-    private EnvSwitch(env: string): void {
+    private runEnvSwitch(env: string): void {
         switch (env) {
             case Frontend:
                 Application.IsFrontend = true; break;
@@ -76,14 +84,14 @@ export class Application {
 
     public static CheckUpdate(callback: (isnew: boolean, data: UpdateData) => void) {
         if (Application.IsContent) {
-            chrome.storage.local.get(["version", "enforce", "hotversion", "url"], function (item) {
-                callback((SystemConfig.version < item.version), item as UpdateData);
+            chrome.storage.local.get(["version", "enforce", "hotversion", "url"], async function (item) {
+                await callback((SystemConfig.version < item.version), item as UpdateData);
             });
             return;
         }
         HttpUtils.HttpGet(SystemConfig.url + "update?ver=" + SystemConfig.version, {
             json: true,
-            success: function (json) {
+            success: async function (json) {
                 let data: UpdateData = {
                     version: json.version,
                     url: json.url,
@@ -92,9 +100,9 @@ export class Application {
                     injection: json.injection,
                 };
                 chrome.storage.local.set(data);
-                callback((SystemConfig.version < data.version), data);
-            }, error: function () {
-                callback(false, undefined);
+                await callback((SystemConfig.version < data.version), data);
+            }, error: async function () {
+                await callback(false, undefined);
             }
         });
     }

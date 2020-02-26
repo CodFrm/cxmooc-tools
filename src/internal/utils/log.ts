@@ -1,4 +1,7 @@
+import { Application } from "../application";
+
 export interface Logger {
+    Trace(...args: any): Logger;
     Debug(...args: any): Logger;
     Info(...args: any): Logger;
     Warn(...args: any): Logger;
@@ -13,13 +16,18 @@ export class ConsoleLog implements Logger {
         return time.getHours() + ":" + time.getMinutes() + ":" + time.getSeconds();
     }
 
+    public Trace(...args: any): Logger {
+        Application.App.debug && console.trace("[trace", this.getNowTime(), "]", ...args);
+        return this;
+    }
+
     public Debug(...args: any): Logger {
-        console.info("[debug", this.getNowTime(), "]", ...args);
+        Application.App.debug && console.info("[debug", this.getNowTime(), "]", ...args);
         return this;
     }
 
     public Info(...args: any): Logger {
-        console.info("[info", this.getNowTime(), "]", ...args);
+        Application.App.debug && console.info("[info", this.getNowTime(), "]", ...args);
         return this;
     }
 
@@ -41,6 +49,9 @@ export class ConsoleLog implements Logger {
 }
 
 export class EmptyLog implements Logger {
+    Trace(...args: any): Logger {
+        return this;
+    }
 
     public Debug(...args: any): Logger {
         return this;

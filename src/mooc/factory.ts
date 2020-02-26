@@ -1,4 +1,5 @@
-import { CxCourseFactory, CxVideoOptimizationFactory } from "./chaoxing/course";
+import { CxCourseFactory } from "./chaoxing/course";
+import { CxVideoOptimizationFactory } from "./chaoxing/video";
 
 export interface Mooc {
     Start(): void

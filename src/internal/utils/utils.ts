@@ -97,18 +97,29 @@ export class HttpUtils {
 
 
 /**
- * 注入js资源
+ * 通过源码key注入js资源
  * @param doc
  * @param url
  * @constructor
  */
-export function Injected(doc: Document, url: string): Element {
+export async function Injected(doc: Document, url: string): Promise<Element> {
     let temp = doc.createElement('script');
     temp.setAttribute('type', 'text/javascript');
-    temp.src = url;
+    let source = await syncGetChromeStorageLocal(url);
+    temp.innerHTML = source;
     temp.className = "injected-js";
     doc.documentElement.appendChild(temp);
     return temp;
+}
+
+export function syncGetChromeStorageLocal(key: string): Promise<any> {
+    return new Promise<any>(resolve => (chrome.storage.local.get(key, (value) => {
+        if (value.hasOwnProperty(<string>key)) {
+            resolve(<any>value[<string>key]);
+        } else {
+            resolve(undefined);
+        }
+    })));
 }
 
 /**

@@ -1,5 +1,5 @@
 import { NewChromeServerMessage } from "@App/internal/utils/message";
-import { HttpUtils, Injected, randNumber } from "@App/internal/utils/utils";
+import { HttpUtils, Injected, randNumber, get } from "@App/internal/utils/utils";
 import { Application, Content, Launcher } from "@App/internal/application";
 import { SystemConfig, ChromeConfigItems, NewFrontendGetConfig, NewBackendConfig } from "@App/internal/utils/config";
 import { ConsoleLog } from "./internal/utils/log";
@@ -7,6 +7,25 @@ import { ConsoleLog } from "./internal/utils/log";
 class start implements Launcher {
 
     public start() {
+        //注入config
+        let configKeyList: string[] = new Array();
+        for (let key in Application.App.config) {
+            configKeyList.push(key);
+        }
+        chrome.storage.sync.get(configKeyList, async function (items) {
+            for (let key in items) {
+                if (items[key] == undefined) { continue; }
+                localStorage[key] = items[key] || await Application.App.config.get(key);
+            }
+            Application.App.log.Debug("注入脚本", document.URL);
+            if (Application.App.debug) {
+                await get(chrome.extension.getURL('src/mooc.js'), async function (source: string) {
+                    await chrome.storage.local.set({ "source": source });
+                });
+            }
+            Injected(document, "source");
+
+        });
         let msg = NewChromeServerMessage("cxmooc-tools");
         msg.Accept((client, data) => {
             switch (data.type) {
@@ -30,30 +49,6 @@ class start implements Launcher {
                     return;
                 }
             }
-            let hotVersion = data.hotversion;
-            let littleVersion = hotVersion - data.version;
-            let isHotUpdate: boolean = false;
-            if (littleVersion < 0.01 && littleVersion > 0) {
-                Application.App.log.Info("使用热更新版本:" + hotVersion);
-                isHotUpdate = true;
-            }
-            //注入config
-            let configKeyList: string[] = new Array();
-            for (let key in Application.App.config) {
-                configKeyList.push(key);
-            }
-            chrome.storage.sync.get(configKeyList, async function (items) {
-                for (let key in items) {
-                    if (items[key] == undefined) { continue; }
-                    localStorage[key] = items[key] || await Application.App.config.get(key);
-                }
-                Application.App.log.Debug("注入脚本", document.URL);
-                if (isHotUpdate) {
-                    Injected(document, SystemConfig.url + 'js/' + hotVersion + '.js');
-                } else {
-                    Injected(document, chrome.extension.getURL('src/mooc.js'));
-                }
-            });
         });
     }
 }

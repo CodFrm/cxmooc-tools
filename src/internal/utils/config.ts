@@ -9,6 +9,7 @@ export interface ConfigItems {
     video_cdn: string
     video_multiple: number
     interval: number
+    super_mode: boolean
     get(key: string): any
     set(key: string, val: any): void
 }
@@ -34,6 +35,13 @@ export class ChromeConfigItems implements ConfigItems {
             return val;
         }
         return val == "true";
+    }
+
+    public get super_mode() {
+        return this.bool(this.getConfig.GetConfig("super_mode"));
+    }
+    public set super_mode(val) {
+        this.setConfig.SetConfig("super_mode", val);
     }
 
     public get vtoken() {
