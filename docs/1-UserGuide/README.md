@@ -16,15 +16,14 @@ title: 快速开始
 
 小白用户建议使用已经打包好了的浏览器版本.
 浏览器打包版:
-链接：[百度网盘下载](https://pan.baidu.com/s/1F3iuK3yQUz49FZxdmtBYLQ):https://pan.baidu.com/s/1F3iuK3yQUz49FZxdmtBYLQ
-提取码：3ou9
+链接：[百度网盘下载](https://pan.baidu.com/s/1Kji5J-e-AYrDry0NwRZy4Q):https://pan.baidu.com/s/1Kji5J-e-AYrDry0NwRZy4Q
+提取码：asgm
 
 [**打包版浏览器文档**](/1-UserGuide/1-1-chrome.html#打包版浏览器),但是这个更新速度较慢,也可以自己手动更新
 
 或者使用FireFox浏览器,前往FireFox商店下载更新:[**FireFox文档**](/1-UserGuide/1-2-firefox.html)
 
 [FireFox商店](https://addons.mozilla.org/zh-CN/firefox/addon/%E8%B6%85%E6%98%9F%E6%85%95%E8%AF%BE%E5%B0%8F%E5%B7%A5%E5%85%B7/)
-
 
 
 ## 刷课
