@@ -9,7 +9,7 @@
 // @match        *://studyh5.zhihuishu.com/videoStudy.html*
 // @match        *://examh5.zhihuishu.com/stuExamWeb.html*
 // @match        *://onlineexamh5new.zhihuishu.com/stuExamWeb.html*
-// @grant        none
+// @grant        GM_xmlhttpRequest
 // @license      MIT
 // ==/UserScript==
 
