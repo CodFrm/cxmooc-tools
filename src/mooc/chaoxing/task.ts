@@ -27,15 +27,3 @@ export abstract class Task {
     }
     public abstract Start(): void
 }
-
-export class TopicFactory implements TaskFactory {
-    CreateTask(context: any, taskinfo: any): Task {
-        throw new Error("Method not implemented.");
-    }
-}
-
-export class Topic extends Task {
-    public Start(): void {
-        throw new Error("Method not implemented.");
-    }
-}

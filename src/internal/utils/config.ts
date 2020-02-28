@@ -1,4 +1,5 @@
 import { Client } from "./message";
+import { randNumber } from "./utils";
 
 export interface ConfigItems {
     vtoken: string
@@ -94,8 +95,10 @@ export class ChromeConfigItems implements ConfigItems {
     }
 
     public get interval() {
-        return this.getConfig.GetConfig("interval");
+        let interval = (this.getConfig.GetConfig("interval") || 0.1) * 100;
+        return Math.floor(randNumber(interval - interval / 2, interval + interval / 2)) / 100;
     }
+    
     public set interval(val) {
         this.setConfig.SetConfig("interval", val);
     }

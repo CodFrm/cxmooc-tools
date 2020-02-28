@@ -75,7 +75,6 @@ export class CxVideoOptimization implements Mooc {
             if (time == NaN || time == undefined) {
                 time = parseInt(this.param.duration);
             }
-            Application.App.log.Info("send time pack");
             let playTime = Math.round(time || (this.param.duration - randNumber(1, 2)));
             let enc = '[' + this.param.clazzId + '][' + this.param.userid + '][' +
                 this.param.jobid + '][' + this.param.objectId + '][' +
@@ -163,7 +162,10 @@ export class Video extends Task {
                 this.context.clearInterval(timer);
                 this.video = video;
                 this.initPlayer();
-                this.loadCallback();
+                this.loadCallback && this.loadCallback();
+                this.video.addEventListener("ended", () => {
+                    this.completeCallback && this.completeCallback();
+                });
             } catch (error) {
             }
         }, 500);

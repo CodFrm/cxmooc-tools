@@ -134,14 +134,7 @@ export function RemoveInjected(doc: Document) {
 }
 
 export function randNumber(minNum: number, maxNum: number): number {
-    switch (arguments.length) {
-        case 1:
-            return Math.ceil(Math.random() * minNum + 1);
-        case 2:
-            return Math.ceil(Math.random() * (maxNum - minNum + 1) + minNum);
-        default:
-            return 0;
-    }
+    return Math.ceil(Math.random() * (maxNum - minNum + 1) + minNum);
 }
 
 

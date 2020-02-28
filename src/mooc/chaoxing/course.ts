@@ -1,7 +1,8 @@
 import { Mooc, MoocFactory } from "../factory";
-import { Task, TaskFactory, TopicFactory } from "./task";
+import { Task, TaskFactory } from "./task";
 import { Application } from "@App/internal/application";
 import { VideoFactory } from "./video";
+import { TopicFactory } from "./topic";
 export class CxCourseFactory implements MoocFactory {
     public CreateMooc(): Mooc {
         return new CxCourse();
@@ -28,6 +29,7 @@ export class CxCourse implements Mooc {
         let iframeWindow: any = iframe.contentWindow;
         this.attachments = <Array<any>>iframeWindow.mArg.attachments;
         this.taskList = new Array();
+        let loadOverNum = 0;
         this.attachments.forEach((value: any, index: number) => {
             if (value.jobid == undefined) {
                 return;
@@ -51,7 +53,7 @@ export class CxCourse implements Mooc {
             this.taskList.push(task);
             let taskIndex = this.taskList.length - 1;
             task.Load(() => {
-                if (taskIndex == 0) {
+                if (++loadOverNum == this.taskList.length) {
                     this.startTask(0);
                 }
             });
@@ -71,14 +73,21 @@ export class CxCourse implements Mooc {
     }
 
     protected startTask(index: number) {
-        Application.App.log.Info("进行下一个任务点");
         if (Application.App.config.auto) {
             //选择未完成的任务点开始
             let task: Task;
             for (let i = index; i < this.taskList.length; i++) {
                 task = this.taskList[i];
-                if (this.attachments[task.jobIndex].job == true) {
-                    task.Start();
+                if (this.attachments[task.jobIndex].job) {
+                    if (index == 0) {
+                        task.Start();
+                    } else {
+                        let interval = Application.App.config.interval;
+                        Application.App.log.Info(interval + "分钟后自动切换下一个任务点");
+                        setTimeout(() => {
+                            task.Start();
+                        }, interval * 60000);
+                    }
                     return;
                 }
             }
