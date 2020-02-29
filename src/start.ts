@@ -6,7 +6,7 @@ import { ConsoleLog } from "./internal/utils/log";
 
 class start implements Launcher {
 
-    public start() {
+    public async start() {
         //注入config
         let configKeyList: string[] = new Array();
         for (let key in Application.App.config) {
@@ -15,7 +15,7 @@ class start implements Launcher {
         chrome.storage.sync.get(configKeyList, async function (items) {
             for (let key in items) {
                 if (items[key] == undefined) { continue; }
-                localStorage[key] = items[key] || await Application.App.config.get(key);
+                localStorage[key] = items[key] || await Application.App.config.GetConfig(key);
             }
             Application.App.log.Debug("注入脚本", document.URL);
             if (Application.App.debug) {
@@ -24,7 +24,6 @@ class start implements Launcher {
                 });
             }
             Injected(document, "source");
-
         });
         let msg = NewChromeServerMessage("cxmooc-tools");
         msg.Accept((client, data) => {

@@ -62,6 +62,9 @@ export class CxCourse implements Mooc {
             });
         });
         Application.App.log.Debug("任务点参数", this.attachments);
+        if (this.taskList.length == 0) {
+            this.nextPage();
+        }
     }
 
     protected taskComplete(taskIndex: number, index: number) {
@@ -82,11 +85,7 @@ export class CxCourse implements Mooc {
                     if (index == 0) {
                         task.Start();
                     } else {
-                        let interval = Application.App.config.interval;
-                        Application.App.log.Info(interval + "分钟后自动切换下一个任务点");
-                        setTimeout(() => {
-                            task.Start();
-                        }, interval * 60000);
+                        this.delay(task.Start);
                     }
                     return;
                 }
@@ -95,9 +94,35 @@ export class CxCourse implements Mooc {
         }
     }
 
-    protected nextPage() {
-        Application.App.log.Info("任务点翻页");
-
+    protected delay(func: Function) {
+        let interval = Application.App.config.interval;
+        Application.App.log.Info(interval + "分钟后自动切换下一个任务点");
+        setTimeout(func, interval * 60000);
     }
+
+    protected nextPage(num?: number) {
+        if (num == undefined) {
+            return this.delay(() => { this.nextPage(0); });
+        }
+        let el = <HTMLElement>document.querySelector("span.currents ~ span");
+        if (el != undefined) {
+            return el.click();
+        }
+        el = <HTMLElement>document.querySelector("div.ncells > *:not(.currents) > .orange01");
+        if (el == undefined) {
+            //进行有锁任务查找
+            if (document.querySelector("div.ncells > *:not(.currents) > .lock") == undefined) {
+                return alert("任务结束了");
+            }
+            return setTimeout(() => {
+                if (num > 5) {
+                    return alert("被锁卡住了,请手动处理");
+                }
+                this.nextPage(num + 1);
+            }, 5000);
+        }
+        el.click();
+    }
+
 }
 

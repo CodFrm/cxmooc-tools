@@ -1,6 +1,7 @@
 import { TaskFactory, Task } from "./task";
 import { CssBtn } from "./utils";
 import { createBtn } from "@App/internal/utils/utils";
+import { Application } from "@App/internal/application";
 
 export class TopicFactory implements TaskFactory {
     protected taskIframe: HTMLIFrameElement;
@@ -28,6 +29,15 @@ export class TopicFactory implements TaskFactory {
 }
 
 export class Topic extends Task {
+
+    public Init(context: any, taskinfo: any) {
+        super.Init(context, taskinfo);
+        Application.App.log.Debug("题目", this.taskinfo);
+        this.completeCallback && this.completeCallback();
+    }
+
     public Start(): void {
+        Application.App.log.Debug("题目搜索");
+        
     }
 }

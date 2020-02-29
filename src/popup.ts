@@ -3,7 +3,12 @@ import { Application, Backend, Launcher } from "./internal/application";
 
 class popup implements Launcher {
 
+    protected setConfig: SetConfig;
+    constructor(setConfig: SetConfig) {
+        this.setConfig = setConfig;
+    }
     public async start() {
+        let self = this;
         let cfg = document.getElementsByTagName("input");
         for (let i = 0; i < cfg.length; i++) {
             let el = cfg.item(i);
@@ -15,18 +20,18 @@ class popup implements Launcher {
                     if (promptMsg !== null && !localStorage[key + "_prompt"]) {
                         let msg = prompt(promptMsg);
                         if (msg !== "yes") {
-                            (<HTMLInputElement>this).value = await Application.App.config.get(key) || 1;
+                            (<HTMLInputElement>this).value = await Application.App.config.GetConfig(key) || 1;
                             return;
                         }
                         localStorage[key + "_prompt"] = true;
                     }
                     switch ((<HTMLInputElement>this).type) {
                         case "checkbox": {
-                            Application.App.config.set(key, (<HTMLInputElement>this).checked);
+                            self.setConfig.SetConfig(key, (<HTMLInputElement>this).checked);
                             break;
                         }
                         default: {
-                            Application.App.config.set(key, (<HTMLInputElement>this).value);
+                            self.setConfig.SetConfig(key, (<HTMLInputElement>this).value);
                         }
                     }
                 };
@@ -53,7 +58,7 @@ class popup implements Launcher {
     }
 
     private async setVal(el: HTMLInputElement, key: string) {
-        let val = await Application.App.config.get(key);
+        let val = await Application.App.config.GetConfig(key);
         switch (el.type) {
             case "checkbox": {
                 el.checked = val;
@@ -70,7 +75,7 @@ class popup implements Launcher {
 window.onload = function () {
     let config = NewBackendConfig();
     let component = new Map<string, any>().
-        set("config", new ChromeConfigItems(config, config));
-    let app = new Application(Backend, new popup(), component);
+        set("config", new ChromeConfigItems(config));
+    let app = new Application(Backend, new popup(config), component);
     app.run();
 };

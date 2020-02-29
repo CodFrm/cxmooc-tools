@@ -17,6 +17,31 @@ class background implements Launcher {
                 }
             }
         });
+
+        this.update();
+        this.setDefaultConfig();
+    }
+
+    protected setDefaultConfig() {
+        let configKeyList: string[] = new Array();
+        for (let key in Application.App.config) {
+            configKeyList.push(key);
+        }
+        let configDefaultValue = new Map<string, any>().
+            set("vtoken", "").set("rand_answer", false).set("auto", true).
+            set("video_mute", true).set("answer_ignore", false).set("video_cdn", "").
+            set("video_multiple", 1).set("interval", 1).set("super_mode", true);
+
+        chrome.storage.sync.get(configKeyList, function (items) {
+            for (let key in items) {
+                if (items[key] == undefined) {
+                    chrome.storage.sync.set(key, configDefaultValue.get(key));
+                }
+            }
+        });
+    }
+
+    protected update() {
         Application.CheckUpdate(function (isnew, data) {
             let source = chrome.extension.getURL('src/mooc.js');
             if (isnew) {
@@ -41,23 +66,6 @@ class background implements Launcher {
             get(source, function (source: string) {
                 chrome.storage.local.set({ "source": source });
             });
-        });
-
-        let configKeyList: string[] = new Array();
-        for (let key in Application.App.config) {
-            configKeyList.push(key);
-        }
-        let configDefaultValue = new Map<string, any>().
-            set("vtoken", "").set("rand_answer", false).set("auto", true).
-            set("video_mute", true).set("answer_ignore", false).set("video_cdn", "").
-            set("video_multiple", 1).set("interval", 1).set("super_mode", true);
-
-        chrome.storage.sync.get(configKeyList, function (items) {
-            for (let key in items) {
-                if (items[key] == undefined) {
-                    chrome.storage.sync.set(key, configDefaultValue.get(key));
-                }
-            }
         });
     }
 }

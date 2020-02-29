@@ -7,7 +7,11 @@ import { ConsoleLog, EmptyLog } from "./internal/utils/log";
 RemoveInjected(document);
 
 class mooc implements Launcher {
-    async start(): Promise<void> {
+    public start() {
+        Application.App.log.Debug("State:", document.readyState);
+        if (document.readyState != "loading") {
+            return (<any>window).reload();//先...这样吧
+        }
         let mooc = CreateMooc();
         if (mooc != null) {
             mooc.Start();

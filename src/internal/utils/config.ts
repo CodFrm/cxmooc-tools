@@ -1,7 +1,7 @@
 import { Client } from "./message";
 import { randNumber } from "./utils";
 
-export interface ConfigItems {
+export interface ConfigItems extends GetConfig {
     vtoken: string
     rand_answer: boolean
     auto: boolean
@@ -11,24 +11,20 @@ export interface ConfigItems {
     video_multiple: number
     interval: number
     super_mode: boolean
-    get(key: string): any
-    set(key: string, val: any): void
 }
 
 export class ChromeConfigItems implements ConfigItems {
-    protected setConfig: SetConfig;
+
     protected getConfig: GetConfig;
-    constructor(getConfig: GetConfig, setConfig?: SetConfig) {
-        this.setConfig = setConfig;
+    constructor(getConfig: GetConfig) {
         this.getConfig = getConfig;
     }
 
-    public get(key: string): any {
+    public GetConfig(key: string) {
         return this.getConfig.GetConfig(key);
     }
-
-    public set(key: string, val: any): any {
-        return this.setConfig.SetConfig(key, val);
+    Watch(key: string | string[], callback: (key: string) => void): void {
+        this.getConfig.Watch(key, callback);
     }
 
     public bool(val: any): boolean {
@@ -41,72 +37,45 @@ export class ChromeConfigItems implements ConfigItems {
     public get super_mode() {
         return this.bool(this.getConfig.GetConfig("super_mode"));
     }
-    public set super_mode(val) {
-        this.setConfig.SetConfig("super_mode", val);
-    }
 
     public get vtoken() {
         return this.getConfig.GetConfig("vtoken");
-    }
-    public set vtoken(val) {
-        this.setConfig.SetConfig("vtoken", val);
     }
 
     public get rand_answer() {
         return this.bool(this.getConfig.GetConfig("rand_answer"));
     }
-    public set rand_answer(val) {
-        this.setConfig.SetConfig("rand_answer", val);
-    }
 
     public get auto() {
         return this.bool(this.getConfig.GetConfig("auto"));
-    }
-    public set auto(val) {
-        this.setConfig.SetConfig("auto", val);
     }
 
     public get video_mute() {
         return this.bool(this.getConfig.GetConfig("video_mute"));
     }
-    public set video_mute(val) {
-        this.setConfig.SetConfig("video_mute", val);
-    }
 
     public get answer_ignore() {
         return this.bool(this.getConfig.GetConfig("answer_ignore"));
-    }
-    public set answer_ignore(val) {
-        this.setConfig.SetConfig("answer_ignore", val);
     }
 
     public get video_cdn() {
         return this.getConfig.GetConfig("video_cdn");
     }
-    public set video_cdn(val) {
-        this.setConfig.SetConfig("video_cdn", val);
-    }
 
     public get video_multiple() {
         return this.getConfig.GetConfig("video_multiple");
-    }
-    public set video_multiple(val) {
-        this.setConfig.SetConfig("video_multiple", val);
     }
 
     public get interval() {
         let interval = (this.getConfig.GetConfig("interval") || 0.1) * 100;
         return Math.floor(randNumber(interval - interval / 2, interval + interval / 2)) / 100;
     }
-    
-    public set interval(val) {
-        this.setConfig.SetConfig("interval", val);
-    }
 
 }
 
 export interface GetConfig {
     GetConfig(key: string): any
+    Watch(key: Array<string> | string, callback: (key: string) => void): void
 }
 
 export interface SetConfig {
@@ -129,6 +98,10 @@ class backendConfig implements GetConfig, SetConfig {
         })));
     }
 
+    public Watch(key: Array<string> | string, callback: (key: string) => void): void {
+        throw new Error("Method not implemented.");
+    }
+
     public SetConfig(key: string, val: any): void {
         let info: { [key: string]: number; } = {};
         info[key] = val;
@@ -142,8 +115,25 @@ export function NewFrontendGetConfig(): GetConfig {
 }
 
 class frontendGetConfig implements GetConfig {
+
+    protected watchCallback: Map<string, Array<(key: string) => void>>
+
     public GetConfig(key: string): any {
         return localStorage[key];
+    }
+
+    public Watch(key: Array<string> | string, callback: (key: string) => void): void {
+        if (typeof key == "string") {
+            this.setWatchMap(key, callback);
+            return;
+        }
+        key.forEach((val: string, index: number) => {
+            this.setWatchMap(val, callback);
+        });
+    }
+
+    protected setWatchMap(key: string, callback: (key: string) => void) {
+        //TODO: 监控配置项更新
     }
 }
 

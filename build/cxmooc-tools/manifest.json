@@ -54,10 +54,10 @@
         "webRequestBlocking",
         "storage",
         "declarativeContent",
-        "https://*/"
+        "https://cx.icodef.com/"
     ],
     "web_accessible_resources": [
         "src/mooc.js"
     ],
-    "homepage_url": "https://blog.icodef.com"
+    "homepage_url": "https://cx.icodef.com"
 }
