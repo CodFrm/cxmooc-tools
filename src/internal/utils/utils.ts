@@ -11,6 +11,34 @@ export interface RequestInfo extends RequestInit {
     json?: boolean
 }
 
+if (window.hasOwnProperty('GM_xmlhttpRequest')) {
+    //TODO:兼容油猴GM_xmlhttpRequest
+    let oldGM_xmlhttpRequest = (<any>window).GM_xmlhttpRequest;
+    (<any>window).GM_xmlhttpRequest = (info: RequestInfo) => {
+        oldGM_xmlhttpRequest(info);
+    }
+} else {
+    (<any>window).GM_xmlhttpRequest = (info: RequestInfo) => {
+        let client: Client = Application.App.Client;
+        client.Recv((data) => {
+            if (data.code == 0) {
+                info.success && info.success(data.body);
+            } else {
+                info.error && info.error();
+            }
+        });
+        client.Send({
+            type: "GM_xmlhttpRequest", info: {
+                url: info.url,
+                method: info.method,
+                json: info.json,
+                body: info.body,
+                headers: info.headers,
+            }
+        });
+    }
+}
+
 export class HttpUtils {
 
     public static Request(info: RequestInfo): void {
@@ -32,30 +60,6 @@ export class HttpUtils {
     }
 
     private static crossDomainRequest(info: RequestInfo): void {
-        if (window.hasOwnProperty('GM_xmlhttpRequest')) {
-            let oldGM_xmlhttpRequest = (<any>window).GM_xmlhttpRequest;
-            (<any>window).GM_xmlhttpRequest = (info: RequestInfo) => {
-                oldGM_xmlhttpRequest(info);
-            }
-        } else {
-            (<any>window).GM_xmlhttpRequest = (info: RequestInfo) => {
-                let client: Client = Application.App.Client;
-                client.Recv((data) => {
-                    if (data.code == 0) {
-                        info.success && info.success(data.body);
-                    } else {
-                        info.error && info.error();
-                    }
-                });
-                client.Send({
-                    type: "GM_xmlhttpRequest", info: {
-                        url: info.url,
-                        method: info.method,
-                        json: info.json,
-                    }
-                });
-            }
-        }
         (<any>window).GM_xmlhttpRequest(info);
     }
 
@@ -67,6 +71,8 @@ export class HttpUtils {
     public static HttpPost(url: string, body: any, info: RequestInfo): void {
         info.url = url;
         info.body = body;
+        info.headers = { "Content-Type": "application/x-www-form-urlencoded" };
+        info.method = "POST";
         this.Request(info)
     }
 
@@ -223,4 +229,45 @@ function createRequest(): XMLHttpRequest {
         return xmlhttp;
     }
     return xmlhttp;
+}
+
+/**
+ * 去除html标签和处理中文
+ * @param {string} html 
+ */
+export function removeHTML(html: string) {
+    //先处理带src和href属性的标签
+    let srcReplace = /<(img|iframe|a).*?(src|href)="(.*?)".*?>/g;
+    html = html.replace(srcReplace, '$3');
+    let revHtml = /<.*?>/g;
+    html = html.replace(revHtml, '');
+    html = html.replace(/(^\s+)|(\s+$)/g, '');
+    html = dealSymbol(html);
+    return html.replace(/&nbsp;/g, ' ');
+}
+
+/**
+ * 处理符号
+ * @param topic 
+ */
+function dealSymbol(topic: string) {
+    topic = topic.replace(/，/g, ',');
+    topic = topic.replace(/（/g, '(');
+    topic = topic.replace(/）/g, ')');
+    topic = topic.replace(/？/g, '?');
+    topic = topic.replace(/：/g, ':');
+    topic = topic.replace(/[“”]/g, '"');
+    return topic;
+}
+
+/**
+ * 取中间文本
+ * @param str 
+ * @param left 
+ * @param right 
+ */
+export function substrex(str: string, left: string, right: string) {
+    var leftPos = str.indexOf(left) + left.length;
+    var rightPos = str.indexOf(right, leftPos);
+    return str.substring(leftPos, rightPos);
 }

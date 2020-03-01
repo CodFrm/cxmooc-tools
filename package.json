@@ -43,7 +43,6 @@
     },
     "dependencies": {
         "body-parser": "^1.18.3",
-        "co": "^4.6.0",
         "express": "^4.16.3",
         "hashmap": "^2.3.0",
         "md5": "^2.2.1",

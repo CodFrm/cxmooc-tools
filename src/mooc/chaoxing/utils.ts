@@ -20,3 +20,18 @@ export function CssBtn(btn: HTMLButtonElement): HTMLButtonElement {
     };
     return btn;
 }
+
+export function CreateNoteLine(text: string, label: string, append?: HTMLElement, after?: HTMLElement) {
+    let p = document.createElement("p");
+    p.style.color = "red";
+    p.style.fontSize = "14px";
+    p.className = "prompt-line-" + label;
+    p.innerHTML = text;
+    if (append != undefined) {
+        append.append(p);
+    }
+    if (after != undefined) {
+        after.after(p);
+    }
+    return p;
+}

@@ -165,6 +165,11 @@ export class Video extends Task {
                 this.video.addEventListener("ended", () => {
                     this.completeCallback && this.completeCallback();
                 });
+                this.video.addEventListener("ended", () => {
+                    if (Application.App.config.auto) {
+                        this.video.play();
+                    }
+                });
                 this.loadCallback && this.loadCallback();
             } catch (error) {
             }

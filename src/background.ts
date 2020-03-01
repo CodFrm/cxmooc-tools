@@ -43,7 +43,7 @@ class background implements Launcher {
 
     protected update() {
         Application.CheckUpdate(function (isnew, data) {
-            let source = chrome.extension.getURL('src/mooc.js');
+            let sourceUrl = chrome.extension.getURL('src/mooc.js');
             if (isnew) {
                 chrome.browserAction.setBadgeText({
                     text: 'new'
@@ -61,9 +61,12 @@ class background implements Launcher {
                 isHotUpdate = true;
             }
             if (isHotUpdate) {
-                source = SystemConfig.url + 'js/' + hotVersion + '.js';
+                sourceUrl = SystemConfig.url + 'js/' + hotVersion + '.js';
             }
-            get(source, function (source: string) {
+            get(sourceUrl, function (source: string) {
+                if(!source){
+                    return ;
+                }
                 chrome.storage.local.set({ "source": source });
             });
         });

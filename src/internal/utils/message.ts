@@ -75,7 +75,7 @@ class extensionClientMessage extends msg implements Client {
     }
 
     private connect(): void {
-        this.conn = chrome.runtime.connect({name: this.tag});
+        this.conn = chrome.runtime.connect({ name: this.tag });
     }
 
     private recv() {
@@ -142,14 +142,14 @@ class chromeClientMessage extends msg implements Client {
     private connect(): void {
         this.connTag = Math.random();
         window.addEventListener('message', (event) => {
-            if (event.data.tag == this.tag && event.data.conn_tag && event.data.source == "server") {
+            if (event.data.tag == this.tag && event.data.conn_tag == this.connTag && event.data.source == "server") {
                 this.recvCallback && this.recvCallback(event.data.msg);
             }
         });
     }
 
     public Send(msg: any): void {
-        window.postMessage({tag: this.tag, conn_tag: this.connTag, msg: msg, source: this.source}, '/');
+        window.postMessage({ tag: this.tag, conn_tag: this.connTag, msg: msg, source: this.source }, '/');
     }
 }
 
