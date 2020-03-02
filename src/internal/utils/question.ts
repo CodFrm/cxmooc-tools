@@ -4,15 +4,15 @@ import { Application } from "../application";
 
 export interface Option {
     Fill(content?: string): void
-    GetContent(): string
+    GetContent(): string | boolean
     GetOption(): string
 }
 
 // 1-单选 2-多选 3-判断 4-填空
 export type TopicType = 1 | 2 | 3 | 4;
 export type FillType = 1;
-// 1随机答案 2不支持的随机答案类型 3无答案
-export type TopicStatus = 0 | 1 | 2 | 3;
+// 1随机答案 2不支持的随机答案类型 3无答案 4无符合答案
+export type TopicStatus = 0 | 1 | 2 | 3 | 4;
 export interface Question {
     GetTopic(): string
     GetType(): TopicType
@@ -22,7 +22,8 @@ export interface Question {
 }
 
 let statusMap = new Map();
-statusMap.set(0, "答案如下:").set(1, "随机答案").set(2, "不支持的随机答案类型").set(3, "题库中没有搜索到答案");
+statusMap.set(0, "答案如下:").set(1, "随机答案").set(2, "不支持的随机答案类型").set(3, "题库中没有搜索到答案").
+    set(4, "题库中没有符合的答案");
 export function TopicStatusString(status: TopicStatus): string {
     return statusMap.get(status);
 }
@@ -94,7 +95,7 @@ export class QuestionList {
         for (let i = 0; i < result.length; i++) {
             let res = result[i];
             let topic = this.topic[start + i];
-            let options = topic.GetOption();
+            let options = topic.GetOption().concat();
             if (res.result.length <= 0) {
                 if (!Application.App.config.rand_answer) {
                     if (topic.GetType() == 4) {
@@ -112,15 +113,35 @@ export class QuestionList {
             let flag = true;
             for (let i = 0; i < correct.length; i++) {
                 for (let n = 0; n < options.length; n++) {
-                    if (removeHTML(options[n].GetContent()) == removeHTML(correct[i].content)) {
-                        topic.Fill(n, correct[i].content);
-                        flag = false;
-                        break;
+                    let content = options[n].GetContent();
+                    if (content == null) {
+                        //填空之类
+                        if (options[n].GetOption() == correct[i].option) {
+                            options[n].Fill(correct[i].content);
+                            flag = false;
+                        } else {
+                            break;
+                        }
+                    } else if (typeof content == "boolean") {
+                        //判断之类
+                        let n = 0;
+                        if (correct[i].content == false) {
+                            n = 1;
+                        }
+                        options[n].Fill();
+                    } else if (removeHTML(content) == removeHTML(correct[i].content)) {
+                        //选择之类
+                        options[n].Fill(correct[i].content);
+                    } else {
+                        continue;
                     }
+                    options.splice(n, 1);
+                    flag = false;
+                    break;
                 }
             }
             if (flag) {
-                topic.SetStatus(3);
+                topic.SetStatus(4);
             }
         }
     }

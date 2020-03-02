@@ -115,7 +115,7 @@ class cxTopic implements Question {
                     break;
                 }
                 case 3: {
-                    options.push(new cxSelectOption(val, el));
+                    options.push(new cxJudgeOption(val, el));
                     break;
                 }
                 case 4: {
@@ -141,14 +141,15 @@ abstract class cxOption implements Option {
     }
 
     abstract Fill(content?: string): void
-    abstract GetContent(): string
+    abstract GetContent(): string | boolean
     abstract GetOption(): string
 }
 
 class cxSelectOption extends cxOption {
 
     public Fill(content?: string): void {
-
+        let el = <HTMLInputElement>this.el.querySelector("label > input");
+        el.click();
     }
 
     public GetContent(): string {
@@ -161,19 +162,34 @@ class cxSelectOption extends cxOption {
     }
 }
 
-class cxFillOption extends cxOption {
+class cxJudgeOption extends cxOption {
 
     public Fill(content?: string): void {
-
+        let el = <HTMLInputElement>this.el.querySelector("label > input");
+        el.click();
     }
 
-    public GetContent(): string {
-        console.log("123")
-        let el = this.el.querySelector("a");
-        return el.innerHTML;
+    public GetContent(): boolean {
+        return true;
     }
 
     public GetOption(): string {
         return "";
+    }
+}
+class cxFillOption extends cxOption {
+
+    public Fill(content?: string): void {
+        let el = <HTMLInputElement>this.el.querySelector("input.inp");
+        el.value = content;
+    }
+
+    public GetContent(): string {
+        return null;
+    }
+
+    public GetOption(): string {
+        let el = this.el.querySelector("span.fb");
+        return substrex(el.innerHTML, "第", "空");
     }
 }
