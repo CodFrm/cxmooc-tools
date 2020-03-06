@@ -63,6 +63,7 @@ export class CxCourse implements Mooc {
         });
         Application.App.log.Debug("任务点参数", this.attachments);
         if (this.taskList.length == 0) {
+            //无任务点
             this.nextPage();
         }
     }

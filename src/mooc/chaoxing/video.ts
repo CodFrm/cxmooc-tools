@@ -24,7 +24,7 @@ export class CxVideoOptimization implements Mooc {
                 return;
             }
             let dataHook = new Hook("decode", (<any>window).Ext);
-            dataHook.Middleware((next: Context, ...args: any) => {
+            dataHook.Middleware(function (next: Context, ...args: any) {
                 let ret = next.apply(this, args);
                 if (Application.App.config.super_mode && ret.danmaku == 1) {
                     ret.danmaku = 0;
@@ -35,10 +35,20 @@ export class CxVideoOptimization implements Mooc {
             window.frameElement.setAttribute("switchwindow", "");
 
             let paramHook = new Hook("params2VideoOpt", (<any>window).ans.VideoJs.prototype);
-            paramHook.Middleware((next: Context, ...args: any) => {
+            paramHook.Middleware(function (next: Context, ...args: any) {
                 this.param = args[0];
                 let ret = next.apply(this, args);
                 ret.plugins.timelineObjects.url = this.param.rootPath + "/richvideo/initdatawithviewer";
+                let cdn = Application.App.config.video_cdn || localStorage["cdn"] || "公网1";
+                for (let i = 0; i < ret.playlines.length; i++) {
+                    if (ret.playlines[i].label == cdn) {
+                        let copy = ret.playlines[i];
+                        (<Array<any>>ret.playlines).splice(i, 1);
+                        (<Array<any>>ret.playlines).splice(0, 0, copy);
+                    }
+                }
+                localStorage["cdn"] = ret.playlines[0].label;
+                console.log(<Array<any>>ret.playlines);
                 return ret;
             });
             (<any>window).Ext.isSogou = false;
@@ -49,17 +59,21 @@ export class CxVideoOptimization implements Mooc {
                 setTimeout(() => {
                     let nowCdn = this.renderData.selectedIndex;
                     let playlines = this.renderData.playlines;
-                    let cdn = Application.App.config.video_cdn || "公网1";
+                    let cdn = Application.App.config.video_cdn || localStorage["cdn"] || "公网1";
                     for (let i = 0; i < playlines.length; i++) {
                         if (i != nowCdn) {
                             if (cdn == "") {
+                                localStorage["cdn"] = playlines[i].label;
                                 return this.onSelected(i);
                             } else if (cdn == playlines[i].label) {
+                                localStorage["cdn"] = playlines[i].label;
                                 return this.onSelected(i);
                             }
                         }
                     }
-                    return this.onSelected((nowCdn + 1) % playlines.length);
+                    let index = (nowCdn + 1) % playlines.length;
+                    localStorage["cdn"] = playlines[index].label;
+                    return this.onSelected(index);
                 }, 2000);
                 return ret;
             });

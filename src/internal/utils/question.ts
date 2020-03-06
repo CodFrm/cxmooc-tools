@@ -3,7 +3,7 @@ import { SystemConfig } from "./config";
 import { Application } from "../application";
 
 export interface Option {
-    Fill(content?: string): void
+    Fill(content: string | boolean): void
     GetContent(): string | boolean
     GetOption(): string
 }
@@ -18,7 +18,6 @@ export interface Question {
     GetType(): TopicType
     GetOption(): Array<Option>
     SetStatus(status: TopicStatus): void
-    Fill(index: number, content?: string): void
 }
 
 let statusMap = new Map();
@@ -48,8 +47,8 @@ export function SwitchTopicType(title: string): TopicType {
     }
 }
 
-type QuestionStatus = "success" | "network";
-type QuestionCallback = (status: QuestionStatus) => void
+export type QuestionStatus = "success" | "network" | "incomplete";
+export type QuestionCallback = (status: QuestionStatus) => void
 export class QuestionList {
 
     protected topic: Array<Question>
@@ -95,15 +94,18 @@ export class QuestionList {
         for (let i = 0; i < result.length; i++) {
             let res = result[i];
             let topic = this.topic[start + i];
-            let options = topic.GetOption().concat();
+            let options = topic.GetOption();
             if (res.result.length <= 0) {
+                //随机答案
                 if (!Application.App.config.rand_answer) {
                     if (topic.GetType() == 4) {
                         topic.SetStatus(2);
                         continue;
                     }
+                    let index = randNumber(0, options.length - 1);
+                    Application.App.log.Debug(options, topic, index);
                     topic.SetStatus(1);
-                    options[randNumber(0, options.length - 1)].Fill();
+                    options[index].Fill(options[index].GetContent());
                     continue;
                 }
                 topic.SetStatus(3);
@@ -128,7 +130,7 @@ export class QuestionList {
                         if (correct[i].content == false) {
                             n = 1;
                         }
-                        options[n].Fill();
+                        options[n].Fill(options[n].GetContent());
                     } else if (removeHTML(content) == removeHTML(correct[i].content)) {
                         //选择之类
                         options[n].Fill(correct[i].content);

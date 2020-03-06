@@ -1,5 +1,5 @@
 import { NewChromeServerMessage } from "@App/internal/utils/message";
-import { HttpUtils, Injected, randNumber, get } from "@App/internal/utils/utils";
+import { HttpUtils, Injected, randNumber, get, syncSetChromeStorageLocal } from "@App/internal/utils/utils";
 import { Application, Content, Launcher } from "@App/internal/application";
 import { SystemConfig, ChromeConfigItems, NewFrontendGetConfig, NewBackendConfig } from "@App/internal/utils/config";
 import { ConsoleLog } from "./internal/utils/log";
@@ -7,6 +7,9 @@ import { ConsoleLog } from "./internal/utils/log";
 class start implements Launcher {
 
     public async start() {
+        if (document.URL.indexOf("ananas/modules/video/index.html") > 0) {
+            return Injected(document, "source");
+        }
         //注入config
         let configKeyList: string[] = new Array();
         for (let key in Application.App.config) {
@@ -19,8 +22,9 @@ class start implements Launcher {
             }
             Application.App.log.Debug("注入脚本", document.URL);
             if (Application.App.debug) {
+                //TODO:get不是同步
                 await get(chrome.extension.getURL('src/mooc.js'), async function (source: string) {
-                    await chrome.storage.local.set({ "source": source });
+                    await syncSetChromeStorageLocal("source", source);
                 });
             }
             Injected(document, "source");

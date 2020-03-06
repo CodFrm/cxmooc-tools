@@ -128,6 +128,14 @@ export function syncGetChromeStorageLocal(key: string): Promise<any> {
     })));
 }
 
+export function syncSetChromeStorageLocal(key: string, value: any): Promise<any> {
+    let tmp = {};
+    (<any>tmp)[key] = value;
+    return new Promise<any>(resolve => (chrome.storage.local.set(tmp, () => {
+        resolve();
+    })));
+}
+
 /**
  * 移除注入js
  * @param doc
@@ -140,9 +148,8 @@ export function RemoveInjected(doc: Document) {
 }
 
 export function randNumber(minNum: number, maxNum: number): number {
-    return Math.ceil(Math.random() * (maxNum - minNum + 1) + minNum);
+    return Math.floor(Math.random() * (maxNum - minNum + 1) + minNum);
 }
-
 
 /**
  * 创建一个按钮

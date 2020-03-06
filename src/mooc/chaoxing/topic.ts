@@ -1,8 +1,8 @@
 import { TaskFactory, Task } from "./task";
 import { CssBtn, CreateNoteLine } from "./utils";
-import { createBtn, substrex } from "@App/internal/utils/utils";
+import { createBtn, substrex, removeHTML } from "@App/internal/utils/utils";
 import { Application } from "@App/internal/application";
-import { Question, Option, QuestionList, TopicType, SwitchTopicType, TopicStatus, TopicStatusString } from "@App/internal/utils/question";
+import { Question, Option, QuestionList, TopicType, SwitchTopicType, TopicStatus, TopicStatusString, QuestionStatus } from "@App/internal/utils/question";
 
 export class TopicFactory implements TaskFactory {
     protected taskIframe: HTMLIFrameElement;
@@ -35,8 +35,13 @@ export class Topic extends Task {
 
     public Init(context: any, taskinfo: any) {
         super.Init(context, taskinfo);
-        Application.App.log.Debug("题目", this.taskinfo);
-        this.completeCallback && this.completeCallback();
+        Application.App.log.Debug("题目", this.taskinfo, this.context.document.readyState);
+        let timer = this.context.setInterval(() => {
+            if (this.context.document.readyState == "complete") {
+                clearInterval(timer);
+                this.loadCallback && this.loadCallback();
+            }
+        }, 500);
     }
 
     public Start(): void {
@@ -52,17 +57,49 @@ export class Topic extends Task {
             }
             list.AddTopic(topic);
         });
-        list.Answer(() => {
+        list.Answer((status: QuestionStatus) => {
             this.lock = false;
+            if (status == "network") {
+                return Application.App.log.Info("网络错误跳过");
+            } else if (status == "incomplete") {
+                return Application.App.log.Info("答案错误");
+            }
+            Application.App.log.Info("准备提交答案");
+            this.context.setTimeout(() => {
+                let submit = this.context.document.querySelector(".Btn_blue_1");
+                submit.click();
+                this.context.setTimeout(() => {
+                    let prompt = this.context.document.querySelector("#tipContent").innerHTML;
+                    if (prompt.indexOf("未做完") > 0) {
+                        alert("提示:" + prompt);
+                        return;
+                    }
+                    let timer = this.context.setInterval(() => {
+                        prompt = document.getElementById("validate");
+                        if (prompt.style.display != 'none') {
+                            //等待验证码接管
+                            return;
+                        }
+                        clearInterval(timer);
+                        //确定提交
+                        let submit = this.context.document.querySelector(".bluebtn");
+                        Application.App.prod && submit.click();
+
+                        this.completeCallback && this.completeCallback();
+
+                    }, 2000);
+                }, 2000);
+            }, 2000);
         });
     }
+
 }
 
-class cxTopic implements Question {
-
-    public Fill(index: number, content?: string): void {
-        this.options[index].Fill(content);
-    }
+interface Notice {
+    RemoveNotice(): void
+    AddNotice(str: string): void
+}
+class cxTopic implements Question, Notice {
 
     protected el: HTMLElement;
     protected options: Array<Option>;
@@ -71,8 +108,8 @@ class cxTopic implements Question {
         this.el = el;
     }
     public SetStatus(status: TopicStatus) {
-        this.removeNotice();
-        this.addNotice(TopicStatusString(status));
+        this.RemoveNotice();
+        this.AddNotice(TopicStatusString(status));
     }
 
     public GetTopic(): string {
@@ -80,12 +117,12 @@ class cxTopic implements Question {
         return ret.substring(ret.indexOf('】') + 1);
     }
 
-    protected removeNotice() {
+    public RemoveNotice() {
         let el = <HTMLElement>this.el.querySelector(".clearfix > ul,.clearfix > .Py_tk");
         el.querySelectorAll(".prompt-line-answer").forEach((v, i) => { v.remove() });
     }
 
-    protected addNotice(str: string) {
+    public AddNotice(str: string) {
         let el = <HTMLElement>this.el.querySelector(".clearfix > ul,.clearfix > .Py_tk");
         CreateNoteLine(str, "answer", el);
     }
@@ -93,9 +130,9 @@ class cxTopic implements Question {
     public GetType(): TopicType {
         let title = this.el.querySelector(".Zy_TItle.clearfix > .clearfix").innerHTML;
         let ret = SwitchTopicType(substrex(title, '【', '】'));
-        this.removeNotice();
+        this.RemoveNotice();
         if (ret == null) {
-            this.addNotice("不支持的类型");
+            this.AddNotice("不支持的类型");
         }
         return ret;
     }
@@ -111,15 +148,15 @@ class cxTopic implements Question {
             switch (this.GetType()) {
                 case 1:
                 case 2: {
-                    options.push(new cxSelectOption(val, el));
+                    options.push(new cxSelectOption(val, this));
                     break;
                 }
                 case 3: {
-                    options.push(new cxJudgeOption(val, el));
+                    options.push(new cxJudgeOption(val, this));
                     break;
                 }
                 case 4: {
-                    options.push(new cxFillOption(val, el));
+                    options.push(new cxFillOption(val, this));
                     break;
                 }
             }
@@ -132,24 +169,24 @@ class cxTopic implements Question {
 
 abstract class cxOption implements Option {
 
-    protected el: HTMLElement
-    protected father: HTMLElement
-
-    constructor(el: HTMLElement, father: HTMLElement) {
+    protected el: HTMLElement;
+    protected notice: Notice;
+    constructor(el: HTMLElement, notice: Notice) {
         this.el = el;
-        this.father = father;
+        this.notice = notice;
     }
 
-    abstract Fill(content?: string): void
+    abstract Fill(content: string | boolean): void
     abstract GetContent(): string | boolean
     abstract GetOption(): string
 }
 
 class cxSelectOption extends cxOption {
 
-    public Fill(content?: string): void {
+    public Fill(content: string): void {
         let el = <HTMLInputElement>this.el.querySelector("label > input");
         el.click();
+        this.notice.AddNotice(this.GetOption() + ":" + content);
     }
 
     public GetContent(): string {
@@ -164,13 +201,21 @@ class cxSelectOption extends cxOption {
 
 class cxJudgeOption extends cxOption {
 
-    public Fill(content?: string): void {
+    public Fill(content: boolean): void {
         let el = <HTMLInputElement>this.el.querySelector("label > input");
         el.click();
+        if (content) {
+            return this.notice.AddNotice("对√");
+        }
+        return this.notice.AddNotice("错×");
     }
 
     public GetContent(): boolean {
-        return true;
+        let el = <HTMLInputElement>this.el.querySelector("label > input");
+        if (el.value == "true") {
+            return true;
+        }
+        return false;
     }
 
     public GetOption(): string {
@@ -179,9 +224,10 @@ class cxJudgeOption extends cxOption {
 }
 class cxFillOption extends cxOption {
 
-    public Fill(content?: string): void {
+    public Fill(content: string): void {
         let el = <HTMLInputElement>this.el.querySelector("input.inp");
         el.value = content;
+        this.notice.AddNotice(this.GetOption() + ":" + content);
     }
 
     public GetContent(): string {
