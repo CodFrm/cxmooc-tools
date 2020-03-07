@@ -48,7 +48,6 @@ export class CxVideoOptimization implements Mooc {
                     }
                 }
                 localStorage["cdn"] = ret.playlines[0].label;
-                console.log(<Array<any>>ret.playlines);
                 return ret;
             });
             (<any>window).Ext.isSogou = false;

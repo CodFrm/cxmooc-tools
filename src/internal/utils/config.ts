@@ -1,4 +1,4 @@
-import { Client } from "./message";
+import { Client, NewExtensionClientMessage, NewChromeClientMessage } from "./message";
 import { randNumber } from "./utils";
 
 export interface ConfigItems extends GetConfig {
@@ -23,7 +23,7 @@ export class ChromeConfigItems implements ConfigItems {
     public GetConfig(key: string) {
         return this.getConfig.GetConfig(key);
     }
-    Watch(key: string | string[], callback: (key: string) => void): void {
+    public Watch(key: string | string[], callback: (key: string) => void): void {
         this.getConfig.Watch(key, callback);
     }
 
@@ -88,6 +88,7 @@ export function NewBackendConfig(): backendConfig {
 }
 
 class backendConfig implements GetConfig, SetConfig {
+
     public GetConfig(key: string): Promise<any> {
         return new Promise<any>(resolve => (chrome.storage.sync.get(key, (value) => {
             if (value.hasOwnProperty(<string>key)) {
@@ -102,10 +103,17 @@ class backendConfig implements GetConfig, SetConfig {
         throw new Error("Method not implemented.");
     }
 
-    public SetConfig(key: string, val: any): void {
-        let info: { [key: string]: number; } = {};
-        info[key] = val;
-        chrome.storage.sync.set(info);
+    public SetConfig(key: string, val: any): Promise<void> {
+        return new Promise<any>(resolve => {
+            let info: { [key: string]: number; } = {};
+            info[key] = val;
+            chrome.storage.sync.set(info, () => {
+                chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+                    chrome.tabs.sendMessage(tabs[0].id, { type: "cxconfig", key: key, value: val });
+                });
+                resolve();
+            });
+        });
     }
 }
 
@@ -117,6 +125,14 @@ export function NewFrontendGetConfig(): GetConfig {
 class frontendGetConfig implements GetConfig {
 
     protected watchCallback: Map<string, Array<(key: string) => void>>
+
+    constructor() {
+        window.addEventListener('message', function (event) {
+            if (event.data.type && event.data.type == "cxconfig") {
+                localStorage[event.data.key] = event.data.value;
+            }
+        });
+    }
 
     public GetConfig(key: string): any {
         return localStorage[key];

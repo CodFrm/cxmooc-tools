@@ -149,7 +149,7 @@ class chromeClientMessage extends msg implements Client {
     }
 
     public Send(msg: any): void {
-        window.postMessage({ tag: this.tag, conn_tag: this.connTag, msg: msg, source: this.source }, '/');
+        window.postMessage({ tag: this.tag, conn_tag: this.connTag, msg: msg, source: this.source }, '*');
     }
 }
 

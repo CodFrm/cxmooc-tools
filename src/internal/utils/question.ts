@@ -12,7 +12,7 @@ export interface Option {
 export type TopicType = 1 | 2 | 3 | 4;
 export type FillType = 1;
 // 1随机答案 2不支持的随机答案类型 3无答案 4无符合答案
-export type TopicStatus = 0 | 1 | 2 | 3 | 4;
+export type TopicStatus = "ok" | "random" | "no_support_random" | "no_answer" | "no_match";
 export interface Question {
     GetTopic(): string
     GetType(): TopicType
@@ -20,9 +20,9 @@ export interface Question {
     SetStatus(status: TopicStatus): void
 }
 
-let statusMap = new Map();
-statusMap.set(0, "答案如下:").set(1, "随机答案").set(2, "不支持的随机答案类型").set(3, "题库中没有搜索到答案").
-    set(4, "题库中没有符合的答案");
+let statusMap = new Map<TopicStatus, string>();
+statusMap.set("ok", "答案如下:").set("random", "随机答案").set("no_support_random", "不支持的随机答案类型").
+    set("no_answer", "题库中没有搜索到答案").set("no_match", "题库中没有符合的答案");
 export function TopicStatusString(status: TopicStatus): string {
     return statusMap.get(status);
 }
@@ -49,14 +49,22 @@ export function SwitchTopicType(title: string): TopicType {
 
 export type QuestionStatus = "success" | "network" | "incomplete";
 export type QuestionCallback = (status: QuestionStatus) => void
-export class QuestionList {
+export interface QuestionBank {
+    AddTopic(topic: Question): void;
+    Answer(callback: QuestionCallback): void;
+}
+
+// 小工具题库
+export class ToolsQuestionBank implements QuestionBank {
 
     protected topic: Array<Question>
     protected platform: string
+    protected info: string
 
-    constructor(platform: string) {
+    constructor(platform: string, info?: string) {
         this.topic = new Array();
         this.platform = platform;
+        this.info = info;
     }
 
     public AddTopic(topic: Question) {
@@ -64,8 +72,12 @@ export class QuestionList {
     }
 
     public Answer(callback: QuestionCallback) {
+        let retStatus: QuestionStatus = "success";
         let next = (i: number) => {
             let body = "";
+            if (this.info) {
+                body = "id=" + this.info + "&";
+            }
             let t = i;
             for (; t < i + 5 && t < this.topic.length; t++) {
                 let val = this.topic[t];
@@ -74,23 +86,26 @@ export class QuestionList {
             HttpUtils.HttpPost(SystemConfig.url + "v2/answer?platform=" + this.platform, body, {
                 json: true,
                 success: (result: any) => {
-                    this.fillAnswer(i, result);
+                    let status = this.fillAnswer(i, result);
+                    if (status != "success") {
+                        retStatus = status;
+                    }
                     if (t < this.topic.length) {
                         next(t);
                     } else {
-                        callback("success");
+                        callback(retStatus);
                     }
                 },
                 error: () => {
                     callback("network");
                 }
             });
-
         }
         next(0);
     }
 
-    protected fillAnswer(start: number, result: Array<any>) {
+    protected fillAnswer(start: number, result: Array<any>): QuestionStatus {
+        let status: QuestionStatus = "success";
         for (let i = 0; i < result.length; i++) {
             let res = result[i];
             let topic = this.topic[start + i];
@@ -99,16 +114,17 @@ export class QuestionList {
                 //随机答案
                 if (!Application.App.config.rand_answer) {
                     if (topic.GetType() == 4) {
-                        topic.SetStatus(2);
+                        topic.SetStatus("no_support_random");
+                        status = "incomplete";
                         continue;
                     }
                     let index = randNumber(0, options.length - 1);
                     Application.App.log.Debug(options, topic, index);
-                    topic.SetStatus(1);
+                    topic.SetStatus("random");
                     options[index].Fill(options[index].GetContent());
                     continue;
                 }
-                topic.SetStatus(3);
+                topic.SetStatus("no_answer");
                 continue;
             }
             let correct = res.result[0].correct;
@@ -143,9 +159,11 @@ export class QuestionList {
                 }
             }
             if (flag) {
-                topic.SetStatus(4);
+                status = "incomplete";
+                topic.SetStatus("no_match");
             }
         }
+        return status;
     }
 
 }

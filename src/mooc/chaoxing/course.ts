@@ -2,7 +2,9 @@ import { Mooc, MoocFactory } from "../factory";
 import { Task, TaskFactory } from "./task";
 import { Application } from "@App/internal/application";
 import { VideoFactory } from "./video";
-import { TopicFactory } from "./topic";
+import { TopicFactory, HomeWorkTopicFactory } from "./topic";
+import { createBtn } from "@App/internal/utils/utils";
+import { CssBtn } from "./utils";
 export class CxCourseFactory implements MoocFactory {
     public CreateMooc(): Mooc {
         return new CxCourse();
@@ -58,22 +60,14 @@ export class CxCourse implements Mooc {
                 }
             });
             task.Complete(() => {
-                this.taskComplete(taskIndex, index);
+                this.startTask(taskIndex + 1);
             });
         });
         Application.App.log.Debug("任务点参数", this.attachments);
         if (this.taskList.length == 0) {
             //无任务点
-            this.nextPage();
+            this.startTask(0);
         }
-    }
-
-    protected taskComplete(taskIndex: number, index: number) {
-        if (index == this.attachments.length - 1) {
-            //本页最后一个任务完成
-            return this.nextPage();
-        }
-        this.startTask(taskIndex + 1);
     }
 
     protected startTask(index: number) {
@@ -122,8 +116,22 @@ export class CxCourse implements Mooc {
                 this.nextPage(num + 1);
             }, 5000);
         }
-        el.click();
+        (<any>el.parentElement.querySelector("a>span")).click();
+    }
+}
+
+export class CxHomeWorkFactory implements MoocFactory {
+    public CreateMooc(): Mooc {
+        return new HomeWork();
+    }
+}
+
+export class HomeWork implements Mooc {
+    Start(): void {
+        window.onload = () => {
+            let topic = new HomeWorkTopicFactory();
+            topic.CreateTask(window, null);
+        }
     }
 
 }
-

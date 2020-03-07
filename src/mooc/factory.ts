@@ -1,4 +1,4 @@
-import { CxCourseFactory } from "./chaoxing/course";
+import { CxCourseFactory, CxHomeWorkFactory } from "./chaoxing/course";
 import { CxVideoOptimizationFactory } from "./chaoxing/video";
 
 export interface Mooc {
@@ -23,6 +23,8 @@ export function PlatformChaoXing(): MoocFactory {
         factory = new CxCourseFactory();
     } else if (url.indexOf("ananas/modules/video/index.html") > 0) {
         factory = new CxVideoOptimizationFactory();
+    } else if (url.indexOf("work/doHomeWorkNew") && self == top) {
+        factory = new CxHomeWorkFactory();
     }
     return factory;
 }

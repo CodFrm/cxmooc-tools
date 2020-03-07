@@ -1,4 +1,4 @@
-import { NewChromeServerMessage } from "@App/internal/utils/message";
+import { NewChromeServerMessage, NewExtensionServerMessage, NewChromeClientMessage } from "@App/internal/utils/message";
 import { HttpUtils, Injected, randNumber, get, syncSetChromeStorageLocal } from "@App/internal/utils/utils";
 import { Application, Content, Launcher } from "@App/internal/application";
 import { SystemConfig, ChromeConfigItems, NewFrontendGetConfig, NewBackendConfig } from "@App/internal/utils/config";
@@ -44,6 +44,13 @@ class start implements Launcher {
                 }
             }
         });
+
+        chrome.runtime.onMessage.addListener((request) => {
+            if (request.type && request.type == "cxconfig") {
+                window.postMessage({ type: "cxconfig", key: request.key, value: request.value }, '/');
+            }
+        });
+
         Application.CheckUpdate((isnew, data) => {
             if (isnew) {
                 if (data.enforce) {

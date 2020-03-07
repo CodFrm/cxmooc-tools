@@ -47,14 +47,9 @@
         "all_frames": true
     }],
     "permissions": [
-        "contextMenus",
         "tabs",
-        "notifications",
-        "webRequest",
-        "webRequestBlocking",
         "storage",
-        "declarativeContent",
-        "https://cx.icodef.com/"
+        "*://cx.icodef.com/"
     ],
     "web_accessible_resources": [
         "src/mooc.js"

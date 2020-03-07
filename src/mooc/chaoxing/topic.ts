@@ -2,12 +2,29 @@ import { TaskFactory, Task } from "./task";
 import { CssBtn, CreateNoteLine } from "./utils";
 import { createBtn, substrex, removeHTML } from "@App/internal/utils/utils";
 import { Application } from "@App/internal/application";
-import { Question, Option, QuestionList, TopicType, SwitchTopicType, TopicStatus, TopicStatusString, QuestionStatus } from "@App/internal/utils/question";
+import { Question, Option, TopicType, SwitchTopicType, TopicStatus, TopicStatusString, QuestionStatus, ToolsQuestionBank, QuestionBank } from "@App/internal/utils/question";
 
+export class HomeWorkTopicFactory implements TaskFactory {
+    protected task: Topic;
+    public CreateTask(context: any, taskinfo: any): Task {
+        this.task = new Topic(context, taskinfo);
+        let btn = CssBtn(createBtn("搜索答案", "搜索题目答案"));
+        document.querySelector(".CyTop").append(btn);
+        btn.onclick = async () => {
+            btn.innerText = "答案搜索中...";
+            this.task.Start().then((ret: any) => {
+                ret = ret || "搜索题目";
+                btn.innerText = ret;
+            });
+        };
+        return this.task;
+    }
+
+}
 export class TopicFactory implements TaskFactory {
     protected taskIframe: HTMLIFrameElement;
     protected task: Topic;
-    CreateTask(context: any, taskinfo: any): Task {
+    public CreateTask(context: any, taskinfo: any): Task {
         this.taskIframe = (<Window>context).document.querySelector(
             "iframe[jobid='" + taskinfo.jobid + "']"
         );
@@ -23,8 +40,12 @@ export class TopicFactory implements TaskFactory {
         let topic = CssBtn(createBtn("搜索题目", "点击开始自动答题", "cx-btn"));
         prev.append(topic);
         // 绑定事件
-        topic.onclick = () => {
-            this.task.Start();
+        topic.onclick = async () => {
+            topic.innerText = "答案搜索中...";
+            this.task.Start().then((ret: any) => {
+                ret = ret || "搜索题目";
+                topic.innerText = ret;
+            });
         };
     }
 }
@@ -34,63 +55,92 @@ export class Topic extends Task {
     protected lock: boolean;
 
     public Init(context: any, taskinfo: any) {
+        let self = this;
         super.Init(context, taskinfo);
-        Application.App.log.Debug("题目", this.taskinfo, this.context.document.readyState);
-        let timer = this.context.setInterval(() => {
-            if (this.context.document.readyState == "complete") {
-                clearInterval(timer);
-                this.loadCallback && this.loadCallback();
+        Application.App.log.Debug("题目", this.taskinfo);
+        (<Window>context).parent.document.querySelector("#frame_content").addEventListener("load", function () {
+            if (this.contentWindow.document.URL.indexOf('selectWorkQuestionYiPiYue') > 0) {
+                self.context = this.contentWindow;
+                self.collectAnswer();
+                this.completeCallback && this.completeCallback();
             }
-        }, 500);
+        });
+        if (context.document.URL.indexOf("selectWorkQuestionYiPiYue") > 0) {
+            this.collectAnswer();
+            this.loadCallback && this.loadCallback();
+        } else {
+            let timer = this.context.setInterval(() => {
+                if (this.context.document.readyState == "complete") {
+                    clearInterval(timer);
+                    this.loadCallback && this.loadCallback();
+                }
+            }, 500);
+        }
     }
 
-    public Start(): void {
-        if (this.lock) { return; }
-        this.lock = true;
-        Application.App.log.Info("题目搜索中...");
-        let timu = <Array<HTMLElement>>this.context.document.querySelectorAll(".TiMu");
-        let list = new QuestionList("cx");
-        timu.forEach((val, index) => {
-            let topic = new cxTopic(val);
-            if (topic.GetType() == null) {
-                return;
-            }
-            list.AddTopic(topic);
-        });
-        list.Answer((status: QuestionStatus) => {
-            this.lock = false;
-            if (status == "network") {
-                return Application.App.log.Info("网络错误跳过");
-            } else if (status == "incomplete") {
-                return Application.App.log.Info("答案错误");
-            }
-            Application.App.log.Info("准备提交答案");
-            this.context.setTimeout(() => {
-                let submit = this.context.document.querySelector(".Btn_blue_1");
-                submit.click();
+    protected collectAnswer() {
+        Application.App.log.Info("收集题目答案");
+        Application.App.log.Debug("收集题目答案", this.context);
+
+    }
+
+    public Start(): Promise<void> {
+        return new Promise<any>(resolve => {
+            if (this.lock) { return resolve(); }
+            this.lock = true;
+            Application.App.log.Info("题目搜索中...");
+            let timu = <Array<HTMLElement>>this.context.document.querySelectorAll(".TiMu");
+            let list: QuestionBank = new ToolsQuestionBank("cx", this.taskinfo.property.workid);
+            timu.forEach((val, index) => {
+                let topic = new cxTopic(val);
+                if (topic.GetType() == null) {
+                    return;
+                }
+                list.AddTopic(topic);
+            });
+            list.Answer((status: QuestionStatus) => {
+                this.lock = false;
+                if (status == "network") {
+                    resolve("网络错误跳过");
+                    return Application.App.log.Info("网络错误跳过");
+                } else if (status == "incomplete") {
+                    resolve("答案不全跳过");
+                    Application.App.log.Info("答案不全跳过");
+                    return this.completeCallback && this.completeCallback();
+                }
+                if (!Application.App.config.auto) {
+                    resolve();
+                    return this.completeCallback && this.completeCallback();
+                }
+                Application.App.log.Info("准备提交答案");
                 this.context.setTimeout(() => {
-                    let prompt = this.context.document.querySelector("#tipContent").innerHTML;
-                    if (prompt.indexOf("未做完") > 0) {
-                        alert("提示:" + prompt);
-                        return;
-                    }
-                    let timer = this.context.setInterval(() => {
-                        prompt = document.getElementById("validate");
-                        if (prompt.style.display != 'none') {
-                            //等待验证码接管
+                    let submit = this.context.document.querySelector(".Btn_blue_1");
+                    submit.click();
+                    this.context.setTimeout(() => {
+                        let prompt = this.context.document.querySelector("#tipContent").innerHTML;
+                        if (prompt.indexOf("未做完") > 0) {
+                            alert("提示:" + prompt);
+                            resolve("未做完");
                             return;
                         }
-                        clearInterval(timer);
-                        //确定提交
-                        let submit = this.context.document.querySelector(".bluebtn");
-                        Application.App.prod && submit.click();
+                        let timer = this.context.setInterval(() => {
+                            prompt = document.getElementById("validate");
+                            if (prompt.style.display != 'none') {
+                                //等待验证码接管
+                                return;
+                            }
+                            this.context.clearInterval(timer);
+                            //确定提交
+                            let submit = this.context.document.querySelector(".bluebtn");
+                            submit.click();
 
-                        this.completeCallback && this.completeCallback();
-
+                            resolve();
+                        }, 2000);
                     }, 2000);
                 }, 2000);
-            }, 2000);
+            });
         });
+
     }
 
 }
@@ -118,12 +168,14 @@ class cxTopic implements Question, Notice {
     }
 
     public RemoveNotice() {
-        let el = <HTMLElement>this.el.querySelector(".clearfix > ul,.clearfix > .Py_tk");
+        let el = <HTMLElement>this.el.querySelector(".clearfix > ul,.clearfix > .Py_tk,.Zy_ulTk");
+        if (el == undefined) { el = this.el }
         el.querySelectorAll(".prompt-line-answer").forEach((v, i) => { v.remove() });
     }
 
     public AddNotice(str: string) {
-        let el = <HTMLElement>this.el.querySelector(".clearfix > ul,.clearfix > .Py_tk");
+        let el = <HTMLElement>this.el.querySelector(".clearfix > ul,.clearfix > .Py_tk,.Zy_ulTk");
+        if (el == undefined) { el = this.el }
         CreateNoteLine(str, "answer", el);
     }
 
