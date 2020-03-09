@@ -12,7 +12,6 @@ features:
   details: 可以以浏览器插件，油猴脚本等方式运行
 - title: 安全可靠
   details: 代码完全开源，透明
-footer: MIT Licensed | Copyright © 2018 CXmooc-tool developer Team
 ---
 
 ![GitHub stars](https://img.shields.io/github/stars/codfrm/cxmooc-tools.svg)
@@ -36,3 +35,6 @@ footer: MIT Licensed | Copyright © 2018 CXmooc-tool developer Team
 
 ### 功能支持列表
 **详情请看->[功能说明](/1-UserGuide/featured.html)**
+
+
+<Footer/>

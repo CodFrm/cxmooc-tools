@@ -79,8 +79,6 @@ module.exports = {
     // 默认为 "Edit this page"
     editLinkText: '在 GitHub 上编辑此页',
     lastUpdated: 'Last Updated', // string | boolean
-    record: '湘ICP备19008073号',
-    recordLink: 'http://www.miitbeian.gov.cn/'
   },
   plugins: [
     ['@vuepress/back-to-top'],
