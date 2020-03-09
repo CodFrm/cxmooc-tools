@@ -174,22 +174,45 @@ module.exports = function () {
     }
 
     /**
+     * 下载字幕
+     */
+    this.downloadSubtitle = function () {
+        common.get('/richvideo/subtitle?mid=' + self.videoMsg['mid'] + '&_dc=' + Date.parse(new Date()),
+            function (data) {
+                let json = JSON.parse(data);
+                if (json.length <= 0) {
+                    alert("没有字幕！");
+                } else {
+                    for (let i = 0; i < json.length; i++) {
+                        let subtitleURL = json[i]['url'];
+                        window.open(subtitleURL);
+                        // 感觉在浏览器中打开srt文件挺不优雅的，但是一是跨域、二是HTTP，没想到很好的解决方案
+                    }
+                }
+            });
+    }
+
+    /**
      * 创建按钮
      */
     this.createButton = function () {
         self.hangBtn = until.createBtn('开始挂机', '点击开始自动挂机播放视频');
         let pass = until.createBtn('秒过视频', '秒过视频会被后台检测到');
         let download = until.createBtn('下载视频', '我要下载视频好好学习');
-        pass.style.background = '#F57C00';
-        download.style.background = '#999999';
+        let downloadSubtitle = until.createBtn('下载字幕', '我要下载字幕一同食用');
+        pass.style.background = '#9D8834';  // 原配色#F57C00
+        download.style.background = '#9D5434';  // 原配色#999999
+        downloadSubtitle.style.background = '#9D3449';
         let prev = $(self.iframe).prev();
         until.dealTaskLabel(prev);
         $(prev).append(self.hangBtn);
         $(prev).append(pass);
         $(prev).append(download);
+        $(prev).append(downloadSubtitle);
         self.hangBtn.onclick = self.startPlay;
         pass.onclick = self.passVideo;
         download.onclick = self.downloadVideo;
+        downloadSubtitle.onclick = self.downloadSubtitle;
     }
 
     this.init = function () {
