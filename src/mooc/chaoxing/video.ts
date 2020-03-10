@@ -129,11 +129,11 @@ export class VideoFactory implements TaskFactory {
         let startBtn = CssBtn(createBtn("开始挂机", "点击开始自动挂机播放视频", "cx-btn"));
         let pass = CssBtn(createBtn("秒过视频", "秒过视频会被后台检测到", "cx-btn"));
         let download = CssBtn(createBtn("下载视频", "我要下载视频好好学习", "cx-btn"));
+        let downloadSubtitle = CssBtn(createBtn("下载字幕", "我要下载字幕一同食用"));
         pass.style.background = "#F57C00";
         download.style.background = "#999999";
-        prev.append(startBtn);
-        prev.append(pass);
-        prev.append(download);
+        downloadSubtitle.style.background = "#638EE1";
+        prev.append(startBtn, pass, download, downloadSubtitle);
         // 绑定事件
         startBtn.onclick = () => {
             this.task.Start();
@@ -215,6 +215,21 @@ export class Video extends Task {
 
     public download() {
         window.open(this.video.src);
+    }
+
+    public downloadSubtitle() {
+        get('/richvideo/subtitle?mid=' + this.taskinfo.property.mid + '&_dc=' +
+            Date.parse(new Date().toString()), function (data: any) {
+                let json = JSON.parse(data);
+                if (json.length <= 0) {
+                    alert("没有字幕！");
+                } else {
+                    for (let i = 0; i < json.length; i++) {
+                        let subtitleURL = json[i]['url'];
+                        window.open(subtitleURL);
+                    }
+                }
+            });
     }
 
     /**

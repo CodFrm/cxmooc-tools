@@ -79,9 +79,9 @@ export class Topic extends Task {
     }
 
     protected collectAnswer() {
-        Application.App.log.Info("收集题目答案");
+        this.lock = true;
         Application.App.log.Debug("收集题目答案", this.context);
-
+        
     }
 
     public Start(): Promise<void> {

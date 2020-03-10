@@ -52,6 +52,7 @@ export type QuestionCallback = (status: QuestionStatus) => void
 export interface QuestionBank {
     AddTopic(topic: Question): void;
     Answer(callback: QuestionCallback): void;
+    Push(callback: QuestionCallback): void;
 }
 
 // 小工具题库
@@ -102,6 +103,10 @@ export class ToolsQuestionBank implements QuestionBank {
             });
         }
         next(0);
+    }
+
+    public Push(callback: QuestionCallback): void {
+
     }
 
     protected fillAnswer(start: number, result: Array<any>): QuestionStatus {

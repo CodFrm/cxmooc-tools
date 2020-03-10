@@ -103,15 +103,14 @@ export class HttpUtils {
 
 
 /**
- * 通过源码key注入js资源
+ * 通过源码注入js资源
  * @param doc
  * @param url
  * @constructor
  */
-export async function Injected(doc: Document, url: string): Promise<Element> {
+export function Injected(doc: Document, source: string): Element {
     let temp = doc.createElement('script');
     temp.setAttribute('type', 'text/javascript');
-    let source = await syncGetChromeStorageLocal(url);
     temp.innerHTML = source;
     temp.className = "injected-js";
     doc.documentElement.appendChild(temp);

@@ -2,7 +2,7 @@ import { NewExtensionServerMessage } from "./internal/utils/message";
 import { HttpUtils, get } from "./internal/utils/utils";
 import { Application, Backend, Launcher } from "./internal/application";
 import { ConsoleLog } from "./internal/utils/log";
-import { SystemConfig } from "./internal/utils/config";
+import { SystemConfig, ChromeConfigItems, NewBackendConfig } from "./internal/utils/config";
 
 
 class background implements Launcher {
@@ -64,8 +64,8 @@ class background implements Launcher {
                 sourceUrl = SystemConfig.url + 'js/' + hotVersion + '.js';
             }
             get(sourceUrl, function (source: string) {
-                if(!source){
-                    return ;
+                if (!source) {
+                    return;
                 }
                 chrome.storage.local.set({ "source": source });
             });
@@ -74,7 +74,8 @@ class background implements Launcher {
 }
 
 let component = new Map<string, any>().
-    set("logger", new ConsoleLog());
+    set("logger", new ConsoleLog()).
+    set("config", new ChromeConfigItems(NewBackendConfig()));
 
 let application = new Application(Backend, new background(), component);
 application.run();

@@ -24,8 +24,8 @@
     },
     "homepage": "https://github.com/CodFrm/cxmooc-tools#readme",
     "devDependencies": {
-        "@types/chrome": "^0.0.91",
-        "@types/jest": "^25.1.2",
+        "@types/chrome": "0.0.91",
+        "@types/jest": "^25.1.4",
         "@vuepress/plugin-back-to-top": "^1.0.0-alpha.47",
         "@vuepress/plugin-google-analytics": "^1.0.0-alpha.0",
         "crx": "^4.0.1",
