@@ -1,7 +1,8 @@
 import { Client, NewChromeClientMessage, NewExtensionClientMessage } from "./utils/message";
 import { HttpUtils } from "./utils/utils";
-import { SystemConfig, ConfigItems } from "./utils/config";
+import { ConfigItems } from "./utils/config";
 import { Logger } from "./utils/log";
+import { SystemConfig } from "@App/config";
 
 export const Backend = "backend";
 export const Frontend = "frontend";

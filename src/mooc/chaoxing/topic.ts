@@ -1,8 +1,9 @@
 import { TaskFactory, Task } from "./task";
 import { CssBtn, CreateNoteLine } from "./utils";
-import { createBtn, substrex, removeHTML } from "@App/internal/utils/utils";
+import { createBtn, substrex } from "@App/internal/utils/utils";
 import { Application } from "@App/internal/application";
 import { Question, Option, TopicType, SwitchTopicType, TopicStatus, TopicStatusString, QuestionStatus, ToolsQuestionBank, QuestionBank } from "@App/internal/utils/question";
+import { SystemConfig } from "@App/config";
 
 export class HomeWorkTopicFactory implements TaskFactory {
     protected task: Topic;
@@ -81,8 +82,20 @@ export class Topic extends Task {
     protected collectAnswer() {
         this.lock = true;
         Application.App.log.Debug("收集题目答案", this.context);
-        
+        let timu = <Array<HTMLElement>>this.context.document.querySelectorAll(".TiMu");
+        let list: QuestionBank = new ToolsQuestionBank("cx", this.taskinfo.property.workid);
+        timu.forEach((val) => {
+            let topic = new cxTopic(val);
+            if (topic.GetType() == null) {
+                return;
+            }
+            list.AddTopic(topic);
+        });
+        list.Push(() => {
+            
+        });
     }
+
 
     public Start(): Promise<void> {
         return new Promise<any>(resolve => {
@@ -91,7 +104,7 @@ export class Topic extends Task {
             Application.App.log.Info("题目搜索中...");
             let timu = <Array<HTMLElement>>this.context.document.querySelectorAll(".TiMu");
             let list: QuestionBank = new ToolsQuestionBank("cx", this.taskinfo.property.workid);
-            timu.forEach((val, index) => {
+            timu.forEach((val) => {
                 let topic = new cxTopic(val);
                 if (topic.GetType() == null) {
                     return;
@@ -101,11 +114,11 @@ export class Topic extends Task {
             list.Answer((status: QuestionStatus) => {
                 this.lock = false;
                 if (status == "network") {
-                    resolve("网络错误跳过");
-                    return Application.App.log.Info("网络错误跳过");
+                    resolve("网络错误");
+                    return Application.App.log.Fatal("题库无法访问,请查看:" + SystemConfig.url);
                 } else if (status == "incomplete") {
-                    resolve("答案不全跳过");
-                    Application.App.log.Info("答案不全跳过");
+                    resolve("答案不全");
+                    Application.App.log.Warn("题库答案不全,请手动填写操作");
                     return this.completeCallback && this.completeCallback();
                 }
                 if (!Application.App.config.auto) {
@@ -121,6 +134,7 @@ export class Topic extends Task {
                         if (prompt.indexOf("未做完") > 0) {
                             alert("提示:" + prompt);
                             resolve("未做完");
+                            Application.App.log.Fatal("有题目未完成,请手动操作.提示:" + prompt);
                             return;
                         }
                         let timer = this.context.setInterval(() => {
@@ -170,7 +184,7 @@ class cxTopic implements Question, Notice {
     public RemoveNotice() {
         let el = <HTMLElement>this.el.querySelector(".clearfix > ul,.clearfix > .Py_tk,.Zy_ulTk");
         if (el == undefined) { el = this.el }
-        el.querySelectorAll(".prompt-line-answer").forEach((v, i) => { v.remove() });
+        el.querySelectorAll(".prompt-line-answer").forEach((v) => { v.remove() });
     }
 
     public AddNotice(str: string) {
@@ -196,7 +210,7 @@ class cxTopic implements Question, Notice {
         let el = <HTMLElement>this.el.querySelector(".clearfix > ul,.clearfix ul.Zy_ulBottom.clearfix");
         let list = el.querySelectorAll("li");
         let options = new Array<Option>();
-        list.forEach((val, index) => {
+        list.forEach((val) => {
             switch (this.GetType()) {
                 case 1:
                 case 2: {

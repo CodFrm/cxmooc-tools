@@ -1,5 +1,6 @@
-import { GetConfig, NewBackendConfig, SetConfig, SystemConfig, ChromeConfigItems } from "./internal/utils/config";
+import { NewBackendConfig, SetConfig, ChromeConfigItems } from "./internal/utils/config";
 import { Application, Backend, Launcher } from "./internal/application";
+import { SystemConfig } from "./config";
 
 class popup implements Launcher {
 
@@ -14,7 +15,6 @@ class popup implements Launcher {
             let el = cfg.item(i);
             let key = el.getAttribute("config-key");
             if (key != "") {
-                let pop = this;
                 el.onchange = async function () {
                     let promptMsg = (<HTMLElement>this).getAttribute("prompt");
                     if (promptMsg !== null && !localStorage[key + "_prompt"]) {

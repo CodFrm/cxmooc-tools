@@ -1,5 +1,6 @@
 import { Client, NewExtensionClientMessage, NewChromeClientMessage } from "./message";
 import { randNumber } from "./utils";
+import { Application } from "../application";
 
 export interface ConfigItems extends GetConfig {
     vtoken: string
@@ -129,6 +130,7 @@ class frontendGetConfig implements GetConfig {
     constructor() {
         window.addEventListener('message', function (event) {
             if (event.data.type && event.data.type == "cxconfig") {
+                Application.App.log.Info("配置更新:" + event.data.key + "=" + event.data.value);
                 localStorage[event.data.key] = event.data.value;
             }
         });
@@ -152,30 +154,3 @@ class frontendGetConfig implements GetConfig {
         //TODO: 监控配置项更新
     }
 }
-
-export class SystemConfig {
-    public static version = 2.12;
-    public static url = "https://cx.icodef.com/";
-    public static configMap: any = {
-        version: SystemConfig.version,
-        url: SystemConfig.url,
-    };
-
-    public static GetConfig(key: string): Promise<any> {
-        let ret = SystemConfig.configMap[key];
-        if (ret == undefined) {
-            return new backendConfig().GetConfig(key);
-        }
-        return ret;
-    }
-
-    public static SetConfig(key: string, val: any): void {
-        SystemConfig.configMap[key] = val;
-    }
-
-    public static async SendConfig(client: Client, key: string): Promise<void> {
-        client.Send({ val: await SystemConfig.GetConfig(key) })
-    }
-
-}
-

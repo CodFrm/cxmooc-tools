@@ -4,7 +4,7 @@
     "description": "> 一个快速学习超星慕课的chrome扩展工具(੧ᐛ੭挂科模式,启动)\r > 初次开发chrome扩展,有兴趣的朋友可以一起来哦",
     "main": "mooc.js",
     "scripts": {
-        "test": "jest",
+        "test": "node_modules/.bin/jest",
         "build": "node_modules/.bin/webpack --mode production --config webpack.config.js",
         "tampermonkey": "node_modules/.bin/webpack --config webpack.tampermonkey.js",
         "dev": "node_modules/.bin/webpack --mode development --config webpack.dev.js",

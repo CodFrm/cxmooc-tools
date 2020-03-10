@@ -1,6 +1,6 @@
 import { HttpUtils, removeHTML, randNumber } from "./utils";
-import { SystemConfig } from "./config";
 import { Application } from "../application";
+import { SystemConfig } from "@App/config";
 
 export interface Option {
     Fill(content: string | boolean): void
@@ -75,16 +75,17 @@ export class ToolsQuestionBank implements QuestionBank {
     public Answer(callback: QuestionCallback) {
         let retStatus: QuestionStatus = "success";
         let next = (i: number) => {
+            let info = "";
             let body = "";
             if (this.info) {
-                body = "id=" + this.info + "&";
+                info = "&id=" + this.info;
             }
             let t = i;
             for (; t < i + 5 && t < this.topic.length; t++) {
                 let val = this.topic[t];
                 body += "topic[" + (t - i) + "]=" + encodeURIComponent(removeHTML(val.GetTopic())) + "&type[" + (t - i) + "]=" + val.GetType() + "&";
             }
-            HttpUtils.HttpPost(SystemConfig.url + "v2/answer?platform=" + this.platform, body, {
+            HttpUtils.HttpPost(SystemConfig.url + "v2/answer?platform=" + this.platform + info, body, {
                 json: true,
                 success: (result: any) => {
                     let status = this.fillAnswer(i, result);
@@ -106,7 +107,14 @@ export class ToolsQuestionBank implements QuestionBank {
     }
 
     public Push(callback: QuestionCallback): void {
+        let info = "";
+        if (this.info) {
+            info = "&id=" + this.info;
+        }
+        
+        HttpUtils.HttpPost(SystemConfig.url + "answer?platform=" + this.platform + info, "", {
 
+        })
     }
 
     protected fillAnswer(start: number, result: Array<any>): QuestionStatus {

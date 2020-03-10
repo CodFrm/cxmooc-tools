@@ -1,15 +1,15 @@
-import { RemoveInjected, HttpUtils } from "./internal/utils/utils";
+import { RemoveInjected } from "./internal/utils/utils";
 import { Application, Frontend, Launcher } from "./internal/application";
-import { ChromeConfigItems, NewFrontendGetConfig, SystemConfig } from "./internal/utils/config";
+import { ChromeConfigItems, NewFrontendGetConfig } from "./internal/utils/config";
 import { CreateMooc } from "./mooc/factory";
-import { ConsoleLog, EmptyLog } from "./internal/utils/log";
+import { ConsoleLog } from "./internal/utils/log";
 
 RemoveInjected(document);
 
 class mooc implements Launcher {
     public start() {
         let state = document.readyState;
-        Application.App.log.Debug("State:", state);
+        Application.App.log.Debug("Start document state:", state);
         let mooc = CreateMooc();
         if (mooc != null) {
             mooc.Start();

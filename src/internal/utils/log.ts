@@ -48,6 +48,10 @@ export class ConsoleLog implements Logger {
 
 }
 
+// export class PageLog implements Logger{
+//TODO: 显示到页面上的log
+// }
+
 export class EmptyLog implements Logger {
     Trace(...args: any): Logger {
         return this;

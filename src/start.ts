@@ -1,15 +1,12 @@
-import { NewChromeServerMessage, NewExtensionServerMessage, NewChromeClientMessage } from "@App/internal/utils/message";
-import { HttpUtils, Injected, randNumber, get, syncSetChromeStorageLocal, syncGetChromeStorageLocal } from "@App/internal/utils/utils";
+import { NewChromeServerMessage } from "@App/internal/utils/message";
+import { HttpUtils, Injected, get, syncGetChromeStorageLocal } from "@App/internal/utils/utils";
 import { Application, Content, Launcher } from "@App/internal/application";
-import { SystemConfig, ChromeConfigItems, NewFrontendGetConfig, NewBackendConfig } from "@App/internal/utils/config";
+import { ChromeConfigItems, NewBackendConfig } from "@App/internal/utils/config";
 import { ConsoleLog } from "./internal/utils/log";
 
 class start implements Launcher {
 
     public async start() {
-        if (document.URL.indexOf("ananas/modules/video/index.html") > 0) {
-            return Injected(document, await syncGetChromeStorageLocal("source"));
-        }
         //注入config
         let configKeyList: string[] = new Array();
         for (let key in Application.App.config) {
@@ -20,15 +17,8 @@ class start implements Launcher {
                 if (items[key] == undefined) { continue; }
                 localStorage[key] = items[key] || await Application.App.config.GetConfig(key);
             }
-            Application.App.log.Debug("注入脚本", document.URL);
-            if (Application.App.debug) {
-                get(chrome.extension.getURL('src/mooc.js'), async function (source: string) {
-                    Injected(document, source);
-                });
-            } else {
-                Injected(document, await syncGetChromeStorageLocal("source"));
-            }
         });
+        //转发消息
         let msg = NewChromeServerMessage("cxmooc-tools");
         msg.Accept((client, data) => {
             switch (data.type) {
@@ -36,21 +26,15 @@ class start implements Launcher {
                     HttpUtils.SendRequest(client, data);
                     break;
                 }
-                case "config": {
-                    if (data.key) {
-                        SystemConfig.SendConfig(client, data.key);
-                    }
-                    break;
-                }
             }
         });
-
+        //监听配置项更新
         chrome.runtime.onMessage.addListener((request) => {
             if (request.type && request.type == "cxconfig") {
                 window.postMessage({ type: "cxconfig", key: request.key, value: request.value }, '/');
             }
         });
-
+        //检查扩展强制更新
         Application.CheckUpdate((isnew, data) => {
             if (isnew) {
                 if (data.enforce) {
@@ -60,6 +44,15 @@ class start implements Launcher {
                 }
             }
         });
+        //注入脚本
+        Application.App.log.Debug("注入脚本", document.URL);
+        if (Application.App.debug) {
+            get(chrome.extension.getURL('src/mooc.js'), function (source: string) {
+                Injected(document, source);
+            });
+        } else {
+            Injected(document, await syncGetChromeStorageLocal("source"));
+        }
     }
 }
 

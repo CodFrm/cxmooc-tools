@@ -2,7 +2,8 @@ import { NewExtensionServerMessage } from "./internal/utils/message";
 import { HttpUtils, get } from "./internal/utils/utils";
 import { Application, Backend, Launcher } from "./internal/application";
 import { ConsoleLog } from "./internal/utils/log";
-import { SystemConfig, ChromeConfigItems, NewBackendConfig } from "./internal/utils/config";
+import { ChromeConfigItems, NewBackendConfig } from "./internal/utils/config";
+import { SystemConfig } from "./config";
 
 
 class background implements Launcher {
