@@ -32,13 +32,15 @@ class background implements Launcher {
             set("vtoken", "").set("rand_answer", false).set("auto", true).
             set("video_mute", true).set("answer_ignore", false).set("video_cdn", "").
             set("video_multiple", 1).set("interval", 1).set("super_mode", true);
-
+        chrome.storage.sync.clear();
         chrome.storage.sync.get(configKeyList, function (items) {
-            for (let key in items) {
+            configDefaultValue.forEach((val, key) => {
                 if (items[key] == undefined) {
-                    chrome.storage.sync.set(key, configDefaultValue.get(key));
+                    let tmp: { [key: string]: any; } = {};
+                    tmp[key] = configDefaultValue.get(key);
+                    chrome.storage.sync.set(tmp);
                 }
-            }
+            });
         });
     }
 

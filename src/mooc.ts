@@ -4,8 +4,6 @@ import { ChromeConfigItems, NewFrontendGetConfig } from "./internal/utils/config
 import { CreateMooc } from "./mooc/factory";
 import { ConsoleLog } from "./internal/utils/log";
 
-RemoveInjected(document);
-
 class mooc implements Launcher {
     public start() {
         let state = document.readyState;
@@ -23,3 +21,5 @@ let component = new Map<string, any>().
 
 let app = new Application(Frontend, new mooc(), component);
 app.run()
+
+RemoveInjected(document);
