@@ -30,7 +30,7 @@ func (d *vcode) VCode() func(http.ResponseWriter, *http.Request) {
 
 		imageBase64 := request.PostFormValue("img")
 		token := request.Header.Get("Authorization")
-		if token == "" || token[0:5] == "user|" {
+		if token == "" || (len(token) >= 4 && token[0:4] == "user") {
 			serverError(writer, errs.TokenNotExist)
 			return
 		}

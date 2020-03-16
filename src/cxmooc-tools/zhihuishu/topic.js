@@ -3,9 +3,9 @@ const common = require('../common');
 
 module.exports = {
     btn: undefined,
-    stuExam: function () {
+    stuExam: function() {
         let self = this;
-        let timer = setInterval(function () {
+        let timer = setInterval(function() {
             let ul = $('.examPaper_partTit.mt20 ul');
             if (ul.length <= 0) {
                 return;
@@ -20,7 +20,7 @@ module.exports = {
             clearInterval(timer);
         }, 2000);
     },
-    getTopicList: function () {
+    getTopicList: function() {
         let topic = $('.examPaper_subject.mt20,.questionType');
         let ret = [];
         for (let i = 0; i < topic.length; i++) {
@@ -42,14 +42,14 @@ module.exports = {
         }
         return ret;
     },
-    findOption: function (options, type) {
+    findOption: function(options, type) {
         if (type <= 3) {
             return $(options).find('.examquestions-answer');
         } else if (type == 4) {
             return $(options).find('textarea');
         }
     },
-    isTrue: function (options, correct, type) {
+    isTrue: function(options, correct, type) {
         if (type <= 2) {
             for (let i = 0; i < options.length; i++) {
                 let tmpContent = common.removeHTML($(options[i]).html());
@@ -61,12 +61,12 @@ module.exports = {
         }
         return false;
     },
-    searchAnswer: function () {
+    searchAnswer: function() {
         let self = this;
         let topic = this.getTopicList();
         $(self.btn).text('搜索中...');
         common.requestAnswer(topic, 'zhs', 0,
-            function (topic, answer) {
+            function(topic, answer) {
                 let index = topic.index;
                 if (answer == undefined) {
                     common.signleLine('无答案', 'answer' + index, undefined, topic.options);
@@ -80,7 +80,7 @@ module.exports = {
                     },
                     judge: (options, correct) => {
                         correct = correct[0];
-                        common.oaForEach(options, function (item) {
+                        common.oaForEach(options, function(item) {
                             let tmpContent = common.removeHTML($(item).html());
                             if ({ '对': true, '错': false }[tmpContent] == correct.option) {
                                 $(item).parent().find('input').click();
@@ -91,8 +91,8 @@ module.exports = {
                     },
                     text: (options, correct) => {
                         let retNotic = '';
-                        common.oaForEach(options, function (item, index) {
-                            common.oaForEach(correct, function (item2) {
+                        common.oaForEach(options, function(item, index) {
+                            common.oaForEach(correct, function(item2) {
                                 if (common.numToZh(index + 1) == item2.option) {
                                     $(item).val(item2.content);
                                     retNotic += '第' + item2.option + '空:' + item2.content + '<br/>';
@@ -113,10 +113,10 @@ module.exports = {
         );
 
     },
-    collect: function () {
+    collect: function() {
         let self = this;
         let topic = this.getTopicList();
-        common.postAnswer(topic, 'zhs', function (topic) {
+        common.postAnswer(topic, 'zhs', function(topic) {
             if ($(topic.el).find('.key_yes').length <= 0) {
                 return undefined;
             }
@@ -124,39 +124,42 @@ module.exports = {
             let options = self.findOption(topic.options, topic.type);
             switch (topic.type) {
                 case 1:
-                case 2: {
-                    for (let i = 0; i < options.length; i++) {
-                        let tmpContent = common.removeHTML($(options[i]).html());
-                        let tmp = {
-                            option: String.fromCharCode((65 + i)),
-                            content: tmpContent
-                        };
-                        pushOption.answers.push(tmp);
-                        if ($(options[i]).parent().find('input').attr('checked')) {
-                            pushOption.correct.push(tmp);
+                case 2:
+                    {
+                        for (let i = 0; i < options.length; i++) {
+                            let tmpContent = common.removeHTML($(options[i]).html());
+                            let tmp = {
+                                option: String.fromCharCode((65 + i)),
+                                content: tmpContent
+                            };
+                            pushOption.answers.push(tmp);
+                            if ($(options[i]).parent().find('input').attr('checked')) {
+                                pushOption.correct.push(tmp);
+                            }
                         }
+                        break;
                     }
-                    break;
-                }
-                case 3: {
-                    for (let i = 0; i < options.length; i++) {
-                        let tmpContent = common.removeHTML($(options[i]).html());
-                        if ($(options[i]).parent().find('input').attr('checked')) {
-                            pushOption.correct.push({ option: tmpContent == '对', content: tmpContent == '对' });
+                case 3:
+                    {
+                        for (let i = 0; i < options.length; i++) {
+                            let tmpContent = common.removeHTML($(options[i]).html());
+                            if ($(options[i]).parent().find('input').attr('checked')) {
+                                pushOption.correct.push({ option: tmpContent == '对', content: tmpContent == '对' });
+                            }
                         }
+                        break;
                     }
-                    break;
-                }
-                case 4: {
-                    return undefined;
-                }
+                case 4:
+                    {
+                        return undefined;
+                    }
             }
             return pushOption;
-        }, function (res) {
+        }, function(res) {
             let json = JSON.parse(res)
             let box = common.pop_prompt("√  答案自动记录成功" + " 成功获得:" + json.add_token_num + "个打码数量 剩余数量:" + json.token_num);
             $(document.body).append(box);
-            setTimeout(function () { box.style.opacity = "1"; }, 500);
+            setTimeout(function() { box.style.opacity = "1"; }, 500);
         });
     }
 }

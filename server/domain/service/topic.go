@@ -43,6 +43,9 @@ func (t *Topic) SubmitTopic(topic []*dto.SubmitTopic, ip, platform, token string
 	addNum := &dto.InternalAddMsg{}
 	for _, v := range topic {
 		et := dto.ToTopicEntity(v, ip, platform, token)
+		if len(v.Correct) <= 0 {
+			continue
+		}
 		if ok, err := t.topicRepo.Exist(et); err != nil {
 			return nil, nil, err
 		} else if ok && (v.Type == 2 || v.Type == 4) {
