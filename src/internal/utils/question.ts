@@ -20,8 +20,21 @@ export interface Answer {
     status: TopicStatus
     answer?: Option[]
     correct: Option[]
+    id?: string
 
     Equal(content1: string, content2: string): boolean
+}
+
+export class PushAnswer implements Answer {
+    public index: number;
+    public topic: string;
+    public type: TopicType;
+    public status: TopicStatus;
+    public answer: Option[];
+    public correct: Option[];
+    public Equal(content1: string, content2: string): boolean {
+        return content1 == content2;
+    }
 }
 
 export interface Question {
@@ -68,8 +81,10 @@ export function SwitchTopicType(title: string): TopicType {
 
 export type QuestionStatus = "success" | "network" | "incomplete" | "processing";
 export type QuestionCallback = (status: QuestionStatus) => void
+
+export type QuestionBankCallback = (args: { status: QuestionStatus, answer: Answer[] }) => void
 export interface QuestionBank {
-    Answer(topic: Topic[]): Promise<{ status: QuestionStatus, answer: Answer[] }>;
+    Answer(topic: Topic[], resolve: QuestionBankCallback): void;
     Push(answer: Answer[]): Promise<QuestionStatus>;
 }
 
@@ -84,69 +99,67 @@ export class ToolsQuestionBank implements QuestionBank {
         this.info = info;
     }
 
-    public Answer(topic: Topic[]): Promise<{ status: QuestionStatus, answer: Answer[] }> {
+    public Answer(topic: Topic[], resolve: QuestionBankCallback): void {
         let num = 5;
-        return new Promise((resolve) => {
-            let answer = new Array<Answer>();
-            let retStatus: QuestionStatus = "success";
-            let next = (index: number) => {
-                let info = "";
-                let body = "";
-                if (this.info) {
-                    info = "&id=" + this.info;
-                }
-                let t = index;
-                for (; t < index + num && t < topic.length; t++) {
-                    let val = topic[t];
-                    body += "topic[" + (t - index) + "]=" + encodeURIComponent(removeHTML(val.topic)) + "&type[" + (t - index) + "]=" + val.type + "&";
-                }
-                HttpUtils.HttpPost(SystemConfig.url + "v2/answer?platform=" + this.platform + info, body, {
-                    json: true,
-                    success: (result: any) => {
-                        let status: QuestionStatus = "success";
-                        let tmpResult = new Array<Answer>();
-                        for (let i = 0; i < result.length; i++) {
-                            if (result[index + i].result == undefined || result[index + i].result.length <= 0) {
-                                tmpResult.push({
-                                    index: index + result[i].index,
-                                    topic: result[i].topic,
-                                    type: -1,
-                                    status: "no_answer",
-                                    answer: null,
-                                    correct: null,
-                                    Equal: this.Equal,
-                                });
-                                status = "incomplete";
-                                continue;
-                            }
-                            let val = result[i].result[0];
+        let answer = new Array<Answer>();
+        let retStatus: QuestionStatus = "success";
+        let next = (index: number) => {
+            let info = "";
+            let body = "";
+            if (this.info) {
+                info = "&id=" + this.info;
+            }
+            let t = index;
+            for (; t < index + num && t < topic.length; t++) {
+                let val = topic[t];
+                body += "topic[" + (t - index) + "]=" + encodeURIComponent(removeHTML(val.topic)) + "&type[" + (t - index) + "]=" + val.type + "&";
+            }
+            HttpUtils.HttpPost(SystemConfig.url + "v2/answer?platform=" + this.platform + info, body, {
+                json: true,
+                success: (result: any) => {
+                    let status: QuestionStatus = "success";
+                    let tmpResult = new Array<Answer>();
+                    for (let i = 0; i < result.length; i++) {
+                        if (result[i].result == undefined || result[i].result.length <= 0) {
                             tmpResult.push({
                                 index: index + result[i].index,
-                                topic: val.topic,
-                                type: val.type,
-                                correct: val.correct,
-                                status: "ok",
+                                topic: result[i].topic,
+                                type: -1,
+                                status: "no_answer",
+                                answer: null,
+                                correct: null,
                                 Equal: this.Equal,
                             });
+                            status = "incomplete";
+                            continue;
                         }
-                        answer = answer.concat(tmpResult);
-                        if (status != "success") {
-                            retStatus = status;
-                        }
-                        resolve({ status: "processing", answer: tmpResult });
-                        if (t < topic.length) {
-                            next(t);
-                        } else {
-                            return resolve({ status: retStatus, answer: answer });
-                        }
-                    },
-                    error: () => {
-                        return resolve({ status: "network", answer: answer });
+                        let val = result[i].result[0];
+                        tmpResult.push({
+                            index: index + result[i].index,
+                            topic: val.topic,
+                            type: val.type,
+                            correct: val.correct,
+                            status: "ok",
+                            Equal: this.Equal,
+                        });
                     }
-                });
-            }
-            next(0);
-        });
+                    answer = answer.concat(tmpResult);
+                    if (status != "success") {
+                        retStatus = status;
+                    }
+                    resolve({ status: "processing", answer: tmpResult });
+                    if (t < topic.length) {
+                        next(t);
+                    } else {
+                        return resolve({ status: retStatus, answer: answer });
+                    }
+                },
+                error: () => {
+                    return resolve({ status: "network", answer: answer });
+                }
+            });
+        }
+        next(0);
     }
 
     public Push(answer: Answer[]): Promise<QuestionStatus> {
@@ -172,13 +185,13 @@ export class ToolsQuestionBank implements QuestionBank {
         return removeHTML(content1) == removeHTML(content2);
     }
 }
-export interface AnswerProxy {
+export interface QuestionBankFacade {
     ClearQuestion(): void
     AddQuestion(q: Question): void
     Answer(callback: (status: QuestionStatus) => void): void
     Push(callback: (status: QuestionStatus) => void): void
 }
-export class ToolsAnswerProxy implements AnswerProxy {
+export class ToolsQuestionBankFacad implements QuestionBankFacade {
     protected bank: QuestionBank;
     protected question: Array<Question>;
 
@@ -199,23 +212,21 @@ export class ToolsAnswerProxy implements AnswerProxy {
         let topic = new Array<Topic>();
         this.question.forEach((val) => {
             topic.push({
-                topic: val.GetTopic(),
+                topic: removeHTML(val.GetTopic()),
                 type: val.GetType(),
             });
         });
-        this.bank.Answer(topic).then((ret: { status: QuestionStatus, answer: Answer[] }) => {
+        this.bank.Answer(topic, (ret: { status: QuestionStatus, answer: Answer[] }) => {
             if (ret.status != "processing") {
                 return callback(ret.status);
             }
+            let status: QuestionStatus = ret.status;
             for (let i = 0; i < ret.answer.length; i++) {
                 let answer = ret.answer[i];
                 let question = this.question[answer.index];
                 let tmpStatus = answer.status;
                 if (answer.status == "no_answer") {
-                    if (Application.App.config.rand_answer) {
-                        tmpStatus = question.Random();
-                    }
-                    question.SetStatus(tmpStatus);
+                    status = this.randAnswer(status, tmpStatus, question);
                     continue;
                 }
                 if (answer.type != question.GetType()) {
@@ -223,14 +234,28 @@ export class ToolsAnswerProxy implements AnswerProxy {
                 } else {
                     tmpStatus = question.Fill(answer);
                 }
-                if (tmpStatus == "no_match" && Application.App.config.rand_answer) {
-                    question.SetStatus(question.Random());
+                if (tmpStatus == "no_match") {
+                    status = this.randAnswer(status, tmpStatus, question);
                     continue;
                 }
                 question.SetStatus(tmpStatus);
             }
-            return callback(ret.status);
+            return callback(status);
         });
+        this.ClearQuestion();
+    }
+
+    protected randAnswer(status: QuestionStatus, tmpStatus: TopicStatus, question: Question): QuestionStatus {
+        if (Application.App.config.rand_answer) {
+            tmpStatus = question.Random();
+        } else {
+            status = "incomplete";
+        }
+        if (tmpStatus == "no_support_random") {
+            status = "incomplete";
+        }
+        question.SetStatus(tmpStatus);
+        return status;
     }
 
     public Push(callback: (status: QuestionStatus) => void): void {
@@ -240,10 +265,22 @@ export class ToolsAnswerProxy implements AnswerProxy {
             if (correct == null || correct.correct == null) {
                 return;
             }
+            correct.topic = removeHTML(correct.topic);
+            correct.answer = this.dealOption(correct.answer);
+            correct.correct = this.dealOption(correct.correct);
             answer.push(correct);
         });
         this.bank.Push(answer).then((ret: QuestionStatus) => {
             return callback(ret);
         });
+        this.ClearQuestion();
     }
+
+    protected dealOption(options: Option[]): Option[] {
+        for (let i = 0; i < options.length; i++) {
+            options[i].content = removeHTML(options[i].content);
+        }
+        return options;
+    }
+
 }

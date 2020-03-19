@@ -1,7 +1,6 @@
 import { substrex, randNumber as RandNumber, randNumber } from "@App/internal/utils/utils";
-import { Question, TopicStatus, TopicStatusString, TopicType, SwitchTopicType, Option, Answer } from "@App/internal/utils/question";
+import { Question, TopicStatus, TopicStatusString, TopicType, SwitchTopicType, Option, Answer, PushAnswer } from "@App/internal/utils/question";
 import { CreateNoteLine } from "./utils";
-import { Application } from "@App/internal/application";
 
 export class CxQuestionFactory {
     public static CreateQuestion(el: HTMLElement): Question {
@@ -57,7 +56,11 @@ abstract class cxQuestion implements Question {
 
     public GetTopic(): string {
         let ret = this.el.querySelector(".Zy_TItle > .clearfix").innerHTML;
-        return ret.substring(ret.indexOf('】') + 1);
+        ret = ret.substring(ret.indexOf('】') + 1);
+        if (/（(.+?)分）$/.test(ret)) {
+            ret = ret.substring(0, ret.lastIndexOf("（"));
+        }
+        return ret;
     }
 
     public RemoveNotice() {
@@ -82,6 +85,25 @@ abstract class cxQuestion implements Question {
         let el = <HTMLElement>this.el.querySelector(".clearfix > ul,.clearfix ul.Zy_ulBottom.clearfix");
         let list = el.querySelectorAll("li");
         return list;
+    }
+
+    protected isCorrect(): Element {
+        let el = this.el.querySelector(".Py_answer.clearfix");
+        if (el.innerHTML.indexOf('正确答案') < 0) {
+            if (el.querySelectorAll('.fr.dui').length <= 0 && el.querySelectorAll('.fr.bandui').length <= 0) {
+                return null;
+            }
+        }
+        return el;
+    }
+
+    protected defaultAnswer(): Answer {
+        let ret = new PushAnswer();
+        ret.topic = this.GetTopic();
+        ret.type = this.GetType();
+        ret.correct = new Array();
+        ret.answer = new Array();
+        return ret;
     }
 }
 
@@ -126,7 +148,25 @@ class cxSelectQuestion extends cxQuestion implements Question {
     }
 
     public Correct(): Answer {
-        return null;
+        let correct = this.isCorrect();
+        if (correct == null) {
+            return null;
+        }
+        let ret = this.defaultAnswer();
+        let options = this.el.querySelectorAll(".Zy_ulTop > li.clearfix");
+        let correctText = correct.querySelector("span").innerText;
+        for (let i = 0; i < options.length; i++) {
+            let optionText = (<HTMLElement>options[i].querySelector("i.fl")).innerText;
+            let option = {
+                option: optionText.substring(0, 1),
+                content: options[i].querySelector("a.fl").innerHTML,
+            };
+            ret.answer.push(option);
+            if (correctText.indexOf(option.option) > 0) {
+                ret.correct.push(option);
+            }
+        }
+        return ret;
     }
 
 }
@@ -160,7 +200,20 @@ class cxJudgeQuestion extends cxSelectQuestion implements Question {
     }
 
     public Correct(): Answer {
-        return null;
+        let el = this.el.querySelector(".Py_answer.clearfix");
+        if (el.innerHTML.indexOf('正确答案') < 0) {
+            if (el.querySelectorAll('.fr.dui').length <= 0 && el.querySelectorAll('.fr.cuo').length <= 0) {
+                return null;
+            }
+        }
+        let ret = this.defaultAnswer();
+        let correctText = el.querySelector("span").innerText;
+        if (correctText.indexOf('×') >= 0) {
+            ret.correct.push({ option: false, content: false });
+        } else {
+            ret.correct.push({ option: true, content: true });
+        }
+        return ret;
     }
 }
 
@@ -199,22 +252,3 @@ class cxFillQuestion extends cxQuestion implements Question {
     }
 
 }
-
-// class cxFillOption extends cxOption {
-
-//     public Fill(content: string): void {
-//         let el = <HTMLInputElement>this.el.querySelector("input.inp");
-//         el.value = content;
-//         this.notice.AddNotice(this.GetOption() + ":" + content);
-//     }
-
-//     public GetContent(): string {
-//         return null;
-//     }
-
-//     public GetOption(): string {
-//         let el = this.el.querySelector("span.fb");
-//         return substrex(el.innerHTML, "第", "空");
-//     }
-// }
-

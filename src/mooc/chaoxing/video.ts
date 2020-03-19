@@ -133,7 +133,7 @@ export class VideoFactory implements TaskFactory {
         pass.style.background = "#F57C00";
         download.style.background = "#999999";
         downloadSubtitle.style.background = "#638EE1";
-        prev.append(startBtn, pass, download, downloadSubtitle);
+        prev.prepend(startBtn, pass, download, downloadSubtitle);
         // 绑定事件
         startBtn.onclick = () => {
             this.task.Start();
@@ -162,6 +162,7 @@ export class Video extends Task {
     protected video: HTMLVideoElement;
     protected _playbackRate: number;
     protected _muted: boolean;
+    protected afterPoint: number = 0;
 
     public Init(context: any, taskinfo: any) {
         super.Init(context, taskinfo);
@@ -177,11 +178,6 @@ export class Video extends Task {
                 this.initPlayer();
                 this.video.addEventListener("ended", () => {
                     this.completeCallback && this.completeCallback();
-                });
-                this.video.addEventListener("ended", () => {
-                    if (Application.App.config.auto) {
-                        this.video.play();
-                    }
                 });
                 this.loadCallback && this.loadCallback();
             } catch (error) {

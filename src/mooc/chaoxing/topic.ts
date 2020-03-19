@@ -2,7 +2,7 @@ import { TaskFactory, Task } from "./task";
 import { CssBtn, CreateNoteLine } from "./utils";
 import { createBtn, substrex } from "@App/internal/utils/utils";
 import { Application } from "@App/internal/application";
-import { QuestionStatus, ToolsQuestionBank, QuestionBank, Topic as QuestionTopic, ToolsAnswerProxy, AnswerProxy } from "@App/internal/utils/question";
+import { QuestionStatus, ToolsQuestionBank, ToolsQuestionBankFacad, QuestionBankFacade } from "@App/internal/utils/question";
 import { SystemConfig } from "@App/config";
 import { CxQuestionFactory } from "./question";
 
@@ -55,7 +55,7 @@ export class TopicFactory implements TaskFactory {
 export class Topic extends Task {
 
     protected lock: boolean;
-    protected answer: AnswerProxy;
+    protected answer: QuestionBankFacade;
 
     constructor(context: any, taskinfo: any) {
         super(context, taskinfo);
@@ -63,27 +63,25 @@ export class Topic extends Task {
 
     public Init(context: any, taskinfo: any) {
         super.Init(context, taskinfo);
-        this.answer = new ToolsAnswerProxy(new ToolsQuestionBank("cx", taskinfo.property.workid));
+        this.answer = new ToolsQuestionBankFacad(new ToolsQuestionBank("cx", taskinfo.property.workid));
         let self = this;
         Application.App.log.Debug("题目", this.taskinfo);
         (<Window>context).parent.document.querySelector("#frame_content").addEventListener("load", function () {
             if (this.contentWindow.document.URL.indexOf('selectWorkQuestionYiPiYue') > 0) {
                 self.context = this.contentWindow;
                 self.collectAnswer();
-                this.completeCallback && this.completeCallback();
+                self.completeCallback && self.completeCallback();
             }
         });
-        if (context.document.URL.indexOf("selectWorkQuestionYiPiYue") > 0) {
-            this.collectAnswer();
-            this.loadCallback && this.loadCallback();
-        } else {
-            let timer = this.context.setInterval(() => {
-                if (this.context.document.readyState == "complete") {
-                    clearInterval(timer);
-                    this.loadCallback && this.loadCallback();
+        let timer = this.context.setInterval(() => {
+            if (this.context.document.readyState == "complete") {
+                this.context.clearInterval(timer);
+                if (context.document.URL.indexOf("selectWorkQuestionYiPiYue") > 0) {
+                    this.collectAnswer();
                 }
-            }, 500);
-        }
+                this.loadCallback && this.loadCallback();
+            }
+        }, 500);
     }
 
     protected collectAnswer() {
@@ -108,7 +106,6 @@ export class Topic extends Task {
             this.lock = true;
             Application.App.log.Info("题目搜索中...");
             let timu = <Array<HTMLElement>>this.context.document.querySelectorAll(".TiMu");
-            this.answer.ClearQuestion();
             timu.forEach((val) => {
                 let topic = CxQuestionFactory.CreateQuestion(val);
                 if (topic == null) {

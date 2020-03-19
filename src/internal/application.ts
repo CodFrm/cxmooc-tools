@@ -3,6 +3,7 @@ import { HttpUtils } from "./utils/utils";
 import { ConfigItems } from "./utils/config";
 import { Logger } from "./utils/log";
 import { SystemConfig } from "@App/config";
+import { QuestionBank } from "./utils/question";
 
 export const Backend = "backend";
 export const Frontend = "frontend";

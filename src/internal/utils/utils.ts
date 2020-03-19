@@ -264,6 +264,7 @@ function dealSymbol(topic: string) {
     topic = topic.replace(/）/g, ')');
     topic = topic.replace(/？/g, '?');
     topic = topic.replace(/：/g, ':');
+    topic = topic.replace(/。/g, '.');
     topic = topic.replace(/[“”]/g, '"');
     return topic;
 }

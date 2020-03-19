@@ -8,6 +8,7 @@ class start implements Launcher {
 
     public async start() {
         if (document.URL.indexOf("ananas/modules/video/index.html") > 0) {
+            Application.App.log.Debug("video注入");
             // 超星video需要在loading时注入才有效,其实不用在这里写的,主要是调试会从网络中获取脚本,video调试不太方便
             return Injected(document, await syncGetChromeStorageLocal("source"));
         }

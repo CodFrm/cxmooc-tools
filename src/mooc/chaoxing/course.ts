@@ -80,7 +80,9 @@ export class CxCourse implements Mooc {
                     if (index == 0) {
                         task.Start();
                     } else {
-                        this.delay(task.Start);
+                        this.delay(() => {
+                            task.Start();
+                        });
                     }
                     return;
                 }
