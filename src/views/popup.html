@@ -256,10 +256,6 @@
     .width_50 {
         margin-top: 10px;
     }
-    
-    .mt5 {
-        margin-top: 5px;
-    }
     /*底部项目链接*/
     
     .bottom_div {
@@ -329,48 +325,8 @@
         display: inline-block;
     }
     
-    #dama {
-        width: 80px;
-        font-size: 10px;
-        cursor: pointer;
-    }
-    
-    #dama-confirm {
-        width: 40px;
-        display: inline-block;
-        display: -moz-inline-block;
-        cursor: pointer;
-    }
-    
-    #dama-pop {
-        position: absolute;
-        right: 0;
-    }
-    
     .page {
         overflow: hidden;
-    }
-    
-    #dama-config {
-        position: absolute;
-        margin-top: 10px;
-        z-index: 100;
-        width: 100%;
-        height: 40px;
-        background: #fff;
-        height: 0;
-        overflow: hidden;
-        transition: .4s;
-    }
-    
-    .comment {
-        font-size: 12px;
-        color: #000000;
-        font-weight: normal;
-        position: relative;
-        top: -17px;
-        right: -50%;
-        color: #003366;
     }
     /*以下为按钮样式*/
     
@@ -474,55 +430,9 @@
     .one_title_show .button--border-thick {
         border: 3px solid;
     }
-    /*打码设置中确认按钮样式*/
-    /*按钮样式结束*/
-    
-    #dama-config #dama-confirm {
-        width: 70px;
-    }
     
     .button--size-s {
         font-size: 10px;
-    }
-    
-    #dama-config .button--moema {
-        z-index: 10;
-        padding: 0.5em 1em;
-        border-radius: 50px;
-        background: #003366;
-        color: #fff;
-        margin-left: 5px;
-        -webkit-transition: background-color 0.3s, color 0.3s;
-        transition: background-color 0.3s, color 0.3s;
-    }
-    
-    #dama-config .button--moema::before {
-        content: '';
-        position: absolute;
-        top: -10px;
-        left: -10px;
-        bottom: -10px;
-        right: -10px;
-        background: inherit;
-        border-radius: 50px;
-        z-index: -1;
-        opacity: 0.4;
-        -webkit-transform: scale3d(0.8, 0.5, 1);
-        transform: scale3d(0.8, 0.5, 1);
-    }
-    
-    #dama-config .button--moema:hover {
-        -webkit-transition: background-color 0.1s 0.3s, color 0.1s 0.3s;
-        transition: background-color 0.1s 0.3s, color 0.1s 0.3s;
-        color: #37474f;
-        background-color: #ea879a;
-        -webkit-animation: anim-moema-1 0.3s forwards;
-        animation: anim-moema-1 0.3s forwards;
-    }
-    
-    #dama-config .button--moema:hover::before {
-        -webkit-animation: anim-moema-2 0.3s 0.3s forwards;
-        animation: anim-moema-2 0.3s 0.3s forwards;
     }
     
     @-webkit-keyframes anim-moema-1 {
@@ -590,51 +500,43 @@
         <h4 class="one_title">
             <div class="one_title_show">
                 <span>插件配置:</span>
-                <button id="dama" style="display: none" class="button button--tamaya button--border-thick" data-text="打码设置">打码设置</button>
-                <input type="text" class="input_text edit" placeholder="token" config-key="vtoken">
-            </div>
-            <div id="dama-config" style="display: none">
-                <span>若快打码设置:</span>
-                <p class="comment">请自行注册若快购买进行配置</p>
-                <input type="text" class="input_text edit" config-key="ruokuai_user" placeholder="若快账号" style="height: 17px;">
-                <input type="text" class="input_text edit" config-key="ruokuai_pwd" placeholder="若快密码" style="height: 17px;">
-                <div class="config-item mt5">
-                    <input type="checkbox" id="ruokuai" class="rdo check" config-key="is_ruokuai">
-                    <label for="ruokuai" title="打码调用若快打码,不使用token了" class="shou">使用若快打码</label>
-                </div>
-                <button id="dama-confirm" class="button button--moema button--text-thick button--text-upper button--size-s">确定</button>
+                <input type="password" class="input_text edit" placeholder="token" config-key="vtoken" style="font-size: 12px;">
             </div>
         </h4>
         <div id="config" class="page">
             <div class="config-item width_50">
-                <input type="checkbox" id="rand-answer" class="rdo">
-                <label class="shou" for="rand-answer" title="没有正确的答案会随机选择">随机答案</label>
+                <input type="checkbox" id="rand-answer" class="rdo" config-key="rand_answer">
+                <label class="shou" for="rand-answer" title="如果题库没有正确的答案会随机选择">随机答案</label>
             </div>
             <div class="config-item width_50">
-                <input type="checkbox" id="auto" class="rdo">
+                <input type="checkbox" id="auto" class="rdo" config-key="auto">
                 <label class="shou" for="auto" title="进入一个页面就会自动开始挂机,完成一个任务之后会自动进行下一个">自动挂机</label>
             </div>
             <br>
             <div class="config-item width_50">
-                <input type="checkbox" id="video-mute" class="rdo">
+                <input type="checkbox" id="video-mute" class="rdo" config-key="video_mute">
                 <label class="shou" for="video-mute" title="播放视频时,自动开启静音">视频静音</label>
             </div>
             <div id="ignore" class="config-item width_50">
-                <input class="rdo" type="checkbox" id="answer-ignore">
+                <input class="rdo" type="checkbox" id="answer-ignore" config-key="answer_ignore">
                 <label class="shou" for="answer-ignore" title="自动挂机时,忽略掉题目不做,直接跳过">忽略题目</label>
+            </div>
+            <div class="config-item width_50">
+                <input class="rdo" type="checkbox" id="super-mode" config-key="super_mode">
+                <label class="shou" for="super-mode" title="超级模式,会有一些特殊的功能开启,你也可以选择关闭,具体请看使用文档">超级模式</label>
             </div>
             <div>
                 <div class="config-item width_50">
                     <label for="video-cdn" title="播放源,为空默认选择最后一次播放源">播放源:</label>
-                    <input type="text" class="input_text tconfig" id="video-cdn" placeholder="默认">
+                    <input type="text" class="input_text" id="video-cdn" placeholder="默认" config-key="video_cdn">
                 </div>
                 <div class="config-item width_50" style="color:#ff0000">
                     <label for="video-multiple" title="视频播放的倍数,1为正常速度(最高16倍,该功能有一定危险)">倍速播放:</label>
-                    <input type="text" class="input_text" id="video-multiple" placeholder="1">倍
+                    <input type="text" class="input_text" id="video-multiple" placeholder="1" config-key="video_multiple" prompt="这是一个很危险的功能,建议不要进行调整,如果你想调整播放速度请在下方填写yes(智慧树平台播放速度和视频进度无关,最高只能1.5倍速)">倍
                 </div>
                 <div id="auto-m" class="config-item width_50">
-                    <label for="interval" title="播放(题目)完成后n分钟再继续下一个任务">间隔时间:</label>
-                    <input type="text" class="input_text tconfig" id="interval" placeholder="5">分
+                    <label for="interval" title="播放(题目)完成后n分钟再继续下一个任务,可以有小数点,例如:0.5=30秒">间隔时间:</label>
+                    <input type="text" class="input_text" id="interval" placeholder="2" config-key="interval">分
                 </div>
             </div>
         </div>
@@ -644,20 +546,15 @@
         <h4 class="one_title"><span>其他:</span></h4>
         <ul>
             <li><a class="three_font" href="https://github.com/CodFrm/cxmooc-tools" target="_black">GitHub开源地址</a></li>
-            <li><a class="three_font" href="https://cx.icodef.com" target="_black">使用文档</a></li>
-            <li><a class="three_font" href="https://github.com/CodFrm/cxmooc-tools/issues" target="_black">Bug/意见/题目反馈地址</a></li>
-            <li><a class="three_font" target="_blank" href="https://shang.qq.com/wpa/qunwpa?idkey=9bddd2564d84bd999940de422d1c0c70f87ecaf02fe9d7c60389fc2b376179eb">交流qq群&nbsp614202391</a></li>
+            <li><a class="three_font" href="https://cx-doc.xloli.top" target="_black">使用文档</a></li>
+            <li><a class="three_font" href="https://github.com/CodFrm/cxmooc-tools/issues" target="_black">Bug/意见/题目反馈地址</a>
+            </li>
+            <li><a class="three_font" target="_blank" href="https://shang.qq.com/wpa/qunwpa?idkey=9bddd2564d84bd999940de422d1c0c70f87ecaf02fe9d7c60389fc2b376179eb">交流qq群&nbsp614202391</a>
+            </li>
         </ul>
-        <p></p>
-        <p></p>
-        <br>
-        <p>
-        </p>
-        <p>
-        </p>
     </div>
     <div style="padding:0 20px;margin-top: 10px;">
-        <img id="tiku" src="https://img.shields.io/badge/%E9%A2%98%E5%BA%93-success-brightgreen.svg">
+        <img id="tiku" src="./../img/success.svg">
         <p class="ps">PS:本扩展全部是免费的</p>
         <p id="version" class="ps"></p>
     </div>

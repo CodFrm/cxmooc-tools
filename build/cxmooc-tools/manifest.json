@@ -37,25 +37,22 @@
             "*://*/exam/test/reVersionPaperMarkContentNew?*",
             "*://examh5.zhihuishu.com/stuExamWeb.html*",
             "*://onlineexamh5new.zhihuishu.com/stuExamWeb.html*",
-            "*://studyh5.zhihuishu.com/videoStudy.html*"
+            "*://study.zhihuishu.com/learningNew/videoList*",
+            "*://*/ananas/modules/video/index.html?*"
         ],
         "js": [
             "src/start.js"
         ],
-        "run_at": "document_start"
+        "run_at": "document_start",
+        "all_frames": true
     }],
     "permissions": [
-        "contextMenus",
         "tabs",
-        "notifications",
-        "webRequest",
-        "webRequestBlocking",
         "storage",
-        "declarativeContent",
-        "https://*/"
+        "*://cx.icodef.com/"
     ],
     "web_accessible_resources": [
         "src/mooc.js"
     ],
-    "homepage_url": "https://blog.icodef.com"
+    "homepage_url": "https://cx.icodef.com"
 }

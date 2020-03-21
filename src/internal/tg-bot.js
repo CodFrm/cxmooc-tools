@@ -1,7 +1,7 @@
 const TelegramBot = require('node-telegram-bot-api');
 const fs = require("fs");
 const { exec } = require('child_process');
-const config = require('./config');
+const config = require('./utils/config');
 
 const botToken = process.env.BOT_TOKEN || '';
 const chat_id = process.env.GROUP_ID || '';

@@ -1,6 +1,6 @@
 const common = require('../common');
 const util = require('./util');
-const moocServer = require('../../config');
+const moocServer = require('../../internal/utils/config');
 
 module.exports = function () {
     let self = this;

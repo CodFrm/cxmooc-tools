@@ -1,6 +1,6 @@
 const fs = require('fs');
 const ChromeExtension = require('crx');
-const config = require('./config')
+const config = require('./utils/config')
 
 let version = dealVersion(config.version)
 // build manifest
