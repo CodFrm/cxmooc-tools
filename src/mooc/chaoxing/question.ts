@@ -1,8 +1,18 @@
 import { substrex, randNumber as RandNumber, randNumber } from "@App/internal/utils/utils";
-import { Question, TopicStatus, TopicStatusString, TopicType, SwitchTopicType, Option, Answer, PushAnswer } from "@App/internal/utils/question";
+import {
+    Question,
+    TopicStatus,
+    TopicStatusString,
+    TopicType,
+    SwitchTopicType,
+    Answer,
+    PushAnswer,
+    Options
+} from "@App/internal/app/question";
 import { CreateNoteLine } from "./utils";
 
 export class CxQuestionFactory {
+
     public static CreateQuestion(el: HTMLElement): Question {
         let ret = SwitchTopicType(substrex(el.innerText, '【', '】'));
         if (ret == null) {
@@ -10,44 +20,101 @@ export class CxQuestionFactory {
             return null
         }
         this.RemoveNotice(el);
-        switch (ret) {
+        return this.CreateCourseQuestion(ret, el);
+    }
+
+    public static CreateExamTopic(type: TopicType, el: HTMLElement): Question {
+        return this.CreateCourseQuestion(type, el);
+    }
+
+    public static CreateCourseQuestion(type: TopicType, el: HTMLElement): Question {
+        let ret: Question = null;
+        switch (type) {
             case 1:
             case 2: {
-                return new cxSelectQuestion(el);
+                ret = new cxSelectQuestion(el, type);
             }
             case 3: {
-                return new cxJudgeQuestion(el);
+                ret = new cxJudgeQuestion(el, type);
             }
             case 4: {
-                return new cxFillQuestion(el);
+                ret = new cxFillQuestion(el, type);
             }
         }
+        return ret;
+    }
+
+    public static CreateExamQuestion(type: TopicType, el: HTMLElement): Question {
+        let ret: Question = null;
+        switch (type) {
+            case 1:
+            case 2: {
+                ret = new cxExamSelectQuestion(el, type);
+            }
+            case 3: {
+                ret = new cxExamJudgeQuestion(el, type);
+            }
+            case 4: {
+                ret = new cxExamFillQuestion(el, type);
+            }
+        }
+        return ret;
+    }
+
+    protected static getBeforeType(el: HTMLElement): TopicType {
+        let before = el.previousElementSibling;
+        do {
+            if (before.className == "Cy_TItle1") {
+                return SwitchTopicType(substrex((<HTMLElement>before).innerText, ".", "（"));
+            }
+            before = before.previousElementSibling;
+        } while (before != null)
         return null;
+    }
+
+    public static CreateHomeWorkQuestion(el: HTMLElement): Question {
+        let ret = CxQuestionFactory.getBeforeType(el);
+        if (ret == null) {
+            this.AddNotice(el, "不支持的类型");
+            return null
+        }
+        this.RemoveNotice(el);
+        return this.CreateCourseQuestion(ret, el);
     }
 
     public static RemoveNotice(el: HTMLElement) {
         let tmpel = <HTMLElement>el.querySelector(".clearfix > ul,.clearfix > .Py_tk,.Zy_ulTk");
-        if (tmpel == undefined) { tmpel = el; }
-        tmpel.querySelectorAll(".prompt-line-answer").forEach((v) => { v.remove() });
+        if (tmpel == undefined) {
+            tmpel = el;
+        }
+        tmpel.querySelectorAll(".prompt-line-answer").forEach((v) => {
+            v.remove()
+        });
     }
 
     public static AddNotice(el: HTMLElement, str: string) {
         let tmpel = <HTMLElement>el.querySelector(".clearfix > ul,.clearfix > .Py_tk,.Zy_ulTk");
-        if (tmpel == undefined) { tmpel = el; }
+        if (tmpel == undefined) {
+            tmpel = el;
+        }
         CreateNoteLine(str, "answer", tmpel);
     }
 }
 
-abstract class cxQuestion implements Question {
+abstract class cxCourseQuestion implements Question {
 
     protected el: HTMLElement;
+    protected type: TopicType;
 
-    constructor(el: HTMLElement) {
+    constructor(el: HTMLElement, type: TopicType) {
         this.el = el;
+        this.type = type;
     }
 
     public abstract Random(): TopicStatus;
+
     public abstract Correct(): Answer;
+
     public abstract Fill(answer: Answer): TopicStatus;
 
     public SetStatus(status: TopicStatus) {
@@ -72,13 +139,7 @@ abstract class cxQuestion implements Question {
     }
 
     public GetType(): TopicType {
-        let title = this.el.querySelector(".Zy_TItle.clearfix > .clearfix").innerHTML;
-        let ret = SwitchTopicType(substrex(title, '【', '】'));
-        this.RemoveNotice();
-        if (ret == null) {
-            this.AddNotice("不支持的类型");
-        }
-        return ret;
+        return this.type;
     }
 
     protected options(): NodeListOf<HTMLLIElement> {
@@ -107,7 +168,7 @@ abstract class cxQuestion implements Question {
     }
 }
 
-class cxSelectQuestion extends cxQuestion implements Question {
+class cxSelectQuestion extends cxCourseQuestion implements Options {
 
     protected getContent(el: HTMLElement): string {
         el = el.querySelector("a");
@@ -174,7 +235,7 @@ class cxSelectQuestion extends cxQuestion implements Question {
 class cxJudgeQuestion extends cxSelectQuestion implements Question {
 
     protected getContent(el: HTMLElement): string {
-        let tmpel = <HTMLInputElement>el.querySelector("label > input");
+        let tmpel = <HTMLInputElement>el.querySelector("label > input,input");
         if (tmpel.value == "true") {
             return "对√";
         }
@@ -182,7 +243,7 @@ class cxJudgeQuestion extends cxSelectQuestion implements Question {
     }
 
     protected click(el: HTMLElement) {
-        (<HTMLElement>el.querySelector("label > input")).click();
+        (<HTMLElement>el.querySelector("label > input,input")).click();
         this.AddNotice(this.getContent(el));
     }
 
@@ -217,7 +278,7 @@ class cxJudgeQuestion extends cxSelectQuestion implements Question {
     }
 }
 
-class cxFillQuestion extends cxQuestion implements Question {
+class cxFillQuestion extends cxCourseQuestion implements Question {
 
     protected getOption(el: HTMLElement): string {
         let tmpel = el.querySelector("span.fb");
@@ -229,7 +290,29 @@ class cxFillQuestion extends cxQuestion implements Question {
     }
 
     public Correct(): Answer {
-        return null;
+        let correct = this.isCorrect();
+        if (correct == null) {
+            return null;
+        }
+        let ret = this.defaultAnswer();
+        let options = this.el.querySelectorAll(".Py_tk span.font14");
+        let isMy = false;
+        if (options.length <= 0) {
+            isMy = true;
+            options = this.el.querySelectorAll(".Py_answer.clearfix .font14");
+        }
+        for (let i = 0; i < options.length; i++) {
+            if (isMy && options[i].querySelectorAll(".fr.dui").length <= 0) {
+                continue;
+            }
+            let optionEl = options[i].querySelector("i.fl");
+            let option = {
+                option: substrex(optionEl.innerHTML, "第", "空"),
+                content: (<HTMLElement>options[i].querySelector(".clearfix")).innerText,
+            };
+            ret.correct.push(option);
+        }
+        return ret;
     }
 
     public Fill(answer: Answer): TopicStatus {
@@ -250,5 +333,16 @@ class cxFillQuestion extends cxQuestion implements Question {
         }
         return "no_match";
     }
+}
+
+class cxExamSelectQuestion extends cxSelectQuestion {
+
+}
+
+class cxExamJudgeQuestion extends cxJudgeQuestion {
+
+}
+
+class cxExamFillQuestion extends cxFillQuestion {
 
 }

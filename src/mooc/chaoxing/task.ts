@@ -11,17 +11,18 @@ export abstract class Task {
     protected loadCallback: () => void;
 
     public constructor(context: any, taskinfo: any) {
-        this.Init(context, taskinfo);
+        this.taskinfo = taskinfo;
+        this.context = context;
     }
 
     public Complete(callback: () => void): void {
         this.completeCallback = callback;
     }
 
-    public Init(context: any, taskinfo: any): void {
-        this.taskinfo = taskinfo;
-        this.context = context;
+    public Init(): void {
+
     }
+
     public Load(callback: () => void): void {
         this.loadCallback = callback;
     }

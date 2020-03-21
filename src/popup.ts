@@ -1,6 +1,7 @@
 import { NewBackendConfig, SetConfig, ChromeConfigItems } from "./internal/utils/config";
 import { Application, Backend, Launcher } from "./internal/application";
 import { SystemConfig } from "./config";
+import { dealHotVersion } from "./internal/utils/utils";
 
 class popup implements Launcher {
 
@@ -39,10 +40,10 @@ class popup implements Launcher {
             }
         }
         Application.CheckUpdate(function (isnew, data) {
-            let v: number;
+            let v: any;
             if (data === undefined) {
                 (<HTMLImageElement>document.getElementById("tiku")).src = "./../img/error.svg";
-                v = SystemConfig.version;
+                v = SystemConfig.version + ".0";
             } else {
                 if (isnew) {
                     var p = document.createElement('p');
@@ -51,7 +52,7 @@ class popup implements Launcher {
                     document.getElementsByTagName('body')[0].appendChild(p);
                 }
                 document.getElementById("injection").innerHTML = data.injection;
-                v = (SystemConfig.version > data.hotversion ? SystemConfig.version : data.hotversion);
+                v = (SystemConfig.version > dealHotVersion(data.hotversion) ? SystemConfig.version + ".0" : data.hotversion);
             }
             document.getElementById('version').innerHTML = 'v' + v;
         });

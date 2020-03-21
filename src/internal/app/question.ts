@@ -1,4 +1,4 @@
-import { HttpUtils, removeHTML, randNumber } from "./utils";
+import { HttpUtils, removeHTML, randNumber } from "../utils/utils";
 import { SystemConfig } from "@App/config";
 import { Application } from "../application";
 
@@ -37,12 +37,15 @@ export class PushAnswer implements Answer {
     }
 }
 
-export interface Question {
-    GetType(): TopicType;
-    GetTopic(): string;
+export interface Options {
     Random(): TopicStatus;
     Fill(s: Answer): TopicStatus;
     Correct(): Answer
+}
+
+export interface Question extends Options {
+    GetType(): TopicType;
+    GetTopic(): string;
     SetStatus(status: TopicStatus): void;
 }
 
@@ -191,7 +194,7 @@ export interface QuestionBankFacade {
     Answer(callback: (status: QuestionStatus) => void): void
     Push(callback: (status: QuestionStatus) => void): void
 }
-export class ToolsQuestionBankFacad implements QuestionBankFacade {
+export class ToolsQuestionBankFacade implements QuestionBankFacade {
     protected bank: QuestionBank;
     protected question: Array<Question>;
 
@@ -216,11 +219,16 @@ export class ToolsQuestionBankFacad implements QuestionBankFacade {
                 type: val.GetType(),
             });
         });
+        Application.App.log.Debug("答案查询", topic);
+        let status: QuestionStatus = "success";
         this.bank.Answer(topic, (ret: { status: QuestionStatus, answer: Answer[] }) => {
             if (ret.status != "processing") {
-                return callback(ret.status);
+                Application.App.log.Debug("题库返回", ret);
+                if (ret.status != "success" || status == "success") {
+                    return callback(ret.status);
+                }
+                return callback(status);
             }
-            let status: QuestionStatus = ret.status;
             for (let i = 0; i < ret.answer.length; i++) {
                 let answer = ret.answer[i];
                 let question = this.question[answer.index];
@@ -240,9 +248,7 @@ export class ToolsQuestionBankFacad implements QuestionBankFacade {
                 }
                 question.SetStatus(tmpStatus);
             }
-            return callback(status);
         });
-        this.ClearQuestion();
     }
 
     protected randAnswer(status: QuestionStatus, tmpStatus: TopicStatus, question: Question): QuestionStatus {
@@ -270,15 +276,18 @@ export class ToolsQuestionBankFacad implements QuestionBankFacade {
             correct.correct = this.dealOption(correct.correct);
             answer.push(correct);
         });
+        Application.App.log.Debug("采集提交", answer);
         this.bank.Push(answer).then((ret: QuestionStatus) => {
+            Application.App.log.Debug("题库返回", ret);
             return callback(ret);
         });
-        this.ClearQuestion();
     }
 
     protected dealOption(options: Option[]): Option[] {
         for (let i = 0; i < options.length; i++) {
-            options[i].content = removeHTML(options[i].content);
+            if (typeof options[i].content == "string") {
+                options[i].content = removeHTML(options[i].content);
+            }
         }
         return options;
     }

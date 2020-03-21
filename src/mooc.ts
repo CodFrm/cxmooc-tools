@@ -3,7 +3,6 @@ import { Application, Frontend, Launcher } from "./internal/application";
 import { ChromeConfigItems, NewFrontendGetConfig } from "./internal/utils/config";
 import { CreateMooc } from "./mooc/factory";
 import { ConsoleLog } from "./internal/utils/log";
-import { ToolsQuestionBankFacad, ToolsQuestionBank } from "./internal/utils/question";
 
 class mooc implements Launcher {
     public start() {

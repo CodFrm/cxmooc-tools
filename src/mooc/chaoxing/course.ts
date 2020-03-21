@@ -1,15 +1,9 @@
 import { Mooc, MoocFactory } from "../factory";
-import { Task, TaskFactory } from "./task";
+import { TaskFactory, Task } from "./task";
 import { Application } from "@App/internal/application";
 import { VideoFactory } from "./video";
-import { TopicFactory, HomeWorkTopicFactory } from "./topic";
-import { createBtn } from "@App/internal/utils/utils";
-import { CssBtn } from "./utils";
-export class CxCourseFactory implements MoocFactory {
-    public CreateMooc(): Mooc {
-        return new CxCourse();
-    }
-}
+import { TopicFactory, HomeworkTopicFactory, ExamTopicFactory } from "./topic";
+import { substrex } from "@App/internal/utils/utils";
 
 //课程任务
 export class CxCourse implements Mooc {
@@ -62,6 +56,7 @@ export class CxCourse implements Mooc {
             task.Complete(() => {
                 this.startTask(taskIndex + 1);
             });
+            task.Init();
         });
         Application.App.log.Debug("任务点参数", this.attachments);
         if (this.taskList.length == 0) {
@@ -122,18 +117,37 @@ export class CxCourse implements Mooc {
     }
 }
 
-export class CxHomeWorkFactory implements MoocFactory {
-    public CreateMooc(): Mooc {
-        return new HomeWork();
+export class CxExamTopic implements Mooc {
+    public Start(): void {
+        window.onload = () => {
+            let topic = new ExamTopicFactory();
+            let task = topic.CreateTask(window, {
+                property: {
+                    workid: substrex(document.URL, "id=", "&"),
+                },
+            });
+            task.Init();
+            if (Application.App.config.auto) {
+                task.Start();
+            }
+        }
     }
 }
 
-export class HomeWork implements Mooc {
-    Start(): void {
+export class CxHomeWork implements Mooc {
+    public Start(): void {
         window.onload = () => {
-            let topic = new HomeWorkTopicFactory();
-            topic.CreateTask(window, null);
+            let topic = new HomeworkTopicFactory();
+            let task = topic.CreateTask(window, {
+                property: {
+                    workid: substrex(document.URL, "workId=", "&"),
+                },
+            });
+
+            task.Init();
+            if (Application.App.config.auto) {
+                task.Start();
+            }
         }
     }
-
 }

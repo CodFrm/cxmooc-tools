@@ -5,12 +5,6 @@ import { randNumber, get, createBtn } from "@App/internal/utils/utils";
 import { TaskFactory, Task } from "./task";
 import { CssBtn } from "./utils";
 
-export class CxVideoOptimizationFactory implements MoocFactory {
-    CreateMooc(): Mooc {
-        return new CxVideoOptimization();
-    }
-}
-
 // 优化播放器
 export class CxVideoOptimization implements Mooc {
 
@@ -164,8 +158,7 @@ export class Video extends Task {
     protected _muted: boolean;
     protected afterPoint: number = 0;
 
-    public Init(context: any, taskinfo: any) {
-        super.Init(context, taskinfo);
+    public Init() {
         Application.App.log.Debug("播放器配置", this.taskinfo);
         let timer = this.context.setInterval(() => {
             try {

@@ -280,3 +280,8 @@ export function substrex(str: string, left: string, right: string) {
     var rightPos = str.indexOf(right, leftPos);
     return str.substring(leftPos, rightPos);
 }
+
+export function dealHotVersion(hotversion: string): number {
+    hotversion = hotversion.substring(0, hotversion.indexOf(".") + 1) + hotversion.substring(hotversion.indexOf(".") + 1).replace(".", "");
+    return Number(hotversion);
+}

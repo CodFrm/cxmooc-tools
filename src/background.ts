@@ -1,5 +1,5 @@
 import { NewExtensionServerMessage } from "./internal/utils/message";
-import { HttpUtils, get } from "./internal/utils/utils";
+import { HttpUtils, get, dealHotVersion } from "./internal/utils/utils";
 import { Application, Backend, Launcher } from "./internal/application";
 import { ConsoleLog } from "./internal/utils/log";
 import { ChromeConfigItems, NewBackendConfig } from "./internal/utils/config";
@@ -31,7 +31,7 @@ class background implements Launcher {
         let configDefaultValue = new Map<string, any>().
             set("vtoken", "").set("rand_answer", false).set("auto", true).
             set("video_mute", true).set("answer_ignore", false).set("video_cdn", "").
-            set("video_multiple", 1).set("interval", 1).set("super_mode", true);
+            set("video_multiple", 1).set("interval", 2).set("super_mode", true);
         chrome.storage.sync.clear();
         chrome.storage.sync.get(configKeyList, function (items) {
             configDefaultValue.forEach((val, key) => {
@@ -56,10 +56,9 @@ class background implements Launcher {
                 });
             }
             //缓存js文件源码
-            let hotVersion = data.hotversion;
-            let littleVersion = hotVersion - data.version;
+            let hotVersion = dealHotVersion(data.hotversion);
             let isHotUpdate: boolean = false;
-            if (littleVersion < 0.01 && littleVersion > 0) {
+            if (hotVersion > data.version) {
                 Application.App.log.Info("使用热更新版本:" + hotVersion);
                 isHotUpdate = true;
             }
