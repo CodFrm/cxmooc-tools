@@ -1,5 +1,5 @@
 server/server
-config.yaml
+server/config.yaml
 .idea
 node_modules
 build/cxmooc-tools/src/*.*

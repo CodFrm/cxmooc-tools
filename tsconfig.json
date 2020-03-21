@@ -4,9 +4,20 @@
         "noImplicitAny": true,
         "module": "es6",
         "target": "es5",
-        "allowJs": true
+        "allowJs": true,
+        "baseUrl": ".",
+        "paths": {
+            "@App/*": [
+                "src/*"
+            ],
+            "@Test/*": [
+                "tests/*"
+            ]
+        }
     },
     "include": [
-        "./src/**/*.ts"
-    ]
+        "./src/*.ts",
+        "./src/**/*.ts",
+        "./tests/*.test.ts",
+    ],
 }
