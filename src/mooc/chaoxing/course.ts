@@ -117,18 +117,21 @@ export class CxCourse implements Mooc {
     }
 }
 
+//TODO: 考试和作业强制采集
 export class CxExamTopic implements Mooc {
     public Start(): void {
         window.onload = () => {
             let topic = new ExamTopicFactory();
             let task = topic.CreateTask(window, {
                 property: {
-                    workid: substrex(document.URL, "id=", "&"),
+                    workid: "0",
                 },
             });
             task.Init();
-            if (Application.App.config.auto) {
-                task.Start();
+            if (document.URL.indexOf("exam/test/reVersionTestStartNew") > 0) {
+                if (Application.App.config.auto) {
+                    task.Start();
+                }
             }
         }
     }

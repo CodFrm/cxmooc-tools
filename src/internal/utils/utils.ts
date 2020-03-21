@@ -245,8 +245,8 @@ export function removeHTML(html: string) {
     //先处理带src和href属性的标签
     let srcReplace = /<img.*?src="(.*?)".*?>/g;
     html = html.replace(srcReplace, '$1');
-    srcReplace = /<(iframe|a).*?(src|href)="(.*?)".*?<\/(iframe|a)>/g;
-    html = html.replace(srcReplace, '$3');
+    srcReplace = /<(iframe|a).*?(src|href)="(.*?)".*?>(.*?)<\/(iframe|a)>/g;
+    html = html.replace(srcReplace, '$3$4');
     let revHtml = /<.*?>/g;
     html = html.replace(revHtml, '');
     html = html.replace(/(^\s+)|(\s+$)/g, '');

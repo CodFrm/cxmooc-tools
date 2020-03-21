@@ -23,6 +23,14 @@ export abstract class Topic {
 
     public abstract Init(): Promise<any>;
 
+    protected addQuestion() {
+        let questions = this.queryQuestions.QueryQuestions();
+        this.answer.ClearQuestion();
+        questions.forEach((val) => {
+            this.answer.AddQuestion(val);
+        });
+    }
+
     public QueryAnswer(): Promise<any> {
         return new Promise<any>(resolve => {
             if (this.lock) {
@@ -30,11 +38,7 @@ export abstract class Topic {
             }
             this.lock = true;
             Application.App.log.Info("题目搜索中...");
-            let questions = this.queryQuestions.QueryQuestions();
-            this.answer.ClearQuestion();
-            questions.forEach((val) => {
-                this.answer.AddQuestion(val);
-            });
+            this.addQuestion();
             this.answer.Answer((status: QuestionStatus) => {
                 this.lock = false;
                 if (status == "network") {

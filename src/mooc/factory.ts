@@ -21,7 +21,7 @@ export function PlatformChaoXing(): Mooc {
         mooc = new CxVideoOptimization();
     } else if ((url.indexOf("work/doHomeWorkNew") > 0 || url.indexOf("work/selectWorkQuestionYiPiYue") > 0) && self == top) {
         mooc = new CxHomeWork();
-    } else if (url.indexOf("exam/test/reVersionTestStartNew") > 0) {
+    } else if (url.indexOf("exam/test/reVersionTestStartNew") > 0 || url.indexOf("exam/test/reVersionPaperMarkContentNew") > 0) {
         mooc = new CxExamTopic();
     }
     return mooc;

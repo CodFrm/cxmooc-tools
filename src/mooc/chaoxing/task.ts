@@ -20,7 +20,6 @@ export abstract class Task {
     }
 
     public Init(): void {
-
     }
 
     public Load(callback: () => void): void {

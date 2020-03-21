@@ -95,9 +95,9 @@ export interface QuestionBank {
 export class ToolsQuestionBank implements QuestionBank {
 
     protected platform: string
-    protected info: string
+    protected info: any
 
-    constructor(platform: string, info?: string) {
+    constructor(platform: string, info?: any) {
         this.platform = platform;
         this.info = info;
     }
@@ -107,17 +107,16 @@ export class ToolsQuestionBank implements QuestionBank {
         let answer = new Array<Answer>();
         let retStatus: QuestionStatus = "success";
         let next = (index: number) => {
-            let info = "";
             let body = "";
             if (this.info) {
-                info = "&id=" + this.info;
+                body = JSON.stringify(this.info) + "&";
             }
             let t = index;
             for (; t < index + num && t < topic.length; t++) {
                 let val = topic[t];
                 body += "topic[" + (t - index) + "]=" + encodeURIComponent(removeHTML(val.topic)) + "&type[" + (t - index) + "]=" + val.type + "&";
             }
-            HttpUtils.HttpPost(SystemConfig.url + "v2/answer?platform=" + this.platform + info, body, {
+            HttpUtils.HttpPost(SystemConfig.url + "v2/answer?platform=" + this.platform, body, {
                 json: true,
                 success: (result: any) => {
                     let status: QuestionStatus = "success";
@@ -167,11 +166,7 @@ export class ToolsQuestionBank implements QuestionBank {
 
     public Push(answer: Answer[]): Promise<QuestionStatus> {
         return new Promise((resolve) => {
-            let info = "";
-            if (this.info) {
-                info = "&id=" + this.info;
-            }
-            HttpUtils.HttpPost(SystemConfig.url + "answer?platform=" + this.platform + info, JSON.stringify(answer), {
+            HttpUtils.HttpPost(SystemConfig.url + "answer?platform=" + this.platform, JSON.stringify(answer), {
                 json: true,
                 success: (result: any) => {
                     Application.App.log.Info("答案自动记录成功,成功获得" + result.add_token_num + "个打码数,剩余数量:" + result.token_num);
