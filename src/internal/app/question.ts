@@ -175,7 +175,7 @@ export class ToolsQuestionBank implements QuestionBank {
                 error: () => {
                     resolve("network");
                 }
-            })
+            });
         });
     }
 

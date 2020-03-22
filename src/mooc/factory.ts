@@ -2,6 +2,8 @@ import { CxCourse, CxHomeWork, CxExamTopic } from "./chaoxing/course";
 import { CxVideoOptimization } from "./chaoxing/video";
 import { ZhsVideo } from "./zhihuishu/video";
 import { ZhsExam } from "./zhihuishu/exam";
+import { VCode } from "@App/internal/app/vcode";
+import { CourseVCode as CxCourseVCode } from "./chaoxing/vcode";
 
 export interface Mooc {
     Start(): void
@@ -22,7 +24,7 @@ export function PlatformChaoXing(): Mooc {
     let url = document.URL;
     let mooc: Mooc = null;
     if (url.indexOf("mycourse/studentstudy?") > 0) {
-        mooc = new CxCourse();
+        mooc = new VCode(new CxCourse(), new CxCourseVCode());
     } else if (url.indexOf("ananas/modules/video/index.html") > 0) {
         mooc = new CxVideoOptimization();
     } else if ((url.indexOf("work/doHomeWorkNew") > 0 || url.indexOf("work/selectWorkQuestionYiPiYue") > 0) && self == top) {
@@ -38,7 +40,7 @@ export function PlatformZhihuishu(): Mooc {
     if (document.URL.indexOf("studyh5.zhihuishu.com/videoStudy.html") > 0) {
         mooc = new ZhsVideo();
     } else if (document.URL.indexOf("zhihuishu.com/stuExamWeb.html") > 0) {
-        mooc =new ZhsExam();
+        mooc = new ZhsExam();
     }
     return mooc;
 }

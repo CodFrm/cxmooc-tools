@@ -301,3 +301,14 @@ export function protocolPrompt(content: string, key: string, keyword?: string): 
     }
     return true;
 }
+
+export function getImageBase64(img: HTMLImageElement, ext: string) {
+    var canvas = document.createElement("canvas");
+    canvas.width = img.width;
+    canvas.height = img.height;
+    var ctx = canvas.getContext("2d");
+    ctx.drawImage(img, 0, 0, img.width, img.height);
+    var dataURL = canvas.toDataURL("image/" + ext, 0.75);//节省可怜的流量>_<,虽然好像没有啥
+    canvas = null;
+    return dataURL;
+}
