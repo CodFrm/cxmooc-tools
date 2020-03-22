@@ -11,7 +11,10 @@ export class ZhsExam implements Mooc {
     protected topic: Topic;
 
     public Start(): void {
-        this.topic = new ExamTopic(document, new ToolsQuestionBankFacade(new ToolsQuestionBank("zhs")));
+        this.topic = new ExamTopic(document, new ToolsQuestionBankFacade(new ToolsQuestionBank("zhs", {
+            refer: document.URL,
+            id: document.URL.match(/checkHomework\/(.*?)\/(.*?)\/(.*?)\/(.*?)\/(.*?)$/)[3],
+        })));
         this.topic.SetQueryQuestions(new ExamQueryQuestion());
         window.onload = () => {
             setTimeout(() => {

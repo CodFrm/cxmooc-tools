@@ -11,7 +11,10 @@ export class CourseVCode implements ListenVCode {
                     return;
                 }
                 let parent = document.querySelector('#sub').parentElement.parentElement;
-                parent.querySelector(".prompt-line-dama").remove();
+                let old = parent.querySelector(".prompt-line-dama");
+                if (old) {
+                    old.remove();
+                }
                 let notice = CreateNoteLine('cxmooc自动打码中...', 'dama', parent);
                 callback(new CxCourseFillVCode(imgel, notice));
             });

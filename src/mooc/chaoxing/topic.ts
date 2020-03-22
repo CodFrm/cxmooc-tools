@@ -3,7 +3,6 @@ import { CssBtn } from "./utils";
 import { createBtn } from "@App/internal/utils/utils";
 import { Application } from "@App/internal/application";
 import {
-    QuestionStatus,
     ToolsQuestionBank,
     ToolsQuestionBankFacade,
     SwitchTopicType,
@@ -21,7 +20,7 @@ export class HomeworkTopicFactory implements TaskFactory {
     }
 
     public CreateTask(context: any, taskinfo: any): Task {
-        let topic = new HomeworkTopic(context, new ToolsQuestionBankFacade(new ToolsQuestionBank("cx", taskinfo.property.workid)));
+        let topic = new HomeworkTopic(context, new ToolsQuestionBankFacade(new ToolsQuestionBank("cx", taskinfo)));
         topic.SetQueryQuestions(new CourseQueryQuestion(context, this.createQuestion));
         this.task = new TopicAdapter(context, taskinfo, topic);
 
@@ -48,7 +47,7 @@ export class ExamTopicFactory implements TaskFactory {
     }
 
     public CreateTask(context: any, taskinfo: any): Task {
-        let topic = new ExamTopic(context, new ToolsQuestionBankFacade(new ToolsQuestionBank("cx", taskinfo.property.workid)));
+        let topic = new ExamTopic(context, new ToolsQuestionBankFacade(new ToolsQuestionBank("cx", taskinfo)));
         this.task = new TopicAdapter(context, taskinfo, topic);
         if (document.URL.indexOf("exam/test/reVersionTestStartNew") > 0) {
             topic.SetQueryQuestions(topic);
@@ -87,7 +86,9 @@ export class TopicFactory implements TaskFactory {
         this.createActionBtn();
 
         let contentWindow = (<HTMLIFrameElement>this.taskIframe.contentWindow.document.querySelector("#frame_content")).contentWindow;
-        let topic = new CourseTopic(contentWindow, new ToolsQuestionBankFacade(new ToolsQuestionBank("cx", taskinfo.property.workid)));
+        taskinfo.refer = (<Window>context).document.URL;
+        taskinfo.id = taskinfo.property.workid;
+        let topic = new CourseTopic(contentWindow, new ToolsQuestionBankFacade(new ToolsQuestionBank("cx", taskinfo)));
         topic.SetQueryQuestions(new CourseQueryQuestion(contentWindow, this.createQuestion));
         this.task = new TopicAdapter(contentWindow, taskinfo, topic);
         return this.task;

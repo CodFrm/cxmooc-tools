@@ -91,15 +91,22 @@ export interface QuestionBank {
     Push(answer: Answer[]): Promise<QuestionStatus>;
 }
 
+export interface QuestionInfo {
+    refer: string
+    id: string
+}
 // 小工具题库
 export class ToolsQuestionBank implements QuestionBank {
 
     protected platform: string
-    protected info: any
-
-    constructor(platform: string, info?: any) {
+    protected info: QuestionInfo;
+    constructor(platform: string, info: QuestionInfo) {
         this.platform = platform;
         this.info = info;
+    }
+
+    protected infoMsg(): string {
+        return encodeURIComponent(JSON.stringify(this.info));
     }
 
     public Answer(topic: Topic[], resolve: QuestionBankCallback): void {
@@ -107,10 +114,7 @@ export class ToolsQuestionBank implements QuestionBank {
         let answer = new Array<Answer>();
         let retStatus: QuestionStatus = "success";
         let next = (index: number) => {
-            let body = "";
-            if (this.info) {
-                body = JSON.stringify(this.info) + "&";
-            }
+            let body = "info=" + this.infoMsg() + "&";
             let t = index;
             for (; t < index + num && t < topic.length; t++) {
                 let val = topic[t];
@@ -166,7 +170,7 @@ export class ToolsQuestionBank implements QuestionBank {
 
     public Push(answer: Answer[]): Promise<QuestionStatus> {
         return new Promise((resolve) => {
-            HttpUtils.HttpPost(SystemConfig.url + "answer?platform=" + this.platform, JSON.stringify(answer), {
+            HttpUtils.HttpPost(SystemConfig.url + "answer?platform=" + this.platform, "info=" + this.infoMsg() + "&data=" + JSON.stringify(answer), {
                 json: true,
                 success: (result: any) => {
                     Application.App.log.Info("答案自动记录成功,成功获得" + result.add_token_num + "个打码数,剩余数量:" + result.token_num);
@@ -182,6 +186,7 @@ export class ToolsQuestionBank implements QuestionBank {
     public Equal(content1: string, content2: string): boolean {
         return removeHTML(content1) == removeHTML(content2);
     }
+
 }
 export interface QuestionBankFacade {
     ClearQuestion(): void

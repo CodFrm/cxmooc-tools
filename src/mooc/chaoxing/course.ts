@@ -123,9 +123,8 @@ export class CxExamTopic implements Mooc {
         window.onload = () => {
             let topic = new ExamTopicFactory();
             let task = topic.CreateTask(window, {
-                property: {
-                    workid: "0",
-                },
+                refer: document.URL,
+                id: (<HTMLInputElement>document.querySelector("#paperId")).value,
             });
             task.Init();
             if (document.URL.indexOf("exam/test/reVersionTestStartNew") > 0) {
@@ -142,11 +141,9 @@ export class CxHomeWork implements Mooc {
         window.onload = () => {
             let topic = new HomeworkTopicFactory();
             let task = topic.CreateTask(window, {
-                property: {
-                    workid: substrex(document.URL, "workId=", "&"),
-                },
+                refer: document.URL,
+                id: (<HTMLInputElement>document.querySelector("#workLibraryId")).value
             });
-
             task.Init();
             if (Application.App.config.auto) {
                 task.Start();

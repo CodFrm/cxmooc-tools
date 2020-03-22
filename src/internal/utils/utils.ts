@@ -1,5 +1,6 @@
 import { Client } from "./message";
 import { AppName, Application } from "../application";
+import { SystemConfig } from "@App/config";
 
 export type RequestCallback = (body: any) => void
 export type ErrorCallback = () => void
@@ -71,9 +72,14 @@ export class HttpUtils {
     public static HttpPost(url: string, body: any, info: RequestInfo): void {
         info.url = url;
         info.body = body;
-        info.headers = { "Content-Type": "application/x-www-form-urlencoded" };
+        if (!info.headers) {
+            info.headers = {};
+        }
+        (<any>info.headers)["Content-Type"] = "application/x-www-form-urlencoded";
+        (<any>info.headers)["Authorization"] = Application.App.config.vtoken;
+        (<any>info.headers)["X-Version"] = SystemConfig.version + "";
         info.method = "POST";
-        this.Request(info)
+        this.Request(info);
     }
 
     public static SendRequest(client: Client, data: any) {
