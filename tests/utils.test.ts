@@ -8,6 +8,7 @@ describe("remove html", () => {
         expect(removeHTML("包含一些中文符号，例如：（）？这样一些“”")).toEqual("包含一些中文符号,例如:()?这样一些\"\"");
     })
     it("包含html", () => {
+        expect(removeHTML('<span style=";font-family:宋体;font-size:16px"><span style="font-family:宋体">依靠群众求胜利</span></span>')).toEqual("依靠群众求胜利");
         expect(removeHTML('<p><span style="font-family: &quot;Times New Roman&quot;; font-size: 14px;">empty</span>&nbsp;</p>')).toEqual("empty");
         expect(removeHTML('<p><span style="font-family: &quot;Times New Roman&quot;; font-size: 14px;">bare</span></p>')).toEqual("bare");
         expect(removeHTML('<a href="javascript:void(0);"><p>选择3</p></a>')).toEqual("javascript:void(0);选择3");

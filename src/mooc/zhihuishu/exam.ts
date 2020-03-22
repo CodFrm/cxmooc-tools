@@ -1,11 +1,11 @@
 import { Mooc } from "../factory";
-import { createBtn, substrex, randNumber } from "@App/internal/utils/utils";
+import { createBtn, substrex, randNumber, protocolPrompt } from "@App/internal/utils/utils";
 import "../../views/common.css"
 import { Topic, QueryQuestions } from "@App/internal/app/topic";
-import { Question, ToolsQuestionBankFacade, ToolsQuestionBank, TopicType, SwitchTopicType, TopicStatus, Answer, TopicStatusString } from "@App/internal/app/question";
+import { Question, ToolsQuestionBankFacade, ToolsQuestionBank, TopicType, SwitchTopicType, TopicStatus, Answer, TopicStatusString, PushAnswer } from "@App/internal/app/question";
 import { CreateNoteLine } from "../chaoxing/utils";
-import { Application } from "@App/internal/application";
 
+//TODO: 与超星一起整合优化
 export class ZhsExam implements Mooc {
 
     protected topic: Topic;
@@ -34,6 +34,8 @@ export class ZhsExam implements Mooc {
         el.append(btn);
         let self = this;
         btn.onclick = async function () {
+            protocolPrompt("你正准备使用智慧树答题功能,相应的我们需要你的正确答案,因为智慧树的机制问题,采集答案会导致无法重新作答,你是否愿意贡献你的答案?\n* 本项选择不会影响你的正常使用(当前版本有效)\n* 采集答案需要申请token", "zhs_answer_collect", "明白了,我再去去商店打个五星");
+
             btn.innerText = "搜索中...";
             let ret = await self.topic.QueryAnswer();
             btn.innerText = ret;
@@ -117,7 +119,7 @@ abstract class ZhsQuestion implements Question {
     }
 
     protected getOption(el: HTMLElement): string {
-        let tmpel = el.querySelector(".mr10");
+        let tmpel = el.querySelector(".mr10,span.mr5");
         return (<HTMLInputElement>tmpel).innerText.substring(0, 1);
     }
 
@@ -131,6 +133,18 @@ abstract class ZhsQuestion implements Question {
         return tmpel.innerHTML;
     }
 
+    protected defaultAnswer(): Answer {
+        let ret = new PushAnswer();
+        ret.topic = this.GetTopic();
+        ret.type = this.GetType();
+        ret.correct = new Array();
+        ret.answer = new Array();
+        return ret;
+    }
+
+    protected isCorrect(): boolean {
+        return this.el.querySelector(".key_yes") != null;
+    }
 }
 
 class ZhsSelectQuestion extends ZhsQuestion {
@@ -164,7 +178,22 @@ class ZhsSelectQuestion extends ZhsQuestion {
     }
 
     public Correct(): Answer {
-        throw new Error("Method not implemented.");
+        if (!this.isCorrect()) {
+            return null;
+        }
+        let ret = this.defaultAnswer();
+        let options = this.options();
+        for (let i = 0; i < options.length; i++) {
+            let option = {
+                option: this.getOption(options[i]),
+                content: this.getContent(options[i]),
+            };
+            ret.answer.push(option);
+            if (options[i].querySelector("input").checked) {
+                ret.correct.push(option);
+            }
+        }
+        return ret;
     }
 }
 
@@ -189,7 +218,16 @@ class ZhsJudgeQuestion extends ZhsQuestion {
     }
 
     public Correct(): Answer {
-        throw new Error("Method not implemented.");
+        if (!this.isCorrect()) {
+            return null;
+        }
+        let ret = this.defaultAnswer();
+        let answer = this.getContent(this.el.querySelector("input:checked").parentElement.parentElement) == "对";
+        ret.correct.push({
+            option: answer,
+            content: answer,
+        });
+        return ret;
     }
 
 }

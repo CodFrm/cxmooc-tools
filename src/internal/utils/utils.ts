@@ -288,3 +288,16 @@ export function dealHotVersion(hotversion: string): number {
     hotversion = hotversion.substring(0, hotversion.indexOf(".") + 1) + hotversion.substring(hotversion.indexOf(".") + 1).replace(".", "");
     return Number(hotversion);
 }
+
+export function protocolPrompt(content: string, key: string, keyword?: string): boolean {
+    keyword = keyword || "yes";
+    if (localStorage[key] == undefined || localStorage[key] != 1) {
+        let msg = prompt(content + "\n如果以后不想再弹出本对话框并且同意请在下方填写\"" + keyword + "\"");
+        if (msg === null) return false;
+        if (keyword != msg) {
+            return false;
+        }
+        localStorage[key] = 1;
+    }
+    return true;
+}

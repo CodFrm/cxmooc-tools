@@ -23,8 +23,10 @@ let config = {
     rand_answer: false, //随机答案,没有答案的题目将自动的生成一个答案
     video_multiple: 1, //视频播放倍速,视频播放的倍数,建议不要改动,为1即可,这是危险的功能
     video_mute: true, //视频静音,视频自动静音播放
-    vtoken: "user", //鉴权token,用于验证码打码,提交题目可获得打码次数
+    vtoken: "", //鉴权token,用于验证码打码,提交题目可获得打码次数
     video_cdn: "公网1" //锁定视频播放源,为空为记录最后一次选中的源(公网1,公网2等)
 };
 
-localStorage['config'] = JSON.stringify(config);
+Object.keys(config).forEach(k => {
+    localStorage[k] = config[k];
+});

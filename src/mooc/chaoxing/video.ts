@@ -1,7 +1,7 @@
 import { MoocFactory, Mooc } from "../factory";
 import { Hook, Context } from "@App/internal/utils/hook";
 import { Application } from "@App/internal/application";
-import { randNumber, get, createBtn } from "@App/internal/utils/utils";
+import { randNumber, get, createBtn, protocolPrompt } from "@App/internal/utils/utils";
 import { TaskFactory, Task } from "./task";
 import { CssBtn } from "./utils";
 
@@ -21,6 +21,7 @@ export class CxVideoOptimization implements Mooc {
                 return;
             }
             let dataHook = new Hook("decode", (<any>window).Ext);
+            let self = this;
             dataHook.Middleware(function (next: Context, ...args: any) {
                 let ret = next.apply(this, args);
                 if (Application.App.config.super_mode && ret.danmaku == 1) {
@@ -33,9 +34,9 @@ export class CxVideoOptimization implements Mooc {
 
             let paramHook = new Hook("params2VideoOpt", (<any>window).ans.VideoJs.prototype);
             paramHook.Middleware(function (next: Context, ...args: any) {
-                this.param = args[0];
+                self.param = args[0];
                 let ret = next.apply(this, args);
-                ret.plugins.timelineObjects.url = this.param.rootPath + "/richvideo/initdatawithviewer";
+                ret.plugins.timelineObjects.url = self.param.rootPath + "/richvideo/initdatawithviewer";
                 let cdn = Application.App.config.video_cdn || localStorage["cdn"] || "公网1";
                 for (let i = 0; i < ret.playlines.length; i++) {
                     if (ret.playlines[i].label == cdn) {
@@ -136,10 +137,8 @@ export class VideoFactory implements TaskFactory {
             this.task.Start();
         };
         pass.onclick = () => {
-            if (localStorage['boom_no_prompt'] == undefined || localStorage['boom_no_prompt'] != 1) {
-                let msg = prompt('秒过视频会产生不良记录,是否继续?如果以后不想再弹出本对话框请在下方填写yes')
-                if (msg === null) return;
-                if (msg === 'yes') localStorage['boom_no_prompt'] = 1;
+            if (!protocolPrompt("秒过视频会产生不良记录,是否继续?", "boom_no_prompt")) {
+                return;
             }
             this.task.sendEndTimePack((isPassed: boolean) => {
                 if (isPassed) {
