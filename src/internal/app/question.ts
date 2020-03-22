@@ -170,7 +170,7 @@ export class ToolsQuestionBank implements QuestionBank {
 
     public Push(answer: Answer[]): Promise<QuestionStatus> {
         return new Promise((resolve) => {
-            HttpUtils.HttpPost(SystemConfig.url + "answer?platform=" + this.platform, "info=" + this.infoMsg() + "&data=" + JSON.stringify(answer), {
+            HttpUtils.HttpPost(SystemConfig.url + "answer?platform=" + this.platform, "info=" + this.infoMsg() + "&data=" + encodeURIComponent(JSON.stringify(answer)), {
                 json: true,
                 success: (result: any) => {
                     Application.App.log.Info("答案自动记录成功,成功获得" + result.add_token_num + "个打码数,剩余数量:" + result.token_num);
