@@ -6,7 +6,7 @@ const ChromeExtension = require('crx');
 let version = dealVersion(SystemConfig.version)
 // build manifest
 let manifest = fs.readFileSync('./build/cxmooc-tools/manifest.json');
-let str = manifest.toString().replace(/"version": "(.*?)"/, '"version": "' + version + '"');
+let str = manifest.toString().replace(/"version": "(.*?)"/, '"version": "' + version + '.0"');
 fs.writeFileSync('./build/cxmooc-tools/manifest.json', str);
 // build chrome
 const crx = new ChromeExtension({

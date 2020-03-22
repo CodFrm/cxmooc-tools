@@ -1,7 +1,8 @@
+import { SystemConfig } from "@App/config";
+
 const TelegramBot = require('node-telegram-bot-api');
 const fs = require("fs");
 const { exec } = require('child_process');
-const config = require('./utils/config');
 
 const botToken = process.env.BOT_TOKEN || '';
 const chat_id = process.env.GROUP_ID || '';
@@ -48,6 +49,6 @@ function push() {
     });
 }
 function hotUpdate() {
-    let ret = '热更新版本号为:' + (config.hotversion[('v' + config.version).replace('.', '_')]) + "\n";
+    let ret = '热更新版本号为:' + (SystemConfig.hotVersion) + "\n";
     return ret;
 }
