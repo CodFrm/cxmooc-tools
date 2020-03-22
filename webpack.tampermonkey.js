@@ -4,6 +4,7 @@ let ret = common;
 ret.entry = {
     cxmooc: __dirname + '/src/tampermonkey/cxmooc-pack.ts',
     zhihuishu: __dirname + '/src/tampermonkey/zhihuishu-pack.ts',
+    course163: __dirname + '/src/tampermonkey/course163-pack.ts',
 };
 ret.output = {
     path: __dirname + '/build',

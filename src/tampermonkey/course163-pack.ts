@@ -1,13 +1,13 @@
-let hook = function() {
+let hook = function () {
     try {
         console.log("hook");
-        var hook = window.edu.u._$$ChoiceQuestionUI.prototype;
+        var hook = (<any>window).edu.u._$$ChoiceQuestionUI.prototype;
         var original = hook.__buildQuestionInfo;
-        hook.__buildQuestionInfo = function() {
+        hook.__buildQuestionInfo = function () {
             original.apply(this);
             var dtos = this.__recordDto.questionDto.optionDtos;
             var input = this.__choicebox.querySelectorAll("input");
-            setTimeout(function() {
+            setTimeout(function () {
                 for (var i = 0; i < dtos.length; i++) {
                     if (dtos[i].answer) {
                         input[i].click();
