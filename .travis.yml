@@ -48,13 +48,13 @@ deploy:
       branch: master
 
   - provider: script
-    script: node_modules/.bin/tsc src/tg-bot.js
+    script: node_modules/.bin/tsc src/internal/tg-bot.js
     skip_cleanup: true
     on:
       branch: develop
       
   - provider: script
-    script: node_modules/.bin/tsc src/tg-bot.js
+    script: node_modules/.bin/tsc src/internal/tg-bot.js
     skip_cleanup: true
     on:
       tags: true
