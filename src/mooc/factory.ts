@@ -1,6 +1,7 @@
 import { CxCourse, CxHomeWork, CxExamTopic } from "./chaoxing/course";
 import { CxVideoOptimization } from "./chaoxing/video";
-import { ZhsVideo } from "./zhihuishu/zhihuishu";
+import { ZhsVideo } from "./zhihuishu/video";
+import { ZhsExam } from "./zhihuishu/exam";
 
 export interface Mooc {
     Start(): void
@@ -36,6 +37,8 @@ export function PlatformZhihuishu(): Mooc {
     let mooc: Mooc = null;
     if (document.URL.indexOf("studyh5.zhihuishu.com/videoStudy.html") > 0) {
         mooc = new ZhsVideo();
+    } else if (document.URL.indexOf("zhihuishu.com/stuExamWeb.html") > 0) {
+        mooc =new ZhsExam();
     }
     return mooc;
 }

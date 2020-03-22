@@ -209,9 +209,13 @@ export class ToolsQuestionBankFacade implements QuestionBankFacade {
     public Answer(callback: (status: QuestionStatus) => void) {
         let topic = new Array<Topic>();
         this.question.forEach((val) => {
+            let type = val.GetType();
+            if (type == -1) {
+                return;
+            }
             topic.push({
                 topic: removeHTML(val.GetTopic()),
-                type: val.GetType(),
+                type: type,
             });
         });
         Application.App.log.Debug("答案查询", topic);
@@ -263,7 +267,7 @@ export class ToolsQuestionBankFacade implements QuestionBankFacade {
         let answer = new Array<Answer>();
         this.question.forEach((val) => {
             let correct = val.Correct();
-            if (correct == null || correct.correct == null) {
+            if (correct == null || correct.correct == null || correct.type == -1) {
                 return;
             }
             correct.topic = removeHTML(correct.topic);

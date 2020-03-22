@@ -53,6 +53,17 @@ export abstract class Topic {
         });
     }
 
+    public CollectAnswer(): Promise<any> {
+        return new Promise(resolve => {
+            Application.App.log.Debug("收集考试题目答案", this.context);
+            this.addQuestion();
+            this.answer.Push((status: QuestionStatus) => {
+                Application.App.log.Debug("采集答案返回", status);
+                resolve();
+            });
+        });
+    }
+
     public abstract Submit(): Promise<any>;
 
 }

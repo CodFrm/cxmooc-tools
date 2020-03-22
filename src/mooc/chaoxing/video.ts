@@ -13,7 +13,9 @@ export class CxVideoOptimization implements Mooc {
 
     public Start(): void {
         //对播放器进行优化
-        (<any>window).Ext.isChaoxing = true;
+        window.onload = () => {
+            (<any>window).Ext.isChaoxing = true;
+        }
         document.addEventListener("readystatechange", () => {
             if (document.readyState != "interactive") {
                 return;

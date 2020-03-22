@@ -176,23 +176,15 @@ class CourseTopic extends Topic {
 
     public Init(): Promise<any> {
         return new Promise<any>(resolve => {
-            let timer = this.context.setInterval(() => {
+            let timer = this.context.setInterval(async () => {
                 if (this.context.document.readyState == "complete") {
                     this.context.clearInterval(timer);
                     if (this.context.document.URL.indexOf("selectWorkQuestionYiPiYue") > 0) {
-                        this.collectAnswer();
+                        await this.CollectAnswer();
                     }
                     resolve();
                 }
             }, 500);
-        });
-    }
-
-    protected collectAnswer() {
-        Application.App.log.Debug("收集题目答案", this.context);
-        this.addQuestion();
-        this.answer.Push((status: QuestionStatus) => {
-            Application.App.log.Debug("采集答案返回", status);
         });
     }
 
@@ -230,6 +222,7 @@ class CourseTopic extends Topic {
 }
 
 class ExamTopic extends Topic implements QueryQuestions {
+
     public QueryQuestions(): Question[] {
         let current = document.querySelector(".current");
         let topicType = SwitchTopicType((<HTMLElement>current.parentElement.previousElementSibling).innerText);
@@ -244,17 +237,9 @@ class ExamTopic extends Topic implements QueryQuestions {
 
     public Init(): Promise<any> {
         if (document.URL.indexOf("exam/test/reVersionPaperMarkContentNew") > 0) {
-            this.collectAnswer();
+            this.CollectAnswer();
         }
         return null
-    }
-
-    protected collectAnswer() {
-        Application.App.log.Debug("收集考试题目答案", this.context);
-        this.addQuestion();
-        this.answer.Push((status: QuestionStatus) => {
-            Application.App.log.Debug("采集答案返回", status);
-        });
     }
 
     public Submit(): Promise<any> {
@@ -273,7 +258,7 @@ class HomeworkTopic extends CourseTopic {
     public Init(): Promise<any> {
         return new Promise<any>(resolve => {
             if (!(<HTMLInputElement>document.querySelector("input#workRelationId"))) {
-                this.collectAnswer();
+                this.CollectAnswer();
             }
             resolve();
         });

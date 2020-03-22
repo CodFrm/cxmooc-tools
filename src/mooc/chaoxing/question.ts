@@ -228,7 +228,12 @@ class cxSelectQuestion extends cxQuestion implements Question {
         let flag = false;
         for (let i = 0; i < s.correct.length; i++) {
             for (let j = 0; j < options.length; j++) {
-                if (s.Equal(this.getContent(options[j]), s.correct[i].content)) {
+                if (s.correct[i].content.trim() == "") {
+                    if (this.getOption(options[j]) == s.correct[i].option) {
+                        this.click(options[j], this.getContent(options[j]));
+                        flag = true;
+                    }
+                } else if (s.Equal(this.getContent(options[j]), s.correct[i].content)) {
                     this.click(options[j], s.correct[i].content);
                     flag = true;
                 }

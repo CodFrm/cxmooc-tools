@@ -43,6 +43,7 @@
 .zhs-search-answer {
     border: 0;
     outline: none;
+    padding: 4px;
 }
 
 .zhs-search-answer:hover {

@@ -1,16 +1,45 @@
-const css = require("../html/common.css");
-const common = require("../common");
+import { Mooc } from "@App/mooc/factory";
+import { Hook, Context } from "@App/internal/utils/hook";
+import { Application } from "@App/internal/application";
+import "../../views/common.css";
+import { randNumber, post, substrex } from "@App/internal/utils/utils";
 
-module.exports = {
-    id: undefined,
-    innerTimer: undefined,
-    videoInfo: undefined,
-    compile: function() {
-        //完成切换
-        common.log("zhs video switch");
-        let self = this;
-        this.innerTimer && clearTimeout(this.innerTimer);
-        this.innerTimer = setTimeout(function() {
+export class ZhsVideo implements Mooc {
+
+    public Start(): void {
+        this.hook();
+        let timer = setInterval(() => {
+            try {
+                this.start();
+                clearInterval(timer);
+            } catch (e) { }
+        }, 500);
+    }
+
+    protected createToolsBar() {
+        let tools = document.createElement('div');
+        tools.className = "entrance_div"; tools.id = "cxtools";
+        let ul = document.createElement("ul");
+        tools.appendChild(ul);
+        let li1 = document.createElement("li");
+        ul.appendChild(li1);
+        let boomBtn = document.createElement("a");
+        boomBtn.href = "#"; boomBtn.id = "zhs-video-boom";
+        boomBtn.innerText = "秒过视频";
+        boomBtn.onclick = () => {
+            (<any>window).videoBoom(() => {
+
+            });
+        }
+        li1.appendChild(boomBtn);
+        document.querySelector(".videotop_box.fl").append(tools);
+    }
+
+    protected compile() {
+        let interval = Application.App.config.interval;
+        Application.App.log.Info(interval + "分钟后自动切换下一节");
+        setTimeout(function () {
+            let $ = (<any>window).$;
             let next = $(".clearfix.video.current_play").next();
             if (next.length == 0) {
                 next = $(".clearfix.video.current_play")
@@ -22,171 +51,118 @@ module.exports = {
                 alert("刷课完成");
                 return;
             }
-            config.auto && $(next[0]).click();
-        }, config.duration);
-    },
-    start: function() {
-        let self = this;
-        //hook智慧树视频
-        let hookPlayerStarter = PlayerStarter;
-        PlayerStarter.hookCreatePlayer = PlayerStarter.createPlayer;
-        PlayerStarter.createPlayer = function($container, options, callback) {
-            self.createToolsBar();
-            self.innerTimer && clearTimeout(self.innerTimer);
-            self.id = $container.selector;
-            let hookPause = callback.onPause;
-            let hookComplete = callback.onComplete;
-            let hookReady = callback.onReady;
-            let video = undefined;
-            callback.onReady = function() {
-                console.log("准备");
-                hookReady();
-                //倍速,启动!
-                video = $(self.id + " video")[0];
-                $(
-                    ".speedList .speedTab:contains(" +
-                    parseFloat(config.video_multiple).toFixed(1) +
-                    "):eq(0)"
-                ).click();
-                // video.playbackRate = config.video_multiple;
-                //又是以防万一的暂停,顺带检测进度
-                self.innerTimer = setInterval(function() {
-                    try {
-                        config.auto && video.play();
-                    } catch (e) {}
-                    if ($(".current_play .time_icofinish").length > 0) {
-                        self.compile();
-                    }
-                }, 10000);
-            };
-            callback.onPause = function() {
-                console.log("暂停");
-                hookPause();
-                config.auto && video.play();
-            };
-            callback.onComplete = function() {
-                console.log("完成");
-                hookComplete();
-            };
-            if (config.video_mute) {
-                options.volume = 0;
-            }
-            console.log(options);
-            options.autostart = true;
-            // options.control.nextBtn = true;
-            this.hookCreatePlayer($container, options, callback);
-        };
-    },
-    createToolsBar: function() {
-        let tools = $('<div class="entrance_div" id="cxtools"><ul></ul></div>');
-        let boomBtn = $('<li><a href="#" id="zhs-video-boom">秒过视频</a></li>');
-        let self = this;
-        $(tools)
-            .find("ul")
-            .append(boomBtn);
-        $(boomBtn).click(function() {
-            if (common.boom_btn()) {
-                self.sendBoomPack();
-            }
-        });
-        $(".videotop_box.clearfix,.videotop_box.fl").append(tools);
-    },
-    sendBoomPack: function(enterTime) {
-        //发送秒过包
-        //ev算法
-        let evFun = D26666.Z;
-        let timeStr = $("#video-" + this.videoInfo.videoId + " .time").text();
-        // let timeStr = $('#video-' + this.videoInfo.videoId + ' .time.fl,.nPlayTime .duration').text();
-        let time = 0;
-        let temp = timeStr.match(/[\d]+/gi);
-        for (let i = 0; i < 3; i++) {
-            time += temp[i] * Math.pow(60, 2 - i);
-        }
-        time += common.randNumber(30, 300);
-        if (enterTime != undefined) {
-            time = enterTime;
-        }
-        let tn = 5 * parseInt(time / 5 - common.randNumber(2, 8));
-        if (tn < 0) {
-            tn = 0;
-        }
-        let ev = [
-            this.videoInfo.rid,
-            this.videoInfo.lessonId,
-            this.videoInfo.lessonVideoId || 0,
-            this.videoInfo.videoId,
-            1,
-            0,
-            tn,
-            time,
-            timeStr
-        ];
-        let postData =
-            "__learning_token__=" +
-            encodeURIComponent(btoa("" + this.videoInfo.studiedLessonDto.id)) +
-            "&ev=" +
-            evFun(ev);
-        common.post(
-            "/json/learningNew/saveDatabaseIntervalTime?time=" + new Date().valueOf(),
-            postData,
-            false,
-            function(res) {
-                let json = JSON.parse(res);
-                if (json.studyTotalTime >= time) {
-                    alert("秒过成功,刷新后查看效果");
-                } else {
-                    alert("秒过失败");
-                }
-            }
-        );
-    },
-    hookAjax: function() {
-        let self = this;
-        window.hookXMLHttpRequest = window.hookXMLHttpRequest || XMLHttpRequest;
-        XMLHttpRequest = function() {
-            let retAjax = new window.hookXMLHttpRequest();
-            retAjax.hookOpen = retAjax.open;
-            retAjax.open = function(p1, p2, p3, p4, p5) {
-                if (
-                    p2.indexOf("learning/loadVideoPointerInfo") >= 0 ||
-                    p2.indexOf("learningNew/loadVideoPointerInfo") >= 0
-                ) {
-                    console.log("题目来了");
-                    //TODO:先实现屏蔽题目,后面实现自动填充(虽然这好像没有意义)
-                    Object.defineProperty(retAjax, "responseText", {
-                        get: function() {
-                            let retText = retAjax.response.replace(
-                                /"lessonDtoMap":{.*?},"lessonId"/gm,
-                                '"lessonDtoMap":{},"lessonId"'
-                            );
-                            return retText;
-                        }
-                    });
-                } else if (p2.indexOf("popupAnswer/loadVideoPointerInfo") >= 0) {
-                    Object.defineProperty(retAjax, "responseText", {
-                        get: function() {
-                            let retText = retAjax.response.replace(
-                                /"questionPoint":\[.*?\],"knowledgeCardDtos"/gm,
-                                '"questionPoint":[],"knowledgeCardDtos"'
-                            );
-                            return retText;
-                        }
-                    });
-                } else if (
-                    p2.indexOf("learning/prelearningNote") >= 0 ||
-                    p2.indexOf("learningNew/prelearningNote") >= 0
-                ) {
-                    //拦截数据
-                    Object.defineProperty(retAjax, "responseText", {
-                        get: function() {
-                            self.videoInfo = JSON.parse(retAjax.response);
-                            return retAjax.response;
-                        }
-                    });
-                }
-                return retAjax.hookOpen(p1, p2, p3, p4, p5);
-            };
-            return retAjax;
-        };
+            Application.App.config.auto && $(next[0]).click();
+        }, interval * 60000);
     }
-};
+
+    protected start() {
+        let hookPlayerStarter = new Hook("createPlayer", (<any>window).PlayerStarter);
+        let self = this;
+        hookPlayerStarter.Middleware(function (next: Context, ...args: any) {
+            self.createToolsBar();
+            Application.App.log.Info("视频开始加载");
+            let hookPause = args[2].onPause;
+            let hookReady = args[2].onReady;
+            let video: HTMLVideoElement;
+            args[2].onReady = function () {
+                hookReady.apply(this);
+                video = document.querySelector("#vjs_container_html5_api");
+                video.muted = Application.App.config.video_mute;
+                video.playbackRate = Application.App.config.video_multiple;
+
+                Application.App.config.auto && video.play();
+            }
+            args[2].hookPause = function () {
+                hookPause.apply(this);
+                Application.App.config.auto && video.play();
+            }
+            let innerTimer = setInterval(function () {
+                if (document.querySelectorAll(".current_play .time_icofinish").length > 0) {
+                    clearInterval(innerTimer);
+                    self.compile();
+                }
+            }, 2000);
+            return next.apply(this, args);
+        });
+        let timeSetInterval = new Hook("setInterval", window);
+        timeSetInterval.Middleware(function (next: Context, ...args: any) {
+            Application.App.log.Debug("加速器启动");
+            if (Application.App.config.super_mode) {
+                args[1] = args[1] / Application.App.config.video_multiple;
+            }
+            return next.apply(this, args);
+        });
+    }
+
+    protected hook(): void {
+        let hookXMLHttpRequest = new Hook("open", window.XMLHttpRequest.prototype);
+        hookXMLHttpRequest.Middleware(function (next: Context, ...args: any) {
+            if (args[1].indexOf("popupAnswer/loadVideoPointerInfo") >= 0) {
+                Object.defineProperty(this, "responseText", {
+                    get: function () {
+                        let retText = this.response.replace(
+                            /"questionPoint":\[.*?\],"knowledgeCardDtos"/gm,
+                            '"questionPoint":[],"knowledgeCardDtos"'
+                        );
+                        return retText;
+                    }
+                });
+            }
+            let ret = next.apply(this, args);
+            return ret;
+        });
+        let hookWebpack = new Hook("webpackJsonp", window);
+        hookWebpack.Middleware(function (next: Context, ...args: any) {
+            console.log("webpack");
+            try {
+                if (args[1][702]) {
+                    Application.App.log.Debug("video hook ok");
+                    let old = args[1][702];
+                    args[1][702] = function () {
+                        let ret = old.apply(this, arguments);
+                        let hookInitVideo = new Hook("initVideo", arguments[1].default.methods);
+                        hookInitVideo.Middleware(function (next: Context, ...args: any) {
+                            (<any>window).videoBoom = (callback: any) => {
+                                let timeStr = (<HTMLSpanElement>document.querySelector(".nPlayTime .duration")).innerText;
+                                let time = 0;
+                                let temp = timeStr.match(/[\d]+/gi);
+                                for (let i = 0; i < 3; i++) {
+                                    time += parseInt(temp[i]) * Math.pow(60, 2 - i);
+                                }
+                                time += randNumber(20, 200);
+                                let tn = time;
+                                let a = this.lessonId
+                                    , r = this.smallLessonId
+                                    , s = [this.recruitId, a, r, this.lastViewVideoId, 1, this.data.studyStatus, tn, time, timeStr]
+                                    , l = {
+                                        ev: this.D26666.Z(s),
+                                        learningTokenId: Base64.encode(this.preVideoInfo.studiedLessonDto.id),
+                                        uuid: substrex(document.cookie, "uuid%22%3A%22", "%22"), dateFormate: Date.parse(<any>new Date()),
+                                    };
+                                let postData = "ev=" + l.ev + "&learningTokenId=" + l.learningTokenId +
+                                    "&uuid=" + l.uuid + "&dateFormate=" + l.dateFormate;
+
+                                post("https://studyservice.zhihuishu.com/learning/saveDatabaseIntervalTime", postData, false, function (data: any) {
+                                    let json = JSON.parse(data);
+                                    try {
+                                        if (json.data.submitSuccess == true) {
+                                            alert("秒过成功,刷新后查看效果");
+                                        } else {
+                                            alert("秒过失败");
+                                        };
+                                    } catch (e) {
+                                        alert("秒过失败");
+                                    }
+                                });
+                            }
+                            return next.apply(this, args);
+                        });
+                        return ret;
+                    };
+                }
+            } catch (e) { }
+            return next.apply(this, args);
+        });
+    }
+
+}

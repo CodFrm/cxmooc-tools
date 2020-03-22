@@ -1,7 +1,7 @@
 {
     "manifest_version": 2,
     "name": "超星慕课小工具",
-    "version": "2.1.1",
+    "version": "2.2.1",
     "description": "用于超星慕课的小工具",
     "icons": {
         "16": "img/logo.png",
@@ -33,11 +33,13 @@
             "*://*/ztnodedetailcontroller/visitnodedetail?*",
             "*://*/antispiderShowVerify.ac*",
             "*://*/html/processVerify.ac?*",
-            "*://study.zhihuishu.com/learning/videoList*",
             "*://*/exam/test/reVersionPaperMarkContentNew?*",
+            "*://*/ananas/modules/video/index.html?*",
+
             "*://examh5.zhihuishu.com/stuExamWeb.html*",
             "*://onlineexamh5new.zhihuishu.com/stuExamWeb.html*",
             "*://studyh5.zhihuishu.com/videoStudy.html*",
+            
             "*://www.icourse163.org/learn/*"
         ],
         "js": [

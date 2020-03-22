@@ -234,6 +234,7 @@ function createRequest(): XMLHttpRequest {
         (<any>xmlhttp).errorCallback = callback;
         return xmlhttp;
     }
+    xmlhttp.withCredentials = true;
     return xmlhttp;
 }
 
@@ -245,13 +246,15 @@ export function removeHTML(html: string) {
     //先处理带src和href属性的标签
     let srcReplace = /<img.*?src="(.*?)".*?>/g;
     html = html.replace(srcReplace, '$1');
+    srcReplace = /(<iframe.+?>)\s+?(<\/iframe>)/g;
+    html = html.replace(srcReplace, '$1$2');
     srcReplace = /<(iframe|a).*?(src|href)="(.*?)".*?>(.*?)<\/(iframe|a)>/g;
     html = html.replace(srcReplace, '$3$4');
     let revHtml = /<.*?>/g;
     html = html.replace(revHtml, '');
     html = html.replace(/(^\s+)|(\s+$)/g, '');
     html = dealSymbol(html);
-    return html.replace(/&nbsp;/g, ' ');
+    return html.replace(/&nbsp;/g, ' ').trim();
 }
 
 /**
