@@ -56,16 +56,6 @@ npm run dev
 npm run pack
 ```
 
-### Server
-> 搭建了一个服务器程序用于完善题库。接口没有任何权限，只会记录正确答题答案,并不会记录其他信息。
-> 以上过程全由插件自动提交,还请大家不要故意上传错误的答案哦 (๑• . •๑)
-> 因为超星慕课全站启用了`https`,所以服务器配置需要`https`。
-
-```bash
-npm install
-npm run server
-```
-
 ### 贡献流程
 1. `Fork Repo`
 2. 发起`Pull Request`，并简要描述更改内容。

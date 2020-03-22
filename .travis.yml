@@ -18,6 +18,7 @@ before_install:
   - npm install
 
 script: 
+  - npm test
   - npm run docs:build
   - npm run build
   - npm run tampermonkey
@@ -47,13 +48,13 @@ deploy:
       branch: master
 
   - provider: script
-    script: node src/tg-bot.js
+    script: node_modules/.bin/tsc src/tg-bot.js
     skip_cleanup: true
     on:
       branch: develop
       
   - provider: script
-    script: node src/tg-bot.js
+    script: node_modules/.bin/tsc src/tg-bot.js
     skip_cleanup: true
     on:
       tags: true

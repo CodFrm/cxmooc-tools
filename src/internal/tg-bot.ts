@@ -14,7 +14,7 @@ const tgBot = new TelegramBot(botToken, { polling: false });
 let lastTag = '';
 if (branch == tag) {
     //获取上一个tag
-    exec('git describe --tags HEAD^^', (err, stdout, stderr) => {
+    exec('git describe --tags HEAD^^', (err: any, stdout: { toString: () => string; }, stderr: any) => {
         let match = stdout.toString().match(/([v\.\d]+)-/);
         lastTag = match[1];
         push();
@@ -27,7 +27,7 @@ function push() {
     if (branch == tag) {
         range = tag + '...' + lastTag;
     }
-    exec('git log --pretty=format:"%s" ' + range + (range.search('.') < 0 ? ' -1' : ''), (err, stdout, stderr) => {
+    exec('git log --pretty=format:"%s" ' + range + (range.search('.') < 0 ? ' -1' : ''), (err: any, stdout: string, stderr: any) => {
         let sendText = '';
         let end = '';
         if (branch == tag) {
