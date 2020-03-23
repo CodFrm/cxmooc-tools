@@ -79,14 +79,18 @@ export function post(url, data, json = true, success) {
  * @param {string} html 
  */
 export function removeHTML(html) {
-    //先处理img标签
-    var imgReplace = /<img .*?src="(.*?)".*?>/g;
-    html = html.replace(imgReplace, '$1');
-    var revHtml = /<.*?>/g;
+    //先处理带src和href属性的标签
+    let srcReplace = /<img.*?src="(.*?)".*?>/g;
+    html = html.replace(srcReplace, '$1');
+    srcReplace = /(<iframe.+?>)\s+?(<\/iframe>)/g;
+    html = html.replace(srcReplace, '$1$2');
+    srcReplace = /<(iframe|a).*?(src|href)="(.*?)".*?>(.*?)<\/(iframe|a)>/g;
+    html = html.replace(srcReplace, '$3$4');
+    let revHtml = /<.*?>/g;
     html = html.replace(revHtml, '');
     html = html.replace(/(^\s+)|(\s+$)/g, '');
     html = dealSymbol(html);
-    return html.replace(/&nbsp;/g, ' ');
+    return html.replace(/&nbsp;/g, ' ').trim();
 }
 
 /**
@@ -99,6 +103,7 @@ function dealSymbol(topic) {
     topic = topic.replace(/）/g, ')');
     topic = topic.replace(/？/g, '?');
     topic = topic.replace(/：/g, ':');
+    topic = topic.replace(/。/g, '.');
     topic = topic.replace(/[“”]/g, '"');
     return topic;
 }
@@ -371,7 +376,7 @@ export function requestAnswer(topic, platform, page, answer, compile, error, cou
     count = count || 5;
     time = time || 2000;
     let post = '';
-    for (let i = (page * count), n = 0; i < topic.length && n < count; i++ , n++) {
+    for (let i = (page * count), n = 0; i < topic.length && n < count; i++, n++) {
         post += 'topic[' + n + ']=' + encodeURIComponent(topic[i].topic) + '&type[' + n + ']=' + topic[i].type + '&';
     }
     if (post == '') {

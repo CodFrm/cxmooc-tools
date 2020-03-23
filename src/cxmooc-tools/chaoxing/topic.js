@@ -154,7 +154,7 @@ module.exports = function () {
         common.gm_post(moocServer.url + 'answer?platform=cx', JSON.stringify(answer), true, function (res) {
             let json = JSON.parse(res)
             let box = common.pop_prompt("√  答案自动记录成功" + " 成功获得:" + json.add_token_num + "个打码数量 剩余数量:" + json.token_num);
-           $(document.body).append(box);
+            $(document.body).append(box);
             setTimeout(function () { box.style.opacity = "1"; }, 500);
             common.log(self.iframe.className + " topic answer complete")
             self.complete(2);
@@ -196,7 +196,7 @@ function getAnswerInfo(TiMu) {
         case 1: case 2: {
             for (let i = 0; i < options.length; i++) {
                 let option = $(options[i]).find('i.fl').text().substring(0, 1);
-                let tmp = { option: option, content: common.removeHTML($(options[i]).find('a.fl').text()) };
+                let tmp = { option: option, content: common.removeHTML($(options[i]).find('a.fl').html()) };
                 ret.answers.push(tmp);
                 if (tmpAnswer.indexOf(option) > 0) {
                     ret.correct.push(tmp);
@@ -322,9 +322,16 @@ function fillTopic(TiMu, answer, sourceTopic) {
             case 1: case 2: {
                 for (let n = 0; n < options.length; n++) {
                     let content = $(options[n]).parent().next()[0];
-                    if (options[n].value == result.correct[i].option ||
-                        util.dealSpecialSymbol(common.removeHTML($(content).text())) == util.dealSpecialSymbol(result.correct[i].content)
-                    ) {
+                    if (result.correct[i].content == "") {
+                        if (options[n].value == result.correct[i].option) {
+                            if (!$(options[n]).attr('checked')) {
+                                options[n].click();
+                            }
+                            common.createLine(options[n].value + ':' + $(content).text(), 'answer', $(optionEl).next());
+                            options.splice(n, 1);
+                            break;
+                        }
+                    } else if (util.dealSpecialSymbol(common.removeHTML($(content).html())) == util.dealSpecialSymbol(result.correct[i].content)) {
                         if (!$(options[n]).attr('checked')) {
                             options[n].click();
                         }
