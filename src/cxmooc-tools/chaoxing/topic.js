@@ -184,7 +184,11 @@ function getAnswerInfo(TiMu) {
     //验证正确
     let title = $(answer).find('.clearfix');
     let type = switchTopicType(common.substrEx(title.text(), '【', '】'));
-    let topic = common.removeHTML(title.html().substring(title.html().indexOf('】') + 1));
+    title = title.html().substring(title[0].innerHTML.indexOf('】') + 1);
+    if (/（(.+?)分）($|\s+)/.test(title)) {
+        title = title.substring(0, title.lastIndexOf("（"));
+    }
+    let topic = common.removeHTML(title);
     let options = $(TiMu).find('.Zy_ulTop .clearfix');
     let ret = {
         answers: [],
@@ -215,7 +219,7 @@ function getAnswerInfo(TiMu) {
             options = $(TiMu).find('.Py_tk span.font14');
             if (options.length <= 0) {
                 isMy = true;
-                options = $(TiMu).find('.Py_answer.clearfix');
+                options = $(TiMu).find('.Py_answer.clearfix .font14');
             }
             for (let i = 0; i < options.length; i++) {
                 if (isMy) {
