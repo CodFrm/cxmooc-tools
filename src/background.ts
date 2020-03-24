@@ -7,6 +7,7 @@ import { SystemConfig } from "./config";
 
 
 class background implements Launcher {
+    protected source: string;
 
     public start() {
         let server = NewExtensionServerMessage("cxmooc-tools");
@@ -21,6 +22,7 @@ class background implements Launcher {
 
         this.update();
         this.setDefaultConfig();
+        this.injectedScript();
     }
 
     protected setDefaultConfig() {
@@ -44,8 +46,9 @@ class background implements Launcher {
     }
 
     protected update() {
-        Application.CheckUpdate(function (isnew, data) {
+        Application.CheckUpdate((isnew, data) => {
             let sourceUrl = chrome.extension.getURL('src/mooc.js');
+            let version = SystemConfig.version;
             if (isnew) {
                 chrome.browserAction.setBadgeText({
                     text: 'new'
@@ -63,13 +66,58 @@ class background implements Launcher {
             }
             if (isHotUpdate) {
                 sourceUrl = SystemConfig.url + 'js/' + hotVersion + '.js';
+                version = hotVersion;
             }
-            get(sourceUrl, function (source: string) {
+            get(sourceUrl, (source: string) => {
                 if (!source) {
+                    get(chrome.extension.getURL('src/mooc.js'), (source: string) => {
+                        version = SystemConfig.version;
+                        this.source = this.dealScript(source, SystemConfig.version);
+                    })
                     return;
                 }
-                chrome.storage.local.set({ "source": source });
+                this.source = this.dealScript(source, version);
             });
+            if (Application.App.debug) {
+                chrome.storage.onChanged.addListener((changes, namespace) => {
+                    if (namespace == "local" && changes["source"] != undefined) {
+                        this.source = this.dealScript(changes["source"].newValue, version);
+                    }
+                });
+            }
+        });
+    }
+
+    protected dealScript(source: string, version: any): string {
+        source = "//# sourceURL=" + chrome.extension.getURL("src/mooc.js?v=" + version) + "\n" + source;
+        source = source.replace(/("|\\)/g, "\\$1");
+        source = source.replace(/(\r\n|\n)/g, "\\n");
+        return source;
+    }
+
+    protected injectedScript() {
+        chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
+            if (changeInfo.status === 'loading') {
+                for (let i = 0; i < SystemConfig.match.length; i++) {
+                    let v = SystemConfig.match[i];
+                    v = v.replace(/(\.\?\/)/g, "\\$1");
+                    v = v.replace(/\*/g, ".*?");
+                    let reg = new RegExp(v);
+                    if (reg.test(tab.url)) {
+                        chrome.tabs.executeScript(tabId, {
+                            code: `(function(){
+                                let temp = document.createElement('script');
+                                temp.setAttribute('type', 'text/javascript');
+                                temp.innerHTML = "`+ this.source + `";
+                                temp.className = "injected-js";
+                                document.documentElement.appendChild(temp)
+                            }())`,
+                            allFrames: true,
+                            runAt: "document_start",
+                        });
+                    }
+                }
+            }
         });
     }
 }

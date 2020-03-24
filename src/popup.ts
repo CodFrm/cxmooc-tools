@@ -54,7 +54,7 @@ class popup implements Launcher {
                 document.getElementById("injection").innerHTML = data.injection;
                 v = (SystemConfig.version > dealHotVersion(data.hotversion) ? SystemConfig.version + ".0" : data.hotversion);
             }
-            document.getElementById('version').innerHTML = 'v' + v;
+            document.getElementById('version').innerHTML = 'v' + v + (Application.App.debug ? " debug" : "");
         });
     }
 

@@ -125,11 +125,7 @@ export function Injected(doc: Document, source: string): Element {
 
 export function syncGetChromeStorageLocal(key: string): Promise<any> {
     return new Promise<any>(resolve => (chrome.storage.local.get(key, (value) => {
-        if (value.hasOwnProperty(<string>key)) {
-            resolve(<any>value[<string>key]);
-        } else {
-            resolve(undefined);
-        }
+        resolve(<any>value[<string>key]);
     })));
 }
 

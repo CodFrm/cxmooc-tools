@@ -52,7 +52,7 @@
     "permissions": [
         "tabs",
         "storage",
-        "*://cx.icodef.com/"
+        "<all_urls>"
     ],
     "web_accessible_resources": [
         "src/mooc.js"
