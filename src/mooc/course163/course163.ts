@@ -37,8 +37,19 @@ export class Course163 implements Mooc {
         if (document.querySelector("#exam-tools-search")) {
             return;
         }
+        //TODO: 优化
         let search = createBtn("搜索答案", "点击搜索答案", "cx-btn mooc163-search", "exam-tools-search");
         let divel = document.querySelector(".u-learn-moduletitle");
+        let topic = new CourseTopic(document, new ToolsQuestionBankFacade(new ToolsQuestionBank("mooc163", {
+            refer: document.URL,
+            id: document.URL.match(/\?id=(.*?)($|&)/)[1],
+        })));
+        topic.SetQueryQuestions(new CourseQueryAnswer());
+        search.onclick = async function () {
+            search.innerText = "搜索中...";
+            search.innerText = await topic.QueryAnswer();
+            search.innerText = "搜索答案";
+        }
         divel.insertBefore(search, divel.firstChild);
     }
 
@@ -89,6 +100,7 @@ export class Course163 implements Mooc {
         })));
         topic.SetQueryQuestions(new CourseQueryAnswer());
         search.onclick = async function () {
+            search.innerText = "搜索中...";
             search.innerText = await topic.QueryAnswer();
             search.innerText = "搜索答案";
         }
