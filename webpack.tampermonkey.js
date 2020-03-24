@@ -10,4 +10,5 @@ ret.output = {
     path: __dirname + '/build',
     filename: 'tampermonkey-[name].js'
 };
+ret.plugins = [];
 module.exports = ret;
