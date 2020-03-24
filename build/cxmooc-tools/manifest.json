@@ -35,6 +35,7 @@
             "*://*/html/processVerify.ac?*",
             "*://*/exam/test/reVersionPaperMarkContentNew?*",
             "*://*/ananas/modules/video/index.html?*",
+            "*://*.chaoxing.com/exam/test?*",
 
             "*://examh5.zhihuishu.com/stuExamWeb.html*",
             "*://onlineexamh5new.zhihuishu.com/stuExamWeb.html*",

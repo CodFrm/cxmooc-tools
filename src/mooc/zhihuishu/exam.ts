@@ -141,7 +141,7 @@ abstract class ZhsQuestion implements Question {
         ret.topic = this.GetTopic();
         ret.type = this.GetType();
         ret.correct = new Array();
-        ret.answer = new Array();
+        ret.answers = new Array();
         return ret;
     }
 
@@ -191,7 +191,7 @@ class ZhsSelectQuestion extends ZhsQuestion {
                 option: this.getOption(options[i]),
                 content: this.getContent(options[i]),
             };
-            ret.answer.push(option);
+            ret.answers.push(option);
             if (options[i].querySelector("input").checked) {
                 ret.correct.push(option);
             }

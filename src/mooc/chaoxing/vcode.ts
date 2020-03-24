@@ -1,5 +1,5 @@
-import { ListenVCode, FillVCode, VCodeStatus } from "@App/internal/app/vcode";
 import { CreateNoteLine } from "./utils";
+import { ListenVCode, FillVCode, VCodeStatus } from "../../internal/app/vcode";
 
 export class CourseVCode implements ListenVCode {
 

@@ -4,6 +4,7 @@ import { ZhsVideo } from "./zhihuishu/video";
 import { ZhsExam } from "./zhihuishu/exam";
 import { VCode } from "@App/internal/app/vcode";
 import { CourseVCode as CxCourseVCode } from "./chaoxing/vcode";
+import { Course163 } from "./course163/course163";
 
 export interface Mooc {
     Start(): void
@@ -16,6 +17,9 @@ export function CreateMooc(): Mooc {
     let mooc = PlatformChaoXing();
     if (mooc == null) {
         mooc = PlatformZhihuishu();
+    }
+    if (mooc == null) {
+        mooc = PlatformCourse163();
     }
     return mooc;
 }
@@ -43,4 +47,8 @@ export function PlatformZhihuishu(): Mooc {
         mooc = new ZhsExam();
     }
     return mooc;
+}
+
+export function PlatformCourse163(): Mooc {
+    return new Course163();
 }

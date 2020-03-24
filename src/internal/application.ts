@@ -32,6 +32,10 @@ export class Application {
         this.runEnvSwitch(runEnv);
         this.launcher = launcher;
         this.component = component;
+
+        if (Application.App.debug) {
+            SystemConfig.url = "http://localhost:8080/";
+        }
     }
 
     public get debug(): boolean {

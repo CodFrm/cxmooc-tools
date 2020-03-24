@@ -195,7 +195,7 @@ abstract class cxQuestion implements Question {
         ret.topic = this.GetTopic();
         ret.type = this.GetType();
         ret.correct = new Array();
-        ret.answer = new Array();
+        ret.answers = new Array();
         return ret;
     }
 }
@@ -259,7 +259,7 @@ class cxSelectQuestion extends cxQuestion implements Question {
                 option: optionText.substring(0, 1),
                 content: options[i].querySelector("a.fl").innerHTML,
             };
-            ret.answer.push(option);
+            ret.answers.push(option);
             if (correctText.indexOf(option.option) > 0) {
                 ret.correct.push(option);
             }
