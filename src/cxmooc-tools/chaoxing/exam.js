@@ -160,7 +160,7 @@ module.exports = {
         }
         for (let i = 0; i < correct.length; i++) {
             for (let n = 0; n < options.length; n++) {
-                let content = common.removeHTML($(optionContent[n]).find('a').html());
+                let content = common.removeHTML($(optionContent[n]).html());
                 if (util.dealSpecialSymbol(content) == util.dealSpecialSymbol(correct[i].content)) {
                     $(options[n]).click();
                     noticText += correct[i].option + ':' + correct[i].content + '<br/>';
