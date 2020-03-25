@@ -79,12 +79,18 @@ class CourseQuestion implements Question {
     protected options(): NodeListOf<HTMLLIElement> {
         return this.el.querySelectorAll(".u-tbl.f-pr.f-cb");
     }
+
+    protected dealImgDomain(content: string): string {
+        //移除域名对比,也不知道还有没有花里胡哨的
+        return content.replace(/https:\/\/(.*?)\//, "");
+    }
+
     public Fill(answer: Answer): TopicStatus {
         let options = this.options();
         let flag = false;
         for (let i = 0; i < answer.correct.length; i++) {
             for (let n = 0; n < options.length; n++) {
-                if (answer.Equal(this.getContent(options[n]), answer.correct[i].content)) {
+                if (answer.Equal(this.dealImgDomain(this.getContent(options[n])), this.dealImgDomain(answer.correct[i].content))) {
                     this.fill(options[n], answer.correct[i].content);
                     flag = true;
                 }
