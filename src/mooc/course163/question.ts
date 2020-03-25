@@ -14,10 +14,12 @@ export class CourseQueryAnswer implements QueryQuestions {
     }
 
     protected createQuestion(el: HTMLElement) {
-        if (el.querySelector("input[type='radio']")) {
+        if (el.querySelector("input[type='radio']") != null) {
             return new CourseQuestion(el, 1);
-        } else if (el.querySelector("input[type='checkbox']")) {
+        } else if (el.querySelector("input[type='checkbox']") != null) {
             return new CourseQuestion(el, 2);
+        } else if (el.querySelector("textarea") != null) {
+            return new FillQuestion(el, 4);
         }
         return new CourseQuestion(el, -1);
     }
@@ -100,6 +102,20 @@ class CourseQuestion implements Question {
 
 }
 
+class FillQuestion extends CourseQuestion {
+    public Random(): TopicStatus {
+        return "no_support_random";
+    }
+
+    public Fill(answer: Answer): TopicStatus {
+        let el = this.el.querySelector("textarea");
+        el.focus();
+        el.value = answer.correct[0].content;
+        this.AddNotice("填空:" + answer.correct[0].content);
+        return "ok";
+    }
+
+}
 
 export class CourseTopic extends Topic {
 

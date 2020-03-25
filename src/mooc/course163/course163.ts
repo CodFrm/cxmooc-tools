@@ -1,6 +1,6 @@
 import { Mooc } from "../factory";
 import { Hook, Context } from "@App/internal/utils/hook";
-import { createBtn, substrex } from "@App/internal/utils/utils";
+import { createBtn, substrex, protocolPrompt } from "@App/internal/utils/utils";
 import "../../views/common.css";
 import { CourseTopic, CourseQueryAnswer } from "./question";
 import { ToolsQuestionBankFacade, ToolsQuestionBank, QuestionBank, QuestionBankFacade, Answer, Option, PushAnswer } from "@App/internal/app/question";
@@ -15,14 +15,17 @@ export class Course163 implements Mooc {
         let self = this;
         let hookXMLHttpRequest = new Hook("open", window.XMLHttpRequest.prototype);
         hookXMLHttpRequest.Middleware(function (next: Context, ...args: any) {
-            if (args[1].indexOf("CourseBean.getLessonUnitLearnVo.dwr") >= 0 ||
-                args[1].indexOf("MocQuizBean.getQuizPaperDto.dwr") >= 0) {
+            if (args[1].indexOf("CourseBean.getLessonUnitLearnVo.dwr") > 0 ||
+                args[1].indexOf("MocQuizBean.getQuizPaperDto.dwr") > 0) {
                 Object.defineProperty(this, "responseText", {
                     get: function () {
                         if (this.response.indexOf("paper:s0") > 0) {
                             self.collectAnswer(this.response);
                             setTimeout(() => { self.courseTopic() }, 1000);
                         } else if (this.response.indexOf("tname:\"") > 0) {
+                            if (this.response.indexOf("answers:s0") > 0) {
+                                self.collectAnswer(this.response);
+                            }
                             setTimeout(() => { self.examTopic() }, 1000);
                         }
                         return this.response;
@@ -46,6 +49,8 @@ export class Course163 implements Mooc {
         })));
         topic.SetQueryQuestions(new CourseQueryAnswer());
         search.onclick = async function () {
+            protocolPrompt("你正准备使用中国慕课的答题功能,相应的我们需要你的正确答案,同意之后插件将自动检索你的所有答案\n* 本项选择不会影响你的正常使用(协议当前版本有效)\n* 手动点击答题结果页面自动采集页面答案\n", "course_answer_collect", "我同意");
+
             search.innerText = "搜索中...";
             search.innerText = await topic.QueryAnswer();
             search.innerText = "搜索答案";
@@ -53,19 +58,39 @@ export class Course163 implements Mooc {
         divel.insertBefore(search, divel.firstChild);
     }
 
+    //TODO:优化
     protected collectAnswer(str: string) {
         let script = str.match(/^([\s\S]+?)dwr.engine._remoteHandleCallback/)[1];
-        script = "function a(){" + script + ";return s0;}a();";
+        if (document.URL.indexOf("quizscore?id=") > 0) {
+            script = "function a(){" + script + ";return s1;}a();";
+        } else {
+            script = "function a(){" + script + ";return s0;}a();";
+        }
         let ret = eval(script);
         let bank = new ToolsQuestionBank("mooc163", {
             refer: document.URL,
-            id: document.URL.match(/cid=(.*?)($|&)/)[1],
+            id: document.URL.match(/(\?id|cid)=(.*?)($|&)/)[2],
         });
-        console.log(ret);
         let answer = new Array<Answer>();
-        for (let i = 0; i < ret.objectiveQList.length; i++) {
-            let topic = ret.objectiveQList[i];
+        let options: Array<any>;
+        if (document.URL.indexOf("quizscore?id=") > 0) {
+            options = ret;
+        } else {
+            options = ret.objectiveQList;
+        }
+        for (let i = 0; i < options.length; i++) {
+            let topic = options[i];
             if (topic.type != 1 && topic.type != 2) {
+                if (topic.type == 3) {
+                    let tmpAnswer = new PushAnswer();
+                    tmpAnswer.topic = topic.title;
+                    tmpAnswer.type = 4;
+                    tmpAnswer.correct = new Array<Option>();
+                    tmpAnswer.correct.push({
+                        option: "一", content: topic.stdAnswer,
+                    });
+                    answer.push(tmpAnswer);
+                }
                 continue;
             }
             let option = new Array<Option>();

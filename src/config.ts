@@ -19,7 +19,8 @@ export class SystemConfig {
         "*://onlineexamh5new.zhihuishu.com/stuExamWeb.html*",
         "*://studyh5.zhihuishu.com/videoStudy.html*",
 
-        "*://www.icourse163.org/learn/*"
+        "*://www.icourse163.org/learn/*",
+        "*://www.icourse163.org/spoc/learn/*"
     ];
     
 }

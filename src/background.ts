@@ -96,8 +96,11 @@ class background implements Launcher {
     }
 
     protected injectedScript() {
+        if (Application.App.debug) {
+            return;
+        }
         chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
-            if (changeInfo.status === 'loading') {
+            if (changeInfo.status === 'loading' && changeInfo.url == null) {
                 for (let i = 0; i < SystemConfig.match.length; i++) {
                     let v = SystemConfig.match[i];
                     v = v.replace(/(\.\?\/)/g, "\\$1");
@@ -115,6 +118,7 @@ class background implements Launcher {
                             allFrames: true,
                             runAt: "document_start",
                         });
+                        break;
                     }
                 }
             }

@@ -47,7 +47,7 @@ class start implements Launcher {
         //注入脚本
         if (Application.App.debug) {
             get(chrome.extension.getURL('src/mooc.js'), function (source: string) {
-                chrome.storage.local.set({ source: source })
+                Injected(document, source);
             });
         }
     }
