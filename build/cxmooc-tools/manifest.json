@@ -35,12 +35,14 @@
             "*://*/html/processVerify.ac?*",
             "*://*/exam/test/reVersionPaperMarkContentNew?*",
             "*://*/ananas/modules/video/index.html?*",
+            "*://*.chaoxing.com/exam/test?*",
 
             "*://examh5.zhihuishu.com/stuExamWeb.html*",
             "*://onlineexamh5new.zhihuishu.com/stuExamWeb.html*",
             "*://studyh5.zhihuishu.com/videoStudy.html*",
             
-            "*://www.icourse163.org/learn/*"
+            "*://www.icourse163.org/learn/*",
+            "*://www.icourse163.org/spoc/learn/*"
         ],
         "js": [
             "src/start.js"
@@ -51,7 +53,7 @@
     "permissions": [
         "tabs",
         "storage",
-        "*://cx.icodef.com/"
+        "<all_urls>"
     ],
     "web_accessible_resources": [
         "src/mooc.js"

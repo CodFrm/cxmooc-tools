@@ -16,66 +16,69 @@ export class CxVideoOptimization implements Mooc {
         window.onload = () => {
             (<any>window).Ext.isChaoxing = true;
         }
-        document.addEventListener("readystatechange", () => {
-            if (document.readyState != "interactive") {
-                return;
+        this.hook();
+        document.addEventListener("readystatechange", () => { this.hook });
+        this.Api();
+    }
+
+    protected hook() {
+        if (document.readyState != "interactive") {
+            return;
+        }
+        let dataHook = new Hook("decode", (<any>window).Ext);
+        let self = this;
+        dataHook.Middleware(function (next: Context, ...args: any) {
+            let ret = next.apply(this, args);
+            if (Application.App.config.super_mode && ret.danmaku == 1) {
+                ret.danmaku = 0;
             }
-            let dataHook = new Hook("decode", (<any>window).Ext);
-            let self = this;
-            dataHook.Middleware(function (next: Context, ...args: any) {
-                let ret = next.apply(this, args);
-                if (Application.App.config.super_mode && ret.danmaku == 1) {
-                    ret.danmaku = 0;
-                }
-                return ret;
-            });
-            window.frameElement.setAttribute("fastforward", "");
-            window.frameElement.setAttribute("switchwindow", "");
+            return ret;
+        });
+        window.frameElement.setAttribute("fastforward", "");
+        window.frameElement.setAttribute("switchwindow", "");
 
-            let paramHook = new Hook("params2VideoOpt", (<any>window).ans.VideoJs.prototype);
-            paramHook.Middleware(function (next: Context, ...args: any) {
-                self.param = args[0];
-                let ret = next.apply(this, args);
-                ret.plugins.timelineObjects.url = self.param.rootPath + "/richvideo/initdatawithviewer";
+        let paramHook = new Hook("params2VideoOpt", (<any>window).ans.VideoJs.prototype);
+        paramHook.Middleware(function (next: Context, ...args: any) {
+            self.param = args[0];
+            let ret = next.apply(this, args);
+            ret.plugins.timelineObjects.url = self.param.rootPath + "/richvideo/initdatawithviewer";
+            let cdn = Application.App.config.video_cdn || localStorage["cdn"] || "公网1";
+            for (let i = 0; i < ret.playlines.length; i++) {
+                if (ret.playlines[i].label == cdn) {
+                    let copy = ret.playlines[i];
+                    (<Array<any>>ret.playlines).splice(i, 1);
+                    (<Array<any>>ret.playlines).splice(0, 0, copy);
+                }
+            }
+            localStorage["cdn"] = ret.playlines[0].label;
+            return ret;
+        });
+        (<any>window).Ext.isSogou = false;
+
+        let errorHook = new Hook("afterRender", (<any>window).ans.videojs.ErrorDisplay.prototype);
+        errorHook.Middleware(function (next: Context, ...args: any) {
+            let ret = next.apply(this, args);
+            setTimeout(() => {
+                let nowCdn = this.renderData.selectedIndex;
+                let playlines = this.renderData.playlines;
                 let cdn = Application.App.config.video_cdn || localStorage["cdn"] || "公网1";
-                for (let i = 0; i < ret.playlines.length; i++) {
-                    if (ret.playlines[i].label == cdn) {
-                        let copy = ret.playlines[i];
-                        (<Array<any>>ret.playlines).splice(i, 1);
-                        (<Array<any>>ret.playlines).splice(0, 0, copy);
-                    }
-                }
-                localStorage["cdn"] = ret.playlines[0].label;
-                return ret;
-            });
-            (<any>window).Ext.isSogou = false;
-
-            let errorHook = new Hook("afterRender", (<any>window).ans.videojs.ErrorDisplay.prototype);
-            errorHook.Middleware(function (next: Context, ...args: any) {
-                let ret = next.apply(this, args);
-                setTimeout(() => {
-                    let nowCdn = this.renderData.selectedIndex;
-                    let playlines = this.renderData.playlines;
-                    let cdn = Application.App.config.video_cdn || localStorage["cdn"] || "公网1";
-                    for (let i = 0; i < playlines.length; i++) {
-                        if (i != nowCdn) {
-                            if (cdn == "") {
-                                localStorage["cdn"] = playlines[i].label;
-                                return this.onSelected(i);
-                            } else if (cdn == playlines[i].label) {
-                                localStorage["cdn"] = playlines[i].label;
-                                return this.onSelected(i);
-                            }
+                for (let i = 0; i < playlines.length; i++) {
+                    if (i != nowCdn) {
+                        if (cdn == "") {
+                            localStorage["cdn"] = playlines[i].label;
+                            return this.onSelected(i);
+                        } else if (cdn == playlines[i].label) {
+                            localStorage["cdn"] = playlines[i].label;
+                            return this.onSelected(i);
                         }
                     }
-                    let index = (nowCdn + 1) % playlines.length;
-                    localStorage["cdn"] = playlines[index].label;
-                    return this.onSelected(index);
-                }, 2000);
-                return ret;
-            });
+                }
+                let index = (nowCdn + 1) % playlines.length;
+                localStorage["cdn"] = playlines[index].label;
+                return this.onSelected(index);
+            }, 2000);
+            return ret;
         });
-        this.Api();
     }
 
     /**
@@ -174,6 +177,12 @@ export class Video extends Task {
                 this.video.addEventListener("ended", () => {
                     this.completeCallback && this.completeCallback();
                 });
+                this.video.addEventListener("loadstart", () => {
+                    this.video.play();
+                });
+                this.video.addEventListener("pause", () => {
+                    Application.App.config.auto && this.video.play();
+                });
                 this.loadCallback && this.loadCallback();
             } catch (error) {
             }
@@ -181,9 +190,6 @@ export class Video extends Task {
     }
 
     public Start(): void {
-        this.video.onloadstart = () => {
-            this.video.play();
-        }
         this.video.play();
     }
 

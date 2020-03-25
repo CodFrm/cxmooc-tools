@@ -49,3 +49,9 @@
 .zhs-search-answer:hover {
     opacity: .85;
 }
+
+.mooc163-search{
+    background-color: #60b900;
+    display: block;
+    margin: 0 auto;
+}

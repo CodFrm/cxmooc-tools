@@ -7,7 +7,12 @@ import { randNumber, post, substrex } from "@App/internal/utils/utils";
 export class ZhsVideo implements Mooc {
 
     public Start(): void {
-        this.hook();
+        document.addEventListener("readystatechange", () => {
+            if (document.readyState != "interactive") {
+                return;
+            }
+            this.hook();
+        });
         let timer = setInterval(() => {
             try {
                 this.start();
@@ -113,15 +118,15 @@ export class ZhsVideo implements Mooc {
         });
         let hookWebpack = new Hook("webpackJsonp", window);
         hookWebpack.Middleware(function (next: Context, ...args: any) {
-            console.log("webpack");
             try {
                 if (args[1][702]) {
-                    Application.App.log.Debug("video hook ok");
+                    Application.App.log.Debug("video hook ok", document.readyState);
                     let old = args[1][702];
                     args[1][702] = function () {
                         let ret = old.apply(this, arguments);
                         let hookInitVideo = new Hook("initVideo", arguments[1].default.methods);
                         hookInitVideo.Middleware(function (next: Context, ...args: any) {
+                            Application.App.log.Debug("initVideo");
                             (<any>window).videoBoom = (callback: any) => {
                                 let timeStr = (<HTMLSpanElement>document.querySelector(".nPlayTime .duration")).innerText;
                                 let time = 0;

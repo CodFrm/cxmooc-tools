@@ -128,15 +128,15 @@ class TopicAdapter extends Task {
     }
 
     public Start(): Promise<any> {
-        return new Promise<any>(resolve => {
+        return new Promise<any>(async resolve => {
             if (this.lock) {
                 return resolve();
             }
             this.lock = true;
-            let ret = this.topic.QueryAnswer();
+            let ret = await this.topic.QueryAnswer();
             if (ret == null) {
                 if (Application.App.config.auto) {
-                    ret = this.topic.Submit();
+                    ret = await this.topic.Submit();
                 }
             }
             this.completeCallback && this.completeCallback();
@@ -213,7 +213,6 @@ class CourseTopic extends Topic {
                         //确定提交
                         let submit = this.context.document.querySelector(".bluebtn");
                         submit.click();
-
                         resolve();
                     }, 2000);
                 }, 2000);

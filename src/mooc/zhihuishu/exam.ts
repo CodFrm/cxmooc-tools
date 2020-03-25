@@ -37,7 +37,7 @@ export class ZhsExam implements Mooc {
         el.append(btn);
         let self = this;
         btn.onclick = async function () {
-            protocolPrompt("你正准备使用智慧树答题功能,相应的我们需要你的正确答案,因为智慧树的机制问题,采集答案会导致无法重新作答,你是否愿意贡献你的答案?\n* 本项选择不会影响你的正常使用(当前版本有效)\n* 采集答案需要申请token", "zhs_answer_collect", "明白了,我再去去商店打个五星");
+            protocolPrompt("你正准备使用智慧树答题功能,相应的我们需要你的正确答案,因为智慧树的机制问题,采集答案会导致无法重新作答,你是否愿意贡献你的答案?\n* 本项选择不会影响你的正常使用(协议当前版本有效)\n* 手动点击答题结果页面自动采集页面答案\n", "zhs_answer_collect", "明白了,我再去去商店打个五星");
 
             btn.innerText = "搜索中...";
             let ret = await self.topic.QueryAnswer();
@@ -141,7 +141,7 @@ abstract class ZhsQuestion implements Question {
         ret.topic = this.GetTopic();
         ret.type = this.GetType();
         ret.correct = new Array();
-        ret.answer = new Array();
+        ret.answers = new Array();
         return ret;
     }
 
@@ -191,7 +191,7 @@ class ZhsSelectQuestion extends ZhsQuestion {
                 option: this.getOption(options[i]),
                 content: this.getContent(options[i]),
             };
-            ret.answer.push(option);
+            ret.answers.push(option);
             if (options[i].querySelector("input").checked) {
                 ret.correct.push(option);
             }

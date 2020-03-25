@@ -18,10 +18,9 @@ export interface Answer {
     topic: string
     type: TopicType
     status: TopicStatus
-    answer?: Option[]
+    answers?: Option[]
     correct: Option[]
     id?: string
-
     Equal(content1: string, content2: string): boolean
 }
 
@@ -30,7 +29,7 @@ export class PushAnswer implements Answer {
     public topic: string;
     public type: TopicType;
     public status: TopicStatus;
-    public answer: Option[];
+    public answers: Option[];
     public correct: Option[];
     public Equal(content1: string, content2: string): boolean {
         return content1 == content2;
@@ -89,6 +88,7 @@ export type QuestionBankCallback = (args: { status: QuestionStatus, answer: Answ
 export interface QuestionBank {
     Answer(topic: Topic[], resolve: QuestionBankCallback): void;
     Push(answer: Answer[]): Promise<QuestionStatus>;
+    SetInfo(info: QuestionInfo): void;
 }
 
 export interface QuestionInfo {
@@ -100,25 +100,30 @@ export class ToolsQuestionBank implements QuestionBank {
 
     protected platform: string
     protected info: QuestionInfo;
-    constructor(platform: string, info: QuestionInfo) {
+    constructor(platform: string, info?: QuestionInfo) {
         this.platform = platform;
         this.info = info;
     }
 
-    protected infoMsg(): string {
+    public SetInfo(info: QuestionInfo): void {
+        this.info = info;
+    }
+
+    public GetInfo(): string {
         return encodeURIComponent(JSON.stringify(this.info));
     }
 
     public Answer(topic: Topic[], resolve: QuestionBankCallback): void {
+        Application.App.log.Debug("答案查询", topic);
         let num = 5;
         let answer = new Array<Answer>();
         let retStatus: QuestionStatus = "success";
         let next = (index: number) => {
-            let body = "info=" + this.infoMsg() + "&";
+            let body = "info=" + this.GetInfo() + "&";
             let t = index;
             for (; t < index + num && t < topic.length; t++) {
                 let val = topic[t];
-                body += "topic[" + (t - index) + "]=" + encodeURIComponent(removeHTML(val.topic)) + "&type[" + (t - index) + "]=" + val.type + "&";
+                body += "topic[" + (t - index) + "]=" + encodeURIComponent((val.topic)) + "&type[" + (t - index) + "]=" + val.type + "&";
             }
             HttpUtils.HttpPost(SystemConfig.url + "v2/answer?platform=" + this.platform, body, {
                 json: true,
@@ -132,7 +137,7 @@ export class ToolsQuestionBank implements QuestionBank {
                                 topic: result[i].topic,
                                 type: -1,
                                 status: "no_answer",
-                                answer: null,
+                                answers: null,
                                 correct: null,
                                 Equal: this.Equal,
                             });
@@ -170,7 +175,8 @@ export class ToolsQuestionBank implements QuestionBank {
 
     public Push(answer: Answer[]): Promise<QuestionStatus> {
         return new Promise((resolve) => {
-            HttpUtils.HttpPost(SystemConfig.url + "answer?platform=" + this.platform, "info=" + this.infoMsg() + "&data=" + JSON.stringify(answer), {
+            Application.App.log.Debug("采集提交", answer);
+            HttpUtils.HttpPost(SystemConfig.url + "answer?platform=" + this.platform, "info=" + this.GetInfo() + "&data=" + encodeURIComponent(JSON.stringify(answer)), {
                 json: true,
                 success: (result: any) => {
                     Application.App.log.Info("答案自动记录成功,成功获得" + result.add_token_num + "个打码数,剩余数量:" + result.token_num);
@@ -219,11 +225,10 @@ export class ToolsQuestionBankFacade implements QuestionBankFacade {
                 return;
             }
             topic.push({
-                topic: removeHTML(val.GetTopic()),
+                topic: (val.GetTopic()),
                 type: type,
             });
         });
-        Application.App.log.Debug("答案查询", topic);
         let status: QuestionStatus = "success";
         this.bank.Answer(topic, (ret: { status: QuestionStatus, answer: Answer[] }) => {
             if (ret.status != "processing") {
@@ -275,12 +280,11 @@ export class ToolsQuestionBankFacade implements QuestionBankFacade {
             if (correct == null || correct.correct == null || correct.type == -1) {
                 return;
             }
-            correct.topic = removeHTML(correct.topic);
-            correct.answer = this.dealOption(correct.answer);
-            correct.correct = this.dealOption(correct.correct);
+            correct.topic = correct.topic;
+            correct.answers = correct.answers;
+            correct.correct = correct.correct;
             answer.push(correct);
         });
-        Application.App.log.Debug("采集提交", answer);
         this.bank.Push(answer).then((ret: QuestionStatus) => {
             Application.App.log.Debug("题库返回", ret);
             return callback(ret);
@@ -290,7 +294,7 @@ export class ToolsQuestionBankFacade implements QuestionBankFacade {
     protected dealOption(options: Option[]): Option[] {
         for (let i = 0; i < options.length; i++) {
             if (typeof options[i].content == "string") {
-                options[i].content = removeHTML(options[i].content);
+                options[i].content = (options[i].content);
             }
         }
         return options;

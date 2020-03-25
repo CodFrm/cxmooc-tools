@@ -10,12 +10,14 @@ export class CxCourse implements Mooc {
 
     protected taskList: Array<Task>;
     protected attachments: Array<any>;
+    protected timer: NodeJS.Timer;
 
     public Start(): void {
         document.addEventListener("load", ev => {
             var el = <HTMLIFrameElement>(ev.srcElement || ev.target);
             if (el.id == "iframe") {
                 Application.App.log.Info("超星新窗口加载");
+                clearTimeout(this.timer);
                 this.OperateCard(el);
             }
         }, true);
@@ -89,7 +91,9 @@ export class CxCourse implements Mooc {
     protected delay(func: Function) {
         let interval = Application.App.config.interval;
         Application.App.log.Info(interval + "分钟后自动切换下一个任务点");
-        setTimeout(func, interval * 60000);
+        this.timer = setTimeout(() => {
+            func();
+        }, interval * 60000);
     }
 
     protected nextPage(num?: number) {
@@ -104,10 +108,12 @@ export class CxCourse implements Mooc {
         if (el == undefined) {
             //进行有锁任务查找
             if (document.querySelector("div.ncells > *:not(.currents) > .lock") == undefined) {
+                Application.App.log.Warn("任务结束了");
                 return alert("任务结束了");
             }
             return setTimeout(() => {
                 if (num > 5) {
+                    Application.App.log.Fatal("被锁卡住了,请手动处理");
                     return alert("被锁卡住了,请手动处理");
                 }
                 this.nextPage(num + 1);
