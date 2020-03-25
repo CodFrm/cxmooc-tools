@@ -33,6 +33,11 @@ let tampermonkey_zhs_str = tampermonkey_zhs.toString().replace(/@version\s+.*/, 
 tampermonkey_zhs_str += fs.readFileSync('./build/tampermonkey-zhihuishu.js');
 fs.writeFileSync('./build/zhihuishu.js', tampermonkey_zhs_str);
 
+let tampermonkey_163 = fs.readFileSync('./src/tampermonkey/course163.js');
+let tampermonkey_163_str = tampermonkey_163.toString().replace(/@version\s+.*/, '@version ' + SystemConfig.hotVersion);
+tampermonkey_163_str += fs.readFileSync('./build/tampermonkey-course163.js');
+fs.writeFileSync('./build/course163.js', tampermonkey_163_str);
+
 function dealVersion(version: any) {
     let reg = /\d/g;
     let arr: RegExpExecArray, ret = '';

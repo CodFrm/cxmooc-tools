@@ -280,7 +280,10 @@ class cxJudgeQuestion extends cxSelectQuestion implements Question {
     }
 
     protected click(el: HTMLElement) {
-        (<HTMLElement>el.querySelector("label > input,input")).click();
+        let tmpel = (<HTMLInputElement>el.querySelector("label > input,input"));
+        if (!tmpel.checked) {
+            tmpel.click();
+        }
         this.AddNotice(this.getContent(el));
     }
 

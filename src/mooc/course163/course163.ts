@@ -1,7 +1,7 @@
 import { Mooc } from "../factory";
 import { Hook, Context } from "@App/internal/utils/hook";
 import { createBtn, substrex, protocolPrompt } from "@App/internal/utils/utils";
-import "../../views/common.css";
+import "../../views/common";
 import { CourseTopic, CourseQueryAnswer } from "./question";
 import { ToolsQuestionBankFacade, ToolsQuestionBank, QuestionBank, QuestionBankFacade, Answer, Option, PushAnswer } from "@App/internal/app/question";
 

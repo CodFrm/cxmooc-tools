@@ -1,25 +1,20 @@
-import { PlatformChaoXing } from "@App/mooc/factory";
-import { Launcher, Application, Frontend } from "@App/internal/application";
 import { ChromeConfigItems, NewFrontendGetConfig } from "@App/internal/utils/config";
-import { ConsoleLog } from "@App/internal/utils/log";
-import { RemoveInjected } from "@App/internal/utils/utils";
+import { ConsoleLog, Logger, PageLog } from "@App/internal/utils/log";
+import { Application, Frontend } from "@App/internal/application";
+import { mooc } from "@App/mooc/mooc";
+import { CxPlatform } from "@App/mooc/chaoxing/platform";
 
-class mooc implements Launcher {
-    public start() {
-        let state = document.readyState;
-        Application.App.log.Debug("Start document state:", state);
-        let mooc = PlatformChaoXing();
-        if (mooc != null) {
-            mooc.Start();
-        }
-    }
+
+let logger: Logger;
+if (top == self) {
+    logger = new PageLog();
+} else {
+    logger = new ConsoleLog();
 }
 
 let component = new Map<string, any>().
     set("config", new ChromeConfigItems(NewFrontendGetConfig())).
-    set("logger", new ConsoleLog());
+    set("logger", logger);
 
-let app = new Application(Frontend, new mooc(), component);
+let app = new Application(Frontend, new mooc(new CxPlatform()), component);
 app.run();
-
-RemoveInjected(document);

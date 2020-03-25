@@ -16,8 +16,7 @@ export class CxVideoOptimization implements Mooc {
         window.onload = () => {
             (<any>window).Ext.isChaoxing = true;
         }
-        this.hook();
-        document.addEventListener("readystatechange", () => { this.hook });
+        document.addEventListener("readystatechange", () => { this.hook() });
         this.Api();
     }
 
@@ -111,7 +110,7 @@ export class CxVideoOptimization implements Mooc {
 
 export class VideoFactory implements TaskFactory {
     protected taskIframe: HTMLIFrameElement;
-    protected task: Video
+    protected task: Video;
     public CreateTask(context: any, taskinfo: any): Task {
         this.taskIframe = (<Window>context).document.querySelector(
             "iframe[jobid='" + taskinfo.jobid + "']"
@@ -154,6 +153,10 @@ export class VideoFactory implements TaskFactory {
         download.onclick = () => {
             this.task.download();
         };
+        downloadSubtitle.onclick = () => {
+            this.task.downloadSubtitle();
+        }
+
     }
 }
 

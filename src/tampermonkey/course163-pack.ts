@@ -1,22 +1,20 @@
-let hook = function () {
-    try {
-        console.log("hook");
-        var hook = (<any>window).edu.u._$$ChoiceQuestionUI.prototype;
-        var original = hook.__buildQuestionInfo;
-        hook.__buildQuestionInfo = function () {
-            original.apply(this);
-            var dtos = this.__recordDto.questionDto.optionDtos;
-            var input = this.__choicebox.querySelectorAll("input");
-            setTimeout(function () {
-                for (var i = 0; i < dtos.length; i++) {
-                    if (dtos[i].answer) {
-                        input[i].click();
-                    }
-                }
-            }, 0);
-        };
-    } catch (a) {
-        setTimeout(hook, 0);
-    }
-};
-window.addEventListener("load", hook);
+import { ChromeConfigItems, NewFrontendGetConfig } from "@App/internal/utils/config";
+import { ConsoleLog, Logger, PageLog } from "@App/internal/utils/log";
+import { Application, Frontend } from "@App/internal/application";
+import { mooc } from "@App/mooc/mooc";
+import { Course163Platform } from "@App/mooc/course163/platform";
+
+
+let logger: Logger;
+if (top == self) {
+    logger = new PageLog();
+} else {
+    logger = new ConsoleLog();
+}
+
+let component = new Map<string, any>().
+    set("config", new ChromeConfigItems(NewFrontendGetConfig())).
+    set("logger", logger);;
+
+let app = new Application(Frontend, new mooc(new Course163Platform()), component);
+app.run();

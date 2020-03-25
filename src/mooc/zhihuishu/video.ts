@@ -1,7 +1,7 @@
 import { Mooc } from "@App/mooc/factory";
 import { Hook, Context } from "@App/internal/utils/hook";
 import { Application } from "@App/internal/application";
-import "../../views/common.css";
+import "../../views/common";
 import { randNumber, post, substrex } from "@App/internal/utils/utils";
 
 export class ZhsVideo implements Mooc {

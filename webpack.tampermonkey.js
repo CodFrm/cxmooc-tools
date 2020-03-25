@@ -1,6 +1,7 @@
 const common = require("./webpack.config.js");
 
 let ret = common;
+ret.mode = 'development';
 ret.entry = {
     cxmooc: __dirname + '/src/tampermonkey/cxmooc-pack.ts',
     zhihuishu: __dirname + '/src/tampermonkey/zhihuishu-pack.ts',

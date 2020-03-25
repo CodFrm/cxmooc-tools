@@ -1,6 +1,6 @@
 import { Mooc } from "../factory";
 import { createBtn, substrex, randNumber, protocolPrompt } from "@App/internal/utils/utils";
-import "../../views/common.css"
+import "../../views/common";
 import { Topic, QueryQuestions } from "@App/internal/app/topic";
 import { Question, ToolsQuestionBankFacade, ToolsQuestionBank, TopicType, SwitchTopicType, TopicStatus, Answer, TopicStatusString, PushAnswer } from "@App/internal/app/question";
 import { CreateNoteLine } from "../chaoxing/utils";
@@ -13,7 +13,7 @@ export class ZhsExam implements Mooc {
     public Start(): void {
         this.topic = new ExamTopic(document, new ToolsQuestionBankFacade(new ToolsQuestionBank("zhs", {
             refer: document.URL,
-            id: document.URL.match(/checkHomework\/(.*?)\/(.*?)\/(.*?)\/(.*?)\/(.*?)$/)[3],
+            id: document.URL.match(/(checkHomework|dohomework)\/(.*?)\/(.*?)\/(.*?)\/(.*?)\/(.*?)$/)[4],
         })));
         this.topic.SetQueryQuestions(new ExamQueryQuestion());
         window.onload = () => {
@@ -37,7 +37,7 @@ export class ZhsExam implements Mooc {
         el.append(btn);
         let self = this;
         btn.onclick = async function () {
-            protocolPrompt("你正准备使用智慧树答题功能,相应的我们需要你的正确答案,因为智慧树的机制问题,采集答案会导致无法重新作答,你是否愿意贡献你的答案?\n* 本项选择不会影响你的正常使用(协议当前版本有效)\n* 手动点击答题结果页面自动采集页面答案\n", "zhs_answer_collect", "明白了,我再去去商店打个五星");
+            protocolPrompt("你正准备使用智慧树答题功能,相应的我们需要你的正确答案,因为智慧树的机制问题,采集答案会导致无法重新作答,你是否愿意贡献你的答案?\n* 本项选择不会影响你的正常使用(协议当前版本有效)\n* 手动点击答题结果页面自动采集页面答案\n* (功能其实还没完成,后续更新)", "zhs_answer_collect", "我同意");
 
             btn.innerText = "搜索中...";
             let ret = await self.topic.QueryAnswer();
@@ -127,7 +127,10 @@ abstract class ZhsQuestion implements Question {
     }
 
     protected click(el: HTMLElement, content: string) {
-        el.querySelector("input").click();
+        let tmpel = <HTMLInputElement>el.querySelector("input");
+        if (!tmpel.checked) {
+            tmpel.click();
+        }
         this.addNotice(this.getOption(el) + ":" + content);
     }
 

@@ -1,7 +1,7 @@
 import { CreateNoteLine } from "./utils";
 import { ListenVCode, FillVCode, VCodeStatus } from "../../internal/app/vcode";
 
-export class CourseVCode implements ListenVCode {
+export class CxCourseVCode implements ListenVCode {
 
     public Listen(callback: (fill: FillVCode) => void): void {
         let imgel: HTMLImageElement;
