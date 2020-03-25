@@ -13,9 +13,9 @@ export class CxVideoOptimization implements Mooc {
 
     public Start(): void {
         //对播放器进行优化
-        window.onload = () => {
-            (<any>window).Ext.isChaoxing = true;
-        }
+        window.addEventListener("load", () => {
+            (<any>Application.GlobalContext).Ext.isChaoxing = true;
+        });
         document.addEventListener("readystatechange", () => { this.hook() });
         this.Api();
     }
@@ -24,7 +24,8 @@ export class CxVideoOptimization implements Mooc {
         if (document.readyState != "interactive") {
             return;
         }
-        let dataHook = new Hook("decode", (<any>window).Ext);
+        Application.App.log.Debug("hook cx video");
+        let dataHook = new Hook("decode", (<any>Application.GlobalContext).Ext);
         let self = this;
         dataHook.Middleware(function (next: Context, ...args: any) {
             let ret = next.apply(this, args);
@@ -36,7 +37,7 @@ export class CxVideoOptimization implements Mooc {
         window.frameElement.setAttribute("fastforward", "");
         window.frameElement.setAttribute("switchwindow", "");
 
-        let paramHook = new Hook("params2VideoOpt", (<any>window).ans.VideoJs.prototype);
+        let paramHook = new Hook("params2VideoOpt", (<any>Application.GlobalContext).ans.VideoJs.prototype);
         paramHook.Middleware(function (next: Context, ...args: any) {
             self.param = args[0];
             let ret = next.apply(this, args);
@@ -52,9 +53,9 @@ export class CxVideoOptimization implements Mooc {
             localStorage["cdn"] = ret.playlines[0].label;
             return ret;
         });
-        (<any>window).Ext.isSogou = false;
+        (<any>Application.GlobalContext).Ext.isSogou = false;
 
-        let errorHook = new Hook("afterRender", (<any>window).ans.videojs.ErrorDisplay.prototype);
+        let errorHook = new Hook("afterRender", (<any>Application.GlobalContext).ans.videojs.ErrorDisplay.prototype);
         errorHook.Middleware(function (next: Context, ...args: any) {
             let ret = next.apply(this, args);
             setTimeout(() => {
@@ -84,7 +85,7 @@ export class CxVideoOptimization implements Mooc {
      * 操作方法
      */
     protected Api() {
-        (<any>window).sendTimePack = (time: number, callback: Function) => {
+        (<any>Application.GlobalContext).sendTimePack = (time: number, callback: Function) => {
             if (time == NaN || time == undefined) {
                 time = parseInt(this.param.duration);
             }
@@ -93,7 +94,7 @@ export class CxVideoOptimization implements Mooc {
                 this.param.jobid + '][' + this.param.objectId + '][' +
                 (playTime * 1000).toString() + '][d_yHJ!$pdA~5][' + (this.param.duration * 1000).toString() + '][0_' +
                 this.param.duration + ']';
-            enc = (<any>window).md5(enc);
+            enc = (<any>Application.GlobalContext).md5(enc);
             get(this.param.reportUrl + '/' + this.param.dtoken + '?clipTime=0_' + this.param.duration +
                 '&otherInfo=' + this.param.otherInfo +
                 '&userid=' + this.param.userid + '&rt=0.9&jobid=' + this.param.jobid +
@@ -115,6 +116,11 @@ export class VideoFactory implements TaskFactory {
         this.taskIframe = (<Window>context).document.querySelector(
             "iframe[jobid='" + taskinfo.jobid + "']"
         );
+        if (this.taskIframe == undefined) {
+            this.taskIframe = (<Window>context).document.querySelector(
+                "iframe[mid='" + taskinfo.property.mid + "']"
+            );
+        }
         this.createActionBtn();
         this.task = new Video(this.taskIframe.contentWindow, taskinfo);
         this.task.muted = Application.App.config.video_mute;
@@ -123,7 +129,7 @@ export class VideoFactory implements TaskFactory {
     }
 
     protected createActionBtn() {
-        let prev = <HTMLElement>this.taskIframe.previousElementSibling;
+        let prev = <HTMLElement>this.taskIframe.previousElementSibling || <HTMLElement>this.taskIframe.parentElement;
         prev.style.textAlign = "center";
         prev.style.width = "100%";
         let startBtn = CssBtn(createBtn("开始挂机", "点击开始自动挂机播放视频", "cx-btn"));
@@ -165,13 +171,18 @@ export class Video extends Task {
     protected _playbackRate: number;
     protected _muted: boolean;
     protected afterPoint: number = 0;
-
+    protected flash: boolean;
     public Init() {
         Application.App.log.Debug("播放器配置", this.taskinfo);
         let timer = this.context.setInterval(() => {
             try {
                 let video = this.context.document.getElementById("video_html5_api");
                 if (video == undefined) {
+                    if (this.context.document.querySelector("#reader").innerHTML.indexOf("您没有安装flashplayer") >= 0) {
+                        this.context.clearInterval(timer);
+                        this.flash = true;
+                        this.loadCallback && this.loadCallback();
+                    }
                     return;
                 }
                 this.context.clearInterval(timer);
@@ -179,9 +190,6 @@ export class Video extends Task {
                 this.initPlayer();
                 this.video.addEventListener("ended", () => {
                     this.completeCallback && this.completeCallback();
-                });
-                this.video.addEventListener("loadstart", () => {
-                    this.video.play();
                 });
                 this.video.addEventListener("pause", () => {
                     Application.App.config.auto && this.video.play();
@@ -193,6 +201,9 @@ export class Video extends Task {
     }
 
     public Start(): void {
+        if (this.flash) {
+            return this.completeCallback && this.completeCallback();
+        }
         this.video.play();
     }
 

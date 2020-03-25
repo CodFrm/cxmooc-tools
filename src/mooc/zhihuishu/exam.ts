@@ -16,7 +16,7 @@ export class ZhsExam implements Mooc {
             id: document.URL.match(/(checkHomework|dohomework)\/(.*?)\/(.*?)\/(.*?)\/(.*?)\/(.*?)$/)[4],
         })));
         this.topic.SetQueryQuestions(new ExamQueryQuestion());
-        window.onload = () => {
+        window.addEventListener("load", () => {
             setTimeout(() => {
                 document.oncontextmenu = () => { }
                 document.oncopy = () => { }
@@ -28,7 +28,7 @@ export class ZhsExam implements Mooc {
                     this.topic.CollectAnswer();
                 }
             }, 1000);
-        }
+        });
     }
 
     protected createBtn() {

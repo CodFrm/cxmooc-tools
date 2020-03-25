@@ -32,7 +32,7 @@ export class ZhsVideo implements Mooc {
         boomBtn.href = "#"; boomBtn.id = "zhs-video-boom";
         boomBtn.innerText = "秒过视频";
         boomBtn.onclick = () => {
-            (<any>window).videoBoom(() => {
+            (<any>Application.GlobalContext).videoBoom(() => {
 
             });
         }
@@ -44,7 +44,7 @@ export class ZhsVideo implements Mooc {
         let interval = Application.App.config.interval;
         Application.App.log.Info(interval + "分钟后自动切换下一节");
         setTimeout(function () {
-            let $ = (<any>window).$;
+            let $ = (<any>Application.GlobalContext).$;
             let next = $(".clearfix.video.current_play").next();
             if (next.length == 0) {
                 next = $(".clearfix.video.current_play")
@@ -61,7 +61,7 @@ export class ZhsVideo implements Mooc {
     }
 
     protected start() {
-        let hookPlayerStarter = new Hook("createPlayer", (<any>window).PlayerStarter);
+        let hookPlayerStarter = new Hook("createPlayer", (<any>Application.GlobalContext).PlayerStarter);
         let self = this;
         hookPlayerStarter.Middleware(function (next: Context, ...args: any) {
             self.createToolsBar();
@@ -89,7 +89,7 @@ export class ZhsVideo implements Mooc {
             }, 2000);
             return next.apply(this, args);
         });
-        let timeSetInterval = new Hook("setInterval", window);
+        let timeSetInterval = new Hook("setInterval", Application.GlobalContext);
         timeSetInterval.Middleware(function (next: Context, ...args: any) {
             Application.App.log.Debug("加速器启动");
             if (Application.App.config.super_mode) {
@@ -100,7 +100,7 @@ export class ZhsVideo implements Mooc {
     }
 
     protected hook(): void {
-        let hookXMLHttpRequest = new Hook("open", window.XMLHttpRequest.prototype);
+        let hookXMLHttpRequest = new Hook("open", Application.GlobalContext.XMLHttpRequest.prototype);
         hookXMLHttpRequest.Middleware(function (next: Context, ...args: any) {
             if (args[1].indexOf("popupAnswer/loadVideoPointerInfo") >= 0) {
                 Object.defineProperty(this, "responseText", {
@@ -116,7 +116,7 @@ export class ZhsVideo implements Mooc {
             let ret = next.apply(this, args);
             return ret;
         });
-        let hookWebpack = new Hook("webpackJsonp", window);
+        let hookWebpack = new Hook("webpackJsonp", Application.GlobalContext);
         hookWebpack.Middleware(function (next: Context, ...args: any) {
             try {
                 if (args[1][702]) {
@@ -127,7 +127,7 @@ export class ZhsVideo implements Mooc {
                         let hookInitVideo = new Hook("initVideo", arguments[1].default.methods);
                         hookInitVideo.Middleware(function (next: Context, ...args: any) {
                             Application.App.log.Debug("initVideo");
-                            (<any>window).videoBoom = (callback: any) => {
+                            (<any>Application.GlobalContext).videoBoom = (callback: any) => {
                                 let timeStr = (<HTMLSpanElement>document.querySelector(".nPlayTime .duration")).innerText;
                                 let time = 0;
                                 let temp = timeStr.match(/[\d]+/gi);

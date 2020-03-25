@@ -54,7 +54,7 @@ export class PageLog implements Logger {
         this.el = undefined;
         window.addEventListener("load", () => {
             let div = document.createElement("div");
-            div.innerHTML = '通知条(😭)<button class="close">关闭</button><div class="tools-notice-content">';
+            div.innerHTML = '小工具通知条(😭丑陋)<button class="close">关闭</button><div class="tools-notice-content">';
             div.className = "tools-logger-panel";
             document.body.appendChild(div);
             this.el = div.querySelector(".tools-notice-content");

@@ -12,6 +12,7 @@ if (top == self) {
     logger = new ConsoleLog();
 }
 
+Application.GlobalContext = (<any>window).unsafeWindow;
 let component = new Map<string, any>().
     set("config", new ChromeConfigItems(NewFrontendGetConfig())).
     set("logger", logger);

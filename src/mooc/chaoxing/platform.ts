@@ -1,4 +1,7 @@
-import { MoocFactory, Mooc } from "../factory";import { VCode } from "@App/internal/app/vcode";import { CxCourse, CxHomeWork, CxExamTopic } from "./course";import { CxCourseVCode } from "./vcode";import { CxVideoOptimization } from "./video";
+import { MoocFactory, Mooc } from "../factory";
+import { VCode } from "@App/internal/app/vcode";
+import { CxCourse, CxHomeWork, CxExamTopic } from "./course";
+import { CxCourseVCode } from "./vcode";import { CxVideoOptimization } from "./video";
 
 export class CxPlatform implements MoocFactory {
     public CreateMooc(): Mooc {

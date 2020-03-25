@@ -4,6 +4,7 @@ import { createBtn, substrex, protocolPrompt } from "@App/internal/utils/utils";
 import "../../views/common";
 import { CourseTopic, CourseQueryAnswer } from "./question";
 import { ToolsQuestionBankFacade, ToolsQuestionBank, QuestionBank, QuestionBankFacade, Answer, Option, PushAnswer } from "@App/internal/app/question";
+import { Application } from "@App/internal/application";
 
 export class Course163 implements Mooc {
 
@@ -13,7 +14,7 @@ export class Course163 implements Mooc {
 
     protected hook() {
         let self = this;
-        let hookXMLHttpRequest = new Hook("open", window.XMLHttpRequest.prototype);
+        let hookXMLHttpRequest = new Hook("open", Application.GlobalContext.XMLHttpRequest.prototype);
         hookXMLHttpRequest.Middleware(function (next: Context, ...args: any) {
             if (args[1].indexOf("CourseBean.getLessonUnitLearnVo.dwr") > 0 ||
                 args[1].indexOf("MocQuizBean.getQuizPaperDto.dwr") > 0) {

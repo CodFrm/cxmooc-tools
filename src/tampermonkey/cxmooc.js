@@ -15,6 +15,7 @@
 // @match        *://*/work/doHomeWorkNew?*
 // @match        *://*/ananas/modules/video/index.html?*
 // @grant        GM_xmlhttpRequest
+// @grant        unsafeWindow
 // @license      MIT
 // ==/UserScript==
 

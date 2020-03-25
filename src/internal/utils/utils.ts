@@ -13,9 +13,23 @@ export interface RequestInfo extends RequestInit {
 }
 
 if (window.hasOwnProperty('GM_xmlhttpRequest')) {
-    //TODO:兼容油猴GM_xmlhttpRequest
+    //兼容油猴
     let oldGM_xmlhttpRequest = (<any>window).GM_xmlhttpRequest;
     (<any>window).GM_xmlhttpRequest = (info: RequestInfo) => {
+        (<any>info).data = info.body;
+        (<any>info).onreadystatechange = function (response: any) {
+            if (response.readyState == 4) {
+                if (response.status == 200) {
+                    if (info.json) {
+                        info.success && info.success(JSON.parse(response.responseText));
+                    } else {
+                        info.success && info.success(response.responseText);
+                    }
+                } else {
+                    info.error && info.error();
+                }
+            }
+        }
         oldGM_xmlhttpRequest(info);
     }
 } else {

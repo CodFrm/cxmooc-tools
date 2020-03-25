@@ -17,6 +17,7 @@ let component = new Map<string, any>().
     set("config", new ChromeConfigItems(NewFrontendGetConfig())).
     set("logger", logger);
 
+Application.GlobalContext = window;
 let app = new Application(Frontend, new mooc(new DefaultMoocFactory()), component);
 app.run();
 

@@ -7,6 +7,12 @@ import { ConsoleLog } from "./internal/utils/log";
 class start implements Launcher {
 
     public async start() {
+        //调试环境注入脚本
+        if (Application.App.debug) {
+            get(chrome.extension.getURL('src/mooc.js'), function (source: string) {
+                Injected(document, source);
+            });
+        }
         //注入config
         let configKeyList: string[] = new Array();
         for (let key in Application.App.config) {
@@ -44,12 +50,6 @@ class start implements Launcher {
                 }
             }
         });
-        //注入脚本
-        if (Application.App.debug) {
-            get(chrome.extension.getURL('src/mooc.js'), function (source: string) {
-                Injected(document, source);
-            });
-        }
     }
 }
 

@@ -5,20 +5,22 @@ export class CxCourseVCode implements ListenVCode {
 
     public Listen(callback: (fill: FillVCode) => void): void {
         let imgel: HTMLImageElement;
-        if (imgel = <HTMLImageElement>document.getElementById("imgVerCode")) {
-            imgel.addEventListener("load", () => {
-                if (imgel.getAttribute("src").indexOf('?') < 0) {
-                    return;
-                }
-                let parent = document.querySelector('#sub').parentElement.parentElement;
-                let old = parent.querySelector(".prompt-line-dama");
-                if (old) {
-                    old.remove();
-                }
-                let notice = CreateNoteLine('cxmooc自动打码中...', 'dama', parent);
-                callback(new CxCourseFillVCode(imgel, notice));
-            });
-        }
+        window.addEventListener("load", () => {
+            if (imgel = <HTMLImageElement>document.getElementById("imgVerCode")) {
+                imgel.addEventListener("load", () => {
+                    if (imgel.getAttribute("src").indexOf('?') < 0) {
+                        return;
+                    }
+                    let parent = document.querySelector('#sub').parentElement.parentElement;
+                    let old = parent.querySelector(".prompt-line-dama");
+                    if (old) {
+                        old.remove();
+                    }
+                    let notice = CreateNoteLine('cxmooc自动打码中...', 'dama', parent);
+                    callback(new CxCourseFillVCode(imgel, notice));
+                });
+            }
+        });
     }
 }
 

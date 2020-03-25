@@ -96,6 +96,18 @@ export class CxCourse implements Mooc {
         }, interval * 60000);
     }
 
+    protected afterPage(): HTMLElement {
+        //感觉奇葩的方法...
+        let els = document.querySelectorAll("div.ncells > *:not(.currents) > .orange01");
+        let now = <HTMLElement>document.querySelector("div.ncells > .currents");
+        for (let i = 0; i < els.length; i++) {
+            if (now.getBoundingClientRect().top < els[i].getBoundingClientRect().top) {
+                return <HTMLElement>els[i];
+            }
+        }
+        return null;
+    }
+
     protected nextPage(num?: number) {
         if (num == undefined) {
             return this.delay(() => { this.nextPage(0); });
@@ -104,7 +116,8 @@ export class CxCourse implements Mooc {
         if (el != undefined) {
             return el.click();
         }
-        el = <HTMLElement>document.querySelector("div.ncells > *:not(.currents) > .orange01");
+        //只往后执行
+        el = this.afterPage();
         if (el == undefined) {
             //进行有锁任务查找
             if (document.querySelector("div.ncells > *:not(.currents) > .lock") == undefined) {
@@ -148,10 +161,11 @@ export class CxHomeWork implements Mooc {
             let topic = new HomeworkTopicFactory();
             let task = topic.CreateTask(window, {
                 refer: document.URL,
-                id: (<HTMLInputElement>document.querySelector("#workLibraryId")).value
+                id: substrex(document.URL, "&workId=", "&"),
+                info: (<HTMLInputElement>document.querySelector("#workLibraryId") || <HTMLInputElement>document.querySelector("#cid")).value
             });
             task.Init();
-            if (Application.App.config.auto) {
+            if (Application.App.config.auto && <HTMLInputElement>document.querySelector("#workLibraryId")) {
                 task.Start();
             }
         }

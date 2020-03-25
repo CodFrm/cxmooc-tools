@@ -23,6 +23,7 @@ export class Application {
     protected static IsFrontend: boolean;
     protected static IsBackend: boolean;
     protected static IsContent: boolean;
+    public static GlobalContext: Window & typeof globalThis;
 
     protected launcher: Launcher;
     protected component: Map<string, any>

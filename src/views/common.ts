@@ -65,14 +65,15 @@ window.addEventListener("load", () => {
     font-size: 14px;
     border: 1px solid #ff482b;
     border-radius: 4px;
-    width: 300px;
+    width: 340px;
     text-align: center;
     overflow: hidden;
     left:50%;
-    margin-left:-150px;
+    margin-left:-170px;
     z-index: 100000;
     background: #e4e4e4;
     opacity: .8;
+    top: 40px;
 }
 
 .tools-notice-content{
