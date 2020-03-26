@@ -1,5 +1,5 @@
 import { NewChromeServerMessage } from "@App/internal/utils/message";
-import { HttpUtils, Injected, get, syncGetChromeStorageLocal } from "@App/internal/utils/utils";
+import { HttpUtils, InjectedBySrc } from "@App/internal/utils/utils";
 import { Application, Content, Launcher } from "@App/internal/application";
 import { ChromeConfigItems, NewBackendConfig } from "@App/internal/utils/config";
 import { ConsoleLog } from "./internal/utils/log";
@@ -9,9 +9,7 @@ class start implements Launcher {
     public async start() {
         //调试环境注入脚本
         if (Application.App.debug) {
-            get(chrome.extension.getURL('src/mooc.js'), function (source: string) {
-                Injected(document, source);
-            });
+            InjectedBySrc(document, chrome.extension.getURL('src/mooc.js'));
         }
         //注入config
         let configKeyList: string[] = new Array();

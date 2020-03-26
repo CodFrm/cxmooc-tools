@@ -50,6 +50,12 @@ export class ConsoleLog implements Logger {
 
 export class PageLog implements Logger {
     protected el: HTMLElement;
+
+    protected getNowTime(): string {
+        let time = new Date();
+        return time.getHours() + ":" + time.getMinutes() + ":" + time.getSeconds();
+    }
+
     constructor() {
         this.el = undefined;
         window.addEventListener("load", () => {
@@ -59,17 +65,22 @@ export class PageLog implements Logger {
             document.body.appendChild(div);
             this.el = div.querySelector(".tools-notice-content");
             (<HTMLButtonElement>div.querySelector("button.close")).onclick = () => {
-                this.el=undefined;
+                this.el = undefined;
                 div.remove();
             };
         });
     }
+
     public Trace(...args: any): Logger {
+        console.trace("[trace", this.getNowTime(), "]", ...args);
         return this;
     }
+
     public Debug(...args: any): Logger {
+        console.info("[debug", this.getNowTime(), "]", ...args);
         return this;
     }
+
     public Info(...args: any): Logger {
         let text = "";
         for (let i = 0; i < args.length; i++) {

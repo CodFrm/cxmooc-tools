@@ -137,6 +137,21 @@ export function Injected(doc: Document, source: string): Element {
     return temp;
 }
 
+/**
+ * 通过源码注入js资源
+ * @param doc
+ * @param url
+ * @constructor
+ */
+export function InjectedBySrc(doc: Document, source: string): Element {
+    let temp = doc.createElement('script');
+    temp.setAttribute('type', 'text/javascript');
+    temp.src = source;
+    temp.className = "injected-js";
+    doc.documentElement.appendChild(temp);
+    return temp;
+}
+
 export function syncGetChromeStorageLocal(key: string): Promise<any> {
     return new Promise<any>(resolve => (chrome.storage.local.get(key, (value) => {
         resolve(<any>value[<string>key]);
