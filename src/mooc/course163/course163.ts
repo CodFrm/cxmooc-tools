@@ -68,16 +68,22 @@ export class Course163 implements Mooc {
             script = "function a(){" + script + ";return s0;}a();";
         }
         let ret = eval(script);
+        let u = document.URL.match(/(\?id|cid)=(.*?)($|&)/);
+        if (u.length <= 0) {
+            return;
+        }
         let bank = new ToolsQuestionBank("mooc163", {
             refer: document.URL,
-            id: document.URL.match(/(\?id|cid)=(.*?)($|&)/)[2],
+            id: u[2],
         });
         let answer = new Array<Answer>();
         let options: Array<any>;
-        if (document.URL.indexOf("quizscore?id=") > 0) {
+        options = ret.objectiveQList;
+        if (options == undefined) {
             options = ret;
-        } else {
-            options = ret.objectiveQList;
+        }
+        if (options == undefined) {
+            return
         }
         for (let i = 0; i < options.length; i++) {
             let topic = options[i];
@@ -90,6 +96,20 @@ export class Course163 implements Mooc {
                     tmpAnswer.correct.push({
                         option: "一", content: topic.stdAnswer,
                     });
+                    answer.push(tmpAnswer);
+                } else if (topic.type == 4) {
+                    let tmpAnswer = new PushAnswer();
+                    tmpAnswer.topic = topic.title;
+                    tmpAnswer.type = 3;
+                    tmpAnswer.correct = new Array<Option>();
+                    for (let n = 0; n < topic.optionDtos.length; n++) {
+                        if (topic.optionDtos[n].answer) {
+                            tmpAnswer.correct.push({
+                                option: "正确" == topic.optionDtos[n].content, content: "正确" == topic.optionDtos[n].content,
+                            });
+                            break;
+                        }
+                    }
                     answer.push(tmpAnswer);
                 }
                 continue;

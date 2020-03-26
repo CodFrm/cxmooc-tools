@@ -14,7 +14,9 @@ export class CourseQueryAnswer implements QueryQuestions {
     }
 
     protected createQuestion(el: HTMLElement) {
-        if (el.querySelector("input[type='radio']") != null) {
+        if (el.querySelector(".optionCnt span.u-icon-correct")) {
+            return new JudgeQuestion(el, 3);
+        } else if (el.querySelector("input[type='radio']") != null) {
             return new CourseQuestion(el, 1);
         } else if (el.querySelector("input[type='checkbox']") != null) {
             return new CourseQuestion(el, 2);
@@ -82,7 +84,7 @@ class CourseQuestion implements Question {
 
     protected dealImgDomain(content: string): string {
         //移除域名对比,也不知道还有没有花里胡哨的
-        return content.replace(/https:\/\/(.*?)\//, "");
+        return content.replace(/"https:\/\/(.*?)\//, "\"");
     }
 
     public Fill(answer: Answer): TopicStatus {
@@ -118,6 +120,21 @@ class FillQuestion extends CourseQuestion {
         el.focus();
         el.value = answer.correct[0].content;
         this.AddNotice("填空:" + answer.correct[0].content);
+        return "ok";
+    }
+
+}
+
+class JudgeQuestion extends CourseQuestion {
+
+    public Fill(answer: Answer): TopicStatus {
+        let el: HTMLElement;
+        if (answer.correct[0].content) {
+            el = this.el.querySelector(".u-tbl.f-pr.f-cb .u-icon-correct").parentElement.parentElement;
+        } else {
+            el = this.el.querySelector(".u-tbl.f-pr.f-cb .u-icon-wrong").parentElement.parentElement;
+        }
+        this.fill(el, this.getContent(el))
         return "ok";
     }
 
