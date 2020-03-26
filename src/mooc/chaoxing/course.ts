@@ -1,9 +1,8 @@
-import { Mooc, MoocFactory } from "../factory";
-import { TaskFactory, Task } from "./task";
-import { Application } from "@App/internal/application";
-import { VideoFactory } from "./video";
-import { TopicFactory, HomeworkTopicFactory, ExamTopicFactory } from "./topic";
-import { substrex } from "@App/internal/utils/utils";
+import {Mooc} from "../factory";
+import {Application} from "@App/internal/application";
+import {substrex} from "@App/internal/utils/utils";
+import {Task} from "@App/mooc/chaoxing/task";
+import {TaskFactory} from "@App/mooc/chaoxing/factory";
 
 //课程任务
 export class CxCourse implements Mooc {
@@ -33,41 +32,31 @@ export class CxCourse implements Mooc {
                 return;
             }
             let task: Task;
-            let taskFactory: TaskFactory;
-            switch (value.type) {
-                case "video": {
-                    taskFactory = new VideoFactory();
-                    break;
-                }
-                case "workid": {
-                    taskFactory = new TopicFactory();
-                    break;
-                }
-                default:
-                    return;
+            task = TaskFactory.CreateCourseTask(iframeWindow, value);
+            if (!task) {
+                return;
             }
-            task = taskFactory.CreateTask(iframeWindow, value);
             task.jobIndex = index;
             this.taskList.push(task);
             let taskIndex = this.taskList.length - 1;
             task.Load(() => {
                 if (++loadOverNum == this.taskList.length) {
-                    this.startTask(0);
+                    this.startTask(0, null);
                 }
             });
-            task.Complete(() => {
-                this.startTask(taskIndex + 1);
+            task.Complete(async () => {
+                this.startTask(taskIndex + 1, task);
             });
             task.Init();
         });
         Application.App.log.Debug("任务点参数", this.attachments);
         if (this.taskList.length == 0) {
             //无任务点
-            this.startTask(0);
+            this.startTask(0, null);
         }
     }
 
-    protected startTask(index: number) {
+    protected async startTask(index: number, nowtask: Task) {
         if (Application.App.config.auto) {
             //选择未完成的任务点开始
             let task: Task;
@@ -77,14 +66,15 @@ export class CxCourse implements Mooc {
                     if (index == 0) {
                         task.Start();
                     } else {
-                        this.delay(() => {
+                        this.delay(async () => {
+                            nowtask && await nowtask.Submit();
                             task.Start();
                         });
                     }
                     return;
                 }
             }
-            this.nextPage();
+            this.nextPage(null, nowtask);
         }
     }
 
@@ -108,9 +98,12 @@ export class CxCourse implements Mooc {
         return null;
     }
 
-    protected nextPage(num?: number) {
-        if (num == undefined) {
-            return this.delay(() => { this.nextPage(0); });
+    protected nextPage(num: number, task: Task) {
+        if (num == null) {
+            return this.delay(async () => {
+                task && await task.Submit();
+                this.nextPage(0, null);
+            });
         }
         let el = <HTMLElement>document.querySelector("span.currents ~ span");
         if (el != undefined) {
@@ -129,7 +122,8 @@ export class CxCourse implements Mooc {
                     Application.App.log.Fatal("被锁卡住了,请手动处理");
                     return alert("被锁卡住了,请手动处理");
                 }
-                this.nextPage(num + 1);
+                Application.App.log.Info("等待解锁");
+                this.nextPage(num + 1, null);
             }, 5000);
         }
         (<any>el.parentElement.querySelector("a>span")).click();
@@ -140,8 +134,7 @@ export class CxCourse implements Mooc {
 export class CxExamTopic implements Mooc {
     public Start(): void {
         window.onload = () => {
-            let topic = new ExamTopicFactory();
-            let task = topic.CreateTask(window, {
+            let task = TaskFactory.CreateExamTopicTask(window, {
                 refer: document.URL,
                 id: (<HTMLInputElement>document.querySelector("#paperId")).value,
             });
@@ -158,8 +151,7 @@ export class CxExamTopic implements Mooc {
 export class CxHomeWork implements Mooc {
     public Start(): void {
         window.onload = () => {
-            let topic = new HomeworkTopicFactory();
-            let task = topic.CreateTask(window, {
+            let task = TaskFactory.CreateHomeworkTopicTask(window, {
                 refer: document.URL,
                 id: substrex(document.URL, "&workId=", "&"),
                 info: (<HTMLInputElement>document.querySelector("#workLibraryId") || <HTMLInputElement>document.querySelector("#cid")).value

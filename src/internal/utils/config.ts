@@ -1,6 +1,5 @@
-import { Client, NewExtensionClientMessage, NewChromeClientMessage } from "./message";
-import { randNumber } from "./utils";
-import { Application } from "../application";
+import {randNumber} from "./utils";
+import {Application} from "../application";
 
 export interface ConfigItems extends GetConfig {
     vtoken: string
@@ -17,6 +16,7 @@ export interface ConfigItems extends GetConfig {
 export class ChromeConfigItems implements ConfigItems {
 
     protected getConfig: GetConfig;
+
     constructor(getConfig: GetConfig) {
         this.getConfig = getConfig;
     }
@@ -24,6 +24,7 @@ export class ChromeConfigItems implements ConfigItems {
     public GetConfig(key: string) {
         return this.getConfig.GetConfig(key);
     }
+
     public Watch(key: string | string[], callback: (key: string) => void): void {
         this.getConfig.Watch(key, callback);
     }
@@ -51,6 +52,10 @@ export class ChromeConfigItems implements ConfigItems {
         return this.bool(this.getConfig.GetConfig("auto"));
     }
 
+    public set auto(val: boolean) {
+        localStorage["auto"] = val;
+    }
+
     public get video_mute() {
         return this.bool(this.getConfig.GetConfig("video_mute"));
     }
@@ -76,6 +81,7 @@ export class ChromeConfigItems implements ConfigItems {
 
 export interface GetConfig {
     GetConfig(key: string): any
+
     Watch(key: Array<string> | string, callback: (key: string) => void): void
 }
 
@@ -109,8 +115,8 @@ class backendConfig implements GetConfig, SetConfig {
             let info: { [key: string]: number; } = {};
             info[key] = val;
             chrome.storage.sync.set(info, () => {
-                chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
-                    chrome.tabs.sendMessage(tabs[0].id, { type: "cxconfig", key: key, value: val });
+                chrome.tabs.query({active: true, currentWindow: true}, function (tabs) {
+                    chrome.tabs.sendMessage(tabs[0].id, {type: "cxconfig", key: key, value: val});
                 });
                 resolve();
             });

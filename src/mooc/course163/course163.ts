@@ -44,10 +44,10 @@ export class Course163 implements Mooc {
         //TODO: 优化
         let search = createBtn("搜索答案", "点击搜索答案", "cx-btn mooc163-search", "exam-tools-search");
         let divel = document.querySelector(".u-learn-moduletitle");
-        let topic = new CourseTopic(document, new ToolsQuestionBankFacade(new ToolsQuestionBank("mooc163", {
+        let topic = new CourseTopic(document, new ToolsQuestionBankFacade("mooc163", {
             refer: document.URL,
             id: document.URL.match(/\?id=(.*?)($|&)/)[1],
-        })));
+        }));
         topic.SetQueryQuestions(new CourseQueryAnswer());
         search.onclick = async function () {
             protocolPrompt("你正准备使用中国慕课的答题功能,相应的我们需要你的正确答案,同意之后插件将自动检索你的所有答案\n* 本项选择不会影响你的正常使用(协议当前版本有效)\n* 手动点击答题结果页面自动采集页面答案\n", "course_answer_collect", "我同意");
@@ -150,10 +150,10 @@ export class Course163 implements Mooc {
         let search = createBtn("搜索答案", "点击搜索答案", "cx-btn mooc163-search", "tools-search");
         let divel = document.querySelector(".m-learnunitUI");
 
-        let topic = new CourseTopic(document, new ToolsQuestionBankFacade(new ToolsQuestionBank("mooc163", {
+        let topic = new CourseTopic(document, new ToolsQuestionBankFacade("mooc163", {
             refer: document.URL,
             id: document.URL.match(/cid=(.*?)($|&)/)[1],
-        })));
+        }));
         topic.SetQueryQuestions(new CourseQueryAnswer());
         search.onclick = async function () {
             search.innerText = "搜索中...";

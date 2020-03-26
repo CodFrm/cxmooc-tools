@@ -35,7 +35,7 @@ export class ZhsVideo implements Mooc {
             (<any>Application.GlobalContext).videoBoom(() => {
 
             });
-        }
+        };
         li1.appendChild(boomBtn);
         document.querySelector(".videotop_box.fl").append(tools);
     }

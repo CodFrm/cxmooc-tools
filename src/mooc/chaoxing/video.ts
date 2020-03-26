@@ -1,14 +1,14 @@
-import { MoocFactory, Mooc } from "../factory";
-import { Hook, Context } from "@App/internal/utils/hook";
-import { Application } from "@App/internal/application";
-import { randNumber, get, createBtn, protocolPrompt } from "@App/internal/utils/utils";
-import { TaskFactory, Task } from "./task";
-import { CssBtn } from "./utils";
+import {Mooc} from "../factory";
+import {Hook, Context} from "@App/internal/utils/hook";
+import {Application} from "@App/internal/application";
+import {randNumber, get, createBtn, protocolPrompt} from "@App/internal/utils/utils";
+import {CssBtn} from "./utils";
+import {CxTaskControlBar, Task} from "@App/mooc/chaoxing/task";
+import {TaskFactory} from "@App/mooc/chaoxing/factory";
 
 // 优化播放器
 export class CxVideoOptimization implements Mooc {
 
-    protected taskinfo: any;
     protected param: any;
 
     public Start(): void {
@@ -16,7 +16,9 @@ export class CxVideoOptimization implements Mooc {
         window.addEventListener("load", () => {
             (<any>Application.GlobalContext).Ext.isChaoxing = true;
         });
-        document.addEventListener("readystatechange", () => { this.hook() });
+        document.addEventListener("readystatechange", () => {
+            this.hook()
+        });
         this.Api();
     }
 
@@ -101,63 +103,29 @@ export class CxVideoOptimization implements Mooc {
                 '&duration=' + this.param.duration + '&dtype=Video&objectId=' + this.param.objectId +
                 '&clazzId=' + this.param.clazzId +
                 '&view=pc&playingTime=' + playTime + '&isdrag=4&enc=' + enc, function (data: string) {
-                    let isPassed = JSON.parse(data);
-                    callback(isPassed.isPassed);
-                });
+                let isPassed = JSON.parse(data);
+                callback(isPassed.isPassed);
+            });
         }
     }
 
 }
 
-export class VideoFactory implements TaskFactory {
-    protected taskIframe: HTMLIFrameElement;
-    protected task: Video;
-    public CreateTask(context: any, taskinfo: any): Task {
-        this.taskIframe = (<Window>context).document.querySelector(
-            "iframe[jobid='" + taskinfo.jobid + "']"
-        );
-        if (this.taskIframe == undefined) {
-            this.taskIframe = (<Window>context).document.querySelector(
-                "iframe[mid='" + taskinfo.property.mid + "']"
-            );
-        }
-        this.createActionBtn();
-        this.task = new Video(this.taskIframe.contentWindow, taskinfo);
-        this.task.muted = Application.App.config.video_mute;
-        this.task.playbackRate = Application.App.config.video_multiple;
-        return this.task;
-    }
-
-    protected createActionBtn() {
-        let prev = <HTMLElement>this.taskIframe.previousElementSibling || <HTMLElement>this.taskIframe.parentElement;
-        prev.style.textAlign = "center";
-        prev.style.width = "100%";
-        let startBtn = CssBtn(createBtn("开始挂机", "点击开始自动挂机播放视频", "cx-btn"));
+export class CxVideoControlBar extends CxTaskControlBar {
+    public defaultBtn() {
+        super.defaultBtn();
         let pass = CssBtn(createBtn("秒过视频", "秒过视频会被后台检测到", "cx-btn"));
         let download = CssBtn(createBtn("下载视频", "我要下载视频好好学习", "cx-btn"));
         let downloadSubtitle = CssBtn(createBtn("下载字幕", "我要下载字幕一同食用"));
         pass.style.background = "#F57C00";
         download.style.background = "#999999";
         downloadSubtitle.style.background = "#638EE1";
-        prev.prepend(startBtn, pass, download, downloadSubtitle);
-        // 绑定事件
-        startBtn.onclick = () => {
-            if (startBtn.innerText == '挂机中...') {
-                localStorage["auto"] = false;
-                startBtn.innerText = "开始挂机";
-                Application.App.log.Info("挂机停止了");
-            } else {
-                localStorage["auto"] = true;
-                startBtn.innerText = '挂机中...';
-                Application.App.log.Info("挂机开始了");
-                this.task.Start();
-            }
-        };
+        this.prev.append(pass, download, downloadSubtitle);
         pass.onclick = () => {
             if (!protocolPrompt("秒过视频会产生不良记录,是否继续?", "boom_no_prompt")) {
                 return;
             }
-            this.task.sendEndTimePack((isPassed: boolean) => {
+            (<Video>this.task).sendEndTimePack((isPassed: boolean) => {
                 if (isPassed) {
                     alert('秒过成功,刷新后查看效果');
                 } else {
@@ -166,12 +134,11 @@ export class VideoFactory implements TaskFactory {
             });
         };
         download.onclick = () => {
-            this.task.download();
+            (<Video>this.task).download();
         };
         downloadSubtitle.onclick = () => {
-            this.task.downloadSubtitle();
+            (<Video>this.task).downloadSubtitle();
         }
-
     }
 }
 
@@ -181,6 +148,7 @@ export class Video extends Task {
     protected _muted: boolean;
     protected afterPoint: number = 0;
     protected flash: boolean;
+
     public Init() {
         Application.App.log.Debug("播放器配置", this.taskinfo);
         let timer = this.context.setInterval(() => {
@@ -217,7 +185,8 @@ export class Video extends Task {
     }
 
     protected initPlayer() {
-        this.playbackRate = this._playbackRate; this.muted = this._muted;
+        this.playbackRate = this._playbackRate;
+        this.muted = this._muted;
     }
 
     /**
@@ -240,16 +209,16 @@ export class Video extends Task {
     public downloadSubtitle() {
         get('/richvideo/subtitle?mid=' + this.taskinfo.property.mid + '&_dc=' +
             Date.parse(new Date().toString()), function (data: any) {
-                let json = JSON.parse(data);
-                if (json.length <= 0) {
-                    alert("没有字幕！");
-                } else {
-                    for (let i = 0; i < json.length; i++) {
-                        let subtitleURL = json[i]['url'];
-                        window.open(subtitleURL);
-                    }
+            let json = JSON.parse(data);
+            if (json.length <= 0) {
+                alert("没有字幕！");
+            } else {
+                for (let i = 0; i < json.length; i++) {
+                    let subtitleURL = json[i]['url'];
+                    window.open(subtitleURL);
                 }
-            });
+            }
+        });
     }
 
     /**

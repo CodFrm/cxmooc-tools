@@ -1,109 +1,56 @@
-import { TaskFactory, Task } from "./task";
-import { CssBtn } from "./utils";
-import { createBtn } from "@App/internal/utils/utils";
-import { Application } from "@App/internal/application";
+import {CssBtn} from "./utils";
+import {createBtn} from "@App/internal/utils/utils";
+import {Application} from "@App/internal/application";
 import {
-    ToolsQuestionBank,
     ToolsQuestionBankFacade,
     SwitchTopicType,
     Question,
-    QuestionBankFacade
+    QuestionBankFacade, TopicStatus, QuestionStatus
 } from "@App/internal/app/question";
-import { CxQuestionFactory } from "./question";
-import { Topic, QueryQuestions } from "@App/internal/app/topic";
+import {CxQuestionFactory} from "./question";
+import {Topic, QueryQuestions} from "@App/internal/app/topic";
+// import {TaskFactory} from "@App/mooc/chaoxing/factory";
+import {CxTaskControlBar, Task} from "@App/mooc/chaoxing/task";
+import any = jasmine.any;
+//
+// export class HomeworkTopicFactory implements TaskFactory {
+//     protected task: TopicAdapter;
+//
+//     protected createQuestion(el: HTMLElement): Question {
+//         return CxQuestionFactory.CreateHomeWorkQuestion(el);
+//     }
+//
+//     public CreateTask(context: any, taskinfo: any): Task {
+//         let topic = new HomeworkTopic(context, new ToolsQuestionBankFacade("cx", taskinfo));
+//         topic.SetQueryQuestions(new CourseQueryQuestion(context, this.createQuestion));
+//         this.task = new TopicAdapter(context, taskinfo, topic);
+//
+//         let btn = CssBtn(createBtn("搜索答案", "搜索题目答案"));
+//         if ((<HTMLInputElement>document.querySelector("input#workRelationId"))) {
+//             document.querySelector(".CyTop").append(btn);
+//             btn.onclick = async () => {
+//                 btn.innerText = "答案搜索中...";
+//                 this.task.Start().then((ret: any) => {
+//                     ret = ret || "搜索题目";
+//                     btn.innerText = ret;
+//                 });
+//             };
+//         }
+//         return this.task;
+//     }
+// }
 
-export class HomeworkTopicFactory implements TaskFactory {
-    protected task: TopicAdapter;
 
-    protected createQuestion(el: HTMLElement): Question {
-        return CxQuestionFactory.CreateHomeWorkQuestion(el);
-    }
-
-    public CreateTask(context: any, taskinfo: any): Task {
-        let topic = new HomeworkTopic(context, new ToolsQuestionBankFacade(new ToolsQuestionBank("cx", taskinfo)));
-        topic.SetQueryQuestions(new CourseQueryQuestion(context, this.createQuestion));
-        this.task = new TopicAdapter(context, taskinfo, topic);
-
-        let btn = CssBtn(createBtn("搜索答案", "搜索题目答案"));
-        if ((<HTMLInputElement>document.querySelector("input#workRelationId"))) {
-            document.querySelector(".CyTop").append(btn);
-            btn.onclick = async () => {
-                btn.innerText = "答案搜索中...";
-                this.task.Start().then((ret: any) => {
-                    ret = ret || "搜索题目";
-                    btn.innerText = ret;
-                });
-            };
-        }
-        return this.task;
-    }
-}
-
-export class ExamTopicFactory implements TaskFactory {
-    protected task: TopicAdapter;
-
-    protected createQuestion(el: HTMLElement): Question {
-        return CxQuestionFactory.CreateExamCollectQuestion(el);
-    }
-
-    public CreateTask(context: any, taskinfo: any): Task {
-        let topic = new ExamTopic(context, new ToolsQuestionBankFacade(new ToolsQuestionBank("cx", taskinfo)));
-        this.task = new TopicAdapter(context, taskinfo, topic);
-        if (document.URL.indexOf("exam/test/reVersionTestStartNew") > 0) {
-            topic.SetQueryQuestions(topic);
-            let btn = CssBtn(createBtn("搜索答案", "搜索题目答案"));
-            document.querySelector(".Cy_ulBottom.clearfix.w-buttom,.Cy_ulTk,.Cy_ulBottom.clearfix").append(btn);
-            btn.onclick = () => {
-                btn.innerText = "答案搜索中...";
-                try {
-                    this.task.Start().then((ret: any) => {
-                        ret = ret || "搜索题目";
-                        btn.innerText = ret;
-                    });
-                } catch (e) {
-                }
-                return false;
-            };
-        } else {
-            topic.SetQueryQuestions(new CourseQueryQuestion(context, this.createQuestion));
-        }
-        return this.task;
-    }
-}
-
-export class TopicFactory implements TaskFactory {
-    protected taskIframe: HTMLIFrameElement;
-    protected task: TopicAdapter;
-
-    protected createQuestion(el: HTMLElement): Question {
-        return CxQuestionFactory.CreateCourseQuestion(el);
-    }
-
-    public CreateTask(context: any, taskinfo: any): Task {
-        this.taskIframe = (<Window>context).document.querySelector(
-            "iframe[jobid='" + taskinfo.jobid + "']"
-        );
-        this.createActionBtn();
-
-        let contentWindow = (<HTMLIFrameElement>this.taskIframe.contentWindow.document.querySelector("#frame_content")).contentWindow;
-        taskinfo.refer = (<Window>context).document.URL;
-        taskinfo.id = taskinfo.property.workid;
-        let topic = new CourseTopic(contentWindow, new ToolsQuestionBankFacade(new ToolsQuestionBank("cx", taskinfo)));
-        topic.SetQueryQuestions(new CourseQueryQuestion(contentWindow, this.createQuestion));
-        this.task = new TopicAdapter(contentWindow, taskinfo, topic);
-        return this.task;
-    }
-
-    protected createActionBtn() {
-        let prev = <HTMLElement>this.taskIframe.previousElementSibling;
-        prev.style.textAlign = "center";
-        prev.style.width = "100%";
-        let topic = CssBtn(createBtn("搜索题目", "点击开始自动答题", "cx-btn"));
-        prev.append(topic);
+export class CxTopicControlBar extends CxTaskControlBar {
+    public defaultBtn() {
+        super.defaultBtn();
+        let topic = CssBtn(createBtn("搜索题目", "点击搜索题目答案", "cx-btn"));
+        topic.style.background = "#3fae93";
+        this.prev.append(topic);
         // 绑定事件
         topic.onclick = async () => {
             topic.innerText = "答案搜索中...";
-            this.task.Start().then((ret: any) => {
+            (<TopicAdapter>this.task).Start().then((ret: any) => {
                 ret = ret || "搜索题目";
                 topic.innerText = ret;
             });
@@ -111,20 +58,23 @@ export class TopicFactory implements TaskFactory {
     }
 }
 
-class TopicAdapter extends Task {
+export class TopicAdapter extends Task {
 
     protected lock: boolean;
     protected topic: Topic;
+    protected status: QuestionStatus;
 
     constructor(context: any, taskinfo: any, topic: Topic) {
         super(context, taskinfo);
         this.topic = topic;
     }
 
-    public Init(): void {
-        Application.App.log.Debug("题目信息", this.taskinfo);
-        this.topic.Init();
-        this.loadCallback && this.loadCallback();
+    public Init(): Promise<any> {
+        return new Promise<any>(resolve => {
+            Application.App.log.Debug("题目信息", this.taskinfo);
+            this.topic.Init();
+            this.loadCallback && this.loadCallback();
+        });
     }
 
     public Start(): Promise<any> {
@@ -134,19 +84,28 @@ class TopicAdapter extends Task {
             }
             this.lock = true;
             let ret = await this.topic.QueryAnswer();
-            if (ret == null) {
-                if (Application.App.config.auto) {
-                    ret = await this.topic.Submit();
-                }
-            }
+            this.status = ret;
             this.completeCallback && this.completeCallback();
             this.lock = false;
             return resolve(ret);
         });
     }
+
+    public async Submit(): Promise<void> {
+        return new Promise((resolve) => {
+            if (this.status == "success") {
+                this.topic.Submit().then(() => {
+                    resolve();
+                });
+            } else {
+                resolve();
+            }
+        });
+    }
+
 }
 
-class CourseQueryQuestion implements QueryQuestions {
+export class CxCourseQueryQuestion implements QueryQuestions {
     protected context: any;
     protected createQuestion: (el: HTMLElement) => Question;
 
@@ -169,7 +128,7 @@ class CourseQueryQuestion implements QueryQuestions {
     }
 }
 
-class CourseTopic extends Topic {
+export class CxCourseTopic extends Topic {
 
     constructor(content: any, answer: QuestionBankFacade) {
         super(content, answer);
@@ -189,9 +148,17 @@ class CourseTopic extends Topic {
         });
     }
 
+    public QueryAnswer(): Promise<QuestionStatus> {
+        if (this.context.document.URL.indexOf("selectWorkQuestionYiPiYue") > 0) {
+            return null;
+        }
+        return super.QueryAnswer();
+    }
+
     public Submit(): Promise<any> {
         return new Promise<any>(resolve => {
             Application.App.log.Info("准备提交答案");
+            let self = this;
             this.context.setTimeout(() => {
                 let submit = this.context.document.querySelector(".Btn_blue_1");
                 submit.click();
@@ -210,10 +177,16 @@ class CourseTopic extends Topic {
                             return;
                         }
                         this.context.clearInterval(timer);
+                        (<Window>this.context).parent.document.querySelector("#frame_content")
+                            .addEventListener("load", async function () {
+                                if (this.contentWindow.document.URL.indexOf('selectWorkQuestionYiPiYue') > 0) {
+                                    await self.CollectAnswer();
+                                    resolve();
+                                }
+                            });
                         //确定提交
                         let submit = this.context.document.querySelector(".bluebtn");
                         submit.click();
-                        resolve();
                     }, 2000);
                 }, 2000);
             }, 2000);
@@ -221,7 +194,7 @@ class CourseTopic extends Topic {
     }
 }
 
-class ExamTopic extends Topic implements QueryQuestions {
+export class ExamTopic extends Topic implements QueryQuestions {
 
     public QueryQuestions(): Question[] {
         let current = document.querySelector(".current");
@@ -249,7 +222,7 @@ class ExamTopic extends Topic implements QueryQuestions {
     }
 }
 
-class HomeworkTopic extends CourseTopic {
+export class HomeworkTopic extends CxCourseTopic {
 
     constructor(content: any, answer: QuestionBankFacade) {
         super(content, answer);

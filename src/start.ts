@@ -1,8 +1,8 @@
-import { NewChromeServerMessage } from "@App/internal/utils/message";
-import { HttpUtils, InjectedBySrc } from "@App/internal/utils/utils";
-import { Application, Content, Launcher } from "@App/internal/application";
-import { ChromeConfigItems, NewBackendConfig } from "@App/internal/utils/config";
-import { ConsoleLog } from "./internal/utils/log";
+import {NewChromeServerMessage} from "@App/internal/utils/message";
+import {HttpUtils, InjectedBySrc} from "@App/internal/utils/utils";
+import {Application, Content, Launcher} from "@App/internal/application";
+import {ChromeConfigItems, NewBackendConfig} from "@App/internal/utils/config";
+import {ConsoleLog} from "./internal/utils/log";
 
 class start implements Launcher {
 
@@ -11,6 +11,9 @@ class start implements Launcher {
         if (Application.App.debug) {
             InjectedBySrc(document, chrome.extension.getURL('src/mooc.js'));
         }
+        if (top != self) {
+            return;
+        }
         //注入config
         let configKeyList: string[] = new Array();
         for (let key in Application.App.config) {
@@ -18,7 +21,9 @@ class start implements Launcher {
         }
         chrome.storage.sync.get(configKeyList, async function (items) {
             for (let key in items) {
-                if (items[key] == undefined) { continue; }
+                if (items[key] == undefined) {
+                    continue;
+                }
                 localStorage[key] = items[key] || await Application.App.config.GetConfig(key);
             }
         });
@@ -35,7 +40,7 @@ class start implements Launcher {
         //监听配置项更新
         chrome.runtime.onMessage.addListener((request) => {
             if (request.type && request.type == "cxconfig") {
-                window.postMessage({ type: "cxconfig", key: request.key, value: request.value }, '/');
+                window.postMessage({type: "cxconfig", key: request.key, value: request.value}, '/');
             }
         });
         //检查扩展强制更新
@@ -51,9 +56,7 @@ class start implements Launcher {
     }
 }
 
-let component = new Map<string, any>().
-    set("config", new ChromeConfigItems(NewBackendConfig())).
-    set("logger", new ConsoleLog());
+let component = new Map<string, any>().set("config", new ChromeConfigItems(NewBackendConfig())).set("logger", new ConsoleLog());
 
 let application = new Application(Content, new start(), component);
 application.run();

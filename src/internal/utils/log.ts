@@ -93,13 +93,19 @@ export class PageLog implements Logger {
         this.el && (this.el.innerHTML = text);
         return this;
     }
+
     public Warn(...args: any): Logger {
+        console.warn("[warn", this.getNowTime(), "]", ...args);
         return this;
     }
+
     public Error(...args: any): Logger {
+        console.error("[error", this.getNowTime(), "]", ...args);
         return this;
     }
+
     public Fatal(...args: any): Logger {
+        console.error("[fatal", this.getNowTime(), "]", ...args);
         return this;
     }
 }

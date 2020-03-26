@@ -1,6 +1,6 @@
-import { HttpUtils, removeHTML, randNumber } from "../utils/utils";
-import { SystemConfig } from "@App/config";
-import { Application } from "../application";
+import {HttpUtils, removeHTML, randNumber} from "../utils/utils";
+import {SystemConfig} from "@App/config";
+import {Application} from "../application";
 
 export interface Topic {
     topic: string
@@ -21,6 +21,7 @@ export interface Answer {
     answers?: Option[]
     correct: Option[]
     id?: string
+
     Equal(content1: string, content2: string): boolean
 }
 
@@ -31,6 +32,7 @@ export class PushAnswer implements Answer {
     public status: TopicStatus;
     public answers: Option[];
     public correct: Option[];
+
     public Equal(content1: string, content2: string): boolean {
         return content1 == content2;
     }
@@ -38,13 +40,17 @@ export class PushAnswer implements Answer {
 
 export interface Options {
     Random(): TopicStatus;
+
     Fill(s: Answer): TopicStatus;
+
     Correct(): Answer
 }
 
 export interface Question extends Options {
     GetType(): TopicType;
+
     GetTopic(): string;
+
     SetStatus(status: TopicStatus): void;
 }
 
@@ -54,11 +60,17 @@ export type FillType = 1;
 // 1随机答案 2不支持的随机答案类型 3无答案 4无符合答案
 export type TopicStatus = "ok" | "random" | "no_support_random" | "no_answer" | "no_match";
 
-let statusMap = new Map<TopicStatus, string>();
-statusMap.set("ok", "搜索成功").set("random", "随机答案").set("no_support_random", "不支持的随机答案类型").
-    set("no_answer", "题库中没有搜索到答案").set("no_match", "题库中没有符合的答案");
+let topicStatusMap = new Map<TopicStatus, string>();
+topicStatusMap.set("ok", "搜索成功").set("random", "随机答案").set("no_support_random", "不支持的随机答案类型").set("no_answer", "题库中没有搜索到答案").set("no_match", "题库中没有符合的答案");
+let questionStatusMap = new Map<QuestionStatus, string>();
+questionStatusMap.set("success", "搜索成功").set("network", "题库网络错误").set("incomplete", "题库不全").set("processing", "搜索中...");
+
 export function TopicStatusString(status: TopicStatus): string {
-    return statusMap.get(status);
+    return topicStatusMap.get(status);
+}
+
+export function QuestionStatusString(status: QuestionStatus): string {
+    return questionStatusMap.get(status);
 }
 
 export function SwitchTopicType(title: string): TopicType {
@@ -85,9 +97,12 @@ export type QuestionStatus = "success" | "network" | "incomplete" | "processing"
 export type QuestionCallback = (status: QuestionStatus) => void
 
 export type QuestionBankCallback = (args: { status: QuestionStatus, answer: Answer[] }) => void
+
 export interface QuestionBank {
     Answer(topic: Topic[], resolve: QuestionBankCallback): void;
+
     Push(answer: Answer[]): Promise<QuestionStatus>;
+
     SetInfo(info: QuestionInfo): void;
 }
 
@@ -95,11 +110,13 @@ export interface QuestionInfo {
     refer: string
     id: string
 }
+
 // 小工具题库
 export class ToolsQuestionBank implements QuestionBank {
 
     protected platform: string
     protected info: QuestionInfo;
+
     constructor(platform: string, info?: QuestionInfo) {
         this.platform = platform;
         this.info = info;
@@ -158,15 +175,15 @@ export class ToolsQuestionBank implements QuestionBank {
                     if (status != "success") {
                         retStatus = status;
                     }
-                    resolve({ status: "processing", answer: tmpResult });
+                    resolve({status: "processing", answer: tmpResult});
                     if (t < topic.length) {
                         next(t);
                     } else {
-                        return resolve({ status: retStatus, answer: answer });
+                        return resolve({status: retStatus, answer: answer});
                     }
                 },
                 error: () => {
-                    return resolve({ status: "network", answer: answer });
+                    return resolve({status: "network", answer: answer});
                 }
             });
         }
@@ -194,18 +211,23 @@ export class ToolsQuestionBank implements QuestionBank {
     }
 
 }
+
 export interface QuestionBankFacade {
     ClearQuestion(): void
+
     AddQuestion(q: Question): void
+
     Answer(callback: (status: QuestionStatus) => void): void
+
     Push(callback: (status: QuestionStatus) => void): void
 }
+
 export class ToolsQuestionBankFacade implements QuestionBankFacade {
     protected bank: QuestionBank;
     protected question: Array<Question>;
 
-    constructor(bank: QuestionBank) {
-        this.bank = bank;
+    constructor(platform: string, info?: any) {
+        this.bank = new ToolsQuestionBank(platform, info);
         this.question = new Array<Question>();
     }
 
