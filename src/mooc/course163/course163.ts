@@ -85,6 +85,7 @@ export class Course163 implements Mooc {
         if (options == undefined) {
             return
         }
+        //TODO:优化,太难看了
         for (let i = 0; i < options.length; i++) {
             let topic = options[i];
             if (topic.type != 1 && topic.type != 2) {
@@ -93,6 +94,9 @@ export class Course163 implements Mooc {
                     tmpAnswer.topic = topic.title;
                     tmpAnswer.type = 4;
                     tmpAnswer.correct = new Array<Option>();
+                    if(!topic.stdAnswer){
+                        continue;
+                    }
                     tmpAnswer.correct.push({
                         option: "一", content: topic.stdAnswer,
                     });
@@ -102,6 +106,9 @@ export class Course163 implements Mooc {
                     tmpAnswer.topic = topic.title;
                     tmpAnswer.type = 3;
                     tmpAnswer.correct = new Array<Option>();
+                    if(!topic.optionDtos){
+                        continue;
+                    }
                     for (let n = 0; n < topic.optionDtos.length; n++) {
                         if (topic.optionDtos[n].answer) {
                             tmpAnswer.correct.push({
@@ -112,6 +119,9 @@ export class Course163 implements Mooc {
                     }
                     answer.push(tmpAnswer);
                 }
+                continue;
+            }
+            if(!topic.optionDtos){
                 continue;
             }
             let option = new Array<Option>();

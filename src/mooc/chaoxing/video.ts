@@ -142,7 +142,16 @@ export class VideoFactory implements TaskFactory {
         prev.prepend(startBtn, pass, download, downloadSubtitle);
         // 绑定事件
         startBtn.onclick = () => {
-            this.task.Start();
+            if (startBtn.innerText == '挂机中...') {
+                localStorage["auto"] = false;
+                startBtn.innerText = "开始挂机";
+                Application.App.log.Info("挂机停止了");
+            } else {
+                localStorage["auto"] = true;
+                startBtn.innerText = '挂机中...';
+                Application.App.log.Info("挂机开始了");
+                this.task.Start();
+            }
         };
         pass.onclick = () => {
             if (!protocolPrompt("秒过视频会产生不良记录,是否继续?", "boom_no_prompt")) {

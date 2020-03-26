@@ -84,7 +84,7 @@ class CourseQuestion implements Question {
 
     protected dealImgDomain(content: string): string {
         //移除域名对比,也不知道还有没有花里胡哨的
-        return content.replace(/"https:\/\/(.*?)\//, "\"");
+        return content.replace(/"http(s|):\/\/(.*?)\//, "\"");
     }
 
     public Fill(answer: Answer): TopicStatus {

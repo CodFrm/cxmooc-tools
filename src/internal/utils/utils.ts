@@ -285,7 +285,7 @@ export function removeHTML(html: string) {
     html = html.replace(revHtml, '');
     html = html.replace(/(^\s+)|(\s+$)/g, '');
     html = dealSymbol(html);
-    return html.replace(/&nbsp;/g, ' ').trim();
+    return html.replace(/&nbsp;/g, ' ').replace(/&amp;/g, '&').trim();
 }
 
 /**

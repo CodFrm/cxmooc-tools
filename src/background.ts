@@ -23,6 +23,17 @@ class background implements Launcher {
         this.update();
         this.setDefaultConfig();
         this.injectedScript();
+        this.event();
+    }
+
+    protected event() {
+        chrome.runtime.onInstalled.addListener((details) => {
+            if (details.reason == "install") {
+                chrome.tabs.create({ url: "https://cx.icodef.com/" });
+            } else if (details.reason == "update") {
+                chrome.tabs.create({ url: "https://github.com/CodFrm/cxmooc-tools/releases" });
+            }
+        });
     }
 
     protected setDefaultConfig() {
@@ -78,13 +89,6 @@ class background implements Launcher {
                 }
                 this.source = this.dealScript(source, version);
             });
-            if (Application.App.debug) {
-                chrome.storage.onChanged.addListener((changes, namespace) => {
-                    if (namespace == "local" && changes["source"] != undefined) {
-                        this.source = this.dealScript(changes["source"].newValue, version);
-                    }
-                });
-            }
         });
     }
 
@@ -99,30 +103,28 @@ class background implements Launcher {
         if (Application.App.debug) {
             return;
         }
-        chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
-            if (changeInfo.status === 'loading' && changeInfo.url == null) {
-                for (let i = 0; i < SystemConfig.match.length; i++) {
-                    let v = SystemConfig.match[i];
-                    v = v.replace(/(\.\?\/)/g, "\\$1");
-                    v = v.replace(/\*/g, ".*?");
-                    let reg = new RegExp(v);
-                    if (reg.test(tab.url)) {
-                        chrome.tabs.executeScript(tabId, {
-                            code: `(function(){
-                                let temp = document.createElement('script');
-                                temp.setAttribute('type', 'text/javascript');
-                                temp.innerHTML = "`+ this.source + `";
-                                temp.className = "injected-js";
-                                document.documentElement.appendChild(temp)
-                            }())`,
-                            allFrames: true,
-                            runAt: "document_start",
-                        });
-                        break;
-                    }
+        chrome.webNavigation.onCommitted.addListener((details) => {
+            for (let i = 0; i < SystemConfig.match.length; i++) {
+                let v = SystemConfig.match[i];
+                v = v.replace(/(\.\?\/)/g, "\\$1");
+                v = v.replace(/\*/g, ".*?");
+                let reg = new RegExp(v);
+                if (reg.test(details.url)) {
+                    chrome.tabs.executeScript(details.tabId, {
+                        frameId: details.frameId,
+                        code: `(function(){
+                            let temp = document.createElement('script');
+                            temp.setAttribute('type', 'text/javascript');
+                            temp.innerHTML = "`+ this.source + `";
+                            temp.className = "injected-js";
+                            document.documentElement.appendChild(temp)
+                        }())`,
+                        runAt: "document_start",
+                    });
+                    break;
                 }
             }
-        });
+        })
     }
 }
 
