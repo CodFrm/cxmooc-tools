@@ -2,44 +2,13 @@ import {CssBtn} from "./utils";
 import {createBtn} from "@App/internal/utils/utils";
 import {Application} from "@App/internal/application";
 import {
-    ToolsQuestionBankFacade,
     SwitchTopicType,
     Question,
-    QuestionBankFacade, TopicStatus, QuestionStatus
+    QuestionBankFacade, QuestionStatus
 } from "@App/internal/app/question";
 import {CxQuestionFactory} from "./question";
 import {Topic, QueryQuestions} from "@App/internal/app/topic";
-// import {TaskFactory} from "@App/mooc/chaoxing/factory";
 import {CxTaskControlBar, Task} from "@App/mooc/chaoxing/task";
-import any = jasmine.any;
-//
-// export class HomeworkTopicFactory implements TaskFactory {
-//     protected task: TopicAdapter;
-//
-//     protected createQuestion(el: HTMLElement): Question {
-//         return CxQuestionFactory.CreateHomeWorkQuestion(el);
-//     }
-//
-//     public CreateTask(context: any, taskinfo: any): Task {
-//         let topic = new HomeworkTopic(context, new ToolsQuestionBankFacade("cx", taskinfo));
-//         topic.SetQueryQuestions(new CourseQueryQuestion(context, this.createQuestion));
-//         this.task = new TopicAdapter(context, taskinfo, topic);
-//
-//         let btn = CssBtn(createBtn("搜索答案", "搜索题目答案"));
-//         if ((<HTMLInputElement>document.querySelector("input#workRelationId"))) {
-//             document.querySelector(".CyTop").append(btn);
-//             btn.onclick = async () => {
-//                 btn.innerText = "答案搜索中...";
-//                 this.task.Start().then((ret: any) => {
-//                     ret = ret || "搜索题目";
-//                     btn.innerText = ret;
-//                 });
-//             };
-//         }
-//         return this.task;
-//     }
-// }
-
 
 export class CxTopicControlBar extends CxTaskControlBar {
     public defaultBtn() {
@@ -74,6 +43,7 @@ export class TopicAdapter extends Task {
             Application.App.log.Debug("题目信息", this.taskinfo);
             this.topic.Init();
             this.loadCallback && this.loadCallback();
+            resolve();
         });
     }
 

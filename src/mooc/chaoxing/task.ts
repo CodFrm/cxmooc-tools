@@ -18,7 +18,10 @@ export abstract class Task {
         this.completeCallback = callback;
     }
 
-    public Init(): void {
+    public Init(): Promise<any> {
+        return new Promise(resolve => {
+            resolve();
+        });
     }
 
     public Load(callback: () => void): void {

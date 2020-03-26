@@ -1,9 +1,20 @@
-import { Mooc } from "../factory";
-import { createBtn, substrex, randNumber, protocolPrompt } from "@App/internal/utils/utils";
+import {Mooc} from "../factory";
+import {createBtn, substrex, randNumber, protocolPrompt} from "@App/internal/utils/utils";
 import "../../views/common";
-import { Topic, QueryQuestions } from "@App/internal/app/topic";
-import { Question, ToolsQuestionBankFacade, ToolsQuestionBank, TopicType, SwitchTopicType, TopicStatus, Answer, TopicStatusString, PushAnswer } from "@App/internal/app/question";
-import { CreateNoteLine } from "../chaoxing/utils";
+import {Topic, QueryQuestions} from "@App/internal/app/topic";
+import {
+    Question,
+    ToolsQuestionBankFacade,
+    ToolsQuestionBank,
+    TopicType,
+    SwitchTopicType,
+    TopicStatus,
+    Answer,
+    TopicStatusString,
+    PushAnswer,
+    QuestionStatusString
+} from "@App/internal/app/question";
+import {CreateNoteLine} from "../chaoxing/utils";
 
 //TODO: 与超星一起整合优化
 export class ZhsExam implements Mooc {
@@ -18,10 +29,14 @@ export class ZhsExam implements Mooc {
         this.topic.SetQueryQuestions(new ExamQueryQuestion());
         window.addEventListener("load", () => {
             setTimeout(() => {
-                document.oncontextmenu = () => { }
-                document.oncopy = () => { }
-                document.onpaste = () => { }
-                document.onselectstart = () => { }
+                document.oncontextmenu = () => {
+                }
+                document.oncopy = () => {
+                }
+                document.onpaste = () => {
+                }
+                document.onselectstart = () => {
+                }
                 if (document.querySelectorAll(".examInfo.infoList.clearfix").length <= 0) {
                     this.createBtn();
                 } else {
@@ -41,7 +56,7 @@ export class ZhsExam implements Mooc {
 
             btn.innerText = "搜索中...";
             let ret = await self.topic.QueryAnswer();
-            btn.innerText = ret;
+            btn.innerText = QuestionStatusString(ret);
             return false;
         }
     }
@@ -64,7 +79,8 @@ class ExamQueryQuestion implements QueryQuestions {
 
     protected createQuestion(type: TopicType, el: HTMLElement): Question {
         switch (type) {
-            case 1: case 2: {
+            case 1:
+            case 2: {
                 return new ZhsSelectQuestion(el, type);
             }
             case 3: {
@@ -81,6 +97,7 @@ class ExamQueryQuestion implements QueryQuestions {
 abstract class ZhsQuestion implements Question {
     protected el: HTMLElement;
     protected type: TopicType;
+
     constructor(el: HTMLElement, type: TopicType) {
         this.el = el;
         this.type = type;

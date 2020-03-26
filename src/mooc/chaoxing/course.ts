@@ -22,38 +22,32 @@ export class CxCourse implements Mooc {
         }, true);
     }
 
-    public OperateCard(iframe: HTMLIFrameElement) {
+    public async OperateCard(iframe: HTMLIFrameElement) {
         let iframeWindow: any = iframe.contentWindow;
         this.attachments = <Array<any>>iframeWindow.mArg.attachments;
         this.taskList = new Array();
-        let loadOverNum = 0;
-        this.attachments.forEach((value: any, index: number) => {
+        for (let index = 0; index < this.attachments.length; index++) {
+            let value = this.attachments[index];
             if (value.jobid == undefined) {
-                return;
+                continue
             }
             let task: Task;
             task = TaskFactory.CreateCourseTask(iframeWindow, value);
             if (!task) {
-                return;
+                continue;
             }
             task.jobIndex = index;
             this.taskList.push(task);
             let taskIndex = this.taskList.length - 1;
             task.Load(() => {
-                if (++loadOverNum == this.taskList.length) {
-                    this.startTask(0, null);
-                }
             });
             task.Complete(async () => {
                 this.startTask(taskIndex + 1, task);
             });
-            task.Init();
-        });
-        Application.App.log.Debug("任务点参数", this.attachments);
-        if (this.taskList.length == 0) {
-            //无任务点
-            this.startTask(0, null);
+            await task.Init();
         }
+        Application.App.log.Debug("任务点参数", this.attachments);
+        this.startTask(0, null);
     }
 
     protected async startTask(index: number, nowtask: Task) {
@@ -82,7 +76,7 @@ export class CxCourse implements Mooc {
         let interval = Application.App.config.interval;
         Application.App.log.Info(interval + "分钟后自动切换下一个任务点");
         this.timer = setTimeout(() => {
-            func();
+            Application.App.config.auto && func();
         }, interval * 60000);
     }
 

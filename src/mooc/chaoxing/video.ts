@@ -149,32 +149,36 @@ export class Video extends Task {
     protected afterPoint: number = 0;
     protected flash: boolean;
 
-    public Init() {
-        Application.App.log.Debug("播放器配置", this.taskinfo);
-        let timer = this.context.setInterval(() => {
-            try {
-                let video = this.context.document.getElementById("video_html5_api");
-                if (video == undefined) {
-                    if (this.context.document.querySelector("#reader").innerHTML.indexOf("您没有安装flashplayer") >= 0) {
-                        this.context.clearInterval(timer);
-                        this.flash = true;
-                        this.loadCallback && this.loadCallback();
+    public Init(): Promise<any> {
+        return new Promise(resolve => {
+            Application.App.log.Debug("播放器配置", this.taskinfo);
+            let timer = this.context.setInterval(() => {
+                try {
+                    let video = this.context.document.getElementById("video_html5_api");
+                    if (video == undefined) {
+                        if (this.context.document.querySelector("#reader").innerHTML.indexOf("您没有安装flashplayer") >= 0) {
+                            this.context.clearInterval(timer);
+                            this.flash = true;
+                            this.loadCallback && this.loadCallback();
+                            resolve();
+                        }
+                        return;
                     }
-                    return;
+                    this.context.clearInterval(timer);
+                    this.video = video;
+                    this.initPlayer();
+                    this.video.addEventListener("ended", () => {
+                        this.completeCallback && this.completeCallback();
+                    });
+                    this.video.addEventListener("pause", () => {
+                        Application.App.config.auto && this.video.play();
+                    });
+                    this.loadCallback && this.loadCallback();
+                    resolve();
+                } catch (error) {
                 }
-                this.context.clearInterval(timer);
-                this.video = video;
-                this.initPlayer();
-                this.video.addEventListener("ended", () => {
-                    this.completeCallback && this.completeCallback();
-                });
-                this.video.addEventListener("pause", () => {
-                    Application.App.config.auto && this.video.play();
-                });
-                this.loadCallback && this.loadCallback();
-            } catch (error) {
-            }
-        }, 500);
+            }, 500);
+        });
     }
 
     public Start(): void {

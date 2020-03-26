@@ -14,6 +14,7 @@
 // @match        *://*/work/selectWorkQuestionYiPiYue?*
 // @match        *://*/work/doHomeWorkNew?*
 // @match        *://*/ananas/modules/video/index.html?*
+// @match        *://*.chaoxing.com/exam/test?*
 // @grant        GM_xmlhttpRequest
 // @grant        unsafeWindow
 // @license      MIT
