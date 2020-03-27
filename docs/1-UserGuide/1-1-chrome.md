@@ -4,14 +4,16 @@ title: Chrome(内核)浏览器安装
 
 **chrome商店:[超星慕课小工具](https://chrome.google.com/webstore/detail/%E8%B6%85%E6%98%9F%E6%85%95%E8%AF%BE%E5%B0%8F%E5%B7%A5%E5%85%B7/kkicgcijebblepmephnfganiiochecfl?hl=zh-CN)**
 
-如果觉得步骤过于复杂或者繁琐,进直接下载[releases页面](https://github.com/CodFrm/cxmooc-tools/releases)的打包版本,适合小白用户(但是版本更新可能较慢)
+如果觉得步骤过于复杂或者繁琐,可以进直接下载[releases页面](https://github.com/CodFrm/cxmooc-tools/releases)的打包版本,适合小白用户(但是大版本更新比较麻烦)
 
 ## Chrome扩展
 > 如果你可以进入chrome商店,那么推荐你直接使用上面的chrome商店链接安装
+>
+> 本方法适用于所有支持Chrome(内核)浏览器的系统(Windows,Mac OS,Linux,树莓派等)
 
 下载发布的版本[cxmooc-tools.crx](https://github.com/CodFrm/cxmooc-tools/releases)无需安装环境,下载即可使用。
 
-1. 下载发布的版本cxmooc-tools.crx文件，修改后缀为.zip，并将其解压到目录`cxmooc-tools`
+1. 下载发布的版本cxmooc-tools.crx文件，修改后缀为.zip(如果解压有问题,例如Mac OS,可以直接下载cxmooc-tools.zip解压)，并将其解压到目录`cxmooc-tools`
 2. 打开Chrome浏览器的更多工具选项，打开扩展程序页面并启用开发者模式。
 3. 加载已解压的扩展程序，路径选择你解压的路径`cxmooc-tools/`
 
@@ -41,6 +43,7 @@ title: Chrome(内核)浏览器安装
 
 * 360极速浏览器
 * QQ浏览器
+* 百分浏览器(也就是打包的浏览器)
 
 ## 打包版浏览器(小白推荐)
 
@@ -53,4 +56,4 @@ title: Chrome(内核)浏览器安装
 然后直接进入慕课网站直接开始
 
 ## 手机版本
-> 待完善
+> 待完善 某些浏览器支持插件安装(听闻ipad也可以,可以自己尝试 如果可以帮助我们完善本文档)

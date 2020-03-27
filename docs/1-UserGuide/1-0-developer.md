@@ -17,7 +17,9 @@ npm install
 npm run build
 # 开发模式请使用
 npm run dev
-# 打包生成crx和油猴脚本,需要注意,打包要一个pem密钥文件放在build目录下,文件名为:cxmooc-tools.pem(手动打包一次chrome浏览器会生成)
+# 打包生成crx和油猴脚本
+npm run tampermonkey
+# 请注意,打包crx需要拥有一个pem密钥
 npm run pack
 ```
 
@@ -27,6 +29,25 @@ npm run pack
 1. 执行`npm run build`,此时会在`build/cxmooc-tools`目录下生成插件文件。
 2. 打开Chrome浏览器的更多工具选项，打开扩展程序页面并启用开发者模式。
 3. 加载已解压的扩展程序，路径选择`build/cxmooc-tools`
+
+### 项目结构
+```
+|cxmooc-tools
+├─tests               # 单元测试
+|   ├─hook.test.ts
+|   ├─utils.test.ts
+|   ├─extension
+├─src                 # 插件源码
+|  ├─background.ts
+|  ├─config.ts
+|  ├─mooc.ts
+|  ├─popup.ts
+|  ├─start.ts
+|  ├─views            # 视图文件
+|  ├─tampermonkey     # 油猴打包文件
+|  ├─mooc             # 平台源码
+|  ├─internal         # 内部软件包
+```
 
 ## 其它
 你也可以加入tg群组或者qq群或者在github上发送issue来交流:

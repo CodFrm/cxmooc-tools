@@ -10,7 +10,7 @@
 ## 关于超星慕课小工具
 > **[使用文档](https://cx-doc.xloli.top/)**
 
-一个超星(学习通)和智慧树(知到)刷课工具,火狐,谷歌,油猴支持.全自动任务,视频倍速秒过,作业考试题库,验证码自动打码(੧ᐛ੭挂科模式,启动)
+一个 超星(学习通)/智慧树(知到)/中国大学mooc 刷课工具,火狐,谷歌,油猴支持.全自动任务,视频倍速秒过,作业考试题库,验证码自动打码(੧ᐛ੭挂科模式,启动)
 
 ### 应用商店
 [Chrome商店](https://chrome.google.com/webstore/detail/%E8%B6%85%E6%98%9F%E6%85%95%E8%AF%BE%E5%B0%8F%E5%B7%A5%E5%85%B7/kkicgcijebblepmephnfganiiochecfl?hl=zh-CN)
@@ -25,7 +25,7 @@
  * [x] Tampermonkey
 
 ### 功能支持列表
-> 详情请看使用文档
+> 详情请看使用文档,不同平台所支持的功能不尽相同
 
 * [x] 视频挂机
 * [x] 视频秒过
@@ -38,7 +38,7 @@
 * [x] 作业答题
 
 ## 参与开发
-> 如果你想参与开发,请阅读下面内容,如果只是使用本插件,请移步 **[使用文档](https://cx-doc.xloli.top/)**
+> 如果你想参与开发,请阅读下面内容,如果只是使用本插件,请移步 **[使用文档](https://cx.icodef.com/)**
 
 ### 环境:
 * Node.js
@@ -53,6 +53,7 @@ npm run build
 # 开发模式请使用
 npm run dev
 # 打包生成crx和油猴脚本
+npm run tampermonkey
 npm run pack
 ```
 

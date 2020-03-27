@@ -3,15 +3,16 @@ title: Tampermonkey 脚本
 ---
 
 ## 安装
-Tampermonkey,以下都称为油猴
+Tampermonkey Violentmonkey暴力猴,以下都称为油猴
 
-油猴脚本使用需要去安装另外一个**Tampermonkey**插件,然后在 **[Greasy Fork/376190-cxmooc-tools](https://greasyfork.org/zh-CN/scripts/376190-cxmooc-tools)** 页面获取本插件
+油猴脚本使用需要去安装另外一个名叫**`Tampermonkey`**的插件,然后在下面链接中的页面获取插件,可以按需选择.不过尽量不要与插件版本一同安装,可能会导致冲突.
 
 - [超星慕课小工具](https://greasyfork.org/zh-CN/scripts/376190-%E8%B6%85%E6%98%9F%E6%85%95%E8%AF%BE%E5%B0%8F%E5%B7%A5%E5%85%B7)
 - [智慧树小工具](https://greasyfork.org/zh-CN/scripts/382037-%E6%99%BA%E6%85%A7%E6%A0%91%E5%B0%8F%E5%B7%A5%E5%85%B7)
+- [中国大学慕课小工具](https://greasyfork.org/zh-CN/scripts/398719-%E4%B8%AD%E5%9B%BD%E5%A4%A7%E5%AD%A6%E6%85%95%E8%AF%BE%E5%B0%8F%E5%B7%A5%E5%85%B7)
 
 ### 配置修改
-在油猴的管理面板中,选择编辑
+在油猴的**管理面板**中,选择编辑,按照类似下方的选项根据后面的注释按需进行修改(一般不需要修改)
 
 ![](/img/5.webp)
 

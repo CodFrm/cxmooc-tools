@@ -15,17 +15,22 @@ features:
 ---
 
 ![GitHub stars](https://img.shields.io/github/stars/codfrm/cxmooc-tools.svg)
-![Build Status](https://www.travis-ci.org/CodFrm/cxmooc-tools.svg?branch=master)
+[![Build Status](https://www.travis-ci.org/CodFrm/cxmooc-tools.svg?branch=master)](https://www.travis-ci.org/CodFrm/cxmooc-tools)
 ![GitHub All Releases](https://img.shields.io/github/downloads/codfrm/cxmooc-tools/total.svg)
 ![GitHub tag (latest SemVer)](https://img.shields.io/github/tag/codfrm/cxmooc-tools.svg?label=version)
+[![Chrome](https://img.shields.io/badge/chrome-success-brightgreen)](https://chrome.google.com/webstore/detail/%E8%B6%85%E6%98%9F%E6%85%95%E8%AF%BE%E5%B0%8F%E5%B7%A5%E5%85%B7/kkicgcijebblepmephnfganiiochecfl?hl=zh-CN)
+[![FireFox](https://img.shields.io/badge/firefox-success-brightgreen)](https://addons.mozilla.org/zh-CN/firefox/addon/%E8%B6%85%E6%98%9F%E6%85%95%E8%AF%BE%E5%B0%8F%E5%B7%A5%E5%85%B7/)
+[![tampermonkey](https://img.shields.io/badge/tampermonkey-success-yellowgreen)](https://greasyfork.org/zh-CN/scripts/376190-%E8%B6%85%E6%98%9F%E6%85%95%E8%AF%BE%E5%B0%8F%E5%B7%A5%E5%85%B7)
+
+
 
 ## 关于超星慕课小工具
-> 2.1版本以后开始支持智慧树,名字嘛不改了
+> 2.1版本以后开始支持智慧树,2.2版本以后开始支持中国大学mooc 名字嘛不改了
 
-一个超星(学习通)和智慧树(知到)刷课工具,火狐,谷歌,油猴支持.全自动任务,视频倍速秒过,作业考试题库,验证码自动打码(੧ᐛ੭挂科模式,启动)
+一个 超星(学习通)/智慧树(知到)/中国大学mooc 刷课工具,火狐,谷歌,油猴支持.全自动任务,视频倍速秒过,作业考试题库,验证码自动打码(੧ᐛ੭挂科模式,启动)
 
 ### 浏览器适配列表
-> 国内大多数浏览器使用的chrome内核,所以360,QQ等之类的也可以使用
+> 国内大多数浏览器使用的chrome内核,所以360,QQ浏览器等之类的也可以使用
  * Chrome for PC
  * Firefox for PC
  * Firefox for Mobile
