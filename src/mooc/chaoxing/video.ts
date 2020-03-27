@@ -1,10 +1,9 @@
 import {Mooc} from "../factory";
 import {Hook, Context} from "@App/internal/utils/hook";
 import {Application} from "@App/internal/application";
-import {randNumber, get, createBtn, protocolPrompt} from "@App/internal/utils/utils";
+import {randNumber, get, createBtn, protocolPrompt, isPhone} from "@App/internal/utils/utils";
 import {CssBtn} from "./utils";
 import {CxTaskControlBar, Task} from "@App/mooc/chaoxing/task";
-import {TaskFactory} from "@App/mooc/chaoxing/factory";
 
 // 优化播放器
 export class CxVideoOptimization implements Mooc {
@@ -14,7 +13,7 @@ export class CxVideoOptimization implements Mooc {
     public Start(): void {
         //对播放器进行优化
         window.addEventListener("load", () => {
-            (<any>Application.GlobalContext).Ext.isChaoxing = true;
+            Application.App.config.super_mode && isPhone() && ((<any>Application.GlobalContext).Ext.isChaoxing = true);
         });
         document.addEventListener("readystatechange", () => {
             this.hook()

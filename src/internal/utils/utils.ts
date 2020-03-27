@@ -345,3 +345,7 @@ export function getImageBase64(img: HTMLImageElement, ext: string) {
     canvas = null;
     return dataURL;
 }
+
+export function isPhone() {
+    return /Android|iPhone/i.test(navigator.userAgent);
+}
