@@ -24,6 +24,10 @@ export class CxCourse implements Mooc {
 
     public async OperateCard(iframe: HTMLIFrameElement) {
         let iframeWindow: any = iframe.contentWindow;
+        if (iframeWindow.mArg == undefined) {
+            let margStr = "mArg=" + iframeWindow.document.body.innerHTML.match(/try{\s+?mArg = (.*?);/)[1];
+            iframeWindow.mArg = eval(margStr);
+        }
         this.attachments = <Array<any>>iframeWindow.mArg.attachments;
         this.taskList = new Array();
         for (let index = 0; index < this.attachments.length; index++) {

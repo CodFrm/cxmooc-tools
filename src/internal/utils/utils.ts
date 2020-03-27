@@ -1,6 +1,6 @@
-import { Client } from "./message";
-import { AppName, Application } from "../application";
-import { SystemConfig } from "@App/config";
+import {Client} from "./message";
+import {AppName, Application} from "../application";
+import {SystemConfig} from "@App/config";
 
 export type RequestCallback = (body: any) => void
 export type ErrorCallback = () => void
@@ -103,16 +103,16 @@ export class HttpUtils {
         let info = <RequestInfo>data.info;
         if (Application.App.IsBackend) {
             info.success = (body) => {
-                client.Send({ body: body, code: 0 })
+                client.Send({body: body, code: 0})
             };
             info.error = () => {
-                client.Send({ code: -1 })
+                client.Send({code: -1})
             };
             HttpUtils.Request(info)
         } else {
             // content 做转发
             let extClient = Application.App.Client;
-            extClient.Send({ type: "GM_xmlhttpRequest", info: info });
+            extClient.Send({type: "GM_xmlhttpRequest", info: info});
             extClient.Recv((data) => {
                 client.Send(data)
             })
@@ -183,9 +183,9 @@ export function randNumber(minNum: number, maxNum: number): number {
 
 /**
  * 创建一个按钮
- * @param title 
- * @param description 
- * @param id 
+ * @param title
+ * @param description
+ * @param id
  */
 export function createBtn(title: string, description: string = "", className: string = "", id: string = ""): HTMLButtonElement {
     let btn = document.createElement('button');
@@ -198,7 +198,7 @@ export function createBtn(title: string, description: string = "", className: st
 
 /**
  * get请求
- * @param {*} url 
+ * @param {*} url
  */
 export function get(url: string, success: Function) {
     let xmlhttp = createRequest();
@@ -219,9 +219,9 @@ export function get(url: string, success: Function) {
 
 /**
  * post请求
- * @param {*} url 
- * @param {*} data 
- * @param {*} json 
+ * @param {*} url
+ * @param {*} data
+ * @param {*} json
  */
 export function post(url: string, data: any, json = true, success: Function) {
     let xmlhttp = createRequest();
@@ -251,6 +251,7 @@ declare namespace Express {
         error: any; // 不要用 any.
     }
 }
+
 /**
  * 创建http请求
  */
@@ -271,7 +272,7 @@ function createRequest(): XMLHttpRequest {
 
 /**
  * 去除html标签和处理中文
- * @param {string} html 
+ * @param {string} html
  */
 export function removeHTML(html: string) {
     //先处理带src和href属性的标签
@@ -285,12 +286,13 @@ export function removeHTML(html: string) {
     html = html.replace(revHtml, '');
     html = html.replace(/(^\s+)|(\s+$)/g, '');
     html = dealSymbol(html);
-    return html.replace(/&nbsp;/g, ' ').replace(/&amp;/g, '&').trim();
+    //TODO:处理HTML符号
+    return html.replace(/&nbsp;/g, ' ').replace(/&quot;/g, "\"").replace(/&amp;/g, '&').trim();
 }
 
 /**
  * 处理符号
- * @param topic 
+ * @param topic
  */
 function dealSymbol(topic: string) {
     topic = topic.replace(/，/g, ',');
@@ -305,9 +307,9 @@ function dealSymbol(topic: string) {
 
 /**
  * 取中间文本
- * @param str 
- * @param left 
- * @param right 
+ * @param str
+ * @param left
+ * @param right
  */
 export function substrex(str: string, left: string, right: string) {
     var leftPos = str.indexOf(left) + left.length;

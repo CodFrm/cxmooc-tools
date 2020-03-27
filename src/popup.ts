@@ -1,14 +1,16 @@
-import { NewBackendConfig, SetConfig, ChromeConfigItems } from "./internal/utils/config";
-import { Application, Backend, Launcher } from "./internal/application";
-import { SystemConfig } from "./config";
-import { dealHotVersion } from "./internal/utils/utils";
+import {NewBackendConfig, SetConfig, ChromeConfigItems} from "./internal/utils/config";
+import {Application, Backend, Launcher} from "./internal/application";
+import {SystemConfig} from "./config";
+import {dealHotVersion} from "./internal/utils/utils";
 
 class popup implements Launcher {
 
     protected setConfig: SetConfig;
+
     constructor(setConfig: SetConfig) {
         this.setConfig = setConfig;
     }
+
     public async start() {
         let self = this;
         let cfg = document.getElementsByTagName("input");
@@ -52,7 +54,7 @@ class popup implements Launcher {
                     document.getElementsByTagName('body')[0].appendChild(p);
                 }
                 document.getElementById("injection").innerHTML = data.injection;
-                v = (SystemConfig.version > dealHotVersion(data.hotversion) ? SystemConfig.version + ".0" : data.hotversion);
+                v = (SystemConfig.version >= dealHotVersion(data.hotversion) ? SystemConfig.version + ".0" : data.hotversion);
             }
             document.getElementById('version').innerHTML = 'v' + v + (Application.App.debug ? " debug" : "");
         });
@@ -75,8 +77,7 @@ class popup implements Launcher {
 
 window.onload = function () {
     let config = NewBackendConfig();
-    let component = new Map<string, any>().
-        set("config", new ChromeConfigItems(config));
+    let component = new Map<string, any>().set("config", new ChromeConfigItems(config));
     let app = new Application(Backend, new popup(config), component);
     app.run();
 };

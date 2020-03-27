@@ -1,12 +1,13 @@
-import { Mooc } from "@App/mooc/factory";
-import { Hook, Context } from "@App/internal/utils/hook";
-import { Application } from "@App/internal/application";
+import {Mooc} from "@App/mooc/factory";
+import {Hook, Context} from "@App/internal/utils/hook";
+import {Application} from "@App/internal/application";
 import "../../views/common";
-import { randNumber, post, substrex } from "@App/internal/utils/utils";
+import {randNumber, post, substrex} from "@App/internal/utils/utils";
 
 export class ZhsVideo implements Mooc {
 
     public Start(): void {
+        this.hookAjax();
         document.addEventListener("readystatechange", () => {
             if (document.readyState != "interactive") {
                 return;
@@ -17,19 +18,22 @@ export class ZhsVideo implements Mooc {
             try {
                 this.start();
                 clearInterval(timer);
-            } catch (e) { }
+            } catch (e) {
+            }
         }, 500);
     }
 
     protected createToolsBar() {
         let tools = document.createElement('div');
-        tools.className = "entrance_div"; tools.id = "cxtools";
+        tools.className = "entrance_div";
+        tools.id = "cxtools";
         let ul = document.createElement("ul");
         tools.appendChild(ul);
         let li1 = document.createElement("li");
         ul.appendChild(li1);
         let boomBtn = document.createElement("a");
-        boomBtn.href = "#"; boomBtn.id = "zhs-video-boom";
+        boomBtn.href = "#";
+        boomBtn.id = "zhs-video-boom";
         boomBtn.innerText = "秒过视频";
         boomBtn.onclick = () => {
             (<any>Application.GlobalContext).videoBoom(() => {
@@ -99,7 +103,7 @@ export class ZhsVideo implements Mooc {
         });
     }
 
-    protected hook(): void {
+    protected hookAjax(): void {
         let hookXMLHttpRequest = new Hook("open", Application.GlobalContext.XMLHttpRequest.prototype);
         hookXMLHttpRequest.Middleware(function (next: Context, ...args: any) {
             if (args[1].indexOf("popupAnswer/loadVideoPointerInfo") >= 0) {
@@ -116,6 +120,9 @@ export class ZhsVideo implements Mooc {
             let ret = next.apply(this, args);
             return ret;
         });
+    }
+
+    protected hook(): void {
         let hookWebpack = new Hook("webpackJsonp", Application.GlobalContext);
         hookWebpack.Middleware(function (next: Context, ...args: any) {
             try {
@@ -138,11 +145,13 @@ export class ZhsVideo implements Mooc {
                                 let tn = time;
                                 let a = this.lessonId
                                     , r = this.smallLessonId
-                                    , s = [this.recruitId, a, r, this.lastViewVideoId, 1, this.data.studyStatus, tn, time, timeStr]
+                                    ,
+                                    s = [this.recruitId, a, r, this.lastViewVideoId, 1, this.data.studyStatus, tn, time, timeStr]
                                     , l = {
                                         ev: this.D26666.Z(s),
                                         learningTokenId: Base64.encode(this.preVideoInfo.studiedLessonDto.id),
-                                        uuid: substrex(document.cookie, "uuid%22%3A%22", "%22"), dateFormate: Date.parse(<any>new Date()),
+                                        uuid: substrex(document.cookie, "uuid%22%3A%22", "%22"),
+                                        dateFormate: Date.parse(<any>new Date()),
                                     };
                                 let postData = "ev=" + l.ev + "&learningTokenId=" + l.learningTokenId +
                                     "&uuid=" + l.uuid + "&dateFormate=" + l.dateFormate;
@@ -154,7 +163,8 @@ export class ZhsVideo implements Mooc {
                                             alert("秒过成功,刷新后查看效果");
                                         } else {
                                             alert("秒过失败");
-                                        };
+                                        }
+                                        ;
                                     } catch (e) {
                                         alert("秒过失败");
                                     }
@@ -165,7 +175,8 @@ export class ZhsVideo implements Mooc {
                         return ret;
                     };
                 }
-            } catch (e) { }
+            } catch (e) {
+            }
             return next.apply(this, args);
         });
     }

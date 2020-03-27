@@ -146,7 +146,6 @@ export class Video extends Task {
     protected video: HTMLVideoElement;
     protected _playbackRate: number;
     protected _muted: boolean;
-    protected afterPoint: number = 0;
     protected flash: boolean;
 
     public Init(): Promise<any> {
@@ -169,9 +168,6 @@ export class Video extends Task {
                     this.initPlayer();
                     this.video.addEventListener("ended", () => {
                         this.completeCallback && this.completeCallback();
-                    });
-                    this.video.addEventListener("pause", () => {
-                        Application.App.config.auto && this.video.play();
                     });
                     this.loadCallback && this.loadCallback();
                     resolve();

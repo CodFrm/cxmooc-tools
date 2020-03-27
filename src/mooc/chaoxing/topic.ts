@@ -4,7 +4,7 @@ import {Application} from "@App/internal/application";
 import {
     SwitchTopicType,
     Question,
-    QuestionBankFacade, QuestionStatus
+    QuestionBankFacade, QuestionStatus, QuestionStatusString
 } from "@App/internal/app/question";
 import {CxQuestionFactory} from "./question";
 import {Topic, QueryQuestions} from "@App/internal/app/topic";
@@ -21,7 +21,7 @@ export class CxTopicControlBar extends CxTaskControlBar {
             topic.innerText = "答案搜索中...";
             (<TopicAdapter>this.task).Start().then((ret: any) => {
                 ret = ret || "搜索题目";
-                topic.innerText = ret;
+                topic.innerText = QuestionStatusString(ret);
             });
         };
     }

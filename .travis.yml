@@ -30,7 +30,6 @@ deploy:
     api_key: $GITHUB_TOKEN
     file_glob: true
     file: 
-      - build/tampermonkey.js
       - build/*.crx
       - build/*.zip
     skip_cleanup: true

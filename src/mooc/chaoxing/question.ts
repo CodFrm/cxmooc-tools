@@ -1,4 +1,4 @@
-import { substrex, randNumber as RandNumber, randNumber } from "@App/internal/utils/utils";
+import {substrex, randNumber as RandNumber, randNumber} from "@App/internal/utils/utils";
 import {
     Question,
     TopicStatus,
@@ -9,7 +9,7 @@ import {
     Answer,
     PushAnswer
 } from "@App/internal/app/question";
-import { CreateNoteLine } from "./utils";
+import {CreateNoteLine} from "./utils";
 
 //TODO: 优化
 export class CxQuestionFactory {
@@ -212,7 +212,10 @@ class cxSelectQuestion extends cxQuestion implements Question {
     }
 
     protected click(el: HTMLElement, content: string) {
-        (<HTMLElement>el.querySelector("label > input")).click();
+        let ipt = (<HTMLInputElement>el.querySelector("label > input"));
+        if (!ipt.checked) {
+            ipt.click();
+        }
         this.AddNotice(this.getOption(el) + ":" + content);
     }
 
@@ -310,9 +313,9 @@ class cxJudgeQuestion extends cxSelectQuestion implements Question {
         let ret = this.defaultAnswer();
         let correctText = el.querySelector("span").innerText;
         if (correctText.indexOf('×') >= 0) {
-            ret.correct.push({ option: false, content: false });
+            ret.correct.push({option: false, content: false});
         } else {
-            ret.correct.push({ option: true, content: true });
+            ret.correct.push({option: true, content: true});
         }
         return ret;
     }
