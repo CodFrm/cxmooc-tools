@@ -15,6 +15,9 @@ import {createBtn} from "@App/internal/utils/utils";
 
 export class TaskFactory {
     public static CreateCourseTask(context: any, taskinfo: any): Task {
+        if (taskinfo.type != "video" && taskinfo.type != "workid") {
+            return null;
+        }
         let task: Task;
         let taskIframe = <HTMLIFrameElement>(<Window>context).document.querySelector(
             "iframe[jobid='" + taskinfo.jobid + "']"
@@ -50,7 +53,7 @@ export class TaskFactory {
                 break;
             }
             default:
-                return;
+                return null;
         }
         return task;
     }
