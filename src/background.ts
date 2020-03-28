@@ -79,15 +79,13 @@ class background implements Launcher {
                 sourceUrl = SystemConfig.url + 'js/' + hotVersion + '.js';
                 version = hotVersion;
             }
-            get(sourceUrl, (source: string) => {
-                if (!source) {
-                    get(chrome.extension.getURL('src/mooc.js'), (source: string) => {
-                        version = SystemConfig.version;
-                        this.source = this.dealScript(source, SystemConfig.version);
-                    });
-                    return;
-                }
+            (<any>get(sourceUrl, (source: string) => {
                 this.source = this.dealScript(source, version);
+            })).error(() => {
+                get(chrome.extension.getURL('src/mooc.js'), (source: string) => {
+                    version = SystemConfig.version;
+                    this.source = this.dealScript(source, SystemConfig.version);
+                });
             });
         });
     }
@@ -103,14 +101,21 @@ class background implements Launcher {
         if (Application.App.debug) {
             return;
         }
-        chrome.webNavigation.onCommitted.addListener((details) => {
-            for (let i = 0; i < SystemConfig.match.length; i++) {
-                let v = SystemConfig.match[i];
-                v = v.replace(/(\.\?\/)/g, "\\$1");
-                v = v.replace(/\*/g, ".*?");
-                let reg = new RegExp(v);
+        let regex = new Array();
+        for (let i = 0; i < SystemConfig.match.length; i++) {
+            let v = SystemConfig.match[i];
+            v = v.replace(/(\.\?\/)/g, "\\$1");
+            v = v.replace(/\*/g, ".*?");
+            regex.push(v);
+        }
+        chrome.runtime.onMessage.addListener((msg, details) => {
+            if (!msg.status && msg.status != "loading") {
+                return null;
+            }
+            for (let i = 0; i < regex.length; i++) {
+                let reg = new RegExp(regex[i]);
                 if (reg.test(details.url)) {
-                    chrome.tabs.executeScript(details.tabId, {
+                    chrome.tabs.executeScript(details.tab.id, {
                         frameId: details.frameId,
                         code: `(function(){
                             let temp = document.createElement('script');
@@ -124,7 +129,7 @@ class background implements Launcher {
                     break;
                 }
             }
-        })
+        });
     }
 }
 

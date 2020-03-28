@@ -8,10 +8,8 @@ export class ZhsVideo implements Mooc {
 
     public Start(): void {
         this.hookAjax();
+        this.hook();
         document.addEventListener("readystatechange", () => {
-            if (document.readyState != "interactive") {
-                return;
-            }
             this.hook();
         });
         let timer = setInterval(() => {
@@ -123,6 +121,9 @@ export class ZhsVideo implements Mooc {
     }
 
     protected hook(): void {
+        if (document.readyState != "interactive") {
+            return;
+        }
         let hookWebpack = new Hook("webpackJsonp", Application.GlobalContext);
         hookWebpack.Middleware(function (next: Context, ...args: any) {
             try {

@@ -145,9 +145,7 @@ abstract class ZhsQuestion implements Question {
 
     protected click(el: HTMLElement, content: string) {
         let tmpel = <HTMLInputElement>el.querySelector("input");
-        if (!tmpel.checked) {
-            tmpel.click();
-        }
+        tmpel.parentElement.click();
         this.addNotice(this.getOption(el) + ":" + content);
     }
 
@@ -182,7 +180,7 @@ class ZhsSelectQuestion extends ZhsQuestion {
         let options = this.options();
         for (let i = 0; i < options.length; i++) {
             if (options[i].querySelector("input").checked) {
-                options[i].querySelector("input").click();
+                options[i].querySelector("input").parentElement.click();
             }
         }
         let flag = false;
@@ -236,7 +234,12 @@ class ZhsJudgeQuestion extends ZhsQuestion {
 
     public Fill(answer: Answer): TopicStatus {
         let options = this.options();
-        this.click(options[answer.correct[0].content ? 0 : 1]);
+        for (let i = 0; i < options.length; i++) {
+            if (this.getContent(options[i]) == (answer.correct[0].content ? "对" : "错")) {
+                this.click(options[i]);
+                break
+            }
+        }
         return "ok";
     }
 

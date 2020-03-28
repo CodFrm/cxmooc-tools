@@ -15,8 +15,9 @@ export class CxVideoOptimization implements Mooc {
         window.addEventListener("load", () => {
             Application.App.config.super_mode && isPhone() && ((<any>Application.GlobalContext).Ext.isChaoxing = true);
         });
+        this.hook();
         document.addEventListener("readystatechange", () => {
-            this.hook()
+            this.hook();
         });
         this.Api();
     }
@@ -168,6 +169,10 @@ export class Video extends Task {
                     this.video.addEventListener("ended", () => {
                         this.completeCallback && this.completeCallback();
                     });
+                    //不定时自动开始
+                    this.context.setInterval(() => {
+                        Application.App.config.auto && this.video.play();
+                    }, 5000);
                     this.loadCallback && this.loadCallback();
                     resolve();
                 } catch (error) {

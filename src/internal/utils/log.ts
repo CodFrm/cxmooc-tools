@@ -1,11 +1,17 @@
-import { Application } from "../application";
+import {Application} from "../application";
 import "../../views/common";
+
 export interface Logger {
     Trace(...args: any): Logger;
+
     Debug(...args: any): Logger;
+
     Info(...args: any): Logger;
+
     Warn(...args: any): Logger;
+
     Error(...args: any): Logger;
+
     Fatal(...args: any): Logger;
 }
 
@@ -90,7 +96,11 @@ export class PageLog implements Logger {
                 text += args[i] + "\n";
             }
         }
-        this.el && (this.el.innerHTML = text);
+        if (this.el) {
+            this.el.innerHTML = text
+        } else {
+            console.info("[info", this.getNowTime(), "]", ...args);
+        }
         return this;
     }
 

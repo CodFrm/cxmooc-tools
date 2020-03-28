@@ -10,9 +10,8 @@ class start implements Launcher {
         //调试环境注入脚本
         if (Application.App.debug) {
             InjectedBySrc(document, chrome.extension.getURL('src/mooc.js'));
-        }
-        if (top != self) {
-            return;
+        } else {
+            chrome.runtime.sendMessage({status: "loading"});
         }
         //注入config
         let configKeyList: string[] = new Array();

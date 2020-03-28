@@ -18,10 +18,10 @@ import {Application} from "@App/internal/application";
 export class Course163 implements Mooc {
 
     public Start(): void {
-        this.hook();
+        this.hookAjax();
     }
 
-    protected hook() {
+    protected hookAjax() {
         let self = this;
         let hookXMLHttpRequest = new Hook("open", Application.GlobalContext.XMLHttpRequest.prototype);
         hookXMLHttpRequest.Middleware(function (next: Context, ...args: any) {
