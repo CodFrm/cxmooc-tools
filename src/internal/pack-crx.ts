@@ -1,12 +1,16 @@
-import { SystemConfig } from "../config";
+import {SystemConfig} from "../config";
 
 const fs = require("fs");
 const ChromeExtension = require('crx');
 
-let version = dealVersion(SystemConfig.version);
+let version = dealVersion(SystemConfig.version) + '.0';
+// @ts-ignore
+if (SystemConfig.version != SystemConfig.hotVersion) {
+    version = SystemConfig.hotVersion;
+}
 // build manifest
 let manifest = fs.readFileSync('./build/cxmooc-tools/manifest.json');
-let str = manifest.toString().replace(/"version": "(.*?)"/, '"version": "' + version + '.0"');
+let str = manifest.toString().replace(/"version": "(.*?)"/, '"version": "' + version + '"');
 fs.writeFileSync('./build/cxmooc-tools/manifest.json', str);
 // build chrome
 const crx = new ChromeExtension({

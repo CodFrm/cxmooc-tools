@@ -134,7 +134,8 @@ export class CxExamTopic implements Mooc {
         window.onload = () => {
             let task = TaskFactory.CreateExamTopicTask(window, {
                 refer: document.URL,
-                id: (<HTMLInputElement>document.querySelector("#paperId")).value,
+                id: substrex(document.URL, "courseId=", "&"),
+                info: (<HTMLInputElement>document.querySelector("#paperId")).value,
             });
             task.Init();
             if (document.URL.indexOf("exam/test/reVersionTestStartNew") > 0) {
