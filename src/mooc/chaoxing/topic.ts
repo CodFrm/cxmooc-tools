@@ -47,10 +47,10 @@ export class TopicAdapter extends Task {
         });
     }
 
-    public Start(): Promise<any> {
-        return new Promise<any>(async resolve => {
+    public Start(): Promise<QuestionStatus> {
+        return new Promise<QuestionStatus>(async resolve => {
             if (this.lock) {
-                return resolve();
+                return resolve("processing");
             }
             this.lock = true;
             let ret = await this.topic.QueryAnswer();

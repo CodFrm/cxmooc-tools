@@ -66,11 +66,11 @@ let questionStatusMap = new Map<QuestionStatus, string>();
 questionStatusMap.set("success", "搜索成功").set("network", "题库网络错误").set("incomplete", "题库不全").set("processing", "搜索中...");
 
 export function TopicStatusString(status: TopicStatus): string {
-    return topicStatusMap.get(status);
+    return topicStatusMap.get(status) || "未知错误";
 }
 
 export function QuestionStatusString(status: QuestionStatus): string {
-    return questionStatusMap.get(status);
+    return questionStatusMap.get(status) || "未知错误";
 }
 
 export function SwitchTopicType(title: string): TopicType {

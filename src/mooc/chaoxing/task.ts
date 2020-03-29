@@ -43,13 +43,14 @@ export class CxTaskControlBar {
 
     constructor(prev: HTMLElement, task: Task) {
         this.task = task;
-        this.prev = prev;
+        this.prev = document.createElement("div");
+        prev.style.textAlign = "center";
+        prev.style.width = "100%";
+        prev.prepend(this.prev);
         this.defaultBtn();
     }
 
     public defaultBtn() {
-        this.prev.style.textAlign = "center";
-        this.prev.style.width = "100%";
         let startBtn = CssBtn(createBtn(Application.App.config.auto ? "挂机中..." : "开始挂机", "点击开始自动挂机", "cx-btn"));
         startBtn.onclick = () => {
             if (startBtn.innerText == '挂机中...') {

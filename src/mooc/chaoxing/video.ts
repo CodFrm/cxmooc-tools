@@ -147,6 +147,8 @@ export class Video extends Task {
     protected _playbackRate: number;
     protected _muted: boolean;
     protected flash: boolean;
+    protected time: NodeJS.Timer;
+    protected end: boolean;
 
     public Init(): Promise<any> {
         return new Promise(resolve => {
@@ -167,12 +169,9 @@ export class Video extends Task {
                     this.video = video;
                     this.initPlayer();
                     this.video.addEventListener("ended", () => {
+                        this.end = true;
                         this.completeCallback && this.completeCallback();
                     });
-                    //不定时自动开始
-                    this.context.setInterval(() => {
-                        Application.App.config.auto && this.video.play();
-                    }, 5000);
                     this.loadCallback && this.loadCallback();
                     resolve();
                 } catch (error) {
@@ -185,6 +184,18 @@ export class Video extends Task {
         if (this.flash) {
             return this.completeCallback && this.completeCallback();
         }
+        //定时运行
+        this.time = this.context.setInterval(() => {
+            Application.App.config.auto && this.video.paused && this.video.play();
+        }, 5000);
+        //同时运行多视频的兼容,后续看看能不能hook
+        this.video.addEventListener("pause", () => {
+            if (this.video.currentTime <= this.video.duration - 5) {
+                if (!this.end) {
+                    this.video.play();
+                }
+            }
+        });
         this.video.play();
     }
 

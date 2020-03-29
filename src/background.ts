@@ -8,6 +8,7 @@ import {SystemConfig} from "./config";
 
 class background implements Launcher {
     protected source: string;
+    protected lastHotVersion: string;
 
     public start() {
         let server = NewExtensionServerMessage("cxmooc-tools");
@@ -21,6 +22,10 @@ class background implements Launcher {
         });
 
         this.update();
+        //10分钟检查更新
+        setInterval(() => {
+            this.update();
+        }, 10 * 60 * 1000);
         this.injectedScript();
         this.event();
         this.setDefaultConfig();
@@ -68,6 +73,17 @@ class background implements Launcher {
                     color: [255, 0, 0, 255]
                 });
             }
+            if (data == undefined) {
+                get(chrome.extension.getURL('src/mooc.js'), (source: string) => {
+                    version = SystemConfig.version;
+                    this.source = this.dealScript(source, SystemConfig.version);
+                });
+                return;
+            }
+            if (this.lastHotVersion == data.hotversion) {
+                return;
+            }
+            this.lastHotVersion = data.hotversion;
             //缓存js文件源码
             let hotVersion = dealHotVersion(data.hotversion);
             let isHotUpdate: boolean = false;
