@@ -170,6 +170,7 @@ export class Video extends Task {
                     this.initPlayer();
                     this.video.addEventListener("ended", () => {
                         this.end = true;
+                        this.context.clearInterval(this.time);
                         this.completeCallback && this.completeCallback();
                     });
                     this.loadCallback && this.loadCallback();
