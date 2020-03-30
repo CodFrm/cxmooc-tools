@@ -1,5 +1,5 @@
 import {NewChromeServerMessage} from "@App/internal/utils/message";
-import {HttpUtils, InjectedBySrc} from "@App/internal/utils/utils";
+import {HttpUtils, InjectedBySrc, Noifications, NotificationOptions} from "@App/internal/utils/utils";
 import {Application, Content, Launcher} from "@App/internal/application";
 import {ChromeConfigItems, NewBackendConfig} from "@App/internal/utils/config";
 import {ConsoleLog} from "./internal/utils/log";
@@ -32,6 +32,10 @@ class start implements Launcher {
             switch (data.type) {
                 case "GM_xmlhttpRequest": {
                     HttpUtils.SendRequest(client, data);
+                    break;
+                }
+                case "GM_notification": {
+                    Noifications(data.details);
                     break;
                 }
             }

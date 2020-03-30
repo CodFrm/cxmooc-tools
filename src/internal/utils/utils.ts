@@ -12,6 +12,7 @@ export interface RequestInfo extends RequestInit {
     json?: boolean
 }
 
+//TODO:放到class里去....
 if (window.hasOwnProperty('GM_xmlhttpRequest')) {
     //兼容油猴
     let oldGM_xmlhttpRequest = (<any>window).GM_xmlhttpRequest;
@@ -348,4 +349,21 @@ export function getImageBase64(img: HTMLImageElement, ext: string) {
 
 export function isPhone() {
     return /Android|iPhone/i.test(navigator.userAgent);
+}
+
+export interface NotificationOptions {
+    text: string
+    title: string
+}
+
+export function Noifications(details: NotificationOptions) {
+    if (window.hasOwnProperty("GM_notification")) {
+        (<any>window).GM_notification(details);
+    } else {
+        let client: Client = Application.App.Client;
+        client.Send({
+            type: "GM_notification", details: details,
+        });
+        Application.App.Client.Send(details)
+    }
 }

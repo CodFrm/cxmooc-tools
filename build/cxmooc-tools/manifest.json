@@ -47,7 +47,7 @@
   "permissions": [
     "tabs",
     "storage",
-    "webNavigation",
+    "notifications",
     "<all_urls>"
   ],
   "web_accessible_resources": [

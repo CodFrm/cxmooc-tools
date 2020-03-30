@@ -16,6 +16,7 @@
 // @match        *://*/ananas/modules/video/index.html?*
 // @match        *://*.chaoxing.com/exam/test?*
 // @grant        GM_xmlhttpRequest
+// @grant        GM_notification
 // @grant        unsafeWindow
 // @license      MIT
 // ==/UserScript==

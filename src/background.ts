@@ -5,7 +5,6 @@ import {ConsoleLog} from "./internal/utils/log";
 import {ChromeConfigItems, NewBackendConfig} from "./internal/utils/config";
 import {SystemConfig} from "./config";
 
-
 class background implements Launcher {
     protected source: string;
     protected lastHotVersion: string;
@@ -16,6 +15,13 @@ class background implements Launcher {
             switch (data.type) {
                 case "GM_xmlhttpRequest": {
                     HttpUtils.SendRequest(client, data);
+                    break;
+                }
+                case "GM_notification": {
+                    chrome.notifications.create("", {
+                        title: data.details.title, message: data.details.text,
+                        iconUrl: chrome.runtime.getURL("img/logo.png"), type: "basic"
+                    });
                     break;
                 }
             }
@@ -32,6 +38,9 @@ class background implements Launcher {
     }
 
     protected event() {
+        if (Application.App.debug) {
+            return;
+        }
         chrome.runtime.onInstalled.addListener((details) => {
             if (details.reason == "install") {
                 chrome.tabs.create({url: "https://cx.icodef.com/"});

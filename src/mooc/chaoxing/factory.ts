@@ -25,7 +25,7 @@ export class TaskFactory {
         let prev: HTMLElement;
         if (taskIframe == undefined) {
             taskIframe = <HTMLIFrameElement>(<Window>context).document.querySelector(
-                "iframe[mid='" + taskinfo.property.mid + "']"
+                "iframe[data*='" + taskinfo.property.mid + "']"
             );
             prev = document.createElement("div");
             taskIframe.parentElement.prepend(prev);
@@ -49,6 +49,9 @@ export class TaskFactory {
                     return CxQuestionFactory.CreateCourseQuestion(el);
                 }));
                 let bar = new CxTopicControlBar(prev, new TopicAdapter(context, taskinfo, topic));
+                if (Application.App.config.answer_ignore) {
+                    return null;
+                }
                 task = bar.task;
                 break;
             }

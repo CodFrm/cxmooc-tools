@@ -15,5 +15,19 @@ export class mooc implements Launcher {
         if (mooc != null) {
             mooc.Start();
         }
+        //最小化警告
+        if (top == self) {
+            let lastTime = 0;
+            document.addEventListener("visibilitychange", () => {
+                if (document.hidden) {
+                    let now = new Date().valueOf() / 1000;
+                    if (now - lastTime < 60) {
+                        return;
+                    }
+                    Application.App.log.Warn("请注意!最小化可能导致视频无法正常播放!允许切换窗口.");
+                    lastTime = now;
+                }
+            })
+        }
     }
 }

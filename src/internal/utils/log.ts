@@ -1,5 +1,6 @@
 import {Application} from "../application";
 import "../../views/common";
+import {Noifications} from "@App/internal/utils/utils";
 
 export interface Logger {
     Trace(...args: any): Logger;
@@ -77,6 +78,18 @@ export class PageLog implements Logger {
         });
     }
 
+    protected toStr(...args: any): string {
+        let text = "";
+        for (let i = 0; i < args.length; i++) {
+            if (typeof args[i] == "object") {
+                text += JSON.stringify(args[i]) + "\n";
+            } else {
+                text += args[i] + "\n";
+            }
+        }
+        return text.substring(0, text.length - 1);
+    }
+
     public Trace(...args: any): Logger {
         console.trace("[trace", this.getNowTime(), "]", ...args);
         return this;
@@ -88,14 +101,7 @@ export class PageLog implements Logger {
     }
 
     public Info(...args: any): Logger {
-        let text = "";
-        for (let i = 0; i < args.length; i++) {
-            if (typeof args[i] == "object") {
-                text += JSON.stringify(args[i]) + "\n";
-            } else {
-                text += args[i] + "\n";
-            }
-        }
+        let text = this.toStr(...args);
         if (this.el) {
             this.el.innerHTML = text
         } else {
@@ -104,18 +110,33 @@ export class PageLog implements Logger {
         return this;
     }
 
+
     public Warn(...args: any): Logger {
         console.warn("[warn", this.getNowTime(), "]", ...args);
+        if (document.hidden) {
+            Noifications({
+                title: "超星慕课小工具",
+                text: this.toStr(...args),
+            });
+        }
         return this;
     }
 
     public Error(...args: any): Logger {
         console.error("[error", this.getNowTime(), "]", ...args);
+        Noifications({
+            title: "超星慕课小工具",
+            text: this.toStr(...args),
+        });
         return this;
     }
 
     public Fatal(...args: any): Logger {
         console.error("[fatal", this.getNowTime(), "]", ...args);
+        Noifications({
+            title: "超星慕课小工具",
+            text: this.toStr(...args),
+        });
         return this;
     }
 }

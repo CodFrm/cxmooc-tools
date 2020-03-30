@@ -33,6 +33,7 @@ export class CxCourse implements Mooc {
         for (let index = 0; index < this.attachments.length; index++) {
             let value = this.attachments[index];
             if (value.jobid == undefined) {
+                TaskFactory.CreateCourseTask(iframeWindow, value);
                 continue
             }
             let task: Task;
