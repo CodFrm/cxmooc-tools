@@ -20,6 +20,7 @@ export abstract class Task {
 
     public Init(): Promise<any> {
         return new Promise(resolve => {
+            this.loadCallback && this.loadCallback();
             resolve();
         });
     }
@@ -31,6 +32,13 @@ export abstract class Task {
     public abstract Start(): void
 
     public Submit(): Promise<void> {
+        return new Promise(resolve => {
+            resolve();
+        });
+    }
+
+    //TODO:停止
+    public Stop(): Promise<void> {
         return new Promise(resolve => {
             resolve();
         });
@@ -51,22 +59,26 @@ export class CxTaskControlBar {
     }
 
     public defaultBtn() {
-        let startBtn = CssBtn(createBtn(Application.App.config.auto ? "挂机中..." : "开始挂机", "点击开始自动挂机", "cx-btn"));
+        let startBtn = CssBtn(createBtn(Application.App.config.auto ? "暂停挂机" : "开始挂机", "点击开始自动挂机", "cx-btn"));
         startBtn.onclick = () => {
-            if (startBtn.innerText == '挂机中...') {
+            if (startBtn.innerText == '暂停挂机') {
                 Application.App.config.auto = false;
                 startBtn.innerText = "开始挂机";
                 startBtn.title = "点击开始自动挂机";
                 Application.App.log.Info("挂机停止了");
             } else {
                 Application.App.config.auto = true;
-                startBtn.innerText = '挂机中...';
+                startBtn.innerText = '暂停挂机';
                 startBtn.title = "停止挂机,开始好好学习";
                 Application.App.log.Info("挂机开始了");
                 this.task.Start();
             }
         };
         this.prev.append(startBtn);
+    }
+
+    public append(el: HTMLElement): void {
+        this.prev.append(el);
     }
 
     protected download(): HTMLElement {
@@ -77,7 +89,7 @@ export class CxTaskControlBar {
         download.style.background = "#999999";
         download.onclick = () => {
             window.open("http://d0.ananas.chaoxing.com/download/" + this.task.taskinfo.objectId);
-        }
+        };
         return download;
     }
 }
