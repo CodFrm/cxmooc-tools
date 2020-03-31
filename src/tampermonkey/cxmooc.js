@@ -13,7 +13,7 @@
 // @match        *://*/exam/test/reVersionTestStartNew?*
 // @match        *://*/work/selectWorkQuestionYiPiYue?*
 // @match        *://*/work/doHomeWorkNew?*
-// @match        *://*/ananas/modules/video/index.html?*
+// @match        *://*/ananas/modules/*/index.html?*
 // @match        *://*/exam/test?*
 // @match        *://*/course/*.html?*
 // @grant        GM_xmlhttpRequest

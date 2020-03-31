@@ -29,7 +29,7 @@
         "*://*/antispiderShowVerify.ac*",
         "*://*/html/processVerify.ac?*",
         "*://*/exam/test/reVersionPaperMarkContentNew?*",
-        "*://*/ananas/modules/video/index.html?*",
+        "*://*/ananas/modules/*/index.html?*",
         "*://*/exam/test?*",
         "*://*/course/*.html?*",
         "*://examh5.zhihuishu.com/stuExamWeb.html*",

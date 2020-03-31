@@ -11,7 +11,7 @@ export class SystemConfig {
         "*://*/antispiderShowVerify.ac*",
         "*://*/html/processVerify.ac?*",
         "*://*/exam/test/reVersionPaperMarkContentNew?*",
-        "*://*/ananas/modules/video/index.html?*",
+        "*://*/ananas/modules/*/index.html?*",
         "*://*/exam/test?*",
         "*://*/course/*.html?*",
 

@@ -115,7 +115,9 @@ export class PageLog implements Logger {
     public Warn(...args: any): Logger {
         console.warn("[warn", this.getNowTime(), "]", ...args);
         let text = this.toStr(...args);
-        this.el.innerHTML = text;
+        if (this.el) {
+            this.el.innerHTML = text;
+        }
         if (document.hidden) {
             Noifications({
                 title: "超星慕课小工具",
@@ -128,7 +130,9 @@ export class PageLog implements Logger {
     public Error(...args: any): Logger {
         console.error("[error", this.getNowTime(), "]", ...args);
         let text = this.toStr(...args);
-        this.el.innerHTML = text;
+        if (this.el) {
+            this.el.innerHTML = text;
+        }
         Noifications({
             title: "超星慕课小工具",
             text: text,
