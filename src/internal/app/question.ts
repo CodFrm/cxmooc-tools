@@ -20,6 +20,7 @@ export interface Answer {
     status: TopicStatus
     answers?: Option[]
     correct: Option[]
+    errors?: Option[]
     id?: string
 
     Equal(content1: string, content2: string): boolean
@@ -31,6 +32,7 @@ export class PushAnswer implements Answer {
     public type: TopicType;
     public status: TopicStatus;
     public answers: Option[];
+    public errors: Option[];
     public correct: Option[];
 
     public Equal(content1: string, content2: string): boolean {
