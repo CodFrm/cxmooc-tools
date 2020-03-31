@@ -71,6 +71,7 @@ export class PageLog implements Logger {
             div.className = "tools-logger-panel";
             document.body.appendChild(div);
             this.el = div.querySelector(".tools-notice-content");
+            this.el.innerText = "注意:插件与脚本不能一同时使用";
             (<HTMLButtonElement>div.querySelector("button.close")).onclick = () => {
                 this.el = undefined;
                 div.remove();

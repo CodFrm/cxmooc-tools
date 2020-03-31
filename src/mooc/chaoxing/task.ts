@@ -4,7 +4,7 @@ import {Application} from "@App/internal/application";
 
 export abstract class Task {
     public jobIndex: number;
-    protected taskinfo: any;
+    public taskinfo: any;
     protected context: any;
     protected completeCallback: () => void;
     protected loadCallback: () => void;
@@ -67,5 +67,17 @@ export class CxTaskControlBar {
             }
         };
         this.prev.append(startBtn);
+    }
+
+    protected download(): HTMLElement {
+        if (!this.task.taskinfo.objectId) {
+            return;
+        }
+        let download = CssBtn(createBtn("下载资源", "我要下载下来好好学习", "cx-btn"));
+        download.style.background = "#999999";
+        download.onclick = () => {
+            window.open("http://d0.ananas.chaoxing.com/download/" + this.task.taskinfo.objectId);
+        }
+        return download;
     }
 }

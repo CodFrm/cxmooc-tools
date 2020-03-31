@@ -115,12 +115,10 @@ export class CxVideoControlBar extends CxTaskControlBar {
     public defaultBtn() {
         super.defaultBtn();
         let pass = CssBtn(createBtn("秒过视频", "秒过视频会被后台检测到", "cx-btn"));
-        let download = CssBtn(createBtn("下载视频", "我要下载视频好好学习", "cx-btn"));
         let downloadSubtitle = CssBtn(createBtn("下载字幕", "我要下载字幕一同食用"));
         pass.style.background = "#F57C00";
-        download.style.background = "#999999";
         downloadSubtitle.style.background = "#638EE1";
-        this.prev.append(pass, download, downloadSubtitle);
+        this.prev.append(pass, this.download(), downloadSubtitle);
         pass.onclick = () => {
             if (!protocolPrompt("秒过视频会产生不良记录,是否继续?", "boom_no_prompt")) {
                 return;
@@ -133,13 +131,11 @@ export class CxVideoControlBar extends CxTaskControlBar {
                 }
             });
         };
-        download.onclick = () => {
-            (<Video>this.task).download();
-        };
         downloadSubtitle.onclick = () => {
             (<Video>this.task).downloadSubtitle();
         }
     }
+
 }
 
 export class Video extends Task {
@@ -216,10 +212,6 @@ export class Video extends Task {
         this.context.sendTimePack(time, function (isPassed: any) {
             callback(isPassed);
         });
-    }
-
-    public download() {
-        window.open(this.video.src);
     }
 
     public downloadSubtitle() {
