@@ -59,6 +59,7 @@ export class TaskFactory {
             }
             case "document": {
                 let bar = new CxTaskControlBar(prev, new CxDocumentTask(taskIframe.contentWindow, taskinfo));
+                bar.append(bar.download());
                 task = bar.task;
                 (<Video>task).muted = Application.App.config.video_mute;
                 (<Video>task).playbackRate = Application.App.config.video_multiple;
