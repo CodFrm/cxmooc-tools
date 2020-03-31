@@ -14,7 +14,8 @@
 // @match        *://*/work/selectWorkQuestionYiPiYue?*
 // @match        *://*/work/doHomeWorkNew?*
 // @match        *://*/ananas/modules/video/index.html?*
-// @match        *://*.chaoxing.com/exam/test?*
+// @match        *://*/exam/test?*
+// @match        *://*/course/*.html?*
 // @grant        GM_xmlhttpRequest
 // @grant        GM_notification
 // @grant        unsafeWindow

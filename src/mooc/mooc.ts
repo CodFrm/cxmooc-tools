@@ -9,11 +9,15 @@ export class mooc implements Launcher {
     }
 
     public start() {
-        let state = document.readyState;
-        Application.App.log.Debug("Start document state:", state);
-        let mooc = this.moocFactory.CreateMooc();
-        if (mooc != null) {
-            mooc.Start();
+        try {
+            let state = document.readyState;
+            Application.App.log.Debug("Start document state:", state);
+            let mooc = this.moocFactory.CreateMooc();
+            if (mooc != null) {
+                mooc.Start();
+            }
+        } catch (e) {
+            Application.App.log.Fatal("插件发生了一个致命错误:", e);
         }
         //最小化警告
         if (top == self) {
