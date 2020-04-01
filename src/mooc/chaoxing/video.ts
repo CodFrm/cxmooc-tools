@@ -146,12 +146,16 @@ export class Video extends Task {
     protected time: NodeJS.Timer;
     protected end: boolean;
 
+    protected queryVideo(): HTMLVideoElement {
+        return this.context.document.getElementById("video_html5_api");
+    }
+
     public Init(): Promise<any> {
         return new Promise(resolve => {
             Application.App.log.Debug("播放器配置", this.taskinfo);
             let timer = this.context.setInterval(() => {
                 try {
-                    let video = this.context.document.getElementById("video_html5_api");
+                    let video = this.queryVideo();
                     if (video == undefined) {
                         if (this.context.document.querySelector("#reader").innerHTML.indexOf("您没有安装flashplayer") >= 0) {
                             this.context.clearInterval(timer);

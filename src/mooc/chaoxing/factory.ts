@@ -12,10 +12,17 @@ import {Application} from "@App/internal/application";
 import {CxTaskControlBar, Task} from "@App/mooc/chaoxing/task";
 import {CssBtn} from "@App/mooc/chaoxing/utils";
 import {createBtn} from "@App/internal/utils/utils";
+import {CxAudioControlBar, CxAudioTask, CxDocumentTask} from "@App/mooc/chaoxing/special";
 
 export class TaskFactory {
+
     public static CreateCourseTask(context: any, taskinfo: any): Task {
-        if (taskinfo.type != "video" && taskinfo.type != "workid") {
+        if (taskinfo.property.module == "insertaudio") {
+            taskinfo.type = "audio";
+        }
+        //TODO:优化
+        if (taskinfo.type != "video" && taskinfo.type != "workid" && taskinfo.type != "document"
+            && taskinfo.type != "audio") {
             return null;
         }
         let task: Task;
@@ -53,6 +60,21 @@ export class TaskFactory {
                     return null;
                 }
                 task = bar.task;
+                break;
+            }
+            case "document": {
+                let bar = new CxTaskControlBar(prev, new CxDocumentTask(taskIframe.contentWindow, taskinfo));
+                bar.append(bar.download());
+                task = bar.task;
+                (<Video>task).muted = Application.App.config.video_mute;
+                (<Video>task).playbackRate = Application.App.config.video_multiple;
+                break;
+            }
+            case "audio": {
+                let bar = new CxAudioControlBar(prev, new CxAudioTask(taskIframe.contentWindow, taskinfo));
+                task = bar.task;
+                (<Video>task).muted = Application.App.config.video_mute;
+                (<Video>task).playbackRate = Application.App.config.video_multiple;
                 break;
             }
             default:

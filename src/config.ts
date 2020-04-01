@@ -1,4 +1,3 @@
-
 export class SystemConfig {
     public static version = 2.2;
     public static url = "https://cx.icodef.com/";
@@ -12,8 +11,9 @@ export class SystemConfig {
         "*://*/antispiderShowVerify.ac*",
         "*://*/html/processVerify.ac?*",
         "*://*/exam/test/reVersionPaperMarkContentNew?*",
-        "*://*/ananas/modules/video/index.html?*",
-        "*://*.chaoxing.com/exam/test?*",
+        "*://*/ananas/modules/*/index.html?*",
+        "*://*/exam/test?*",
+        "*://*/course/*.html?*",
 
         "*://examh5.zhihuishu.com/stuExamWeb.html*",
         "*://onlineexamh5new.zhihuishu.com/stuExamWeb.html*",
@@ -22,5 +22,5 @@ export class SystemConfig {
         "*://www.icourse163.org/learn/*",
         "*://www.icourse163.org/spoc/learn/*"
     ];
-    
+
 }
