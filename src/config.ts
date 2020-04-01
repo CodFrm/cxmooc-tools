@@ -1,7 +1,7 @@
 export class SystemConfig {
-    public static version = 2.2;
+    public static version = 2.3;
     public static url = "https://cx.icodef.com/";
-    public static hotVersion = "2.2.2";
+    public static hotVersion = "2.3.0";
     public static match = [
         "*://*/mycourse/studentstudy?*",
         "*://*/work/doHomeWorkNew?*",
