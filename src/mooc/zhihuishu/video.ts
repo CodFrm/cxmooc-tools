@@ -6,6 +6,8 @@ import {randNumber, post, substrex} from "@App/internal/utils/utils";
 
 export class ZhsVideo implements Mooc {
 
+    protected lastTimer: NodeJS.Timer;
+
     public Start(): void {
         this.hookAjax();
         this.hook();
@@ -45,7 +47,8 @@ export class ZhsVideo implements Mooc {
     protected compile() {
         let interval = Application.App.config.interval;
         Application.App.log.Info(interval + "分钟后自动切换下一节");
-        setTimeout(function () {
+        clearTimeout(this.lastTimer);
+        this.lastTimer = setTimeout(function () {
             let $ = (<any>Application.GlobalContext).$;
             let next = $(".clearfix.video.current_play").next();
             if (next.length == 0) {
@@ -78,11 +81,11 @@ export class ZhsVideo implements Mooc {
                 video.playbackRate = Application.App.config.video_multiple;
 
                 Application.App.config.auto && video.play();
-            }
+            };
             args[2].hookPause = function () {
                 hookPause.apply(this);
                 Application.App.config.auto && video.play();
-            }
+            };
             let innerTimer = setInterval(function () {
                 if (document.querySelectorAll(".current_play .time_icofinish").length > 0) {
                     clearInterval(innerTimer);
