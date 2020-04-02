@@ -60,17 +60,46 @@ export class Course163 implements Mooc {
 
     protected nextTask() {
         let unit = document.querySelectorAll(".j-unitslist.unitslist.f-cb > .f-fl");
+        let ret = this.next(unit, (el) => {
+            return el.className.indexOf("current") > 0;
+        });
+        if (ret) {
+            return (<HTMLLinkElement>ret).click();
+        }
+        //二级
+        let tmp = (type: string) => {
+            let now = document.querySelector(".f-fl.j-" + type + " .up.j-up.f-thide");
+            let all = document.querySelectorAll(".f-fl.j-" + type + " .f-bg.j-list > .f-thide");
+            return this.next(all, (el) => {
+                //什么魔鬼,空格不同
+                return (<HTMLSpanElement>el).innerText.replace(/\s/g, "") == (<HTMLSpanElement>now).innerText.replace(/\s/g, "");
+            });
+        };
+        ret = tmp("lesson");
+        if (ret) {
+            return (<HTMLLinkElement>ret).click();
+        }
+        //顶层
+        ret = tmp("chapter");
+        if (ret) {
+            (<HTMLLinkElement>ret).click();
+            let all = document.querySelectorAll(".f-fl.j-lesson .f-bg.j-list > .f-thide");
+            return (<HTMLLinkElement>all[0]).click();
+        }
+        Application.App.log.Warn("任务结束了");
+        return alert("任务结束了");
+    }
+
+    protected next(all: NodeListOf<Element>, ok: (el: Element) => boolean): Element {
         let flag = false;
-        for (let i = 0; i < unit.length; i++) {
-            if (unit[i].className.indexOf("current") > 0) {
+        for (let i = 0; i < all.length; i++) {
+            if (ok(all[i])) {
                 flag = true;
             } else if (flag) {
-                this.delay(() => {
-                    (<HTMLInputElement>unit[i]).click();
-                });
-                return;
+                return all[i];
             }
         }
+        return null;
     }
 
     protected delayTimer: NodeJS.Timer;

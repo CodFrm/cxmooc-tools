@@ -25,7 +25,7 @@ export class TaskFactory {
         } else if (resp.indexOf("videoVo:s") > 0) {
             return new VideoTask();
         }
-        return null;
+        return new NoSupportTask();
     }
 
     protected static getvalue(str: string, ret?: string): any {
@@ -38,6 +38,17 @@ export class TaskFactory {
             Application.App.log.Error("获取题目发生了一个错误", e);
         }
         return null;
+    }
+
+}
+
+export class NoSupportTask extends Task {
+    public Start(): Promise<any> {
+        return new Promise<any>(resolve => {
+            resolve();
+            Application.App.log.Info("暂不支持的类型,跳过");
+            this.callEvent("complete");
+        });
     }
 
 }
@@ -187,7 +198,10 @@ export class CourseTopicTask extends Task {
                     return;
                 }
                 let search = createBtn("搜索答案", "点击搜索答案", "cx-btn mooc163-search", "tools-search");
-                let divel = document.querySelector(".m-learnunitUI,.u-learn-moduletitle");
+                let divel = document.querySelector(".j-unitct .m-learnunitUI");
+                if (!divel) {
+                    divel = document.querySelector(".u-learn-moduletitle");
+                }
                 this.topic = new CourseTopic(document, new ToolsQuestionBankFacade("mooc163", {
                     refer: document.URL,
                     id: document.URL.match(/(\?id|cid)=(.*?)($|&)/)[2],
@@ -216,6 +230,9 @@ export class CourseTopicTask extends Task {
     public Submit(): Promise<void> {
         return new Promise<any>(resolve => {
             let el = <HTMLLinkElement>document.querySelector(".submit.j-submit");
+            if (el.style.display == "none") {
+                resolve();
+            }
             el.click();
             let t = setInterval(() => {
                 let el = <HTMLLinkElement>document.querySelector(".submit.j-replay");
@@ -223,7 +240,7 @@ export class CourseTopicTask extends Task {
                     clearInterval(t);
                     resolve();
                 }
-            }, 500);
+            }, 1000);
         });
     }
 
