@@ -226,8 +226,12 @@ export class ToolsQuestionBankFacade implements QuestionBankFacade {
     protected bank: QuestionBank;
     protected question: Array<Question>;
 
-    constructor(platform: string, info?: any) {
-        this.bank = new ToolsQuestionBank(platform, info);
+    constructor(platform?: string | QuestionBank, info?: any) {
+        if (typeof platform == "string") {
+            this.bank = new ToolsQuestionBank(platform, info);
+        } else {
+            this.bank = platform;
+        }
         this.question = new Array<Question>();
     }
 

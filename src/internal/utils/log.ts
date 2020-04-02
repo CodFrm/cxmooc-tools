@@ -3,8 +3,6 @@ import "../../views/common";
 import {Noifications} from "@App/internal/utils/utils";
 
 export interface Logger {
-    Trace(...args: any): Logger;
-
     Debug(...args: any): Logger;
 
     Info(...args: any): Logger;
@@ -21,11 +19,6 @@ export class ConsoleLog implements Logger {
     protected getNowTime(): string {
         let time = new Date();
         return time.getHours() + ":" + time.getMinutes() + ":" + time.getSeconds();
-    }
-
-    public Trace(...args: any): Logger {
-        Application.App.debug && console.trace("[trace", this.getNowTime(), "]", ...args);
-        return this;
     }
 
     public Debug(...args: any): Logger {
@@ -71,7 +64,6 @@ export class PageLog implements Logger {
             div.className = "tools-logger-panel";
             document.body.appendChild(div);
             this.el = div.querySelector(".tools-notice-content");
-            this.el.innerText = "注意:插件与脚本不能一同时使用";
             (<HTMLButtonElement>div.querySelector("button.close")).onclick = () => {
                 this.el = undefined;
                 div.remove();
@@ -89,11 +81,6 @@ export class PageLog implements Logger {
             }
         }
         return text.substring(0, text.length - 1);
-    }
-
-    public Trace(...args: any): Logger {
-        console.trace("[trace", this.getNowTime(), "]", ...args);
-        return this;
     }
 
     public Debug(...args: any): Logger {
@@ -122,6 +109,7 @@ export class PageLog implements Logger {
             Noifications({
                 title: "超星慕课小工具",
                 text: text,
+                timeout: 3,
             });
         }
         return this;
@@ -153,9 +141,6 @@ export class PageLog implements Logger {
 }
 
 export class EmptyLog implements Logger {
-    Trace(...args: any): Logger {
-        return this;
-    }
 
     public Debug(...args: any): Logger {
         return this;

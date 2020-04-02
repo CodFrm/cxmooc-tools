@@ -1,12 +1,11 @@
-import {CxTaskControlBar, Task} from "@App/mooc/chaoxing/task";
+import {CxTaskControlBar, CxTask} from "@App/mooc/chaoxing/task";
 import {createBtn, get, isPhone, protocolPrompt, randNumber} from "@App/internal/utils/utils";
 import {Application} from "@App/internal/application";
 import {CxVideoOptimization, Video} from "@App/mooc/chaoxing/video";
 import {CssBtn} from "@App/mooc/chaoxing/utils";
-import {Mooc} from "@App/mooc/factory";
 import {Context, Hook} from "@App/internal/utils/hook";
 
-export class CxDocumentTask extends Task {
+export class CxDocumentTask extends CxTask {
     protected time: NodeJS.Timer;
 
     public Start(): void {

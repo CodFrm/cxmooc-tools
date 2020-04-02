@@ -2,7 +2,7 @@ import {CssBtn} from "@App/mooc/chaoxing/utils";
 import {createBtn} from "@App/internal/utils/utils";
 import {Application} from "@App/internal/application";
 
-export abstract class Task {
+export abstract class CxTask {
     public jobIndex: number;
     public taskinfo: any;
     protected context: any;
@@ -46,10 +46,10 @@ export abstract class Task {
 }
 
 export class CxTaskControlBar {
-    public task: Task;
+    public task: CxTask;
     protected prev: HTMLElement;
 
-    constructor(prev: HTMLElement, task: Task) {
+    constructor(prev: HTMLElement, task: CxTask) {
         this.task = task;
         this.prev = document.createElement("div");
         prev.style.textAlign = "center";

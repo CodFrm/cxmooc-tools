@@ -18,9 +18,15 @@ class background implements Launcher {
                     break;
                 }
                 case "GM_notification": {
-                    chrome.notifications.create("", {
+                    chrome.notifications.create({
                         title: data.details.title, message: data.details.text,
                         iconUrl: chrome.runtime.getURL("img/logo.png"), type: "basic"
+                    }, (id) => {
+                        if (data.details.timeout) {
+                            setTimeout(() => {
+                                chrome.notifications.clear(id);
+                            }, data.details.timeout * 1000);
+                        }
                     });
                     break;
                 }
