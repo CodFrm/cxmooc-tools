@@ -17,7 +17,7 @@ import {CxAudioControlBar, CxAudioTask, CxDocumentTask} from "@App/mooc/chaoxing
 export class TaskFactory {
 
     public static CreateCourseTask(context: any, taskinfo: any): Task {
-        if (taskinfo.property.module == "insertaudio") {
+        if (taskinfo.property.module == "insertaudio" || taskinfo.property.module == "insertvoice") {
             taskinfo.type = "audio";
         }
         //TODO:优化
