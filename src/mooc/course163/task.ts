@@ -195,7 +195,7 @@ export class CourseTopicTask extends Task {
         return new Promise<any>(resolve => {
             setTimeout(() => {
                 if (document.querySelector("#tools-search")) {
-                    return;
+                    document.querySelector("#tools-search").remove();
                 }
                 let search = createBtn("搜索答案", "点击搜索答案", "cx-btn mooc163-search", "tools-search");
                 let divel = document.querySelector(".j-unitct .m-learnunitUI");

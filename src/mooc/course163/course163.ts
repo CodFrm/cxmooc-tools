@@ -30,6 +30,7 @@ export class Course163 implements Mooc {
             let task = TaskFactory.CreateTask(resp);
             if (task) {
                 setTimeout(async () => {
+                    clearInterval(this.delayTimer);
                     this.lastTask && await this.lastTask.Stop();
                     this.lastTask = task;
                     this.lastTask.addEventListener("complete", () => {
@@ -107,7 +108,6 @@ export class Course163 implements Mooc {
     protected delay(func: Function) {
         let interval = Application.App.config.interval;
         Application.App.log.Info(interval + "分钟后自动切换下一个任务点");
-        clearInterval(this.delayTimer);
         this.delayTimer = setTimeout(() => {
             Application.App.config.auto && func();
         }, interval * 60000);
