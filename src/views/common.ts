@@ -3,7 +3,8 @@ window.addEventListener("load", () => {
     position: absolute;
     left: 250px;
     top: 2px;
-    width: 120px;
+    width: 200px;
+    font-size: 0;
 }
 
 .cx-btn {
@@ -22,14 +23,27 @@ window.addEventListener("load", () => {
     box-shadow: 1px 1px 1px 1px #ccc;
 }
 
-#zhs-video-boom {
+.zhs-tools-btn {
     color: #fff;
     background: #ff9d34;
     padding: 4px;
+    display: inline-block;
+    height: 24px;
+    font-size: 14px;
+    line-height: 24px;
+    margin:0;
 }
 
-#zhs-video-boom:hover {
+.zhs-tools-btn:hover {
     background: #ff3838;
+}
+
+.zhs-start-btn{
+    background: #36ac36;
+}
+
+.zhs-start-btn:hover{
+    background: #3b8d3b;
 }
 
 #zhs-ytbn {

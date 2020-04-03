@@ -7,6 +7,7 @@ import {randNumber, post, substrex} from "@App/internal/utils/utils";
 export class ZhsVideo implements Mooc {
 
     protected lastTimer: NodeJS.Timer;
+    protected video: HTMLVideoElement;
 
     public Start(): void {
         this.hookAjax();
@@ -27,21 +28,35 @@ export class ZhsVideo implements Mooc {
         let tools = document.createElement('div');
         tools.className = "entrance_div";
         tools.id = "cxtools";
-        let ul = document.createElement("ul");
-        tools.appendChild(ul);
-        let li1 = document.createElement("li");
-        ul.appendChild(li1);
         let boomBtn = document.createElement("a");
         boomBtn.href = "#";
-        boomBtn.id = "zhs-video-boom";
+        boomBtn.className = "zhs-tools-btn";
         boomBtn.innerText = "秒过视频";
         boomBtn.onclick = () => {
             (<any>Application.GlobalContext).videoBoom(() => {
 
             });
         };
-        li1.appendChild(boomBtn);
-        document.querySelector(".videotop_box.fl").append(tools);
+        //TODO:优化,先这样把按钮弄出来
+        let li2 = document.createElement("li");
+        let startBtn = document.createElement("a");
+        startBtn.href = "#";
+        startBtn.className = "zhs-tools-btn zhs-start-btn";
+        startBtn.innerText = Application.App.config.auto ? "暂停挂机" : "开始挂机";
+        startBtn.onclick = () => {
+            if (startBtn.innerText == "暂停挂机") {
+                startBtn.innerText = "开始挂机";
+                localStorage["auto"] = false;
+            } else {
+                startBtn.innerText = "暂停挂机";
+                localStorage["auto"] = true;
+                this.play();
+            }
+        };
+        tools.appendChild(startBtn);
+        tools.appendChild(boomBtn);
+
+        console.log(document.querySelector(".videotop_box.fl").append(tools));
     }
 
     protected compile() {
@@ -65,6 +80,15 @@ export class ZhsVideo implements Mooc {
         }, interval * 60000);
     }
 
+    protected play() {
+        if (this.video) {
+            this.video.muted = Application.App.config.video_mute;
+            this.video.playbackRate = Application.App.config.video_multiple;
+
+            Application.App.config.auto && this.video.play();
+        }
+    }
+
     protected start() {
         let hookPlayerStarter = new Hook("createPlayer", (<any>Application.GlobalContext).PlayerStarter);
         let self = this;
@@ -73,18 +97,14 @@ export class ZhsVideo implements Mooc {
             Application.App.log.Info("视频开始加载");
             let hookPause = args[2].onPause;
             let hookReady = args[2].onReady;
-            let video: HTMLVideoElement;
             args[2].onReady = function () {
                 hookReady.apply(this);
-                video = document.querySelector("#vjs_container_html5_api");
-                video.muted = Application.App.config.video_mute;
-                video.playbackRate = Application.App.config.video_multiple;
-
-                Application.App.config.auto && video.play();
+                self.video = document.querySelector("#vjs_container_html5_api");
+                Application.App.config.auto && self.play();
             };
             args[2].hookPause = function () {
                 hookPause.apply(this);
-                Application.App.config.auto && video.play();
+                Application.App.config.auto && self.video.play();
             };
             let innerTimer = setInterval(function () {
                 if (document.querySelectorAll(".current_play .time_icofinish").length > 0) {
