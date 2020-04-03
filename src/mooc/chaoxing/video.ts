@@ -53,6 +53,7 @@ export class CxVideoOptimization implements Mooc {
                 }
             }
             localStorage["cdn"] = ret.playlines[0].label;
+            delete ret.plugins.studyControl;
             return ret;
         });
         (<any>Application.GlobalContext).Ext.isSogou = false;

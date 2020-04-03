@@ -32,7 +32,7 @@ export class TaskFactory {
         let prev: HTMLElement;
         if (taskIframe == undefined) {
             taskIframe = <HTMLIFrameElement>(<Window>context).document.querySelector(
-                "iframe[data*='" + taskinfo.property.mid + "']"
+                "iframe[data*='" + taskinfo.property.mid + "'],iframe[objectid='" + taskinfo.property.objectid + "']"
             );
             prev = document.createElement("div");
             taskIframe.parentElement.prepend(prev);
