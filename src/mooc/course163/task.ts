@@ -1,6 +1,6 @@
 import {Task} from "@App/internal/app/task";
 import {Application} from "@App/internal/application";
-import {createBtn, protocolPrompt} from "@App/internal/utils/utils";
+import {createBtn, protocolPrompt, randNumber} from "@App/internal/utils/utils";
 import {CourseQueryAnswer, CourseTopic} from "@App/mooc/course163/question";
 import {
     Answer,
@@ -11,19 +11,24 @@ import {
     ToolsQuestionBankFacade
 } from "@App/internal/app/question";
 import {Topic} from "@App/internal/app/topic";
+import any = jasmine.any;
 
 export class TaskFactory {
-    public static CreateTask(resp: string): Task {
-        if (resp.indexOf("paper:s0") > 0) {
-            CourseTopicTask.collegeAnswer(this.getvalue(resp, "s0"));
+    public static CreateTask(url: string, resp: string): Task {
+        if (resp.indexOf("paper:s") > 0) {
+            CourseTopicTask.collegeAnswer(this.getvalue(resp, resp.match(/,paper:(.*?),/)[1]));
             return new CourseTopicTask();
         } else if (resp.indexOf("tname:\"") > 0) {
-            if (resp.indexOf("answers:s0") > 0) {
-                CourseTopicTask.collegeAnswer(this.getvalue(resp, "s1"));
+            if (resp.indexOf("answers:s") > 0) {
+                CourseTopicTask.collegeAnswer(this.getvalue(resp, resp.match(/,objectiveQList:(.*?),/)[1]));
             }
             return new CourseTopicTask();
         } else if (resp.indexOf("videoVo:s") > 0) {
             return new VideoTask();
+        } else if (resp.indexOf("list:s") > 0 && url.indexOf("PostBean.getPaginationReplys") > 0) {
+            return new DiscussTask(this.getvalue(resp, resp.match(/,list:(.*?),/)[1]));
+        } else if (resp.indexOf(",post:s") > 0) {
+            return null;
         }
         return new NoSupportTask();
     }
@@ -241,6 +246,58 @@ export class CourseTopicTask extends Task {
                     resolve();
                 }
             }, 1000);
+        });
+    }
+
+}
+
+export class DiscussTask extends Task {
+
+    protected list: any;
+
+    constructor(resp: any) {
+        super();
+        this.list = resp;
+    }
+
+    public Start(): Promise<any> {
+        if (!this.list && this.list.lenght <= 0) {
+            Application.App.log.Info("没有查询到记录,跳过");
+            this.callEvent("complete");
+            return;
+        }
+        Application.App.log.Info("复读机开启,准备复读(回复当前本讨论)");
+        return new Promise<any>(resolve => {
+            let num = 0;
+            let timer = setInterval(() => {
+                try {
+                    let rand = this.list[randNumber(0, this.list.length - 1)];
+                    let el = document.querySelector("iframe[id*=ueditor_]");
+                    (<any>Application.GlobalContext).UE.instants["ueditorInstant" + el.id.substr(el.id.indexOf("_") + 1)].setContent(rand.content);
+                } catch (e) {
+                    if (num < 5) {
+                        return;
+                    }
+                    Application.App.log.Error("发生了错误,准备跳过", e);
+                }
+                clearInterval(timer);
+                this.callEvent("complete");
+                resolve();
+            }, 1000);
+        });
+    }
+
+    public Submit(): Promise<void> {
+        return new Promise<any>(resolve => {
+            Application.App.log.Info("准备提交");
+            let el = <HTMLButtonElement>document.querySelector(".u-btn-sm.u-btn-primary");
+            if (!el) {
+                return resolve();
+            }
+            el.click();
+            setTimeout(() => {
+                resolve();
+            }, 2000);
         });
     }
 

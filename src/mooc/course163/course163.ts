@@ -26,8 +26,8 @@ export class Course163 implements Mooc {
     }
 
     protected hookAjax() {
-        Hook.HookAjaxRespond(["CourseBean.getLessonUnitLearnVo.dwr", "MocQuizBean.getQuizPaperDto.dwr"], (url, resp) => {
-            let task = TaskFactory.CreateTask(resp);
+        Hook.HookAjaxRespond(["CourseBean.getLessonUnitLearnVo.dwr", "MocQuizBean.getQuizPaperDto.dwr", "PostBean.getPaginationReplys.dwr"], (url, resp) => {
+            let task = TaskFactory.CreateTask(url, resp);
             if (task) {
                 setTimeout(async () => {
                     clearInterval(this.delayTimer);
