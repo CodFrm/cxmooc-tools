@@ -9,14 +9,14 @@ import {
 import {Question, QuestionStatusString, ToolsQuestionBankFacade} from "@App/internal/app/question";
 import {CxQuestionFactory} from "@App/mooc/chaoxing/question";
 import {Application} from "@App/internal/application";
-import {CxTaskControlBar, Task} from "@App/mooc/chaoxing/task";
+import {CxTaskControlBar, CxTask} from "@App/mooc/chaoxing/task";
 import {CssBtn} from "@App/mooc/chaoxing/utils";
 import {createBtn} from "@App/internal/utils/utils";
 import {CxAudioControlBar, CxAudioTask, CxDocumentTask} from "@App/mooc/chaoxing/special";
 
 export class TaskFactory {
 
-    public static CreateCourseTask(context: any, taskinfo: any): Task {
+    public static CreateCourseTask(context: any, taskinfo: any): CxTask {
         if (taskinfo.property.module == "insertaudio") {
             taskinfo.type = "audio";
         }
@@ -25,7 +25,7 @@ export class TaskFactory {
             && taskinfo.type != "audio") {
             return null;
         }
-        let task: Task;
+        let task: CxTask;
         let taskIframe = <HTMLIFrameElement>(<Window>context).document.querySelector(
             "iframe[jobid='" + taskinfo.jobid + "']"
         );
@@ -83,7 +83,7 @@ export class TaskFactory {
         return task;
     }
 
-    public static CreateExamTopicTask(context: any, taskinfo: any): Task {
+    public static CreateExamTopicTask(context: any, taskinfo: any): CxTask {
         let topic = new ExamTopic(context, new ToolsQuestionBankFacade("cx", taskinfo));
         let task = new TopicAdapter(context, taskinfo, topic);
         if (document.URL.indexOf("exam/test/reVersionTestStartNew") > 0) {
@@ -109,7 +109,7 @@ export class TaskFactory {
         return task;
     }
 
-    public static CreateHomeworkTopicTask(context: any, taskinfo: any): Task {
+    public static CreateHomeworkTopicTask(context: any, taskinfo: any): CxTask {
         let topic = new HomeworkTopic(context, new ToolsQuestionBankFacade("cx", taskinfo));
         topic.SetQueryQuestions(new CxCourseQueryQuestion(context, (el: HTMLElement): Question => {
             return CxQuestionFactory.CreateHomeWorkQuestion(el);

@@ -1,13 +1,13 @@
 import {Mooc} from "../factory";
 import {Application} from "@App/internal/application";
 import {substrex} from "@App/internal/utils/utils";
-import {Task} from "@App/mooc/chaoxing/task";
+import {CxTask} from "@App/mooc/chaoxing/task";
 import {TaskFactory} from "@App/mooc/chaoxing/factory";
 
 //课程任务
 export class CxCourse implements Mooc {
 
-    protected taskList: Array<Task>;
+    protected taskList: Array<CxTask>;
     protected attachments: Array<any>;
     protected timer: NodeJS.Timer;
 
@@ -41,7 +41,7 @@ export class CxCourse implements Mooc {
                 TaskFactory.CreateCourseTask(iframeWindow, value);
                 continue
             }
-            let task: Task;
+            let task: CxTask;
             task = TaskFactory.CreateCourseTask(iframeWindow, value);
             if (!task) {
                 continue;
@@ -60,10 +60,10 @@ export class CxCourse implements Mooc {
         this.startTask(0, null);
     }
 
-    protected async startTask(index: number, nowtask: Task) {
+    protected async startTask(index: number, nowtask: CxTask) {
         if (Application.App.config.auto) {
             //选择未完成的任务点开始
-            let task: Task;
+            let task: CxTask;
             for (let i = index; i < this.taskList.length; i++) {
                 task = this.taskList[i];
                 if (this.attachments[task.jobIndex].job) {
@@ -102,7 +102,7 @@ export class CxCourse implements Mooc {
         return null;
     }
 
-    protected nextPage(num: number, task: Task) {
+    protected nextPage(num: number, task: CxTask) {
         if (num == null) {
             return this.delay(async () => {
                 task && await task.Submit();

@@ -8,7 +8,7 @@ import {
 } from "@App/internal/app/question";
 import {CxQuestionFactory} from "./question";
 import {Topic, QueryQuestions} from "@App/internal/app/topic";
-import {CxTaskControlBar, Task} from "@App/mooc/chaoxing/task";
+import {CxTaskControlBar, CxTask} from "@App/mooc/chaoxing/task";
 
 export class CxTopicControlBar extends CxTaskControlBar {
     public defaultBtn() {
@@ -27,7 +27,7 @@ export class CxTopicControlBar extends CxTaskControlBar {
     }
 }
 
-export class TopicAdapter extends Task {
+export class TopicAdapter extends CxTask {
 
     protected lock: boolean;
     protected topic: Topic;

@@ -1,7 +1,7 @@
-import { Topic, QueryQuestions } from "@App/internal/app/topic";
-import { Question, TopicType, TopicStatus, Answer, TopicStatusString } from "@App/internal/app/question";
-import { CreateNoteLine } from "../chaoxing/utils";
-import { randNumber } from "@App/internal/utils/utils";
+import {Topic, QueryQuestions} from "@App/internal/app/topic";
+import {Question, TopicType, TopicStatus, Answer, TopicStatusString} from "@App/internal/app/question";
+import {CreateNoteLine} from "../chaoxing/utils";
+import {randNumber, removeHTML} from "@App/internal/utils/utils";
 
 export class CourseQueryAnswer implements QueryQuestions {
     public QueryQuestions(): Question[] {
@@ -41,6 +41,7 @@ class CourseQuestion implements Question {
     public GetType(): TopicType {
         return this.type;
     }
+
     public GetTopic(): string {
         return this.el.querySelector(".f-richEditorText.j-richTxt").innerHTML;
     }
@@ -58,12 +59,15 @@ class CourseQuestion implements Question {
     public SetStatus(status: TopicStatus): void {
         this.AddNotice(TopicStatusString(status));
     }
+
     protected getContent(el: HTMLElement): string {
         return el.querySelector(".f-fl.optionCnt").innerHTML;
     }
+
     protected getOption(el: HTMLElement): string {
         return el.querySelector(".f-fl.optionPos").innerHTML.substring(0, 1);
     }
+
     protected fill(el: HTMLElement, content: string) {
         if (!el.parentElement.querySelector("input").checked) {
             el.parentElement.querySelector("input").click();
@@ -72,19 +76,21 @@ class CourseQuestion implements Question {
         content = content.replace(/(<p>|<\/p>)/, "");
         this.AddNotice(this.getOption(el) + ":" + content);
     }
+
     public Random(): TopicStatus {
         let opts = this.options();
         let pos = randNumber(0, opts.length - 1);
         this.fill(opts[pos], this.getContent(opts[pos - 1]))
         return "random";
     }
+
     protected options(): NodeListOf<HTMLLIElement> {
         return this.el.querySelectorAll(".u-tbl.f-pr.f-cb");
     }
 
     protected dealImgDomain(content: string): string {
         //移除域名对比,也不知道还有没有花里胡哨的
-        return content.replace(/"http(s|):\/\/(.*?)\//, "\"");
+        return content.replace(/"http(s|):\/\/(.*?)\//g, "\"");
     }
 
     public Fill(answer: Answer): TopicStatus {
@@ -118,8 +124,9 @@ class FillQuestion extends CourseQuestion {
     public Fill(answer: Answer): TopicStatus {
         let el = this.el.querySelector("textarea");
         el.focus();
-        el.value = answer.correct[0].content;
-        this.AddNotice("填空:" + answer.correct[0].content);
+
+        el.value = answer.correct[0].content.split("##%_YZPRLFH_%##")[0];
+        this.AddNotice("填空:" + answer.correct[0].content.replace("##%_YZPRLFH_%##", " 或 "));
         return "ok";
     }
 

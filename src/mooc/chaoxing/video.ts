@@ -3,7 +3,7 @@ import {Hook, Context} from "@App/internal/utils/hook";
 import {Application} from "@App/internal/application";
 import {randNumber, get, createBtn, protocolPrompt, isPhone} from "@App/internal/utils/utils";
 import {CssBtn} from "./utils";
-import {CxTaskControlBar, Task} from "@App/mooc/chaoxing/task";
+import {CxTaskControlBar, CxTask} from "@App/mooc/chaoxing/task";
 
 // 优化播放器
 export class CxVideoOptimization implements Mooc {
@@ -138,7 +138,7 @@ export class CxVideoControlBar extends CxTaskControlBar {
 
 }
 
-export class Video extends Task {
+export class Video extends CxTask {
     protected video: HTMLVideoElement;
     protected _playbackRate: number;
     protected _muted: boolean;

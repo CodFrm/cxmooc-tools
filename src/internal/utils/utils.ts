@@ -204,8 +204,6 @@ export function createBtn(title: string, description: string = "", className: st
 export function get(url: string, success: Function) {
     let xmlhttp = createRequest();
     xmlhttp.open("GET", url, true);
-    xmlhttp.send();
-
     xmlhttp.onreadystatechange = function () {
         if (this.readyState == 4) {
             if (this.status == 200) {
@@ -214,7 +212,8 @@ export function get(url: string, success: Function) {
                 (<any>xmlhttp).errorCallback && (<any>xmlhttp).errorCallback(this);
             }
         }
-    }
+    };
+    xmlhttp.send();
     return xmlhttp;
 }
 
@@ -233,8 +232,6 @@ export function post(url: string, data: any, json = true, success: Function) {
     } else {
         xmlhttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
     }
-    xmlhttp.send(data);
-
     xmlhttp.onreadystatechange = function () {
         if (this.readyState == 4) {
             if (this.status == 200) {
@@ -243,7 +240,9 @@ export function post(url: string, data: any, json = true, success: Function) {
                 (<any>xmlhttp).errorCallback && (<any>xmlhttp).errorCallback(this);
             }
         }
-    }
+    };
+
+    xmlhttp.send(data);
     return xmlhttp;
 }
 
@@ -354,9 +353,13 @@ export function isPhone() {
 export interface NotificationOptions {
     text: string
     title: string
+    timeout?: number
 }
 
 export function Noifications(details: NotificationOptions) {
+    if (Application.App.IsFrontend && details.timeout) {
+        details.text += "\n" + details.timeout + "秒后自动关闭";
+    }
     if (window.hasOwnProperty("GM_notification")) {
         (<any>window).GM_notification(details);
     } else {
