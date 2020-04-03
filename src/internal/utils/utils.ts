@@ -12,49 +12,6 @@ export interface RequestInfo extends RequestInit {
     json?: boolean
 }
 
-//TODO:放到class里去....
-if (window.hasOwnProperty('GM_xmlhttpRequest')) {
-    //兼容油猴
-    let oldGM_xmlhttpRequest = (<any>window).GM_xmlhttpRequest;
-    (<any>window).GM_xmlhttpRequest = (info: RequestInfo) => {
-        (<any>info).data = info.body;
-        (<any>info).onreadystatechange = function (response: any) {
-            if (response.readyState == 4) {
-                if (response.status == 200) {
-                    if (info.json) {
-                        info.success && info.success(JSON.parse(response.responseText));
-                    } else {
-                        info.success && info.success(response.responseText);
-                    }
-                } else {
-                    info.error && info.error();
-                }
-            }
-        }
-        oldGM_xmlhttpRequest(info);
-    }
-} else {
-    (<any>window).GM_xmlhttpRequest = (info: RequestInfo) => {
-        let client: Client = Application.App.Client;
-        client.Recv((data) => {
-            if (data.code == 0) {
-                info.success && info.success(data.body);
-            } else {
-                info.error && info.error();
-            }
-        });
-        client.Send({
-            type: "GM_xmlhttpRequest", info: {
-                url: info.url,
-                method: info.method,
-                json: info.json,
-                body: info.body,
-                headers: info.headers,
-            }
-        });
-    }
-}
-
 export class HttpUtils {
 
     public static Request(info: RequestInfo): void {
@@ -76,7 +33,42 @@ export class HttpUtils {
     }
 
     private static crossDomainRequest(info: RequestInfo): void {
-        (<any>window).GM_xmlhttpRequest(info);
+        if (window.hasOwnProperty('GM_xmlhttpRequest')) {
+            //兼容油猴
+            (<any>info).data = info.body;
+            (<any>info).onreadystatechange = function (response: any) {
+                if (response.readyState == 4) {
+                    if (response.status == 200) {
+                        if (info.json) {
+                            info.success && info.success(JSON.parse(response.responseText));
+                        } else {
+                            info.success && info.success(response.responseText);
+                        }
+                    } else {
+                        info.error && info.error();
+                    }
+                }
+            };
+            (<any>window).GM_xmlhttpRequest(info);
+        } else {
+            let client: Client = Application.App.Client;
+            client.Recv((data) => {
+                if (data.code == 0) {
+                    info.success && info.success(data.body);
+                } else {
+                    info.error && info.error();
+                }
+            });
+            client.Send({
+                type: "GM_xmlhttpRequest", info: {
+                    url: info.url,
+                    method: info.method,
+                    json: info.json,
+                    body: info.body,
+                    headers: info.headers,
+                }
+            });
+        }
     }
 
     public static HttpGet(url: string, info: RequestInfo): void {

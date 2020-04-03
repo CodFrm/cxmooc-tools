@@ -95,6 +95,28 @@ window.addEventListener("load", () => {
     padding: 4px;
     border-top: 1px solid;
 }
+
+.tools-logger-panel {
+    background-color: rgba(228, 228, 228, .5);
+    opacity: .25;
+    transition-property: opacity, background-color;
+    transition: 200ms ease-in-out;
+}
+
+.tools-logger-panel:hover,
+.tools-logger-panel:focus-within {
+    background-color: rgba(228, 228, 228, .75);
+    opacity: 1;
+}
+
+.tools-logger-panel:active {
+    background-color: #E5E5E5;
+}
+
+.tools-logger-panel > .close {
+    margin: 2px;
+}
+
 `
     let style = document.createElement("style");
     style.innerHTML = css;
