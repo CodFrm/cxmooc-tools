@@ -3,7 +3,7 @@ import {SystemConfig} from "../config";
 const TelegramBot = require('node-telegram-bot-api');
 const fs = require("fs");
 const {exec} = require('child_process');
-
+const request = require('request');
 const botToken = process.env.BOT_TOKEN || '';
 const chat_id = process.env.GROUP_ID || '';
 const commit_range = process.env.TRAVIS_COMMIT_RANGE || '';
@@ -62,10 +62,15 @@ function push() {
             });
         });
         for (let i = 0; i < qqgrouptoken.length; i++) {
-            fetch(qqgrouptoken[i], {
+            request({
+                url: qqgrouptoken[i],
                 method: "POST",
-                body: '{"content":' + JSON.stringify(content) + '}',
-            })
+                json: true,
+                headers: {
+                    "content-type": "application/json",
+                },
+                body: '{"content":' + JSON.stringify(content) + '}'
+            });
         }
     });
 }
