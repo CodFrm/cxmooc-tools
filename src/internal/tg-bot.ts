@@ -49,9 +49,7 @@ function push() {
         tgBot.sendMessage(chat_id, sendText, {parse_mode: 'Markdown'});
         tgBot.sendDocument(chat_id, fs.createReadStream('build/cxmooc-tools.crx'));
         //send qq group
-        // {"type":0,"data":"123 https://github.co"},{"type":0,"data":"m/CodFrm/cxmooc-tools"}]}
         let content = new Array();
-        content.push();
         let t = sendText.split("m/");
         content.push({type: 0, content: t[0]});
         t.forEach((v, k) => {
