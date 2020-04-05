@@ -1,11 +1,11 @@
 import {Task} from "@App/internal/app/task";
 import {Application} from "@App/internal/application";
-import {createBtn, protocolPrompt, randNumber} from "@App/internal/utils/utils";
+import {createBtn, protocolPrompt, randNumber, substrex} from "@App/internal/utils/utils";
 import {CourseQueryAnswer, CourseTopic} from "@App/mooc/course163/question";
 import {
     Answer,
     Option,
-    PushAnswer,
+    PushAnswer, QuestionBankFacade,
     QuestionStatusString,
     ToolsQuestionBank,
     ToolsQuestionBankFacade
@@ -22,7 +22,7 @@ export class TaskFactory {
             if (resp.indexOf("answers:s") > 0) {
                 CourseTopicTask.collegeAnswer(this.getvalue(resp, resp.match(/,objectiveQList:(.*?),/)[1]));
             }
-            return new CourseTopicTask();
+            return new CourseTopicTask(resp);
         } else if (resp.indexOf("videoVo:s") > 0) {
             return new VideoTask();
         } else if (resp.indexOf("list:s") > 0 && url.indexOf("PostBean.getPaginationReplys") > 0) {
@@ -114,9 +114,22 @@ export class VideoTask extends Task {
 
 export class CourseTopicTask extends Task {
     protected topic: Topic;
+    protected bank: QuestionBankFacade;
 
-    constructor() {
+    constructor(resp?: any) {
         super();
+        let info = "";
+        if (resp) {
+            info = substrex(resp, ",{aid:", ",");
+        }
+        this.bank = new ToolsQuestionBankFacade("mooc163", {
+            refer: document.URL,
+            id: document.URL.match(/(\?id|cid)=(.*?)($|&)/)[2],
+            info: info,
+        });
+        if (resp) {
+            this.bank.CheckCourse();
+        }
     }
 
     public static collegeAnswer(resp: any) {
@@ -207,10 +220,7 @@ export class CourseTopicTask extends Task {
                 if (!divel) {
                     divel = document.querySelector(".u-learn-moduletitle");
                 }
-                this.topic = new CourseTopic(document, new ToolsQuestionBankFacade("mooc163", {
-                    refer: document.URL,
-                    id: document.URL.match(/(\?id|cid)=(.*?)($|&)/)[2],
-                }));
+                this.topic = new CourseTopic(document, this.bank);
                 this.topic.SetQueryQuestions(new CourseQueryAnswer());
                 search.onclick = async () => {
                     protocolPrompt("你正准备使用中国慕课的答题功能,相应的我们需要你的正确答案,同意之后插件将自动检索你的所有答案\n* 本项选择不会影响你的正常使用(协议当前版本有效)\n* 手动点击答题结果页面自动采集页面答案\n", "course_answer_collect_v1", "我同意");

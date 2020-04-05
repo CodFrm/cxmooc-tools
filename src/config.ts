@@ -1,6 +1,6 @@
 export class SystemConfig {
     public static version = 2.3;
-    public static url = "https://cx.icodef.com/";
+    public static url = "http://127.0.0.1:8080/";
     public static hotVersion = "2.3.0";
     public static match = [
         "*://*/mycourse/studentstudy?*",

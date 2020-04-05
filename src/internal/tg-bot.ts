@@ -1,16 +1,17 @@
-import { SystemConfig } from "../config";
+import {SystemConfig} from "../config";
 
 const TelegramBot = require('node-telegram-bot-api');
 const fs = require("fs");
-const { exec } = require('child_process');
+const {exec} = require('child_process');
 
 const botToken = process.env.BOT_TOKEN || '';
 const chat_id = process.env.GROUP_ID || '';
 const commit_range = process.env.TRAVIS_COMMIT_RANGE || '';
 const branch = process.env.TRAVIS_BRANCH || 'develop';
 const tag = process.env.TRAVIS_TAG || false;
+const qqgrouptoken = JSON.parse(process.env.QQGROUP_TOKEN || '');
 
-const tgBot = new TelegramBot(botToken, { polling: false });
+const tgBot = new TelegramBot(botToken, {polling: false});
 
 let lastTag = '';
 if (branch == tag) {
@@ -23,6 +24,7 @@ if (branch == tag) {
 } else {
     push();
 }
+
 function push() {
     let range = commit_range;
     if (branch == tag) {
@@ -44,10 +46,32 @@ function push() {
         }
         sendText += "更新了以下内容:\n```\n" + stdout + "\n```\n" + end;
         console.log(sendText);
-        tgBot.sendMessage(chat_id, sendText, { parse_mode: 'Markdown' });
+        tgBot.sendMessage(chat_id, sendText, {parse_mode: 'Markdown'});
         tgBot.sendDocument(chat_id, fs.createReadStream('build/cxmooc-tools.crx'));
+        //send qq group
+        // {"type":0,"data":"123 https://github.co"},{"type":0,"data":"m/CodFrm/cxmooc-tools"}]}
+        let content = new Array();
+        content.push();
+        let t = sendText.split("m/");
+        content.push({type: 0, content: t[0]});
+        t.forEach((v, k) => {
+            if (k == 0) {
+                return;
+            }
+            content.push({
+                type: 0,
+                content: "m/" + v
+            });
+        });
+        for (let i = 0; i < qqgrouptoken.length; i++) {
+            fetch(qqgrouptoken[i], {
+                method: "POST",
+                body: '{"content":' + JSON.stringify(content) + '}',
+            })
+        }
     });
 }
+
 function hotUpdate() {
     let ret = '热更新版本号为:' + (SystemConfig.hotVersion) + "\n";
     return ret;

@@ -106,6 +106,8 @@ export interface QuestionBank {
     Push(answer: Answer[]): Promise<QuestionStatus>;
 
     SetInfo(info: QuestionInfo): void;
+
+    CheckCourse?(info?: QuestionInfo[]): Promise<number>;
 }
 
 export interface QuestionInfo {
@@ -116,7 +118,7 @@ export interface QuestionInfo {
 // 小工具题库
 export class ToolsQuestionBank implements QuestionBank {
 
-    protected platform: string
+    protected platform: string;
     protected info: QuestionInfo;
 
     constructor(platform: string, info?: QuestionInfo) {
@@ -212,6 +214,20 @@ export class ToolsQuestionBank implements QuestionBank {
         return removeHTML(content1) == removeHTML(content2);
     }
 
+    public CheckCourse(info?: QuestionInfo[]): Promise<number> {
+        return new Promise<number>(resolve => {
+            info = info || [this.info];
+            HttpUtils.HttpPost(SystemConfig.url + "v2/check?platform=" + this.platform, "info=" + encodeURIComponent(JSON.stringify(info)), {
+                success: () => {
+                    //TODO:课程题目数量
+                    resolve(0);
+                }, error: () => {
+                    resolve(-1);
+                }
+            });
+            resolve();
+        });
+    }
 }
 
 export interface QuestionBankFacade {
@@ -222,6 +238,8 @@ export interface QuestionBankFacade {
     Answer(callback: (status: QuestionStatus) => void): void
 
     Push(callback: (status: QuestionStatus) => void): void
+
+    CheckCourse(): Promise<number>
 }
 
 export class ToolsQuestionBankFacade implements QuestionBankFacade {
@@ -326,6 +344,10 @@ export class ToolsQuestionBankFacade implements QuestionBankFacade {
             }
         }
         return options;
+    }
+
+    public CheckCourse(): Promise<number> {
+        return this.bank.CheckCourse();
     }
 
 }
