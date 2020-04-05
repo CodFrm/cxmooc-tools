@@ -51,25 +51,23 @@ function push() {
         //send qq group
         let content = new Array();
         let t = sendText.split("m/");
-        content.push({type: 0, content: t[0]});
+        content.push({type: 0, data: t[0]});
         t.forEach((v, k) => {
             if (k == 0) {
                 return;
             }
             content.push({
                 type: 0,
-                content: "m/" + v
+                data: "m/" + v
             });
         });
         for (let i = 0; i < qqgrouptoken.length; i++) {
             request({
                 url: qqgrouptoken[i],
                 method: "POST",
-                json: true,
-                headers: {
-                    "content-type": "application/json",
-                },
-                body: '{"content":' + JSON.stringify(content) + '}'
+                body: '{"content":' + JSON.stringify(content) + '}',
+            }, function (a1: any) {
+                console.log(a1);
             });
         }
     });
