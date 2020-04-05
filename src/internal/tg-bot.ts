@@ -9,7 +9,7 @@ const chat_id = process.env.GROUP_ID || '';
 const commit_range = process.env.TRAVIS_COMMIT_RANGE || '';
 const branch = process.env.TRAVIS_BRANCH || 'develop';
 const tag = process.env.TRAVIS_TAG || false;
-const qqgrouptoken = JSON.parse(process.env.QQGROUP_TOKEN || '[]');
+const qqgrouptoken = (process.env.QQGROUP_TOKEN || '').split(',');
 
 const tgBot = new TelegramBot(botToken, {polling: false});
 
