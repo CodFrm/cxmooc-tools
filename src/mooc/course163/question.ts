@@ -124,9 +124,15 @@ class FillQuestion extends CourseQuestion {
     public Fill(answer: Answer): TopicStatus {
         let el = this.el.querySelector("textarea");
         el.focus();
-
-        el.value = answer.correct[0].content.split("##%_YZPRLFH_%##")[0];
-        this.AddNotice("填空:" + answer.correct[0].content.replace("##%_YZPRLFH_%##", " 或 "));
+        let match;
+        if (match = answer.correct[0].content.match(/^[\(\[]([\d\.]+),([\d\.]+)[\)\]]$/)) {
+            //范围题
+            el.value = ((parseFloat(match[1]) + parseFloat(match[2])) / 2).toString();
+            this.AddNotice("填空 取值范围:" + answer.correct[0].content);
+        } else {
+            el.value = answer.correct[0].content.split("##%_YZPRLFH_%##")[0];
+            this.AddNotice("填空:" + answer.correct[0].content.replace("##%_YZPRLFH_%##", " 或 "));
+        }
         return "ok";
     }
 
