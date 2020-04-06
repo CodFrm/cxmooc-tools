@@ -89,6 +89,9 @@ class background implements Launcher {
                 });
             }
             if (data == undefined) {
+                if (this.source) {
+                    return;
+                }
                 get(chrome.extension.getURL('src/mooc.js'), (source: string) => {
                     version = SystemConfig.version;
                     this.source = this.dealScript(source, SystemConfig.version);
@@ -113,6 +116,9 @@ class background implements Launcher {
             (<any>get(sourceUrl, (source: string) => {
                 this.source = this.dealScript(source, version);
             })).error(() => {
+                if (this.source) {
+                    return;
+                }
                 get(chrome.extension.getURL('src/mooc.js'), (source: string) => {
                     version = SystemConfig.version;
                     this.source = this.dealScript(source, SystemConfig.version);
