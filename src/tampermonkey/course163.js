@@ -2,7 +2,7 @@
 // @name         中国大学慕课小工具
 // @namespace    https://github.com/CodFrm/cxmooc-tools
 // @version      2.2.0
-// @description  一个中国大学mooc刷课工具,火狐,谷歌,油猴支持.自动观看视频,屏蔽题目作业测试题库(੧ᐛ੭挂科模式,启动)
+// @description  一个中国大学mooc刷课工具,火狐,谷歌,油猴支持.支持自动观看视频/课件/讨论,屏蔽视频题目和静音倍速,作业/测试题库,考试题库,SCOP课程(੧ᐛ੭挂科模式,启动)
 // @author       CodFrm
 // @run-at       document-start
 // @match        *://www.icourse163.org/learn/*

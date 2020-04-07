@@ -18,9 +18,7 @@ title: 快速开始
 
 浏览器打包版:(下载之后直接打开exe文件,然后访问慕课网站就可以使用)
 
-链接：[百度网盘下载:https://pan.baidu.com/s/1UGR377Ghm_9wGf1jqitvRw](https://pan.baidu.com/s/1UGR377Ghm_9wGf1jqitvRw)
-
-提取码：c8lf
+[**直链高速下载**](http://d0.ananas.chaoxing.com/download/eb7e827068848adf1e800be8883f6a46)
 
 [**打包版浏览器文档**](/1-UserGuide/1-1-chrome.html#打包版浏览器),但是这个更新速度较慢,也可以自己手动更新
 
