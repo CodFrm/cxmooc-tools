@@ -349,9 +349,6 @@ export interface NotificationOptions {
 }
 
 export function Noifications(details: NotificationOptions) {
-    if (Application.App.IsFrontend && details.timeout) {
-        details.text += "\n" + details.timeout + "秒后自动关闭";
-    }
     if (window.hasOwnProperty("GM_notification")) {
         (<any>window).GM_notification(details);
     } else {

@@ -108,8 +108,8 @@ export class PageLog implements Logger {
         if (document.hidden) {
             Noifications({
                 title: "超星慕课小工具",
-                text: text,
-                timeout: 3,
+                text: text + "\n3秒后自动关闭",
+                timeout: 3000,
             });
         }
         return this;

@@ -25,7 +25,7 @@ class background implements Launcher {
                         if (data.details.timeout) {
                             setTimeout(() => {
                                 chrome.notifications.clear(id);
-                            }, data.details.timeout * 1000);
+                            }, data.details.timeout);
                         }
                     });
                     break;
