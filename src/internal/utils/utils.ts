@@ -262,6 +262,14 @@ function createRequest(): XMLHttpRequest {
     return xmlhttp;
 }
 
+// 移除html tag
+export function removeHTMLTag(html: string) {
+    let revHtml = /<.*?>/g;
+    html = html.replace(revHtml, '');
+    html = html.replace(/(^\s+)|(\s+$)/g, '');
+    return html;
+}
+
 /**
  * 去除html标签和处理中文
  * @param {string} html

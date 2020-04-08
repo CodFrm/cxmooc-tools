@@ -138,10 +138,15 @@ export class CxCourse implements Mooc {
 export class CxExamTopic implements Mooc {
     public Start(): void {
         window.onload = () => {
+            let el = <HTMLInputElement>document.querySelector("#paperId");
+            let info;
+            if (el) {
+                info = el.value;
+            }
             let task = TaskFactory.CreateExamTopicTask(window, {
                 refer: document.URL,
-                id: substrex(document.URL, "courseId=", "&"),
-                info: (<HTMLInputElement>document.querySelector("#paperId")).value,
+                id: "exam-" + substrex(document.URL, "&id=", "&"),
+                info: info,
             });
             task.Init();
             if (document.URL.indexOf("exam/test/reVersionTestStartNew") > 0) {
@@ -156,10 +161,15 @@ export class CxExamTopic implements Mooc {
 export class CxHomeWork implements Mooc {
     public Start(): void {
         window.onload = () => {
+            let el = (<HTMLInputElement>document.querySelector("#workLibraryId"));
+            let info = "";
+            if (el) {
+                info = el.value;
+            }
             let task = TaskFactory.CreateHomeworkTopicTask(window, {
                 refer: document.URL,
                 id: substrex(document.URL, "&workId=", "&"),
-                info: (<HTMLInputElement>document.querySelector("#workLibraryId") || <HTMLInputElement>document.querySelector("#cid")).value
+                info: info,
             });
             task.Init();
             if (Application.App.config.auto && <HTMLInputElement>document.querySelector("#workLibraryId")) {

@@ -122,9 +122,13 @@ export class CourseTopicTask extends Task {
         if (resp) {
             info = substrex(resp, ",{aid:", ",");
         }
+        let prefix = "";
+        if (document.URL.indexOf("cid") > 0) {
+            prefix = "c-";
+        }
         this.bank = new ToolsQuestionBankFacade("mooc163", {
             refer: document.URL,
-            id: document.URL.match(/(\?id|cid)=(.*?)($|&)/)[2],
+            id: prefix + document.URL.match(/(\?id|cid)=(.*?)($|&)/)[2],
             info: info,
         });
         if (resp) {
@@ -137,9 +141,13 @@ export class CourseTopicTask extends Task {
         if (u.length <= 0) {
             return;
         }
+        let prefix = "";
+        if (document.URL.indexOf("cid") > 0) {
+            prefix = "c-";
+        }
         let bank = new ToolsQuestionBank("mooc163", {
             refer: document.URL,
-            id: u[2],
+            id: prefix + u[2],
         });
         let answer = new Array<Answer>();
         let options: Array<any>;

@@ -3,7 +3,7 @@ import {VCode} from "@App/internal/app/vcode";
 import {CxCourse, CxHomeWork, CxExamTopic} from "./course";
 import {CxCourseVCode} from "./vcode";
 import {CxVideoOptimization} from "./video";
-import {Read, ReadStartPage} from "@App/mooc/chaoxing/read";
+import {Exam, Read, ReadStartPage} from "@App/mooc/chaoxing/read";
 import {CxAudioOptimization} from "@App/mooc/chaoxing/special";
 
 export class CxPlatform implements MoocFactory {
@@ -24,6 +24,8 @@ export class CxPlatform implements MoocFactory {
             mooc = new ReadStartPage();
         } else if (url.indexOf("ztnodedetailcontroller/visitnodedetail") > 0) {
             mooc = new Read();
+        } else if (url.indexOf("exam/test?") > 0) {
+            mooc = new Exam();
         }
         return mooc;
     }

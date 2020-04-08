@@ -1,6 +1,7 @@
 import {Mooc} from "../factory";
 import {Application} from "@App/internal/application";
-import {randNumber} from "@App/internal/utils/utils";
+import {randNumber, substrex} from "@App/internal/utils/utils";
+import {QuestionInfo, ToolsQuestionBank} from "@App/internal/app/question";
 
 export class Read implements Mooc {
 
@@ -44,6 +45,28 @@ export class ReadStartPage implements Mooc {
                 let el = document.querySelector(".mb15.course_section.fix");
                 el.querySelector("a").click();
             }, 10000);
+        });
+    }
+}
+
+export class Exam implements Mooc {
+    public Start(): void {
+        let bank = new ToolsQuestionBank("cx");
+        window.addEventListener("load", () => {
+            let str = Application.GlobalContext.document.documentElement.innerHTML;
+            let m;
+            let regex = new RegExp(/goTest\(.*?,\d+,(\d+),.*?,(\d+),false,/g);
+            let info = new Array<QuestionInfo>();
+            while ((m = regex.exec(str)) !== null) {
+                let tmp = {refer: document.URL, id: "exam-" + m[1], info: m[2]};
+                info.push(tmp);
+            }
+            regex = new RegExp(/lookUpPaper\('\d+','\d+','(\d+)'[\s\S]*?&amp;id=(\d+)/g);
+            while ((m = regex.exec(str)) !== null) {
+                let tmp = {refer: document.URL, id: "exam-" + m[2], info: m[1]};
+                info.push(tmp);
+            }
+            bank.CheckCourse(info);
         });
     }
 }
