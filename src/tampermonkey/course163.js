@@ -8,6 +8,7 @@
 // @match        *://www.icourse163.org/learn/*
 // @match        *://www.icourse163.org/spoc/learn/*
 // @grant        GM_xmlhttpRequest
+// @grant        GM_notification
 // @grant        unsafeWindow
 // @license      MIT
 // ==/UserScript==
