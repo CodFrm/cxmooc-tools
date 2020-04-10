@@ -95,7 +95,7 @@ export class PageLog implements Logger {
             div.className = "tools-logger-panel";
             document.body.appendChild(div);
             this.el = div.querySelector(".tools-notice-content");
-            ( < HTMLButtonElement > div.querySelector(".close")).onclick = () => {
+            (<HTMLButtonElement>div.querySelector(".close")).onclick = () => {
                 this.el = undefined;
                 div.remove();
             };
@@ -122,9 +122,8 @@ export class PageLog implements Logger {
     public Info(...args: any): Logger {
         let text = this.toStr(...args);
         // 判断选中状态是否发送桌面通知
-        if (this.el && ( < HTMLInputElement > this.el.querySelector('#checkbox')).checked) {
-            var s1 = new PageLog();
-            s1.first(text, "#409EFF", "rgba(121, 187, 255, 0.2)");
+        if (this.el && (<HTMLInputElement>this.el.querySelector('#checkbox')).checked) {
+            this.first(text, "#409EFF", "rgba(121, 187, 255, 0.2)");
         } else {
             console.info("[info", this.getNowTime(), "]", ...args);
         }
@@ -136,10 +135,9 @@ export class PageLog implements Logger {
         console.warn("[warn", this.getNowTime(), "]", ...args);
         let text = this.toStr(...args);
         if (this.el) {
-            var s1 = new PageLog();
-            s1.first(text, "#5C3C00", "rgba(250, 236, 216, 0.4)");
+            this.first(text, "#5C3C00", "rgba(250, 236, 216, 0.4)");
         }
-        if (document.hidden && ( < HTMLInputElement > this.el.querySelector('#checkbox')).checked) {
+        if (document.hidden && (<HTMLInputElement>this.el.querySelector('#checkbox')).checked) {
             Noifications({
                 title: "超星慕课小工具",
                 text: text + "\n3秒后自动关闭",
@@ -152,11 +150,10 @@ export class PageLog implements Logger {
     public Error(...args: any): Logger {
         console.error("[error", this.getNowTime(), "]", ...args);
         let text = this.toStr(...args);
-        if (this.el && ( < HTMLInputElement > this.el.querySelector('#checkbox')).checked) {
-            var s1 = new PageLog();
-            s1.first(text, "#FFF0F0", "rgba(253, 226, 226, 0.5)");
+        if (this.el && (<HTMLInputElement>this.el.querySelector('#checkbox')).checked) {
+            this.first(text, "#FFF0F0", "rgba(253, 226, 226, 0.5)");
         }
-        if (document.hidden && ( < HTMLInputElement > this.el.querySelector('#checkbox')).checked) {
+        if ((<HTMLInputElement>this.el.querySelector('#checkbox')).checked)  {
             Noifications({
                 title: "超星慕课小工具",
                 text: text,
@@ -169,12 +166,10 @@ export class PageLog implements Logger {
         console.error("[fatal", this.getNowTime(), "]", ...args);
         let text = this.toStr(...args);
         this.el.innerHTML = text;
-        if (document.hidden && ( < HTMLInputElement > this.el.querySelector('#checkbox')).checked) {
             Noifications({
                 title: "超星慕课小工具",
                 text: text,
             });
-        }
         return this;
     }
 }
