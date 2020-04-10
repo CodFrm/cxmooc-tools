@@ -289,9 +289,18 @@ export class DiscussTask extends Task {
         this.list = resp;
     }
 
+    protected isRepeat(): boolean {
+        return document.querySelector("a.unfollowed") == undefined;
+    }
+
     public Start(): Promise<any> {
         if (!this.list && this.list.lenght <= 0) {
             Application.App.log.Info("没有查询到记录,跳过");
+            this.callEvent("complete");
+            return;
+        }
+        if (this.isRepeat()) {
+            Application.App.log.Info("已经关注,跳过");
             this.callEvent("complete");
             return;
         }
@@ -317,6 +326,9 @@ export class DiscussTask extends Task {
     }
 
     public Submit(): Promise<void> {
+        if (this.isRepeat()) {
+            return;
+        }
         return new Promise<any>(resolve => {
             Application.App.log.Info("准备提交");
             let el = <HTMLButtonElement>document.querySelector(".u-btn-sm.u-btn-primary");
