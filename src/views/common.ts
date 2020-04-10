@@ -72,12 +72,14 @@ window.addEventListener("load", () => {
 }
 
 .tools-logger-panel{
+    width: 360px;
+    height: auto;
+    max-height: 260px;
+    color:#000;
     position: fixed;
-    color: red;
     margin: 0 auto;
     display: block;
     font-size: 14px;
-    border: 1px solid #ff482b;
     border-radius: 4px;
     width: 340px;
     text-align: center;
@@ -85,28 +87,111 @@ window.addEventListener("load", () => {
     left:50%;
     margin-left:-170px;
     z-index: 100000;
-    background: #e4e4e4;
-    opacity: .8;
     top: 40px;
-}
-
-.tools-notice-content{
-    height: 26px;
-    padding: 4px;
-    border-top: 1px solid;
-}
-
-.tools-logger-panel {
-    background-color: rgba(228, 228, 228, .5);
-    opacity: .25;
+    background: rgba(256, 256, 256, 0.3);
+    box-shadow: 0px 0px 5px #bbb;
     transition-property: opacity, background-color;
     transition: 200ms ease-in-out;
 }
 
+.head {
+    width: 100%;
+    height: 25px;
+}
+
+.head span{
+    color:#000;
+    float:left;
+    font-weight: 550;
+}
+
+.status {
+    color: #67C23A;
+    font-weight: 600;
+}
+
+.tools-notice-content {
+    width: 100%;
+    height: 220px;
+    border-top:0px;
+    overflow-y: scroll;
+    overflow-x: hidden;
+}
+
+.tools-notice-content .log {
+    height: 26px;
+    width: auto;
+    text-align: center;
+    border: 1px solid #eee;
+}
+
+.tools-notice-content .log p {
+    margin: 0;
+    color: #aaa;
+    font-size: 11px;
+    font-weight: 500;
+    font-family: Arial, Helvetica, sans-serif;
+    line-height: 26px;
+}
+
+/* 滚动槽 */
+::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+}
+
+::-webkit-scrollbar-track {
+    border-radius: 3px;
+    background: rgba(0, 0, 0, 0.06);
+    -webkit-box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.08);
+}
+
+/* 滚动条滑块 */
+::-webkit-scrollbar-thumb {
+    border-radius: 3px;
+    background: rgba(0, 0, 0, 0.12);
+    -webkit-box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.2);
+}
+
+/* 复选框 */
+.switch {
+    margin: 2px auto;
+    display: inline-flex;
+    align-items: center;
+    width: auto;
+}
+.checkbox-input {
+    display: none
+}
+.checkbox {
+    -webkit-transition: background-color 0.3s;
+    transition: background-color 0.3s;
+    background-color: #fff;
+    border: 1px solid #d7d7d7;
+    border-radius: 50px;
+    width: 16px;
+    height: 16px;
+    vertical-align:middle;
+    margin: 0 5px;
+}
+.checkbox-input:checked+.checkbox {
+    background-color: #409EFF;
+}
+.checkbox-input:checked+.checkbox:after {
+    // content: "√";
+    display: inline-block;
+    height: 100%;
+    width: 100%;
+    color: #fff;
+    text-align: center;
+    line-height: 16px;
+    font-size: 12px;
+    box-shadow: 0 0 4px #409EFF;
+}
+
 .tools-logger-panel:hover,
 .tools-logger-panel:focus-within {
-    background-color: rgba(228, 228, 228, .75);
-    opacity: 1;
+    background: rgba(256, 256, 256, 0.7);
 }
 
 .tools-logger-panel:active {
