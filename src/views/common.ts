@@ -84,8 +84,7 @@ window.addEventListener("load", () => {
     width: 340px;
     text-align: center;
     overflow: hidden;
-    left:50%;
-    margin-left:-170px;
+    left:60px;
     z-index: 100000;
     top: 40px;
     background: rgba(256, 256, 256, 0.3);

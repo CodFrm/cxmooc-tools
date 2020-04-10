@@ -54,6 +54,7 @@ export class ConsoleLog implements Logger {
 
 export class PageLog implements Logger {
     protected el: HTMLElement;
+    protected div: HTMLElement;
 
     protected getNowTime(): string {
         let time = new Date();
@@ -75,9 +76,9 @@ export class PageLog implements Logger {
     constructor() {
         this.el = undefined;
         window.addEventListener("load", () => {
-            let div = document.createElement("div");
+            this.div = document.createElement("div");
             // 主要布局
-            div.innerHTML = `
+            this.div.innerHTML = `
             <div class="head"> 
                <span>小工具通知条</span> 
                <label class="switch" style="width:90px">
@@ -92,13 +93,22 @@ export class PageLog implements Logger {
             </div>
             `;
 
-            div.className = "tools-logger-panel";
-            document.body.appendChild(div);
-            this.el = div.querySelector(".tools-notice-content");
-            (<HTMLButtonElement>div.querySelector(".close")).onclick = () => {
+            this.div.className = "tools-logger-panel";
+            document.body.appendChild(this.div);
+            this.el = this.div.querySelector(".tools-notice-content");
+            (<HTMLButtonElement>this.div.querySelector(".close")).onclick = () => {
                 this.el = undefined;
-                div.remove();
+                this.div.remove();
             };
+            let checkbox = <HTMLInputElement>this.div.querySelector("#checkbox");
+            localStorage["is_notify"] = localStorage["is_notify"] || "true";
+            checkbox.checked = localStorage["is_notify"] == "true";
+            if (!checkbox.checked) {
+                checkbox.removeAttribute("checked")
+            }
+            checkbox.addEventListener("change", function () {
+                localStorage["is_notify"] = this.checked;
+            });
         });
     }
 
@@ -122,7 +132,7 @@ export class PageLog implements Logger {
     public Info(...args: any): Logger {
         let text = this.toStr(...args);
         // 判断选中状态是否发送桌面通知
-        if (this.el && (<HTMLInputElement>this.el.querySelector('#checkbox')).checked) {
+        if (this.el) {
             this.first(text, "#409EFF", "rgba(121, 187, 255, 0.2)");
         } else {
             console.info("[info", this.getNowTime(), "]", ...args);
@@ -132,12 +142,13 @@ export class PageLog implements Logger {
 
 
     public Warn(...args: any): Logger {
-        console.warn("[warn", this.getNowTime(), "]", ...args);
         let text = this.toStr(...args);
         if (this.el) {
             this.first(text, "#5C3C00", "rgba(250, 236, 216, 0.4)");
+        } else {
+            console.warn("[warn", this.getNowTime(), "]", ...args);
         }
-        if (document.hidden && (<HTMLInputElement>this.el.querySelector('#checkbox')).checked) {
+        if (document.hidden && localStorage["is_notify"] == "true") {
             Noifications({
                 title: "超星慕课小工具",
                 text: text + "\n3秒后自动关闭",
@@ -148,12 +159,13 @@ export class PageLog implements Logger {
     }
 
     public Error(...args: any): Logger {
-        console.error("[error", this.getNowTime(), "]", ...args);
         let text = this.toStr(...args);
-        if (this.el && (<HTMLInputElement>this.el.querySelector('#checkbox')).checked) {
+        if (this.el) {
             this.first(text, "#FFF0F0", "rgba(253, 226, 226, 0.5)");
+        } else {
+            console.error("[error", this.getNowTime(), "]", ...args);
         }
-        if ((<HTMLInputElement>this.el.querySelector('#checkbox')).checked)  {
+        if (localStorage["is_notify"] == "true") {
             Noifications({
                 title: "超星慕课小工具",
                 text: text,
@@ -163,13 +175,16 @@ export class PageLog implements Logger {
     }
 
     public Fatal(...args: any): Logger {
-        console.error("[fatal", this.getNowTime(), "]", ...args);
         let text = this.toStr(...args);
-        this.el.innerHTML = text;
-            Noifications({
-                title: "超星慕课小工具",
-                text: text,
-            });
+        if (this.el) {
+            this.first(text, "#FFF0F0", "rgba(253, 226, 226, 0.5)");
+        } else {
+            console.error("[fatal", this.getNowTime(), "]", ...args);
+        }
+        Noifications({
+            title: "超星慕课小工具",
+            text: text,
+        });
         return this;
     }
 }
