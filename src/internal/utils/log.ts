@@ -110,8 +110,8 @@ export class PageLog implements Logger {
                 localStorage["is_notify"] = this.checked;
             });
             setTimeout(() => {
-                this.Fatal("233");
-            }, 2000);
+                this.Info("233");
+            }, 1000);
         });
     }
 
