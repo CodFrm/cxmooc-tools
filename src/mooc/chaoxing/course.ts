@@ -137,15 +137,15 @@ export class CxCourse implements Mooc {
 //TODO: 考试和作业强制采集
 export class CxExamTopic implements Mooc {
     public Start(): void {
-        window.onload = () => {
+        window.addEventListener("load", () => {
             let el = <HTMLInputElement>document.querySelector("#paperId");
-            let info;
+            let info = "0";
             if (el) {
                 info = el.value;
             }
             let task = TaskFactory.CreateExamTopicTask(window, {
                 refer: document.URL,
-                id: "exam-" + substrex(document.URL, "&id=", "&"),
+                id: "exam-" + info,
                 info: info,
             });
             task.Init();
@@ -154,7 +154,7 @@ export class CxExamTopic implements Mooc {
                     task.Start();
                 }
             }
-        }
+        });
     }
 }
 

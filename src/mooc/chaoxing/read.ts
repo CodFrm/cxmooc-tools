@@ -55,15 +55,15 @@ export class Exam implements Mooc {
         window.addEventListener("load", () => {
             let str = Application.GlobalContext.document.documentElement.innerHTML;
             let m;
-            let regex = new RegExp(/goTest\(.*?,\d+,(\d+),.*?,(\d+),false,/g);
+            let regex = new RegExp(/goTest\(.*?,(\d+),\d+,.*?,(\d+),false,/g);
             let info = new Array<QuestionInfo>();
             while ((m = regex.exec(str)) !== null) {
-                let tmp = {refer: document.URL, id: "exam-" + m[1], info: m[2]};
+                let tmp = {refer: document.URL, id: "exam-" + m[2], info: m[2]};
                 info.push(tmp);
             }
-            regex = new RegExp(/lookUpPaper\('\d+','\d+','(\d+)'[\s\S]*?&amp;id=(\d+)/g);
+            regex = new RegExp(/lookUpPaper\('(\d+)','\d+','(\d+)'/g);
             while ((m = regex.exec(str)) !== null) {
-                let tmp = {refer: document.URL, id: "exam-" + m[2], info: m[1]};
+                let tmp = {refer: document.URL, id: "exam-" + m[2], info: m[2]};
                 info.push(tmp);
             }
             bank.CheckCourse(info);

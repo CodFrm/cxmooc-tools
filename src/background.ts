@@ -34,10 +34,10 @@ class background implements Launcher {
         });
 
         this.update();
-        //10分钟检查更新
+        //1小时检查更新
         setInterval(() => {
             this.update();
-        }, 10 * 60 * 1000);
+        }, 60 * 60 * 1000);
         this.injectedScript();
         this.event();
         this.setDefaultConfig();
