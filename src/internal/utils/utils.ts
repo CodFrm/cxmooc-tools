@@ -262,6 +262,14 @@ function createRequest(): XMLHttpRequest {
     return xmlhttp;
 }
 
+// 移除html tag
+export function removeHTMLTag(html: string) {
+    let revHtml = /<.*?>/g;
+    html = html.replace(revHtml, '');
+    html = html.replace(/(^\s+)|(\s+$)/g, '');
+    return html;
+}
+
 /**
  * 去除html标签和处理中文
  * @param {string} html
@@ -349,9 +357,6 @@ export interface NotificationOptions {
 }
 
 export function Noifications(details: NotificationOptions) {
-    if (Application.App.IsFrontend && details.timeout) {
-        details.text += "\n" + details.timeout + "秒后自动关闭";
-    }
     if (window.hasOwnProperty("GM_notification")) {
         (<any>window).GM_notification(details);
     } else {

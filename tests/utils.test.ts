@@ -1,12 +1,12 @@
 (<any>global).window = global;
-import { removeHTML, dealHotVersion } from "@App/internal/utils/utils";
+import {removeHTML, dealHotVersion, removeHTMLTag} from "@App/internal/utils/utils";
 
 describe("remove html", () => {
     it("不包含html", () => {
         let eg = "这是一句正常的话,应该不要发送改变";
         expect(removeHTML(eg)).toEqual(eg);
         expect(removeHTML("包含一些中文符号，例如：（）？这样一些“”")).toEqual("包含一些中文符号,例如:()?这样一些\"\"");
-    })
+    });
     it("包含html", () => {
         expect(removeHTML('<span style=";font-family:宋体;font-size:16px"><span style="font-family:宋体">依靠群众求胜利</span></span>')).toEqual("依靠群众求胜利");
         expect(removeHTML('<p><span style="font-family: &quot;Times New Roman&quot;; font-size: 14px;">empty</span>&nbsp;</p>')).toEqual("empty");
@@ -18,7 +18,12 @@ describe("remove html", () => {
         expect(removeHTML('<p><iframe data="91e555f94f1954d98dddda68d20fb2a3" height="62px" width="auto" frameborder="0" allowtransparency="true" style="background-color:transparent;border-radius: 3px;overflow: hidden;z-index: 0;" scrolling="no" src="/module/audioplay.html?objectid=91e555f94f1954d98dddda68d20fb2a3&amp;resids=439200623890747392&amp;puid=36250294" class="ans-insertaudio-module" module="_insertaudio" __idm_id__="15520769"> </iframe></p><p>单4<br></p>')).toEqual("/module/audioplay.html?objectid=91e555f94f1954d98dddda68d20fb2a3&resids=439200623890747392&puid=36250294单4");
 
         expect(removeHTML('<p>测试多选题目</p><p><iframe data="91e555f94f1954d98dddda68d20fb2a3" height="62px" width="auto" frameborder="0" allowtransparency="true" style="background-color:transparent;border-radius: 3px;overflow: hidden;z-index: 0;" scrolling="no" src="/module/audioplay.html?objectid=91e555f94f1954d98dddda68d20fb2a3&amp;resids=439200623890747392&amp;puid=36250294" class="ans-insertaudio-module" module="_insertaudio"> </iframe></p><p class="attach"><img src="/js/editor20150812/dialogs/attachment_new/fileTypeImages/icon_default.gif"><a href="/ueditorupload/read?objectId=d6671c9b4756f25d8364bc24f180216f" target="_blank" name="题库导入模板.xlsx" type="xlsx">题库导入模板.xlsx</a></p><p><br></p>')).toEqual("测试多选题目/module/audioplay.html?objectid=91e555f94f1954d98dddda68d20fb2a3&resids=439200623890747392&puid=36250294/js/editor20150812/dialogs/attachment_new/fileTypeImages/icon_default.gif/ueditorupload/read?objectId=d6671c9b4756f25d8364bc24f180216f题库导入模板.xlsx");
-    })
+    });
+    it("remove html tag", function () {
+        expect(removeHTMLTag("我爱你")).toEqual("我爱你");
+        expect(removeHTMLTag("<p>我爱你</p>")).toEqual("我爱你");
+        expect(removeHTMLTag("<p>我爱你")).toEqual("我爱你");
+    });
 });
 
 describe("简单方法", () => {

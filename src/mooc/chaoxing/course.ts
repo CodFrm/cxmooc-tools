@@ -137,11 +137,16 @@ export class CxCourse implements Mooc {
 //TODO: 考试和作业强制采集
 export class CxExamTopic implements Mooc {
     public Start(): void {
-        window.onload = () => {
+        window.addEventListener("load", () => {
+            let el = <HTMLInputElement>document.querySelector("#paperId");
+            let info = "0";
+            if (el) {
+                info = el.value;
+            }
             let task = TaskFactory.CreateExamTopicTask(window, {
                 refer: document.URL,
-                id: substrex(document.URL, "courseId=", "&"),
-                info: (<HTMLInputElement>document.querySelector("#paperId")).value,
+                id: "exam-" + info,
+                info: info,
             });
             task.Init();
             if (document.URL.indexOf("exam/test/reVersionTestStartNew") > 0) {
@@ -149,17 +154,22 @@ export class CxExamTopic implements Mooc {
                     task.Start();
                 }
             }
-        }
+        });
     }
 }
 
 export class CxHomeWork implements Mooc {
     public Start(): void {
         window.onload = () => {
+            let el = (<HTMLInputElement>document.querySelector("#workLibraryId"));
+            let info = "";
+            if (el) {
+                info = el.value;
+            }
             let task = TaskFactory.CreateHomeworkTopicTask(window, {
                 refer: document.URL,
                 id: substrex(document.URL, "&workId=", "&"),
-                info: (<HTMLInputElement>document.querySelector("#workLibraryId") || <HTMLInputElement>document.querySelector("#cid")).value
+                info: info,
             });
             task.Init();
             if (Application.App.config.auto && <HTMLInputElement>document.querySelector("#workLibraryId")) {

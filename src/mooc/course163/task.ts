@@ -116,15 +116,30 @@ export class CourseTopicTask extends Task {
     protected topic: Topic;
     protected bank: QuestionBankFacade;
 
+    public static getid() {
+        let id = document.URL.match(/(\?id|cid)=(.*?)($|&)/);
+        if (!id) {
+            id = document.URL.match(/(&id)=(.*?)$/);
+        }
+        if (!id) {
+            return "";
+        }
+        return id[2];
+    }
+
     constructor(resp?: any) {
         super();
         let info = "";
         if (resp) {
             info = substrex(resp, ",{aid:", ",");
         }
+        let prefix = "";
+        if (document.URL.indexOf("cid") > 0) {
+            prefix = "c-";
+        }
         this.bank = new ToolsQuestionBankFacade("mooc163", {
             refer: document.URL,
-            id: document.URL.match(/(\?id|cid)=(.*?)($|&)/)[2],
+            id: prefix + CourseTopicTask.getid(),
             info: info,
         });
         if (resp) {
@@ -133,13 +148,17 @@ export class CourseTopicTask extends Task {
     }
 
     public static collegeAnswer(resp: any) {
-        let u = document.URL.match(/(\?id|cid)=(.*?)($|&)/);
-        if (u.length <= 0) {
+        let id = this.getid();
+        if (id == "") {
             return;
+        }
+        let prefix = "";
+        if (document.URL.indexOf("cid") > 0) {
+            prefix = "c-";
         }
         let bank = new ToolsQuestionBank("mooc163", {
             refer: document.URL,
-            id: u[2],
+            id: prefix + id,
         });
         let answer = new Array<Answer>();
         let options: Array<any>;

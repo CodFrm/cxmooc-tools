@@ -142,8 +142,8 @@ export class PageLog implements Logger {
         if (document.hidden && ( < HTMLInputElement > this.el.querySelector('#checkbox')).checked) {
             Noifications({
                 title: "超星慕课小工具",
-                text: text,
-                timeout: 3,
+                text: text + "\n3秒后自动关闭",
+                timeout: 3000,
             });
         }
         return this;

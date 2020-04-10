@@ -10,6 +10,7 @@
 // @match        *://examh5.zhihuishu.com/stuExamWeb.html*
 // @match        *://onlineexamh5new.zhihuishu.com/stuExamWeb.html*
 // @grant        GM_xmlhttpRequest
+// @grant        GM_notification
 // @grant        unsafeWindow
 // @license      MIT
 // ==/UserScript==

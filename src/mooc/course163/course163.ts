@@ -1,18 +1,6 @@
 import {Mooc} from "../factory";
 import {Hook, Context} from "@App/internal/utils/hook";
-import {createBtn, substrex, protocolPrompt} from "@App/internal/utils/utils";
 import "../../views/common";
-import {CourseTopic, CourseQueryAnswer} from "./question";
-import {
-    ToolsQuestionBankFacade,
-    ToolsQuestionBank,
-    QuestionBank,
-    QuestionBankFacade,
-    Answer,
-    Option,
-    PushAnswer,
-    QuestionStatusString
-} from "@App/internal/app/question";
 import {Application} from "@App/internal/application";
 import {TaskFactory} from "@App/mooc/course163/task";
 import {Task} from "@App/internal/app/task";

@@ -1,4 +1,4 @@
-import {substrex, randNumber as RandNumber, randNumber} from "@App/internal/utils/utils";
+import {substrex, randNumber as RandNumber, randNumber, removeHTML, removeHTMLTag} from "@App/internal/utils/utils";
 import {
     Question,
     TopicStatus,
@@ -86,10 +86,37 @@ export class CxQuestionFactory {
         return this.CreateCourseQuestionByTopicType(SwitchTopicType(substrex(ret.innerText, ".", "（")), el);
     }
 
+    //TODO:写的什么玩意啊
     public static CreateExamCollectQuestion(el: HTMLElement): Question {
         let ret = CxQuestionFactory.getBeforeType(el.parentElement);
         let txt = ret.innerText.match(/、(.*?)[\s|（]/)[1];
-        return this.CreateCourseQuestionByTopicType(SwitchTopicType(txt), el);
+        return this.CreateExamQuestionByTopicType(SwitchTopicType(txt), el);
+    }
+
+    public static CreateExamQuestionByTopicType(type: TopicType, el: HTMLElement): Question {
+        let ret: Question = null;
+        let processor = new CourseQuestionProcessor();
+        this.RemoveNotice(el);
+        switch (type) {
+            case 1:
+            case 2: {
+                ret = new cxSelectQuestion(el, type, processor);
+                break;
+            }
+            case 3: {
+                ret = new cxJudgeQuestion(el, type, processor);
+                break;
+            }
+            case 4: {
+                ret = new cxExamFillQuestion(el, type, processor);
+                break;
+            }
+            default: {
+                this.AddNotice(el, "不支持的类型");
+                return null
+            }
+        }
+        return ret;
     }
 
     public static RemoveNotice(el: HTMLElement) {
@@ -118,7 +145,7 @@ export interface QuestionProcessor {
 
 class CourseQuestionProcessor implements QuestionProcessor {
     public GetTopic(el: HTMLElement): string {
-        let ret = el.querySelector(".Zy_TItle > .clearfix").innerHTML;
+        let ret = el.querySelector(".Zy_TItle > .clearfix,.Cy_TItle > .clearfix").innerHTML;
         ret = ret.substring(ret.indexOf('】') + 1);
         if (/（(.+?)分）($|\s)/.test(ret)) {
             ret = ret.substring(0, ret.lastIndexOf("（"));
@@ -254,13 +281,13 @@ class cxSelectQuestion extends cxQuestion implements Question {
             return null;
         }
         let ret = this.defaultAnswer();
-        let options = this.el.querySelectorAll(".Zy_ulTop > li.clearfix");
+        let options = this.el.querySelectorAll(".Zy_ulTop > li.clearfix,.Cy_ulTop li");
         let correctText = correct.querySelector("span").innerText;
         for (let i = 0; i < options.length; i++) {
             let optionText = (<HTMLElement>options[i].querySelector("i.fl")).innerText;
             let option = {
                 option: optionText.substring(0, 1),
-                content: options[i].querySelector("a.fl").innerHTML,
+                content: options[i].querySelector("a.fl,a").innerHTML,
             };
             ret.answers.push(option);
             if (correctText.indexOf(option.option) > 0) {
@@ -366,7 +393,7 @@ class cxFillQuestion extends cxQuestion implements Question {
                 if (this.getOption(options[j]) == answer.correct[i].option) {
                     flag++;
                     let el = <HTMLInputElement>options[j].querySelector("input.inp");
-                    el.value = answer.correct[i].content;
+                    el.value = removeHTMLTag(answer.correct[i].content);
                     this.AddNotice(this.getOption(options[j]) + ":" + answer.correct[i].content);
                 }
             }
@@ -391,9 +418,9 @@ class cxExamSelectQuestion extends cxSelectQuestion {
         let tmpli = el.parentElement.parentElement;
         let pos = -1;
         do {
-            tmpli = <HTMLElement>tmpli.previousElementSibling
+            tmpli = <HTMLElement>tmpli.previousElementSibling;
             pos++;
-        } while (tmpli != null)
+        } while (tmpli != null);
         return textOption[pos].innerHTML;
     }
 
@@ -430,7 +457,7 @@ class cxExamFillQuestion extends cxFillQuestion {
                         this.AddNotice(this.getOption(options[j]) + "空发生了一个错误");
                         continue;
                     }
-                    (<any>window).UE.getEditor(uedit.attr('name')).setContent(answer.correct[i].content);
+                    (<any>window).UE.getEditor(uedit.attr('name')).setContent(removeHTMLTag(answer.correct[i].content));
                     this.AddNotice(this.getOption(options[j]) + ":" + answer.correct[i].content);
                 }
             }
@@ -440,6 +467,33 @@ class cxExamFillQuestion extends cxFillQuestion {
         }
         return "no_match";
     }
+
+    public Correct(): Answer {
+        let correct = this.isCorrect();
+        if (correct == null) {
+            return null;
+        }
+        let ret = this.defaultAnswer();
+        let options = this.el.querySelectorAll(".Py_tk div[id] span.font14");
+        let isMy = false;
+        if (options.length <= 0) {
+            isMy = true;
+            options = this.el.querySelectorAll(".Py_answer.clearfix .font14");
+        }
+        for (let i = 0; i < options.length; i++) {
+            if (isMy && options[i].querySelectorAll(".fr.dui").length <= 0) {
+                continue;
+            }
+            let optionEl = options[i].querySelector("i");
+            let option = {
+                option: substrex(optionEl.innerHTML, "第", "空"),
+                content: options[i].innerHTML.substr(options[i].innerHTML.indexOf("</i>") + 4),
+            };
+            ret.correct.push(option);
+        }
+        return ret;
+    }
+
 }
 
 class cxExamJudgeQuestion extends cxJudgeQuestion {

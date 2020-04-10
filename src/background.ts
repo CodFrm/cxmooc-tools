@@ -25,7 +25,7 @@ class background implements Launcher {
                         if (data.details.timeout) {
                             setTimeout(() => {
                                 chrome.notifications.clear(id);
-                            }, data.details.timeout * 1000);
+                            }, data.details.timeout);
                         }
                     });
                     break;
@@ -34,10 +34,10 @@ class background implements Launcher {
         });
 
         this.update();
-        //10分钟检查更新
+        //1小时检查更新
         setInterval(() => {
             this.update();
-        }, 10 * 60 * 1000);
+        }, 60 * 60 * 1000);
         this.injectedScript();
         this.event();
         this.setDefaultConfig();
@@ -105,7 +105,7 @@ class background implements Launcher {
             //缓存js文件源码
             let hotVersion = dealHotVersion(data.hotversion);
             let isHotUpdate: boolean = false;
-            if (hotVersion > data.version) {
+            if (hotVersion > SystemConfig.version) {
                 Application.App.log.Info("使用热更新版本:" + hotVersion);
                 isHotUpdate = true;
             }
