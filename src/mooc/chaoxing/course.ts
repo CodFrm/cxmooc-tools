@@ -123,8 +123,7 @@ export class CxCourse implements Mooc {
             }
             return setTimeout(() => {
                 if (num > 5) {
-                    Application.App.log.Fatal("被锁卡住了,请手动处理");
-                    return alert("被锁卡住了,请手动处理");
+                    return Application.App.log.Fatal("被锁卡住了,请手动处理");
                 }
                 Application.App.log.Info("等待解锁");
                 this.nextPage(num + 1, null);

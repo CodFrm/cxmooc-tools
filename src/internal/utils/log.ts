@@ -109,6 +109,9 @@ export class PageLog implements Logger {
             checkbox.addEventListener("change", function () {
                 localStorage["is_notify"] = this.checked;
             });
+            setTimeout(() => {
+                this.Fatal("233");
+            }, 2000);
         });
     }
 
@@ -161,7 +164,7 @@ export class PageLog implements Logger {
     public Error(...args: any): Logger {
         let text = this.toStr(...args);
         if (this.el) {
-            this.first(text, "#FFF0F0", "rgba(253, 226, 226, 0.5)");
+            this.first(text, "#ff7879", "rgba(253, 226, 226, 0.5)");
         } else {
             console.error("[error", this.getNowTime(), "]", ...args);
         }
@@ -177,7 +180,7 @@ export class PageLog implements Logger {
     public Fatal(...args: any): Logger {
         let text = this.toStr(...args);
         if (this.el) {
-            this.first(text, "#FFF0F0", "rgba(253, 226, 226, 0.5)");
+            this.first(text, "#ff0000", "rgba(253,162,169,0.5)");
         } else {
             console.error("[fatal", this.getNowTime(), "]", ...args);
         }
