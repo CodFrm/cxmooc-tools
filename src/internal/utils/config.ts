@@ -1,7 +1,9 @@
-import {randNumber} from "./utils";
+import {randNumber, toBool, boolToString} from "./utils";
 import {Application} from "../application";
 
-export interface ConfigItems extends GetConfig {
+export interface ConfigItems extends Config {
+    SetNamespace(namespace: string): void
+
     vtoken: string
     rand_answer: boolean
     auto: boolean
@@ -15,78 +17,104 @@ export interface ConfigItems extends GetConfig {
 
 export class ChromeConfigItems implements ConfigItems {
 
-    protected getConfig: GetConfig;
+    protected config: Config;
+    public Namespace: string = "";
+    protected localCache: { [key: string]: any };
 
-    constructor(getConfig: GetConfig) {
-        this.getConfig = getConfig;
+    constructor(config: Config) {
+        this.config = config;
+        let list = ["vtoken", "rand_answer", "auto", "video_mute", "answer_ignore",
+            "video_cdn", "video_multiple", "interval", "super_mode"];
+        this.config.Watch(list, (key, val) => {
+            this.localCache[key] = val;
+        });
+        this.localCache = localStorage;
     }
 
-    public GetConfig(key: string) {
-        return this.getConfig.GetConfig(key);
+    public SetNamespace(namespace: string): void {
+        this.Namespace = namespace;
     }
 
-    public Watch(key: string | string[], callback: (key: string) => void): void {
-        this.getConfig.Watch(key, callback);
+    public async GetConfig(key: string): Promise<any> {
+        let val = await this.getCacheConfig(this.Namespace + key);
+        return new Promise<any>(async resolve => {
+            if (val == undefined && this.Namespace != "") {
+                return resolve(await this.getCacheConfig(key));
+            }
+            return resolve(val);
+        });
     }
 
-    public bool(val: any): boolean {
-        if (typeof val == "boolean") {
-            return val;
-        }
-        return val == "true";
+    public Watch(key: string | string[], callback: ConfigWatchCallback): void {
+        this.config.Watch(key, callback);
     }
 
     public get super_mode() {
-        return this.bool(this.getConfig.GetConfig("super_mode"));
+        return toBool(this.getCacheConfig("super_mode", "true"));
     }
 
     public get vtoken() {
-        return this.getConfig.GetConfig("vtoken");
+        return this.getCacheConfig("vtoken", "");
     }
 
     public get rand_answer() {
-        return this.bool(this.getConfig.GetConfig("rand_answer"));
+        return toBool(this.getCacheConfig("rand_answer", "false"));
     }
 
     public get auto() {
-        return this.bool(this.getConfig.GetConfig("auto"));
+        return toBool(this.getCacheConfig("auto", "true"));
     }
 
     public set auto(val: boolean) {
-        localStorage["auto"] = val;
+        this.config.SetConfig("auto", boolToString(val));
     }
 
     public get video_mute() {
-        return this.bool(this.getConfig.GetConfig("video_mute"));
+        return toBool(this.getCacheConfig("video_mute", "true"));
     }
 
     public get answer_ignore() {
-        return this.bool(this.getConfig.GetConfig("answer_ignore"));
+        return toBool(this.getCacheConfig("answer_ignore", "false"));
     }
 
     public get video_cdn() {
-        return this.getConfig.GetConfig("video_cdn");
+        return this.getCacheConfig("video_cdn");
     }
 
     public get video_multiple() {
-        return this.getConfig.GetConfig("video_multiple");
+        return parseFloat(this.getCacheConfig("video_multiple"));
+    }
+
+    protected getCacheConfig(key: string, defaultVal?: string): string {
+        let ret = this.localCache[key];
+        if (ret === undefined) {
+            return defaultVal;
+        }
+        return ret;
     }
 
     public get interval() {
-        let interval = (this.getConfig.GetConfig("interval") || 0.1) * 100;
+        let interval = parseFloat(this.getCacheConfig("interval", "0.1"));
+        interval = interval * 100;
         return Math.floor(randNumber(interval - interval / 2, interval + interval / 2)) / 100;
+    }
+
+    public SetConfig(key: string, val: any): Promise<any> {
+        return this.config.SetConfig(key, val);
     }
 
 }
 
-export interface GetConfig {
-    GetConfig(key: string): any
+export interface Config {
+    GetConfig(key: string, defaultVal?: string): Promise<string>
 
-    Watch(key: Array<string> | string, callback: (key: string) => void): void
+    SetConfig(key: string, val: string): Promise<any>
+
+    Watch(key: Array<string> | string, callback: ConfigWatchCallback): void
 }
 
-export interface SetConfig {
-    SetConfig(key: string, val: any): void
+export interface ConfigWatchCallback {
+    (key: string, value: string): void
 }
 
 // 后台环境中使用
@@ -94,20 +122,20 @@ export function NewBackendConfig(): backendConfig {
     return new backendConfig();
 }
 
-class backendConfig implements GetConfig, SetConfig {
+class backendConfig implements Config {
 
-    public GetConfig(key: string): Promise<any> {
+    public GetConfig(key: string, defaultVal?: string): Promise<any> {
         return new Promise<any>(resolve => (chrome.storage.sync.get(key, (value) => {
             if (value.hasOwnProperty(<string>key)) {
-                resolve(<any>value[<string>key]);
+                resolve(<any>value[<string>key] || defaultVal);
             } else {
                 resolve(undefined);
             }
         })));
     }
 
-    public Watch(key: Array<string> | string, callback: (key: string) => void): void {
-        throw new Error("Method not implemented.");
+    public Watch(key: Array<string> | string, callback: ConfigWatchCallback): void {
+        return
     }
 
     public SetConfig(key: string, val: any): Promise<void> {
@@ -125,13 +153,13 @@ class backendConfig implements GetConfig, SetConfig {
 }
 
 // 前端环境使用
-export function NewFrontendGetConfig(): GetConfig {
+export function NewFrontendGetConfig(): Config {
     return new frontendGetConfig();
 }
 
-class frontendGetConfig implements GetConfig {
+class frontendGetConfig implements Config {
 
-    protected watchCallback: Map<string, Array<(key: string) => void>>
+    protected watchCallback: Map<string, Array<ConfigWatchCallback>>;
 
     constructor() {
         window.addEventListener('message', function (event) {
@@ -142,11 +170,11 @@ class frontendGetConfig implements GetConfig {
         });
     }
 
-    public GetConfig(key: string): any {
-        return localStorage[key];
+    public GetConfig(key: string, defaultVal?: string): any {
+        return localStorage[key] || defaultVal;
     }
 
-    public Watch(key: Array<string> | string, callback: (key: string) => void): void {
+    public Watch(key: Array<string> | string, callback: ConfigWatchCallback): void {
         if (typeof key == "string") {
             this.setWatchMap(key, callback);
             return;
@@ -156,7 +184,11 @@ class frontendGetConfig implements GetConfig {
         });
     }
 
-    protected setWatchMap(key: string, callback: (key: string) => void) {
+    protected setWatchMap(key: string, callback: ConfigWatchCallback) {
         //TODO: 监控配置项更新
+    }
+
+    public SetConfig(key: string, val: string): any {
+        localStorage[key] = val;
     }
 }

@@ -23,7 +23,7 @@ class start implements Launcher {
                 if (items[key] == undefined) {
                     continue;
                 }
-                localStorage[key] = items[key] || await Application.App.config.GetConfig(key);
+                localStorage[key] = items[key];
             }
         });
         //转发消息
