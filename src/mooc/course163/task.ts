@@ -221,6 +221,9 @@ export class CourseTopicTask extends Task {
                 }
                 option.push(opt);
             }
+            if (correct.length <= 0) {
+                return;
+            }
             tmpAnswer.correct = correct;
             tmpAnswer.answers = option;
             answer.push(tmpAnswer);
