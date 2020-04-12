@@ -351,6 +351,9 @@ class cxJudgeQuestion extends cxSelectQuestion implements Question {
 class cxFillQuestion extends cxQuestion implements Question {
 
     protected getOption(el: HTMLElement): string {
+        if (el.className == "XztiHover1") {
+            return substrex(el.previousElementSibling.innerHTML, "第", "空");
+        }
         let tmpel = el.querySelector("span.fb");
         return substrex(tmpel.innerHTML, "第", "空");
     }
@@ -387,14 +390,27 @@ class cxFillQuestion extends cxQuestion implements Question {
 
     public Fill(answer: Answer): TopicStatus {
         let options = this.options();
+        if (!options.length) {
+            options = this.el.querySelectorAll(".XztiHover1");
+        }
         let flag = 0;
         for (let i = 0; i < answer.correct.length; i++) {
             for (let j = 0; j < options.length; j++) {
                 if (this.getOption(options[j]) == answer.correct[i].option) {
                     flag++;
                     let el = <HTMLInputElement>options[j].querySelector("input.inp");
-                    el.value = removeHTMLTag(answer.correct[i].content);
-                    this.AddNotice(this.getOption(options[j]) + ":" + answer.correct[i].content);
+                    if (!el) {
+                        let uedit = (<any>window).$(options[j]).find('textarea');
+                        if (uedit.length <= 0) {
+                            this.AddNotice(this.getOption(options[j]) + "空发生了一个错误");
+                            continue;
+                        }
+                        (<any>window).UE.getEditor(uedit.attr('name')).setContent(removeHTMLTag(answer.correct[i].content));
+                        this.AddNotice(this.getOption(options[j]) + ":" + answer.correct[i].content);
+                    } else {
+                        el.value = removeHTMLTag(answer.correct[i].content);
+                        this.AddNotice(this.getOption(options[j]) + ":" + answer.correct[i].content);
+                    }
                 }
             }
         }
