@@ -257,7 +257,7 @@ function createRequest(): XMLHttpRequest {
     (<any>xmlhttp).error = function (callback: Function) {
         (<any>xmlhttp).errorCallback = callback;
         return xmlhttp;
-    }
+    };
     xmlhttp.withCredentials = true;
     return xmlhttp;
 }

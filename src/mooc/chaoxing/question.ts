@@ -405,7 +405,7 @@ class cxFillQuestion extends cxQuestion implements Question {
                             this.AddNotice(this.getOption(options[j]) + "空发生了一个错误");
                             continue;
                         }
-                        (<any>window).UE.getEditor(uedit.attr('name')).setContent(removeHTMLTag(answer.correct[i].content));
+                        (<any>window).UE.getEditor(uedit.attr('name')).setContent(answer.correct[i].content);
                         this.AddNotice(this.getOption(options[j]) + ":" + answer.correct[i].content);
                     } else {
                         el.value = removeHTMLTag(answer.correct[i].content);
@@ -473,7 +473,7 @@ class cxExamFillQuestion extends cxFillQuestion {
                         this.AddNotice(this.getOption(options[j]) + "空发生了一个错误");
                         continue;
                     }
-                    (<any>window).UE.getEditor(uedit.attr('name')).setContent(removeHTMLTag(answer.correct[i].content));
+                    (<any>window).UE.getEditor(uedit.attr('name')).setContent(answer.correct[i].content);
                     this.AddNotice(this.getOption(options[j]) + ":" + answer.correct[i].content);
                 }
             }
