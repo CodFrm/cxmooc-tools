@@ -51,7 +51,10 @@ export class TaskFactory {
                 let contentWindow = (<HTMLIFrameElement>taskIframe.contentWindow.document.querySelector("#frame_content")).contentWindow;
                 taskinfo.refer = (<Window>context).document.URL;
                 taskinfo.id = taskinfo.property.workid;
-                let topic = new CxCourseTopic(contentWindow, new ToolsQuestionBankFacade("cx", taskinfo));
+                taskinfo.info = taskinfo.property.workid;
+                let topic = new CxCourseTopic(contentWindow, new ToolsQuestionBankFacade("cx", {
+                    refer: (<Window>context).document.URL, id: taskinfo.property.workid, info: taskinfo.property.workid,
+                }));
                 topic.SetQueryQuestions(new CxCourseQueryQuestion(contentWindow, (el: HTMLElement): Question => {
                     return CxQuestionFactory.CreateCourseQuestion(el);
                 }));

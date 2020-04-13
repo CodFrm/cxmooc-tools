@@ -90,7 +90,7 @@ class CourseQuestion implements Question {
 
     protected dealImgDomain(content: string): string {
         //移除域名对比,也不知道还有没有花里胡哨的
-        content = content.replace(/"https:\/\/edu-image.nosdn.127.net\/(.*?)"/, "\"http://nos.netease.com/edu-image/$1\"");
+        content = content.replace(/"http(s|):\/\/edu-image.nosdn.127.net\/(.*?)"/, "\"http://nos.netease.com/edu-image/$2\"");
         content = content.replace(/"http(s|):\/\/(.*?)\//g, "\"");
         return content;
     }

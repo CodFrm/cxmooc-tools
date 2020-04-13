@@ -102,6 +102,7 @@ export class CxCourseTopic extends Topic {
 
     constructor(content: any, answer: QuestionBankFacade) {
         super(content, answer);
+        answer.CheckCourse();
     }
 
     public Init(): Promise<any> {
