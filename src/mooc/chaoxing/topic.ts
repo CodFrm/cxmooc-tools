@@ -77,9 +77,9 @@ export class TopicAdapter extends CxTask {
 
 export class CxCourseQueryQuestion implements QueryQuestions {
     protected context: any;
-    protected createQuestion: (el: HTMLElement) => Question;
+    protected createQuestion: (context: any, el: HTMLElement) => Question;
 
-    constructor(content: any, createQuestion: (el: HTMLElement) => Question) {
+    constructor(content: any, createQuestion: (context: any, el: HTMLElement) => Question) {
         this.context = content;
         this.createQuestion = createQuestion;
     }
@@ -88,7 +88,7 @@ export class CxCourseQueryQuestion implements QueryQuestions {
         let timu = <Array<HTMLElement>>this.context.document.querySelectorAll(".TiMu");
         let ret = new Array<Question>();
         timu.forEach((val) => {
-            let question = this.createQuestion(val);
+            let question = this.createQuestion(this.context, val);
             if (question == null) {
                 return;
             }
@@ -170,7 +170,7 @@ export class ExamTopic extends Topic implements QueryQuestions {
     public QueryQuestions(): Question[] {
         let current = document.querySelector(".current");
         let topicType = SwitchTopicType((<HTMLElement>current.parentElement.previousElementSibling).innerText);
-        let question = CxQuestionFactory.CreateExamQuestion(topicType, document.querySelector(".leftContent.TiMu"));
+        let question = CxQuestionFactory.CreateExamQuestion(window, topicType, document.querySelector(".leftContent.TiMu"));
         let ret = new Array();
         if (question == null) {
             return ret;
