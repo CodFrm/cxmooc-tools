@@ -32,6 +32,26 @@ export class HttpUtils {
         HttpUtils.crossDomainRequest(info)
     }
 
+    private static errorCode(ret: any): boolean {
+        if (!ret.code) {
+            return false;
+        }
+        switch (ret.code) {
+            case -1: {
+                Application.App.log.Info(ret.msg);
+                break;
+            }
+            case -2: {
+                Application.App.log.Warn(ret.msg);
+                break;
+            }
+            default: {
+                return false;
+            }
+        }
+        return true;
+    }
+
     private static crossDomainRequest(info: RequestInfo): void {
         if (window.hasOwnProperty('GM_xmlhttpRequest')) {
             //兼容油猴
@@ -40,7 +60,12 @@ export class HttpUtils {
                 if (response.readyState == 4) {
                     if (response.status == 200) {
                         if (info.json) {
-                            info.success && info.success(JSON.parse(response.responseText));
+                            let ret = JSON.parse(response.responseText);
+                            if (HttpUtils.errorCode(ret)) {
+                                info.error && info.error();
+                                return
+                            }
+                            info.success && info.success(ret);
                         } else {
                             info.success && info.success(response.responseText);
                         }
@@ -54,6 +79,12 @@ export class HttpUtils {
             let client: Client = Application.App.Client;
             client.Recv((data) => {
                 if (data.code == 0) {
+                    if (info.json) {
+                        if (HttpUtils.errorCode(data.body)) {
+                            info.error && info.error();
+                            return
+                        }
+                    }
                     info.success && info.success(data.body);
                 } else {
                     info.error && info.error();
