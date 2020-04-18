@@ -21,7 +21,7 @@ let config = {
     rand_answer: false, //随机答案,没有答案的题目将自动的生成一个答案
     video_multiple: 1, //视频播放倍速,视频播放的倍数,建议不要改动,为1即可,这是危险的功能
     video_mute: true, //视频静音,视频自动静音播放
-    vtoken: "", //鉴权token,用于题库提交和记录
+    vtoken: "",
 };
 
 Object.keys(config).forEach(k => {
