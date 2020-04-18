@@ -48,10 +48,3 @@ npm run pack
 |  ├─mooc             # 平台源码
 |  ├─internal         # 内部软件包
 ```
-
-## 其它
-你也可以加入tg群组或者qq群或者在github上发送issue来交流:
-
-[telegram群组](https://t.me/joinchat/MHU8Gg2fP3Q51HLY2wqmQA)
-
-[QQ群790774208](https://jq.qq.com/?_wv=1027&k=5e10NSV)
