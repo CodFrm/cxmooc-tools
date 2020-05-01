@@ -1,4 +1,4 @@
-import {substrex, randNumber as RandNumber, randNumber, removeHTML, removeHTMLTag} from "@App/internal/utils/utils";
+import {substrex, randNumber as RandNumber, removeHTMLTag} from "@App/internal/utils/utils";
 import {
     Question,
     TopicStatus,
@@ -393,7 +393,7 @@ class cxFillQuestion extends cxQuestion implements Question {
     public Fill(answer: Answer): TopicStatus {
         let options = this.options();
         if (!options.length) {
-            options = this.el.querySelectorAll(".XztiHover1");
+            options = this.el.querySelector('.Zy_ulTk').querySelectorAll(".XztiHover1");
         }
         let flag = 0;
         for (let i = 0; i < answer.correct.length; i++) {

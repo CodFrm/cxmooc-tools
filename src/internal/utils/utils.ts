@@ -317,8 +317,10 @@ export function removeHTML(html: string) {
     html = html.replace(revHtml, '');
     html = html.replace(/(^\s+)|(\s+$)/g, '');
     html = dealSymbol(html);
-    //TODO:处理HTML符号
-    return html.replace(/&nbsp;/g, ' ').replace(/&quot;/g, "\"").replace(/&amp;/g, '&').trim();
+    //TODO:处理HTML符号,手动处理就很菜
+    return html.replace(/&nbsp;/g, ' ')
+        .replace(/&quot;/g, "\"").replace(/&gt;/g, ">")
+        .replace(/&lt;/g, "<").replace(/&amp;/g, '&').trim();
 }
 
 /**
