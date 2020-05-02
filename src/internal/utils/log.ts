@@ -55,6 +55,7 @@ export class ConsoleLog implements Logger {
 export class PageLog implements Logger {
     protected el: HTMLElement;
     protected div: HTMLElement;
+    protected is_notify: boolean;
 
     protected getNowTime(): string {
         let time = new Date();
@@ -101,13 +102,15 @@ export class PageLog implements Logger {
                 this.div.remove();
             };
             let checkbox = <HTMLInputElement>this.div.querySelector("#checkbox");
-            localStorage["is_notify"] = localStorage["is_notify"] || "true";
-            checkbox.checked = localStorage["is_notify"] == "true";
+            checkbox.checked = (Application.App.config.GetConfig("is_notify") || "true") == "true";
+            this.is_notify = checkbox.checked;
             if (!checkbox.checked) {
                 checkbox.removeAttribute("checked")
             }
+            let self = this;
             checkbox.addEventListener("change", function () {
-                localStorage["is_notify"] = this.checked;
+                self.is_notify = this.checked;
+                Application.App.config.SetConfig("is_notify", this.checked.toString());
             });
         });
     }
@@ -148,7 +151,7 @@ export class PageLog implements Logger {
         } else {
             console.warn("[warn", this.getNowTime(), "]", ...args);
         }
-        if (document.hidden && localStorage["is_notify"] == "true") {
+        if (document.hidden && this.is_notify) {
             Noifications({
                 title: "超星慕课小工具",
                 text: text + "\n3秒后自动关闭",
@@ -165,7 +168,7 @@ export class PageLog implements Logger {
         } else {
             console.error("[error", this.getNowTime(), "]", ...args);
         }
-        if (localStorage["is_notify"] == "true") {
+        if (this.is_notify) {
             Noifications({
                 title: "超星慕课小工具",
                 text: text,
@@ -177,7 +180,7 @@ export class PageLog implements Logger {
     public Fatal(...args: any): Logger {
         let text = this.toStr(...args);
         if (this.el) {
-            this.first(text, "#FFF0F0", "rgba(253, 226, 226, 0.5)");
+            this.first(text, "#ff1212", "rgba(253, 226, 226, 0.5)");
         } else {
             console.error("[fatal", this.getNowTime(), "]", ...args);
         }
