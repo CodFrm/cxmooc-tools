@@ -5,10 +5,7 @@ import {boolToString, dealHotVersion, toBool} from "./internal/utils/utils";
 
 class popup implements Launcher {
 
-    protected setConfig: Config;
-
-    constructor(setConfig: Config) {
-        this.setConfig = setConfig;
+    constructor() {
     }
 
     public async start() {
@@ -30,15 +27,15 @@ class popup implements Launcher {
                     }
                     switch ((<HTMLInputElement>this).type) {
                         case "checkbox": {
-                            self.setConfig.SetConfig(key, boolToString((<HTMLInputElement>this).checked));
+                            Application.App.config.SetConfig(key, boolToString((<HTMLInputElement>this).checked));
                             break;
                         }
                         default: {
-                            self.setConfig.SetConfig(key, (<HTMLInputElement>this).value);
+                            Application.App.config.SetConfig(key, (<HTMLInputElement>this).value);
                         }
                     }
                 };
-                this.setVal(el, key);
+                this.getVal(el, key);
             }
         }
         Application.CheckUpdate(function (isnew, data) {
@@ -60,7 +57,7 @@ class popup implements Launcher {
         });
     }
 
-    private async setVal(el: HTMLInputElement, key: string) {
+    private async getVal(el: HTMLInputElement, key: string) {
         let val = await Application.App.config.GetConfig(key, "");
         switch (el.type) {
             case "checkbox": {
@@ -76,7 +73,8 @@ class popup implements Launcher {
 }
 
 window.onload = function () {
-    let component = new Map<string, any>().set("config", NewBackendConfig());
-    let app = new Application(Backend, new popup(NewBackendConfig()), component);
+    let config = NewBackendConfig(true);
+    let component = new Map<string, any>().set("config", config);
+    let app = new Application(Backend, new popup(), component);
     app.run();
 };

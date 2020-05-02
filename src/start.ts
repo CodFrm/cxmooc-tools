@@ -1,31 +1,22 @@
-import {NewChromeServerMessage} from "@App/internal/utils/message";
-import {HttpUtils, InjectedBySrc, Noifications, NotificationOptions} from "@App/internal/utils/utils";
+import {Client, NewChromeServerMessage} from "@App/internal/utils/message";
+import {get, HttpUtils, Injected, InjectedBySrc, Noifications, NotificationOptions} from "@App/internal/utils/utils";
 import {Application, Content, Launcher} from "@App/internal/application";
 import {ChromeConfigItems, NewBackendConfig} from "@App/internal/utils/config";
 import {ConsoleLog} from "./internal/utils/log";
+import sources = chrome.devtools.panels.sources;
 
 class start implements Launcher {
 
     public async start() {
         //调试环境注入脚本
         if (Application.App.debug) {
-            InjectedBySrc(document, chrome.extension.getURL('src/mooc.js'));
+            let cacheJsonText = JSON.stringify(await Application.App.config.ConfigList());
+            get(chrome.extension.getURL('src/mooc.js'), function (source: string) {
+                Injected(document, "window.configData=" + cacheJsonText + ";\n" + source);
+            });
         } else {
             chrome.runtime.sendMessage({status: "loading"});
         }
-        //注入config
-        let configKeyList: string[] = new Array();
-        for (let key in Application.App.config) {
-            configKeyList.push(key);
-        }
-        chrome.storage.sync.get(configKeyList, async function (items) {
-            for (let key in items) {
-                if (items[key] == undefined) {
-                    continue;
-                }
-                localStorage[key] = items[key];
-            }
-        });
         //转发消息
         let msg = NewChromeServerMessage("cxmooc-tools");
         msg.Accept((client, data) => {
@@ -36,6 +27,12 @@ class start implements Launcher {
                 }
                 case "GM_notification": {
                     Noifications(data.details);
+                    break;
+                }
+                case "GM_setValue": {
+                    Application.App.Client.Send({
+                        type: "GM_setValue", details: data.details,
+                    });
                     break;
                 }
             }
@@ -59,7 +56,7 @@ class start implements Launcher {
     }
 }
 
-let component = new Map<string, any>().set("config", new ChromeConfigItems(NewBackendConfig())).set("logger", new ConsoleLog());
+let component = new Map<string, any>().set("config", new ChromeConfigItems(NewBackendConfig(true))).set("logger", new ConsoleLog());
 
 let application = new Application(Content, new start(), component);
 application.run();
