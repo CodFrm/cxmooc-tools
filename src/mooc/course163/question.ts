@@ -43,7 +43,7 @@ class CourseQuestion implements Question {
     }
 
     public GetTopic(): string {
-        return this.el.querySelector(".f-richEditorText.j-richTxt").innerHTML;
+        return this.dealImgDomain(this.el.querySelector(".f-richEditorText.j-richTxt").innerHTML);
     }
 
     public RemoveNotice() {
@@ -90,7 +90,9 @@ class CourseQuestion implements Question {
 
     protected dealImgDomain(content: string): string {
         //移除域名对比,也不知道还有没有花里胡哨的
-        return content.replace(/"http(s|):\/\/(.*?)\//g, "\"");
+        content = content.replace(/"http(s|):\/\/edu-image.nosdn.127.net\/(.*?)"/, "\"http://nos.netease.com/edu-image/$2\"");
+        content = content.replace(/"http(s|):\/\/(.*?)\//g, "\"");
+        return content;
     }
 
     public Fill(answer: Answer): TopicStatus {

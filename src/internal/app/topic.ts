@@ -47,7 +47,7 @@ export abstract class Topic {
                 this.lock = false;
                 resolve(status);
                 if (status == "network") {
-                    return Application.App.log.Fatal("题库无法访问,请查看:" + SystemConfig.url);
+                    return Application.App.log.Error("题库无法访问,请查看:" + SystemConfig.url);
                 } else if (status == "incomplete") {
                     return Application.App.log.Warn("题库答案不全,请手动填写操作");
                 }

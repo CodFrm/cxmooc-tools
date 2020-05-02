@@ -35,8 +35,3 @@ title: 快速开始
 ![](/img/soft/soft_01.webp)
 ![](/img/soft/soft_02.webp)
 
-## Join us
-
-* [telegram群](https://t.me/joinchat/MHU8Gg2fP3Q51HLY2wqmQA),会优先发布版本,更新进度也会进行通知.
-
-* [QQ群](https://jq.qq.com/?_wv=1027&k=56QO4ug),**询问问题之前最好请先看看文档**,大部分都是你自己的使用问题!!⚠⚠(聊天水群必备,主题混乱)

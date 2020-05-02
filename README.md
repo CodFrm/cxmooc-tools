@@ -1,6 +1,5 @@
 ![GitHub stars](https://img.shields.io/github/stars/codfrm/cxmooc-tools.svg)
 [![Build Status](https://www.travis-ci.org/CodFrm/cxmooc-tools.svg?branch=master)](https://www.travis-ci.org/CodFrm/cxmooc-tools)
-![GitHub All Releases](https://img.shields.io/github/downloads/codfrm/cxmooc-tools/total.svg)
 ![GitHub tag (latest SemVer)](https://img.shields.io/github/tag/codfrm/cxmooc-tools.svg?label=version)
 [![Chrome](https://img.shields.io/badge/chrome-success-brightgreen)](https://chrome.google.com/webstore/detail/%E8%B6%85%E6%98%9F%E6%85%95%E8%AF%BE%E5%B0%8F%E5%B7%A5%E5%85%B7/kkicgcijebblepmephnfganiiochecfl?hl=zh-CN)
 [![FireFox](https://img.shields.io/badge/firefox-success-brightgreen)](https://addons.mozilla.org/zh-CN/firefox/addon/%E8%B6%85%E6%98%9F%E6%85%95%E8%AF%BE%E5%B0%8F%E5%B7%A5%E5%85%B7/)
@@ -75,22 +74,6 @@ npm run pack
 
 ## 关于反馈
 您可以通过Issues反馈，反馈时请尽量提供足够明确的信息。
-
-## 其他
-GitHub项目地址:[https://github.com/CodFrm/cxmooc-tools](https://github.com/CodFrm/cxmooc-tools)
-
-Blog地址:[http://blog.icodef.com/2018/01/25/1304](http://blog.icodef.com/2018/01/25/1304)
-
-[telegram群组](https://t.me/joinchat/MHU8Gg2fP3Q51HLY2wqmQA)
-
-[QQ群614202391](https://shang.qq.com/wpa/qunwpa?idkey=9bddd2564d84bd999940de422d1c0c70f87ecaf02fe9d7c60389fc2b376179eb)
-
-## 赞助
-微信扫一扫,赏个鸡腿?
-
-[赞助列表](https://cx-doc.xloli.top/4-Reward/)
-
-![](docs/.vuepress/public/img/reward.png)
 
 ## 免责声明
 本项目完全开源，免费，仅供技术学习和交流，**开发者团队并未授权任何组织、机构以及个人将其用于商业或者盈利性质的活动。也从未使用本项目进行任何盈利性活动。未来也不会将其用于开展营利性业务。个人或者组织，机构如果使用本项目产生的各类纠纷，法律问题，均由其本人承担。**

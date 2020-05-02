@@ -1,4 +1,4 @@
-import {substrex, randNumber as RandNumber, randNumber, removeHTML, removeHTMLTag} from "@App/internal/utils/utils";
+import {substrex, randNumber as RandNumber, removeHTMLTag} from "@App/internal/utils/utils";
 import {
     Question,
     TopicStatus,
@@ -13,27 +13,27 @@ import {CreateNoteLine} from "./utils";
 
 //TODO: 优化
 export class CxQuestionFactory {
-    public static CreateCourseQuestion(el: HTMLElement): Question {
+    public static CreateCourseQuestion(context: any, el: HTMLElement): Question {
         let ret = SwitchTopicType(substrex(el.innerText, '【', '】'));
-        return this.CreateCourseQuestionByTopicType(ret, el);
+        return this.CreateCourseQuestionByTopicType(context, ret, el);
     }
 
-    public static CreateExamQuestion(type: TopicType, el: HTMLElement): Question {
+    public static CreateExamQuestion(context: any, type: TopicType, el: HTMLElement): Question {
         let processor = new ExamQuestionProcessor();
         let ret: Question = null;
         this.RemoveNotice(el);
         switch (type) {
             case 1:
             case 2: {
-                ret = new cxExamSelectQuestion(el, type, processor);
+                ret = new cxExamSelectQuestion(context, el, type, processor);
                 break;
             }
             case 3: {
-                ret = new cxExamJudgeQuestion(el, type, processor);
+                ret = new cxExamJudgeQuestion(context, el, type, processor);
                 break;
             }
             case 4: {
-                ret = new cxExamFillQuestion(el, type, processor);
+                ret = new cxExamFillQuestion(context, el, type, processor);
                 break;
             }
             default: {
@@ -44,22 +44,22 @@ export class CxQuestionFactory {
         return ret;
     }
 
-    public static CreateCourseQuestionByTopicType(type: TopicType, el: HTMLElement): Question {
+    public static CreateCourseQuestionByTopicType(context: any, type: TopicType, el: HTMLElement): Question {
         let ret: Question = null;
         let processor = new CourseQuestionProcessor();
         this.RemoveNotice(el);
         switch (type) {
             case 1:
             case 2: {
-                ret = new cxSelectQuestion(el, type, processor);
+                ret = new cxSelectQuestion(context, el, type, processor);
                 break;
             }
             case 3: {
-                ret = new cxJudgeQuestion(el, type, processor);
+                ret = new cxJudgeQuestion(context, el, type, processor);
                 break;
             }
             case 4: {
-                ret = new cxFillQuestion(el, type, processor);
+                ret = new cxFillQuestion(context, el, type, processor);
                 break;
             }
             default: {
@@ -81,34 +81,34 @@ export class CxQuestionFactory {
         return null;
     }
 
-    public static CreateHomeWorkQuestion(el: HTMLElement): Question {
+    public static CreateHomeWorkQuestion(context: any, el: HTMLElement): Question {
         let ret = CxQuestionFactory.getBeforeType(el);
-        return this.CreateCourseQuestionByTopicType(SwitchTopicType(substrex(ret.innerText, ".", "（")), el);
+        return this.CreateCourseQuestionByTopicType(context, SwitchTopicType(substrex(ret.innerText, ".", "（")), el);
     }
 
     //TODO:写的什么玩意啊
-    public static CreateExamCollectQuestion(el: HTMLElement): Question {
+    public static CreateExamCollectQuestion(context: any, el: HTMLElement): Question {
         let ret = CxQuestionFactory.getBeforeType(el.parentElement);
         let txt = ret.innerText.match(/、(.*?)[\s|（]/)[1];
-        return this.CreateExamQuestionByTopicType(SwitchTopicType(txt), el);
+        return this.CreateExamQuestionByTopicType(context, SwitchTopicType(txt), el);
     }
 
-    public static CreateExamQuestionByTopicType(type: TopicType, el: HTMLElement): Question {
+    public static CreateExamQuestionByTopicType(context: any, type: TopicType, el: HTMLElement): Question {
         let ret: Question = null;
         let processor = new CourseQuestionProcessor();
         this.RemoveNotice(el);
         switch (type) {
             case 1:
             case 2: {
-                ret = new cxSelectQuestion(el, type, processor);
+                ret = new cxSelectQuestion(context, el, type, processor);
                 break;
             }
             case 3: {
-                ret = new cxJudgeQuestion(el, type, processor);
+                ret = new cxJudgeQuestion(context, el, type, processor);
                 break;
             }
             case 4: {
-                ret = new cxExamFillQuestion(el, type, processor);
+                ret = new cxExamFillQuestion(context, el, type, processor);
                 break;
             }
             default: {
@@ -168,8 +168,10 @@ abstract class cxQuestion implements Question {
     protected el: HTMLElement;
     protected type: TopicType;
     protected processor: QuestionProcessor;
+    protected context: Window;
 
-    constructor(el: HTMLElement, type: TopicType, processor: QuestionProcessor) {
+    constructor(context: Window, el: HTMLElement, type: TopicType, processor: QuestionProcessor) {
+        this.context = context;
         this.el = el;
         this.type = type;
         this.processor = processor;
@@ -351,6 +353,9 @@ class cxJudgeQuestion extends cxSelectQuestion implements Question {
 class cxFillQuestion extends cxQuestion implements Question {
 
     protected getOption(el: HTMLElement): string {
+        if (el.className == "XztiHover1") {
+            return substrex(el.previousElementSibling.innerHTML, "第", "空");
+        }
         let tmpel = el.querySelector("span.fb");
         return substrex(tmpel.innerHTML, "第", "空");
     }
@@ -387,14 +392,27 @@ class cxFillQuestion extends cxQuestion implements Question {
 
     public Fill(answer: Answer): TopicStatus {
         let options = this.options();
+        if (!options.length) {
+            options = this.el.querySelector('.Zy_ulTk').querySelectorAll(".XztiHover1");
+        }
         let flag = 0;
         for (let i = 0; i < answer.correct.length; i++) {
             for (let j = 0; j < options.length; j++) {
                 if (this.getOption(options[j]) == answer.correct[i].option) {
                     flag++;
                     let el = <HTMLInputElement>options[j].querySelector("input.inp");
-                    el.value = removeHTMLTag(answer.correct[i].content);
-                    this.AddNotice(this.getOption(options[j]) + ":" + answer.correct[i].content);
+                    if (!el) {
+                        let uedit = (<any>this.context).$(options[j]).find('textarea');
+                        if (uedit.length <= 0) {
+                            this.AddNotice(this.getOption(options[j]) + "空发生了一个错误");
+                            continue;
+                        }
+                        (<any>this.context).UE.getEditor(uedit.attr('name')).setContent(answer.correct[i].content);
+                        this.AddNotice(this.getOption(options[j]) + ":" + answer.correct[i].content);
+                    } else {
+                        el.value = removeHTMLTag(answer.correct[i].content);
+                        this.AddNotice(this.getOption(options[j]) + ":" + answer.correct[i].content);
+                    }
                 }
             }
         }
@@ -457,7 +475,7 @@ class cxExamFillQuestion extends cxFillQuestion {
                         this.AddNotice(this.getOption(options[j]) + "空发生了一个错误");
                         continue;
                     }
-                    (<any>window).UE.getEditor(uedit.attr('name')).setContent(removeHTMLTag(answer.correct[i].content));
+                    (<any>window).UE.getEditor(uedit.attr('name')).setContent(answer.correct[i].content);
                     this.AddNotice(this.getOption(options[j]) + ":" + answer.correct[i].content);
                 }
             }

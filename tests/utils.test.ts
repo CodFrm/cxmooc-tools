@@ -6,6 +6,7 @@ describe("remove html", () => {
         let eg = "这是一句正常的话,应该不要发送改变";
         expect(removeHTML(eg)).toEqual(eg);
         expect(removeHTML("包含一些中文符号，例如：（）？这样一些“”")).toEqual("包含一些中文符号,例如:()?这样一些\"\"");
+        expect(removeHTML('123 124 <br> <br>')).toEqual("123 124")
     });
     it("包含html", () => {
         expect(removeHTML('<span style=";font-family:宋体;font-size:16px"><span style="font-family:宋体">依靠群众求胜利</span></span>')).toEqual("依靠群众求胜利");

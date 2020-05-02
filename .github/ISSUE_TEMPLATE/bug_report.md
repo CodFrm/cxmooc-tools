@@ -1,7 +1,6 @@
 ---
-name: BUG反馈
+name: [Bug Report]BUG反馈
 about: 将你所遇到的BUG反馈给我们
-
 ---
 
 **错误描述**

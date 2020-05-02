@@ -112,6 +112,9 @@ export class PageLog implements Logger {
                 self.is_notify = this.checked;
                 Application.App.config.SetConfig("is_notify", this.checked.toString());
             });
+            setTimeout(() => {
+                this.Info("233");
+            }, 1000);
         });
     }
 
@@ -151,7 +154,7 @@ export class PageLog implements Logger {
         } else {
             console.warn("[warn", this.getNowTime(), "]", ...args);
         }
-        if (document.hidden && this.is_notify) {
+        if (document.hidden && localStorage["is_notify"] == "true") {
             Noifications({
                 title: "超星慕课小工具",
                 text: text + "\n3秒后自动关闭",
@@ -168,7 +171,7 @@ export class PageLog implements Logger {
         } else {
             console.error("[error", this.getNowTime(), "]", ...args);
         }
-        if (this.is_notify) {
+        if (localStorage["is_notify"] == "true") {
             Noifications({
                 title: "超星慕课小工具",
                 text: text,
@@ -180,7 +183,7 @@ export class PageLog implements Logger {
     public Fatal(...args: any): Logger {
         let text = this.toStr(...args);
         if (this.el) {
-            this.first(text, "#ff1212", "rgba(253, 226, 226, 0.5)");
+            this.first(text, "#FFF0F0", "rgba(253, 226, 226, 0.5)");
         } else {
             console.error("[fatal", this.getNowTime(), "]", ...args);
         }

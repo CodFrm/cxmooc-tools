@@ -136,7 +136,7 @@ export class ToolsQuestionBank implements QuestionBank {
 
     public Answer(topic: Topic[], resolve: QuestionBankCallback): void {
         Application.App.log.Debug("答案查询", topic);
-        let num = 5;
+        let num = 10;
         let answer = new Array<Answer>();
         let retStatus: QuestionStatus = "success";
         let next = (index: number) => {

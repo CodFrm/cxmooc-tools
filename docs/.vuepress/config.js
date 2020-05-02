@@ -27,7 +27,6 @@ module.exports = {
         ]
       },
       { text: '免责声明', link: '/3-Disclaimer/' },
-      { text: '捐赠', link: '/4-Reward/' },
       {
         text: '语言选项',
         items: [

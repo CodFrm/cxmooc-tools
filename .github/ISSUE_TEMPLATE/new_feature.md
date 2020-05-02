@@ -1,6 +1,5 @@
 ---
-name: 新功能请求
-about: 我有一个idea,还差一个程序员
+name: [New Feature]新功能请求
 ---
 
 ### 功能描述

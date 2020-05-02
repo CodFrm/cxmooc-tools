@@ -51,9 +51,12 @@ export class TaskFactory {
                 let contentWindow = (<HTMLIFrameElement>taskIframe.contentWindow.document.querySelector("#frame_content")).contentWindow;
                 taskinfo.refer = (<Window>context).document.URL;
                 taskinfo.id = taskinfo.property.workid;
-                let topic = new CxCourseTopic(contentWindow, new ToolsQuestionBankFacade("cx", taskinfo));
-                topic.SetQueryQuestions(new CxCourseQueryQuestion(contentWindow, (el: HTMLElement): Question => {
-                    return CxQuestionFactory.CreateCourseQuestion(el);
+                taskinfo.info = taskinfo.property.workid;
+                let topic = new CxCourseTopic(contentWindow, new ToolsQuestionBankFacade("cx", {
+                    refer: (<Window>context).document.URL, id: taskinfo.property.workid, info: taskinfo.property.workid,
+                }));
+                topic.SetQueryQuestions(new CxCourseQueryQuestion(contentWindow, (context: any, el: HTMLElement): Question => {
+                    return CxQuestionFactory.CreateCourseQuestion(context, el);
                 }));
                 let bar = new CxTopicControlBar(prev, new TopicAdapter(context, taskinfo, topic));
                 if (Application.App.config.answer_ignore) {
@@ -102,17 +105,21 @@ export class TaskFactory {
                 return false;
             };
         } else {
-            topic.SetQueryQuestions(new CxCourseQueryQuestion(context, (el: HTMLElement): Question => {
-                return CxQuestionFactory.CreateExamCollectQuestion(el);
+            topic.SetQueryQuestions(new CxCourseQueryQuestion(context, (context: any, el: HTMLElement): Question => {
+                return CxQuestionFactory.CreateExamCollectQuestion(context, el);
             }));
         }
         return task;
     }
 
     public static CreateHomeworkTopicTask(context: any, taskinfo: any): CxTask {
-        let topic = new HomeworkTopic(context, new ToolsQuestionBankFacade("cx", taskinfo));
-        topic.SetQueryQuestions(new CxCourseQueryQuestion(context, (el: HTMLElement): Question => {
-            return CxQuestionFactory.CreateHomeWorkQuestion(el);
+        let bank = new ToolsQuestionBankFacade("cx", taskinfo);
+        if (taskinfo.info != "") {
+            bank.CheckCourse();
+        }
+        let topic = new HomeworkTopic(context, bank);
+        topic.SetQueryQuestions(new CxCourseQueryQuestion(context, (context: any, el: HTMLElement): Question => {
+            return CxQuestionFactory.CreateHomeWorkQuestion(context, el);
         }));
         let task = new TopicAdapter(context, taskinfo, topic);
         let btn = CssBtn(createBtn("搜索答案", "搜索题目答案"));
