@@ -114,9 +114,6 @@ export class TaskFactory {
 
     public static CreateHomeworkTopicTask(context: any, taskinfo: any): CxTask {
         let bank = new ToolsQuestionBankFacade("cx", taskinfo);
-        if (taskinfo.info != "") {
-            bank.CheckCourse();
-        }
         let topic = new HomeworkTopic(context, bank);
         topic.SetQueryQuestions(new CxCourseQueryQuestion(context, (context: any, el: HTMLElement): Question => {
             return CxQuestionFactory.CreateHomeWorkQuestion(context, el);
