@@ -341,11 +341,20 @@ class cxJudgeQuestion extends cxSelectQuestion implements Question {
         }
         let ret = this.defaultAnswer();
         let correctText = el.querySelector("span").innerText;
-        if (correctText.indexOf('×') >= 0) {
-            ret.correct.push({option: false, content: false});
+        if (el.querySelectorAll('.fr.dui').length) {
+            if (correctText.indexOf('×') >= 0) {
+                ret.correct.push({option: false, content: false});
+            } else {
+                ret.correct.push({option: true, content: true});
+            }
         } else {
-            ret.correct.push({option: true, content: true});
+            if (correctText.indexOf('×') >= 0) {
+                ret.correct.push({option: true, content: true});
+            } else {
+                ret.correct.push({option: false, content: false});
+            }
         }
+
         return ret;
     }
 }

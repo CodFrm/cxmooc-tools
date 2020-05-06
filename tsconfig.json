@@ -18,6 +18,6 @@
     "include": [
         "./src/*.ts",
         "./src/**/*.ts",
-        "./tests/*.test.ts",
-    ],
+        "./tests/*.test.ts"
+    ]
 }
