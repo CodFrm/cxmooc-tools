@@ -45,6 +45,10 @@ export class HttpUtils {
                 Application.App.log.Warn(ret.msg);
                 break;
             }
+            case 1: {
+                Application.App.log.Info(ret.msg);
+                return false;
+            }
             default: {
                 return false;
             }
