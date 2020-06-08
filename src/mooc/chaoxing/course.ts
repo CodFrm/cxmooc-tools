@@ -170,7 +170,7 @@ export class CxHomeWork implements Mooc {
             }
             let task = TaskFactory.CreateHomeworkTopicTask(window, {
                 refer: document.URL,
-                id: substrex(document.URL, "&workId=", "&"),
+                id: info,
                 info: info,
             });
             task.Init();
