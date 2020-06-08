@@ -334,12 +334,19 @@ class cxJudgeQuestion extends cxSelectQuestion implements Question {
 
     public Correct(): Answer {
         let el = this.el.querySelector(".Py_answer.clearfix");
-        if (el.innerHTML.indexOf('正确答案') < 0) {
-            if (el.querySelectorAll('.fr.dui').length <= 0 && el.querySelectorAll('.fr.cuo').length <= 0) {
-                return null;
-            }
-        }
         let ret = this.defaultAnswer();
+        if (el.innerHTML.indexOf('正确答案') >= 0) {
+            let correctText = el.querySelector("span").innerText;
+            if (correctText.indexOf('×') >= 0) {
+                ret.correct.push({option: false, content: false});
+            } else {
+                ret.correct.push({option: true, content: true});
+            }
+            return ret;
+        }
+        if (el.querySelectorAll('.fr.dui').length <= 0 && el.querySelectorAll('.fr.cuo').length <= 0) {
+            return null;
+        }
         let correctText = el.querySelector("span").innerText;
         if (el.querySelectorAll('.fr.dui').length) {
             if (correctText.indexOf('×') >= 0) {
@@ -354,7 +361,6 @@ class cxJudgeQuestion extends cxSelectQuestion implements Question {
                 ret.correct.push({option: false, content: false});
             }
         }
-
         return ret;
     }
 }
