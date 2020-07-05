@@ -211,12 +211,20 @@ abstract class cxQuestion implements Question {
 
     protected isCorrect(): Element {
         let el = this.el.querySelector(".Py_answer.clearfix,.Py_tk");
-        if (el.innerHTML.indexOf('正确答案') < 0) {
-            if (el.querySelectorAll('.fr.dui').length <= 0 && el.querySelectorAll('.fr.bandui').length <= 0) {
-                return null;
+        if (el && el.innerHTML.indexOf('正确答案') >= 0) {
+            if (el.querySelectorAll('.fr.dui').length > 0 || el.querySelectorAll('.fr.bandui').length > 0) {
+                return el;
             }
         }
-        return el;
+        let topic = this.el.querySelector(".Cy_TItle.clearfix")
+        if (!topic) {
+            return null;
+        }
+        let fs = topic.querySelector(".font18.fb");
+        if (fs && fs.innerHTML != "0.0") {
+            return el;
+        }
+        return null;
     }
 
     protected defaultAnswer(): Answer {
@@ -335,7 +343,7 @@ class cxJudgeQuestion extends cxSelectQuestion implements Question {
     public Correct(): Answer {
         let el = this.el.querySelector(".Py_answer.clearfix");
         let ret = this.defaultAnswer();
-        if (el.innerHTML.indexOf('正确答案') >= 0) {
+        if (el.innerHTML.indexOf('正确答案') >= 0 || this.el.querySelector(".Cy_TItle.clearfix .font18.fb").innerHTML != "0.0") {
             let correctText = el.querySelector("span").innerText;
             if (correctText.indexOf('×') >= 0) {
                 ret.correct.push({option: false, content: false});
