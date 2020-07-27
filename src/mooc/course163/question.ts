@@ -69,9 +69,9 @@ class CourseQuestion implements Question {
     }
 
     protected fill(el: HTMLElement, content: string) {
-        if (!el.parentElement.querySelector("input").checked) {
-            el.parentElement.querySelector("input").click();
-        }
+        // if (!el.parentElement.querySelector("input").checked) {
+            // el.parentElement.querySelector("input").click();
+        // }
         content = content.replace(/style=".*?"/, "");
         content = content.replace(/(<p>|<\/p>)/, "");
         this.AddNotice(this.getOption(el) + ":" + content);

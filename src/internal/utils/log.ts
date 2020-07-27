@@ -113,7 +113,7 @@ export class PageLog implements Logger {
                 Application.App.config.SetConfig("is_notify", this.checked.toString());
             });
             setTimeout(() => {
-                this.Info("233");
+                this.Warn("请注意,插件可能会有被检测的风险,请酌情使用.");
             }, 1000);
         });
     }
