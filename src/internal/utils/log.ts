@@ -110,7 +110,7 @@ export class PageLog implements Logger {
                 localStorage["is_notify"] = this.checked;
             });
             setTimeout(() => {
-                this.Info("233");
+                this.Info("请注意,插件可能会有被检测的风险,请酌情使用.");
             }, 1000);
         });
     }
