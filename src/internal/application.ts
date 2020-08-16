@@ -1,9 +1,9 @@
-import { Client, NewChromeClientMessage, NewExtensionClientMessage } from "./utils/message";
-import { HttpUtils } from "./utils/utils";
-import { ConfigItems } from "./utils/config";
-import { Logger } from "./utils/log";
-import { SystemConfig } from "@App/config";
-import { QuestionBank } from "./app/question";
+import {Client, NewChromeClientMessage, NewExtensionClientMessage} from "./utils/message";
+import {HttpUtils} from "./utils/utils";
+import {ConfigItems} from "./utils/config";
+import {Logger} from "./utils/log";
+import {SystemConfig} from "@App/config";
+import {QuestionBank} from "./app/question";
 
 export const Backend = "backend";
 export const Frontend = "frontend";
@@ -16,9 +16,11 @@ export interface Launcher {
 
 export class Application {
     protected static app: Application;
+
     public static get App(): Application {
         return Application.app;
     }
+
     protected static runEnv: string;
     protected static IsFrontend: boolean;
     protected static IsBackend: boolean;
@@ -27,6 +29,7 @@ export class Application {
 
     protected launcher: Launcher;
     protected component: Map<string, any>
+
     constructor(runEnv: string, launcher: Launcher, component?: Map<string, any>) {
         Application.app = this;
         Application.runEnv = runEnv;
@@ -70,12 +73,16 @@ export class Application {
     private runEnvSwitch(env: string): void {
         switch (env) {
             case Frontend:
-                Application.IsFrontend = true; break;
+                Application.IsFrontend = true;
+                break;
             case Backend:
-                Application.IsBackend = true; break;
+                Application.IsBackend = true;
+                break;
             case Content:
-                Application.IsContent = true; break;
-        };
+                Application.IsContent = true;
+                break;
+        }
+        ;
     }
 
     public get Client(): Client {
@@ -102,7 +109,7 @@ export class Application {
                     hotversion: json.hotversion,
                     injection: json.injection,
                 };
-                chrome.storage.local.set(data);
+                chrome.storage && chrome.storage.local.set(data);
                 await callback((SystemConfig.version < data.version), data);
             }, error: async function () {
                 await callback(false, undefined);

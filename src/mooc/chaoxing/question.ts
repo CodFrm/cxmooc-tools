@@ -343,7 +343,8 @@ class cxJudgeQuestion extends cxSelectQuestion implements Question {
     public Correct(): Answer {
         let el = this.el.querySelector(".Py_answer.clearfix");
         let ret = this.defaultAnswer();
-        if (el.innerHTML.indexOf('正确答案') >= 0 || this.el.querySelector(".Cy_TItle.clearfix .font18.fb").innerHTML != "0.0") {
+        let score = this.el.querySelector(".Cy_TItle.clearfix .font18.fb");
+        if (el.innerHTML.indexOf('正确答案') >= 0 || (score && score.querySelector(".Cy_TItle.clearfix .font18.fb").innerHTML != "0.0")) {
             let correctText = el.querySelector("span").innerText;
             if (correctText.indexOf('×') >= 0) {
                 ret.correct.push({option: false, content: false});

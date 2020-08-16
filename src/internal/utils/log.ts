@@ -110,7 +110,18 @@ export class PageLog implements Logger {
                 localStorage["is_notify"] = this.checked;
             });
             setTimeout(() => {
-                this.Info("请注意,插件可能会有被检测的风险,请酌情使用.");
+                Application.CheckUpdate((isnew, data) => {
+                    if (data == undefined) {
+                        this.Info("检查更新失败.")
+                    }
+                    let html = "";
+                    if (isnew) {
+                        html += "<span>[有新版本]</span>"
+                    }
+                    html += data.injection;
+                    console.log(html);
+                    this.Info(html);
+                });
             }, 1000);
         });
     }
