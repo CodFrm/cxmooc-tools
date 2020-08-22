@@ -404,3 +404,18 @@ export function Noifications(details: NotificationOptions) {
         Application.App.Client.Send(details)
     }
 }
+
+
+export function toBool(val: any): boolean {
+    if (typeof val == "boolean") {
+        return val;
+    }
+    return val == "true";
+}
+
+export function boolToString(val: boolean): string {
+    if (val) {
+        return "true";
+    }
+    return "false";
+}

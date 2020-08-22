@@ -1,4 +1,7 @@
-import { MoocFactory, Mooc } from "../factory";import { ZhsVideo } from "./video";import { ZhsExam } from "./exam";
+import {MoocFactory, Mooc} from "../factory";
+import {ZhsVideo} from "./video";
+import {ZhsExam} from "./exam";
+import {Application} from "@App/internal/application";
 
 export class ZhsPlatform implements MoocFactory {
     public CreateMooc(): Mooc {
@@ -7,6 +10,9 @@ export class ZhsPlatform implements MoocFactory {
             mooc = new ZhsVideo();
         } else if (document.URL.indexOf("zhihuishu.com/stuExamWeb.html") > 0) {
             mooc = new ZhsExam();
+        }
+        if (mooc) {
+            Application.App.config.SetNamespace("zhs");
         }
         return mooc;
     }

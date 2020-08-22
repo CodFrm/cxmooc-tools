@@ -98,7 +98,7 @@ export function SwitchTopicType(title: string): TopicType {
 export type QuestionStatus = "success" | "network" | "incomplete" | "processing";
 export type QuestionCallback = (status: QuestionStatus) => void
 
-export type QuestionBankCallback = (args: { status: QuestionStatus, answer: Answer[] }) => void
+export type QuestionBankCallback = (args: { status: QuestionStatus, answer: Answer[] }) => Promise<void>
 
 export interface QuestionBank {
     Answer(topic: Topic[], resolve: QuestionBankCallback): void;
@@ -148,7 +148,7 @@ export class ToolsQuestionBank implements QuestionBank {
             }
             HttpUtils.HttpPost(SystemConfig.url + "v2/answer?platform=" + this.platform, body, {
                 json: true,
-                success: (result: any) => {
+                success: async (result: any) => {
                     let status: QuestionStatus = "success";
                     let tmpResult = new Array<Answer>();
                     for (let i = 0; i < result.length; i++) {
@@ -179,7 +179,7 @@ export class ToolsQuestionBank implements QuestionBank {
                     if (status != "success") {
                         retStatus = status;
                     }
-                    resolve({status: "processing", answer: tmpResult});
+                    await resolve({status: "processing", answer: tmpResult});
                     if (t < topic.length) {
                         next(t);
                     } else {
@@ -276,33 +276,49 @@ export class ToolsQuestionBankFacade implements QuestionBankFacade {
             });
         });
         let status: QuestionStatus = "success";
-        this.bank.Answer(topic, (ret: { status: QuestionStatus, answer: Answer[] }) => {
-            if (ret.status != "processing") {
-                Application.App.log.Debug("题库返回", ret);
-                if (ret.status != "success" || status == "success") {
-                    return callback(ret.status);
+        this.bank.Answer(topic, (ret: { status: QuestionStatus, answer: Answer[] }): Promise<void> => {
+            return new Promise((resolve) => {
+                if (ret.status != "processing") {
+                    Application.App.log.Debug("题库返回", ret);
+                    if (ret.status != "success" || status == "success") {
+                        callback(ret.status);
+                        return resolve();
+                    }
+                    callback(status);
+                    return resolve();
                 }
-                return callback(status);
-            }
-            for (let i = 0; i < ret.answer.length; i++) {
-                let answer = ret.answer[i];
-                let question = this.question[answer.index];
-                let tmpStatus = answer.status;
-                if (answer.status == "no_answer") {
-                    status = this.randAnswer(status, tmpStatus, question);
-                    continue;
+                let i = 0;
+                let t = 0;
+                let next = () => {
+                    if (i >= ret.answer.length) {
+                        return resolve();
+                    }
+                    let answer = ret.answer[i];
+                    let question = this.question[answer.index];
+                    let tmpStatus = answer.status;
+                    if (answer.status == "no_answer") {
+                        status = this.randAnswer(status, tmpStatus, question);
+                        i++
+                        setTimeout(next, t);
+                        return;
+                    }
+                    if (answer.type != question.GetType()) {
+                        tmpStatus = "no_match";
+                    } else {
+                        tmpStatus = question.Fill(answer);
+                    }
+                    if (tmpStatus == "no_match") {
+                        status = this.randAnswer(status, tmpStatus, question);
+                        i++
+                        setTimeout(next, t);
+                        return;
+                    }
+                    question.SetStatus(tmpStatus);
+                    i++;
+                    setTimeout(next, t);
                 }
-                if (answer.type != question.GetType()) {
-                    tmpStatus = "no_match";
-                } else {
-                    tmpStatus = question.Fill(answer);
-                }
-                if (tmpStatus == "no_match") {
-                    status = this.randAnswer(status, tmpStatus, question);
-                    continue;
-                }
-                question.SetStatus(tmpStatus);
-            }
+                next();
+            });
         });
     }
 

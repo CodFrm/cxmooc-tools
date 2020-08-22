@@ -55,6 +55,7 @@ export class ConsoleLog implements Logger {
 export class PageLog implements Logger {
     protected el: HTMLElement;
     protected div: HTMLElement;
+    protected is_notify: boolean;
 
     protected getNowTime(): string {
         let time = new Date();
@@ -101,13 +102,15 @@ export class PageLog implements Logger {
                 this.div.remove();
             };
             let checkbox = <HTMLInputElement>this.div.querySelector("#checkbox");
-            localStorage["is_notify"] = localStorage["is_notify"] || "true";
-            checkbox.checked = localStorage["is_notify"] == "true";
+            checkbox.checked = (Application.App.config.GetConfig("is_notify") || "true") == "true";
+            this.is_notify = checkbox.checked;
             if (!checkbox.checked) {
                 checkbox.removeAttribute("checked")
             }
+            let self = this;
             checkbox.addEventListener("change", function () {
-                localStorage["is_notify"] = this.checked;
+                self.is_notify = this.checked;
+                Application.App.config.SetConfig("is_notify", this.checked.toString());
             });
             setTimeout(() => {
                 Application.CheckUpdate((isnew, data) => {
@@ -175,7 +178,7 @@ export class PageLog implements Logger {
     public Error(...args: any): Logger {
         let text = this.toStr(...args);
         if (this.el) {
-            this.first(text, "#ff7879", "rgba(253, 226, 226, 0.5)");
+            this.first(text, "#FFF0F0", "rgba(253, 226, 226, 0.5)");
         } else {
             console.error("[error", this.getNowTime(), "]", ...args);
         }
@@ -191,7 +194,7 @@ export class PageLog implements Logger {
     public Fatal(...args: any): Logger {
         let text = this.toStr(...args);
         if (this.el) {
-            this.first(text, "#ff0000", "rgba(253,162,169,0.5)");
+            this.first(text, "#FFF0F0", "rgba(253, 226, 226, 0.5)");
         } else {
             console.error("[fatal", this.getNowTime(), "]", ...args);
         }

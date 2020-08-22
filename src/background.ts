@@ -30,9 +30,12 @@ class background implements Launcher {
                     });
                     break;
                 }
+                case "GM_setValue": {
+                    Application.App.config.SetConfig(data.details.key, data.details.val);
+                    break;
+                }
             }
         });
-
         this.update();
         //1小时检查更新
         setInterval(() => {
@@ -40,7 +43,6 @@ class background implements Launcher {
         }, 60 * 60 * 1000);
         this.injectedScript();
         this.event();
-        this.setDefaultConfig();
     }
 
     protected event() {
@@ -53,26 +55,6 @@ class background implements Launcher {
             } else if (details.reason == "update") {
                 chrome.tabs.create({url: "https://github.com/CodFrm/cxmooc-tools/releases"});
             }
-        });
-    }
-
-    protected setDefaultConfig() {
-        let configKeyList: string[] = new Array();
-        for (let key in Application.App.config) {
-            configKeyList.push(key);
-        }
-        let configDefaultValue = new Map<string, any>()
-            .set("vtoken", "").set("rand_answer", false).set("auto", true)
-            .set("video_mute", true).set("answer_ignore", false).set("video_cdn", "")
-            .set("video_multiple", 1).set("interval", 2).set("super_mode", true);
-        chrome.storage.sync.get(configKeyList, function (items) {
-            configDefaultValue.forEach((val, key) => {
-                if (items[key] == undefined) {
-                    let tmp: { [key: string]: any; } = {};
-                    tmp[key] = configDefaultValue.get(key);
-                    chrome.storage.sync.set(tmp);
-                }
-            });
         });
     }
 
@@ -134,7 +116,7 @@ class background implements Launcher {
         return source;
     }
 
-    protected injectedScript() {
+    protected async injectedScript() {
         if (Application.App.debug) {
             return;
         }
@@ -145,6 +127,12 @@ class background implements Launcher {
             v = v.replace(/\*/g, ".*?");
             regex.push(v);
         }
+        let cache = await Application.App.config.ConfigList();
+        let cacheJsonText = JSON.stringify(cache);
+        Application.App.config.Watch("*", function (key: string, value: string) {
+            cache[key] = value;
+            cacheJsonText = JSON.stringify(cache);
+        });
         chrome.runtime.onMessage.addListener((msg, details) => {
             if (!msg.status && msg.status != "loading") {
                 return null;
@@ -157,7 +145,7 @@ class background implements Launcher {
                         code: `(function(){
                             let temp = document.createElement('script');
                             temp.setAttribute('type', 'text/javascript');
-                            temp.innerHTML = "` + this.source + `";
+                            temp.innerHTML = "` + "window.configData=" + cacheJsonText + "\n" + this.source + `";
                             temp.className = "injected-js";
                             document.documentElement.appendChild(temp)
                         }())`,
@@ -170,7 +158,7 @@ class background implements Launcher {
     }
 }
 
-let component = new Map<string, any>().set("logger", new ConsoleLog()).set("config", new ChromeConfigItems(NewBackendConfig()));
+let component = new Map<string, any>().set("logger", new ConsoleLog()).set("config", new ChromeConfigItems(NewBackendConfig(false)));
 
 let application = new Application(Backend, new background(), component);
 application.run();
