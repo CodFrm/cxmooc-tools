@@ -119,7 +119,6 @@ export class PageLog implements Logger {
                         html += "<span>[有新版本]</span>"
                     }
                     html += data.injection;
-                    console.log(html);
                     this.Info(html);
                 });
             }, 1000);
