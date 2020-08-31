@@ -1,6 +1,6 @@
 import {Task} from "@App/internal/app/task";
 import {Application} from "@App/internal/application";
-import {createBtn, protocolPrompt, randNumber, substrex} from "@App/internal/utils/utils";
+import {createBtn, protocolPrompt, randNumber, substrex, UntrustedClick} from "@App/internal/utils/utils";
 import {CourseQueryAnswer, CourseTopic} from "@App/mooc/course163/question";
 import {
     Answer,
@@ -270,7 +270,7 @@ export class CourseTopicTask extends Task {
             if (el.style.display == "none") {
                 resolve();
             }
-            el.click();
+            UntrustedClick(el);
             let t = setInterval(() => {
                 let el = <HTMLLinkElement>document.querySelector(".submit.j-replay");
                 if (el && el.style.display != "none") {
@@ -338,7 +338,7 @@ export class DiscussTask extends Task {
             if (!el) {
                 return resolve();
             }
-            el.click();
+            UntrustedClick(el);
             setTimeout(() => {
                 resolve();
             }, 2000);
