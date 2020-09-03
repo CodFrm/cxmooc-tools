@@ -81,8 +81,7 @@ export class Application {
             case Content:
                 Application.IsContent = true;
                 break;
-        }
-        ;
+        };
     }
 
     public get Client(): Client {

@@ -5,9 +5,11 @@ import {CxCourseVCode} from "./vcode";
 import {CxVideoOptimization} from "./video";
 import {Exam, Read, ReadStartPage} from "@App/mooc/chaoxing/read";
 import {CxAudioOptimization} from "@App/mooc/chaoxing/special";
+import {Application} from "@App/internal/application";
 
 export class CxPlatform implements MoocFactory {
     public CreateMooc(): Mooc {
+        Application.App.config.topic_interval = 0;
         let url = document.URL;
         let mooc: Mooc = null;
         if (url.indexOf("mycourse/studentstudy?") > 0) {
