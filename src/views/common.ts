@@ -122,6 +122,7 @@ window.addEventListener("load", () => {
     width: auto;
     text-align: center;
     border: 1px solid #eee;
+    overflow: hidden;
 }
 
 .tools-notice-content .log p {
