@@ -43,6 +43,17 @@ class background implements Launcher {
         }, 60 * 60 * 1000);
         this.injectedScript();
         this.event();
+        this.menu();
+    }
+
+    protected menu() {
+        chrome.contextMenus.create({
+            title: "使用 超星慕课小工具 搜索题目",
+            contexts: ["selection"],
+            onclick: function (info, tab) {
+                chrome.tabs.create({url: "https://cx.icodef.com/query.html?q=" + encodeURIComponent(info.selectionText)});
+            }
+        });
     }
 
     protected event() {
