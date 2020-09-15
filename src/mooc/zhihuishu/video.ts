@@ -2,7 +2,7 @@ import {Mooc} from "@App/mooc/factory";
 import {Hook, Context} from "@App/internal/utils/hook";
 import {Application} from "@App/internal/application";
 import "../../views/common";
-import {randNumber, post, substrex} from "@App/internal/utils/utils";
+import {randNumber, post, substrex, protocolPrompt} from "@App/internal/utils/utils";
 
 export class ZhsVideo implements Mooc {
 
@@ -32,6 +32,9 @@ export class ZhsVideo implements Mooc {
         boomBtn.className = "zhs-tools-btn";
         boomBtn.innerText = "秒过视频";
         boomBtn.onclick = () => {
+            if (!protocolPrompt("秒过视频会产生不良记录,是否继续?", "boom_no_prompt")) {
+                return;
+            }
             let timeStr = (<HTMLSpanElement>document.querySelector(".nPlayTime .duration")).innerText;
             let time = 0;
             let temp = timeStr.match(/[\d]+/gi);
@@ -40,8 +43,6 @@ export class ZhsVideo implements Mooc {
             }
             time += randNumber(20, 200);
             let tn = time;
-            console.log(this.nowVideoId);
-            console.log(this.videoList);
             //通过id搜索视频信息
             let lessonId = 0, smallLessonId = 0, chapterId = 0;
             for (let i = 0; i < this.videoList.videoChapterDtos.length; i++) {
@@ -71,7 +72,6 @@ export class ZhsVideo implements Mooc {
                     } else {
                         alert("秒过失败");
                     }
-                    ;
                 } catch (e) {
                     alert("秒过失败");
                 }
