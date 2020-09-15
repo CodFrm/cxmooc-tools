@@ -9,6 +9,7 @@ import {Application} from "@App/internal/application";
 
 export class CxPlatform implements MoocFactory {
     public CreateMooc(): Mooc {
+        Application.App.config.topic_interval = Application.App.config.topic_interval || 0;
         let url = document.URL;
         let mooc: Mooc = null;
         if (url.indexOf("mycourse/studentstudy?") > 0) {

@@ -288,7 +288,7 @@ export class ToolsQuestionBankFacade implements QuestionBankFacade {
                     return resolve();
                 }
                 let i = 0;
-                let t = 0;
+                let t = Application.App.config.topic_interval * 60 * 1000;
                 let next = () => {
                     if (i >= ret.answer.length) {
                         return resolve();

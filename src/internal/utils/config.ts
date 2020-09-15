@@ -12,6 +12,7 @@ export interface ConfigItems extends Config {
     video_cdn: string
     video_multiple: number
     interval: number
+    topic_interval: number
     super_mode: boolean
 }
 
@@ -97,6 +98,16 @@ export class ChromeConfigItems implements ConfigItems {
         return this.config.SetConfig(this.Namespace + key, val);
     }
 
+    protected topic_interval_: number;
+
+    public get topic_interval() {
+        return this.topic_interval_;
+        // return (this.getConfig.GetConfig("topic_interval") || 0.05);
+    }
+
+    public set topic_interval(val: number) {
+        this.topic_interval_ = val;
+    }
 }
 
 export interface Config {

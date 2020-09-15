@@ -4,14 +4,8 @@ import {Application} from "@App/internal/application";
 
 export class Course163Platform implements MoocFactory {
     public CreateMooc(): Mooc {
-        let url = document.URL;
-        let mooc: Mooc;
-        if (url.indexOf("www.icourse163.org") > 0) {
-            mooc = new Course163();
-        }
-        if (mooc) {
-            Application.App.config.SetNamespace("mooc163");
-        }
-        return mooc;
+        Application.App.config.topic_interval = Application.App.config.topic_interval || 0.05;
+        Application.App.config.SetNamespace("mooc163");
+        return new Course163();
     }
 }

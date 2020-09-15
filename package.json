@@ -8,7 +8,6 @@
     "build": "node_modules/.bin/webpack --mode production --config webpack.config.js",
     "tampermonkey": "node_modules/.bin/webpack --mode development --config webpack.tampermonkey.js",
     "dev": "node_modules/.bin/webpack --mode development --config webpack.dev.js",
-    "debug": "node_modules/.bin/webpack --mode development --config webpack.debug.js",
     "pack": "node_modules/.bin/tsc src/internal/pack-crx.ts && node src/internal/pack-crx.js",
     "docs:dev": "node_modules/.bin/vuepress dev docs",
     "docs:build": "node_modules/.bin/vuepress build docs"

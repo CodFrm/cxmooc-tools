@@ -122,7 +122,6 @@ export class PageLog implements Logger {
                         html += "<span>[有新版本]</span>"
                     }
                     html += data.injection;
-                    console.log(html);
                     this.Info(html);
                 });
             }, 1000);
@@ -148,7 +147,6 @@ export class PageLog implements Logger {
 
     public Info(...args: any): Logger {
         let text = this.toStr(...args);
-        // 判断选中状态是否发送桌面通知
         if (this.el) {
             this.first(text, "#409EFF", "rgba(121, 187, 255, 0.2)");
         } else {

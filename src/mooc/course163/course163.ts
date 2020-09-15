@@ -4,6 +4,7 @@ import "../../views/common";
 import {Application} from "@App/internal/application";
 import {TaskFactory} from "@App/mooc/course163/task";
 import {Task} from "@App/internal/app/task";
+import {UntrustedClick} from "@App/internal/utils/utils";
 
 export class Course163 implements Mooc {
 
@@ -31,7 +32,7 @@ export class Course163 implements Mooc {
                     if (Application.App.config.auto) {
                         let autonext = <HTMLInputElement>document.querySelector(".j-autoNext");
                         if (autonext && autonext.checked) {
-                            autonext.click();
+                            UntrustedClick(autonext);
                         }
                         await this.lastTask.Start();
                     }
@@ -53,7 +54,7 @@ export class Course163 implements Mooc {
             return el.className.indexOf("current") > 0;
         });
         if (ret) {
-            return (<HTMLLinkElement>ret).click();
+            return UntrustedClick(ret);
         }
         //二级
         let tmp = (type: string) => {
@@ -66,14 +67,14 @@ export class Course163 implements Mooc {
         };
         ret = tmp("lesson");
         if (ret) {
-            return (<HTMLLinkElement>ret).click();
+            return UntrustedClick(ret);
         }
         //顶层
         ret = tmp("chapter");
         if (ret) {
-            (<HTMLLinkElement>ret).click();
+            UntrustedClick(ret);
             let all = document.querySelectorAll(".f-fl.j-lesson .f-bg.j-list > .f-thide");
-            return (<HTMLLinkElement>all[0]).click();
+            return UntrustedClick(all[0]);
         }
         Application.App.log.Warn("任务结束了");
         return alert("任务结束了");

@@ -15,6 +15,7 @@ import {
     QuestionStatusString
 } from "@App/internal/app/question";
 import {CreateNoteLine} from "../chaoxing/utils";
+import {Application} from "@App/internal/application";
 
 //TODO: 与超星一起整合优化
 export class ZhsExam implements Mooc {
@@ -145,7 +146,9 @@ abstract class ZhsQuestion implements Question {
 
     protected click(el: HTMLElement, content: string) {
         let tmpel = <HTMLInputElement>el.querySelector("input");
-        tmpel.parentElement.click();
+        if ((<HTMLElement>tmpel.nextElementSibling).style.display != "none") {
+            tmpel.parentElement.click();
+        }
         this.addNotice(this.getOption(el) + ":" + content);
     }
 
@@ -178,16 +181,13 @@ class ZhsSelectQuestion extends ZhsQuestion {
 
     public Fill(s: Answer): TopicStatus {
         let options = this.options();
-        for (let i = 0; i < options.length; i++) {
-            if (options[i].querySelector("input").checked) {
-                options[i].querySelector("input").parentElement.click();
-            }
-        }
         let flag = false;
         for (let i = 0; i < s.correct.length; i++) {
             for (let j = 0; j < options.length; j++) {
                 if (s.Equal(this.getContent(options[j]), s.correct[i].content)) {
-                    this.click(options[j], s.correct[i].content);
+                    setTimeout(() => {
+                        this.click(options[j], s.correct[i].content);
+                    }, i * 1000);
                     flag = true;
                 }
             }

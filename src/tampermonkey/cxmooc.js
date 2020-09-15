@@ -32,6 +32,7 @@ let config = {
     vtoken: "",
     video_cdn: "公网1", //锁定视频播放源,为空为记录最后一次选中的源(公网1,公网2等)
     super_mode: true, //解锁flash弹幕视频等,详情请看文档
+    topic_interval: 0.05,//题目答题间隔
 };
 
 Object.keys(config).forEach(k => {
