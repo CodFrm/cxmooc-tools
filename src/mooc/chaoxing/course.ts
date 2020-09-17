@@ -29,8 +29,7 @@ export class CxCourse implements Mooc {
             if (!match) {
                 return;
             }
-            let margStr = "mArg=" + match[1];
-            iframeWindow.mArg = eval(margStr);
+            iframeWindow.mArg = JSON.parse(match[1]);
         }
         this.attachments = <Array<any>>iframeWindow.mArg.attachments;
         this.taskList = new Array();
