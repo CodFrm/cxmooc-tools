@@ -17,13 +17,15 @@ module.exports = {
       {
         text: '使用教程',
         items: [
-          { text: '快速开始', link: '/1-UserGuide/' },
-          { text: 'Chrome 扩展', link: '/1-UserGuide/1-1-chrome.html' },
+          { text: '简介', link: '/1-UserGuide/' },
+          { text: '打包版浏览器', link: '/1-UserGuide/1-7-easychorme.md' },
           { text: 'FireFox 扩展', link: '/1-UserGuide/1-2-firefox.html' },
+          { text: 'Chrome 扩展', link: '/1-UserGuide/1-1-chrome.html' },
           { text: 'Tampermonkey 脚本', link: '/1-UserGuide/1-3-tampermonkey.html' },
+          { text: '中国大学mooc专用', link: '/1-UserGuide/1-8-moocchorme.html' },
+          { text: '常见问题【使用必看】', link: '/1-UserGuide/qa.md' },
           { text: '功能说明', link: '/1-UserGuide/featured.html' },
           { text: '配置说明', link: '/1-UserGuide/1-4-config.html' },
-          { text: '常见问题', link: '/1-UserGuide/qa.md' }
         ]
       },
       { text: '免责声明', link: '/3-Disclaimer/' },
@@ -40,13 +42,17 @@ module.exports = {
     sidebar: {
       '/1-UserGuide/': [
         '',
-        '1-0-developer.html',
-        '1-1-chrome.html',     /* /foo/ */
-        '1-2-firefox.html',  /* /foo/one.html */
-        '1-3-tampermonkey.html',
-        'featured.html',
-        '1-4-config.html',
         'qa.html',
+        '1-6-gettoken.html',
+        '1-7-easychorme.html',
+        '1-8-moocchorme.html',
+        '1-2-firefox.html',  /* /foo/one.html */
+        '1-1-chrome.html',
+        '1-3-tampermonkey.html',     /* /foo/ */
+        '1-5-otherchorme.html',
+        '1-0-developer.html',
+        'featured.html',//功能说明
+        '1-4-config.html',//配置说明
       ],
     },
     serviceWorker: {
