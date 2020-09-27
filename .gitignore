@@ -17,3 +17,4 @@ certificate
 *.crx
 *.zip
 *.tar.gz
+*.map

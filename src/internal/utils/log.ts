@@ -110,7 +110,17 @@ export class PageLog implements Logger {
                 localStorage["is_notify"] = this.checked;
             });
             setTimeout(() => {
-                this.Info("233");
+                Application.CheckUpdate((isnew, data) => {
+                    if (data == undefined) {
+                        this.Info("检查更新失败.")
+                    }
+                    let html = "";
+                    if (isnew) {
+                        html += "<span>[有新版本]</span>"
+                    }
+                    html += data.injection;
+                    this.Info(html);
+                });
             }, 1000);
         });
     }
@@ -134,7 +144,6 @@ export class PageLog implements Logger {
 
     public Info(...args: any): Logger {
         let text = this.toStr(...args);
-        // 判断选中状态是否发送桌面通知
         if (this.el) {
             this.first(text, "#409EFF", "rgba(121, 187, 255, 0.2)");
         } else {

@@ -1,7 +1,7 @@
 import {Topic, QueryQuestions} from "@App/internal/app/topic";
 import {Question, TopicType, TopicStatus, Answer, TopicStatusString} from "@App/internal/app/question";
 import {CreateNoteLine} from "../chaoxing/utils";
-import {randNumber, removeHTML} from "@App/internal/utils/utils";
+import {randNumber, UntrustedClick} from "@App/internal/utils/utils";
 
 export class CourseQueryAnswer implements QueryQuestions {
     public QueryQuestions(): Question[] {
@@ -70,7 +70,7 @@ class CourseQuestion implements Question {
 
     protected fill(el: HTMLElement, content: string) {
         if (!el.parentElement.querySelector("input").checked) {
-            el.parentElement.querySelector("input").click();
+            UntrustedClick( el.parentElement.querySelector("input"));
         }
         content = content.replace(/style=".*?"/, "");
         content = content.replace(/(<p>|<\/p>)/, "");

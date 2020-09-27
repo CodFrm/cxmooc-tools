@@ -21,6 +21,7 @@ let config = {
     video_multiple: 1, //视频播放倍速,视频播放的倍数,建议不要改动,为1即可,这是危险的功能
     video_mute: true, //视频静音,视频自动静音播放
     vtoken: "",
+    topic_interval: 0.05,//题目答题间隔
 };
 
 Object.keys(config).forEach(k => {
