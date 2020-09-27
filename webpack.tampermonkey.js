@@ -11,4 +11,6 @@ ret.output = {
     filename: 'tampermonkey-[name].js'
 };
 ret.plugins = [];
+ret.devtool = 'source-map';
+
 module.exports = ret;

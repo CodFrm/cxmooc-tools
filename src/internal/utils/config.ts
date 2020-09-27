@@ -10,6 +10,7 @@ export interface ConfigItems extends GetConfig {
     video_cdn: string
     video_multiple: number
     interval: number
+    topic_interval: number
     super_mode: boolean
 }
 
@@ -77,6 +78,16 @@ export class ChromeConfigItems implements ConfigItems {
         return Math.floor(randNumber(interval - interval / 2, interval + interval / 2)) / 100;
     }
 
+    protected topic_interval_: number;
+
+    public get topic_interval() {
+        return this.topic_interval_;
+        // return (this.getConfig.GetConfig("topic_interval") || 0.05);
+    }
+
+    public set topic_interval(val: number) {
+        this.topic_interval_ = val;
+    }
 }
 
 export interface GetConfig {

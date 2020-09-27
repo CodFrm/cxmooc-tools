@@ -1,4 +1,4 @@
-import {substrex, randNumber as RandNumber, randNumber, removeHTML, removeHTMLTag} from "@App/internal/utils/utils";
+import {substrex, randNumber as RandNumber, removeHTMLTag} from "@App/internal/utils/utils";
 import {
     Question,
     TopicStatus,
@@ -211,12 +211,20 @@ abstract class cxQuestion implements Question {
 
     protected isCorrect(): Element {
         let el = this.el.querySelector(".Py_answer.clearfix,.Py_tk");
-        if (el.innerHTML.indexOf('正确答案') < 0) {
-            if (el.querySelectorAll('.fr.dui').length <= 0 && el.querySelectorAll('.fr.bandui').length <= 0) {
-                return null;
+        if (el && el.innerHTML.indexOf('正确答案') >= 0) {
+            if (el.querySelectorAll('.fr.dui').length > 0 || el.querySelectorAll('.fr.bandui').length > 0) {
+                return el;
             }
         }
-        return el;
+        let topic = this.el.querySelector(".Cy_TItle.clearfix")
+        if (!topic) {
+            return null;
+        }
+        let fs = topic.querySelector(".font18.fb");
+        if (fs && fs.innerHTML != "0.0") {
+            return el;
+        }
+        return null;
     }
 
     protected defaultAnswer(): Answer {
@@ -334,17 +342,33 @@ class cxJudgeQuestion extends cxSelectQuestion implements Question {
 
     public Correct(): Answer {
         let el = this.el.querySelector(".Py_answer.clearfix");
-        if (el.innerHTML.indexOf('正确答案') < 0) {
-            if (el.querySelectorAll('.fr.dui').length <= 0 && el.querySelectorAll('.fr.cuo').length <= 0) {
-                return null;
-            }
-        }
         let ret = this.defaultAnswer();
+        let score = this.el.querySelector(".Cy_TItle.clearfix .font18.fb");
+        if (el.innerHTML.indexOf('正确答案') >= 0 || (score && score.querySelector(".Cy_TItle.clearfix .font18.fb").innerHTML != "0.0")) {
+            let correctText = el.querySelector("span").innerText;
+            if (correctText.indexOf('×') >= 0) {
+                ret.correct.push({option: false, content: false});
+            } else {
+                ret.correct.push({option: true, content: true});
+            }
+            return ret;
+        }
+        if (el.querySelectorAll('.fr.dui').length <= 0 && el.querySelectorAll('.fr.cuo').length <= 0) {
+            return null;
+        }
         let correctText = el.querySelector("span").innerText;
-        if (correctText.indexOf('×') >= 0) {
-            ret.correct.push({option: false, content: false});
+        if (el.querySelectorAll('.fr.dui').length) {
+            if (correctText.indexOf('×') >= 0) {
+                ret.correct.push({option: false, content: false});
+            } else {
+                ret.correct.push({option: true, content: true});
+            }
         } else {
-            ret.correct.push({option: true, content: true});
+            if (correctText.indexOf('×') >= 0) {
+                ret.correct.push({option: true, content: true});
+            } else {
+                ret.correct.push({option: false, content: false});
+            }
         }
         return ret;
     }
@@ -393,7 +417,7 @@ class cxFillQuestion extends cxQuestion implements Question {
     public Fill(answer: Answer): TopicStatus {
         let options = this.options();
         if (!options.length) {
-            options = this.el.querySelectorAll(".XztiHover1");
+            options = this.el.querySelector('.Zy_ulTk').querySelectorAll(".XztiHover1");
         }
         let flag = 0;
         for (let i = 0; i < answer.correct.length; i++) {

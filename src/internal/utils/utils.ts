@@ -45,6 +45,10 @@ export class HttpUtils {
                 Application.App.log.Warn(ret.msg);
                 break;
             }
+            case 1: {
+                Application.App.log.Info(ret.msg);
+                return false;
+            }
             default: {
                 return false;
             }
@@ -317,8 +321,10 @@ export function removeHTML(html: string) {
     html = html.replace(revHtml, '');
     html = html.replace(/(^\s+)|(\s+$)/g, '');
     html = dealSymbol(html);
-    //TODO:处理HTML符号
-    return html.replace(/&nbsp;/g, ' ').replace(/&quot;/g, "\"").replace(/&amp;/g, '&').trim();
+    //TODO:处理HTML符号,手动处理就很菜
+    return html.replace(/&nbsp;/g, ' ')
+        .replace(/&quot;/g, "\"").replace(/&gt;/g, ">")
+        .replace(/&lt;/g, "<").replace(/&amp;/g, '&').trim();
 }
 
 /**
@@ -397,4 +403,13 @@ export function Noifications(details: NotificationOptions) {
         });
         Application.App.Client.Send(details)
     }
+}
+
+export function UntrustedClick(el: Element): boolean {
+    let untrusted = new MouseEvent("click", {"clientX": 10086});
+    if (!untrusted.isTrusted) {
+        Application.App.log.Warn("插件执行错误");
+        return false;
+    }
+    return el.dispatchEvent(untrusted);
 }

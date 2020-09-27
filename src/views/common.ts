@@ -118,10 +118,11 @@ window.addEventListener("load", () => {
 }
 
 .tools-notice-content .log {
-    height: 26px;
+    height: auto;
     width: auto;
     text-align: center;
     border: 1px solid #eee;
+    overflow: hidden;
 }
 
 .tools-notice-content .log p {

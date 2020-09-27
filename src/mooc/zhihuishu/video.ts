@@ -2,19 +2,18 @@ import {Mooc} from "@App/mooc/factory";
 import {Hook, Context} from "@App/internal/utils/hook";
 import {Application} from "@App/internal/application";
 import "../../views/common";
-import {randNumber, post, substrex} from "@App/internal/utils/utils";
+import {randNumber, post, substrex, protocolPrompt} from "@App/internal/utils/utils";
 
 export class ZhsVideo implements Mooc {
 
     protected lastTimer: NodeJS.Timer;
     protected video: HTMLVideoElement;
+    protected nowVideoId: number;
+    protected videoList: any;
+    protected studiedLessonDtoId: number;
 
     public Start(): void {
         this.hookAjax();
-        this.hook();
-        document.addEventListener("readystatechange", () => {
-            this.hook();
-        });
         let timer = setInterval(() => {
             try {
                 this.start();
@@ -33,8 +32,49 @@ export class ZhsVideo implements Mooc {
         boomBtn.className = "zhs-tools-btn";
         boomBtn.innerText = "秒过视频";
         boomBtn.onclick = () => {
-            (<any>Application.GlobalContext).videoBoom(() => {
+            if (!protocolPrompt("秒过视频会产生不良记录,是否继续?", "boom_no_prompt")) {
+                return;
+            }
+            let timeStr = (<HTMLSpanElement>document.querySelector(".nPlayTime .duration")).innerText;
+            let time = 0;
+            let temp = timeStr.match(/[\d]+/gi);
+            for (let i = 0; i < 3; i++) {
+                time += parseInt(temp[i]) * Math.pow(60, 2 - i);
+            }
+            time += randNumber(20, 200);
+            let tn = time;
+            //通过id搜索视频信息
+            let lessonId = 0, smallLessonId = 0, chapterId = 0;
+            for (let i = 0; i < this.videoList.videoChapterDtos.length; i++) {
+                for (let n = 0; n < this.videoList.videoChapterDtos[i].videoLessons.length; n++) {
+                    if (this.videoList.videoChapterDtos[i].videoLessons[n].videoId == this.nowVideoId) {
+                        lessonId = this.videoList.videoChapterDtos[i].videoLessons[n].id;
+                        smallLessonId = this.videoList.videoChapterDtos[i].videoLessons[n].ishaveChildrenLesson;
+                        chapterId = this.videoList.videoChapterDtos[i].videoLessons[n].chapterId;
+                    }
+                }
+            }
+            let s = [this.videoList.recruitId, lessonId, smallLessonId, this.nowVideoId, chapterId, "0", tn, time, timeStr]
+                , l = {
+                ev: n.Z(s),
+                learningTokenId: Base64.encode(this.studiedLessonDtoId.toString()),
+                uuid: substrex(document.cookie, "uuid%22%3A%22", "%22"),
+                dateFormate: Date.parse(<any>new Date()),
+            };
+            let postData = "ev=" + l.ev + "&learningTokenId=" + l.learningTokenId +
+                "&uuid=" + l.uuid + "&dateFormate=" + l.dateFormate;
 
+            post("https://studyservice.zhihuishu.com/learning/saveDatabaseIntervalTime", postData, false, function (data: any) {
+                let json = JSON.parse(data);
+                try {
+                    if (json.data.submitSuccess == true) {
+                        alert("秒过成功,刷新后查看效果");
+                    } else {
+                        alert("秒过失败");
+                    }
+                } catch (e) {
+                    alert("秒过失败");
+                }
             });
         };
         //TODO:优化,先这样把按钮弄出来
@@ -97,6 +137,7 @@ export class ZhsVideo implements Mooc {
             Application.App.log.Info("视频开始加载");
             let hookPause = args[2].onPause;
             let hookReady = args[2].onReady;
+            self.nowVideoId = args[1].id;
             args[2].onReady = function () {
                 hookReady.apply(this);
                 self.video = document.querySelector("#vjs_container_html5_api");
@@ -126,6 +167,7 @@ export class ZhsVideo implements Mooc {
 
     protected hookAjax(): void {
         let hookXMLHttpRequest = new Hook("open", Application.GlobalContext.XMLHttpRequest.prototype);
+        let self = this;
         hookXMLHttpRequest.Middleware(function (next: Context, ...args: any) {
             if (args[1].indexOf("popupAnswer/loadVideoPointerInfo") >= 0) {
                 Object.defineProperty(this, "responseText", {
@@ -137,72 +179,52 @@ export class ZhsVideo implements Mooc {
                         return retText;
                     }
                 });
+            } else if (args[1].indexOf("learning/videolist") >= 0) {
+                Object.defineProperty(this, "responseText", {
+                    get: function () {
+                        let json = JSON.parse(this.response);
+                        self.videoList = json.data;
+                        return this.response;
+                    }
+                });
+            } else if (args[1].indexOf("learning/prelearningNote") >= 0) {
+                Object.defineProperty(this, "responseText", {
+                    get: function () {
+                        let json = JSON.parse(this.response);
+                        self.studiedLessonDtoId = json.data.studiedLessonDto.id;
+                        return this.response;
+                    }
+                });
             }
             let ret = next.apply(this, args);
             return ret;
         });
     }
 
-    protected hook(): void {
-        if (document.readyState != "interactive") {
-            return;
-        }
-        let hookWebpack = new Hook("webpackJsonp", Application.GlobalContext);
-        hookWebpack.Middleware(function (next: Context, ...args: any) {
-            try {
-                if (args[1][702]) {
-                    Application.App.log.Debug("video hook ok", document.readyState);
-                    let old = args[1][702];
-                    args[1][702] = function () {
-                        let ret = old.apply(this, arguments);
-                        let hookInitVideo = new Hook("initVideo", arguments[1].default.methods);
-                        hookInitVideo.Middleware(function (next: Context, ...args: any) {
-                            Application.App.log.Debug("initVideo");
-                            (<any>Application.GlobalContext).videoBoom = (callback: any) => {
-                                let timeStr = (<HTMLSpanElement>document.querySelector(".nPlayTime .duration")).innerText;
-                                let time = 0;
-                                let temp = timeStr.match(/[\d]+/gi);
-                                for (let i = 0; i < 3; i++) {
-                                    time += parseInt(temp[i]) * Math.pow(60, 2 - i);
-                                }
-                                time += randNumber(20, 200);
-                                let tn = time;
-                                let a = this.lessonId
-                                    , r = this.smallLessonId
-                                    ,
-                                    s = [this.recruitId, a, r, this.lastViewVideoId, 1, this.data.studyStatus, tn, time, timeStr]
-                                    , l = {
-                                        ev: this.D26666.Z(s),
-                                        learningTokenId: Base64.encode(this.preVideoInfo.studiedLessonDto.id),
-                                        uuid: substrex(document.cookie, "uuid%22%3A%22", "%22"),
-                                        dateFormate: Date.parse(<any>new Date()),
-                                    };
-                                let postData = "ev=" + l.ev + "&learningTokenId=" + l.learningTokenId +
-                                    "&uuid=" + l.uuid + "&dateFormate=" + l.dateFormate;
-
-                                post("https://studyservice.zhihuishu.com/learning/saveDatabaseIntervalTime", postData, false, function (data: any) {
-                                    let json = JSON.parse(data);
-                                    try {
-                                        if (json.data.submitSuccess == true) {
-                                            alert("秒过成功,刷新后查看效果");
-                                        } else {
-                                            alert("秒过失败");
-                                        }
-                                        ;
-                                    } catch (e) {
-                                        alert("秒过失败");
-                                    }
-                                });
-                            }
-                            return next.apply(this, args);
-                        });
-                        return ret;
-                    };
-                }
-            } catch (e) {
-            }
-            return next.apply(this, args);
-        });
-    }
 
 }
+
+var n = {
+    _a: "AgrcepndtslzyohCia0uS@",
+    _b: "A0ilndhga@usreztoSCpyc",
+    _c: "d0@yorAtlhzSCeunpcagis",
+    _d: "zzpttjd",
+    X: function (t: any) {
+        for (var e = "", i = 0; i < t[this._c[8] + this._a[4] + this._c[15] + this._a[1] + this._a[8] + this._b[6]]; i++) {
+            var n = t[this._a[3] + this._a[14] + this._c[18] + this._a[2] + this._b[18] + this._b[16] + this._c[0] + this._a[4] + this._b[0] + this._b[15]](i) ^ this._d[this._b[21] + this._b[6] + this._a[17] + this._c[5] + this._b[18] + this._c[4] + this._a[7] + this._a[4] + this._a[0] + this._c[7]](i % this._d[this._a[10] + this._b[13] + this._b[4] + this._a[1] + this._c[7] + this._a[14]]);
+            e += this.Y(n)
+        }
+        return e
+    },
+    Y: function (t: any) {
+        var e = t[this._c[7] + this._a[13] + this._a[20] + this._b[15] + this._a[2] + this._b[2] + this._c[15] + this._c[19]](16);
+        return e = e[this._b[3] + this._a[4] + this._b[4] + this._a[1] + this._c[7] + this._c[9]] < 2 ? this._b[1] + e : e,
+            e[this._a[9] + this._b[3] + this._c[20] + this._c[17] + this._c[13]](-4)
+    },
+    Z: function (t: any) {
+        for (var e = "", i = 0; i < t.length; i++)
+            e += t[i] + ";";
+        return e = e.substring(0, e.length - 1),
+            this.X(e)
+    }
+};

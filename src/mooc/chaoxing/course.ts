@@ -29,8 +29,7 @@ export class CxCourse implements Mooc {
             if (!match) {
                 return;
             }
-            let margStr = "mArg=" + match[1];
-            iframeWindow.mArg = eval(margStr);
+            iframeWindow.mArg = JSON.parse(match[1]);
         }
         this.attachments = <Array<any>>iframeWindow.mArg.attachments;
         this.taskList = new Array();
@@ -167,7 +166,7 @@ export class CxHomeWork implements Mooc {
             }
             let task = TaskFactory.CreateHomeworkTopicTask(window, {
                 refer: document.URL,
-                id: substrex(document.URL, "&workId=", "&"),
+                id: info,
                 info: info,
             });
             task.Init();
