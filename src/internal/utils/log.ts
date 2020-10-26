@@ -80,7 +80,7 @@ export class PageLog implements Logger {
             this.div = document.createElement("div");
             // 主要布局
             this.div.innerHTML = `
-            <div class="head"> 
+            <div class="head" id="tools-head"> 
                <span>小工具通知条</span> 
                <label class="switch" style="width:90px">
                   <input class="checkbox-input" id="checkbox" type="checkbox" checked="checked">
@@ -126,6 +126,27 @@ export class PageLog implements Logger {
                     this.Info(html);
                 });
             }, 1000);
+            //支持拖拽移动
+            this.div.style.left = Application.App.config.GetConfig("notify_tools_x");
+            this.div.style.top = Application.App.config.GetConfig("notify_tools_y");
+            let head = <HTMLElement>this.div.querySelector('#tools-head');
+            head.onmousedown = (downEvent) => {
+                console.log(downEvent.clientY, this.div.offsetTop, downEvent.clientX, this.div.offsetLeft)
+                let relaX = downEvent.clientX - this.div.offsetLeft;
+                let relaY = downEvent.clientY - this.div.offsetTop;
+
+                document.onmousemove = (moveEvent) => {
+                    console.log(moveEvent.clientX, moveEvent.clientY)
+                    this.div.style.left = moveEvent.clientX - relaX + 'px';
+                    this.div.style.top = moveEvent.clientY - relaY + 'px';
+                }
+                document.onmouseup = () => {
+                    document.onmouseup = null;
+                    document.onmousemove = null;
+                    Application.App.config.SetConfig("notify_tools_x", this.div.style.left);
+                    Application.App.config.SetConfig("notify_tools_y", this.div.style.top);
+                }
+            }
         });
     }
 

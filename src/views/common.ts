@@ -85,17 +85,20 @@ window.addEventListener("load", () => {
     text-align: center;
     overflow: hidden;
     left:60px;
-    z-index: 100000;
     top: 40px;
+    z-index: 100000;
     background: rgba(256, 256, 256, 0.3);
     box-shadow: 0px 0px 5px #bbb;
-    transition-property: opacity, background-color;
-    transition: 200ms ease-in-out;
 }
 
 .head {
     width: 100%;
-    height: 25px;
+    height: 30px;
+    padding: 4px;
+    box-sizing: border-box;
+    cursor: move;
+    transition-property: opacity, background-color;
+    transition: 200ms ease-in-out;
 }
 
 .head span{
@@ -194,7 +197,7 @@ window.addEventListener("load", () => {
     background: rgba(256, 256, 256, 0.7);
 }
 
-.tools-logger-panel:active {
+.tools-logger-panel .head:active {
     background-color: #E5E5E5;
 }
 
