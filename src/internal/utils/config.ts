@@ -45,11 +45,11 @@ export class ChromeConfigItems implements ConfigItems {
     }
 
     public SetNamespaceConfig(namespace: string, key: string, val: string): Promise<any> {
-        return this.config.SetConfig(namespace + key, val);
+        return this.config.SetConfig(namespace + "_" + key, val);
     }
 
     public GetNamespaceConfig(namespace: string, key: string, defaultVal?: string): string {
-        return this.config.GetConfig(namespace + key, defaultVal);
+        return this.config.GetConfig(namespace + "_" + key, defaultVal);
     }
 
     public GetConfig(key: string, defaultVal?: string): string {
@@ -118,7 +118,6 @@ export class ChromeConfigItems implements ConfigItems {
 
     public get topic_interval() {
         return this.topic_interval_;
-        // return (this.getConfig.GetConfig("topic_interval") || 0.05);
     }
 
     public set topic_interval(val: number) {
@@ -141,9 +140,9 @@ export interface ConfigWatchCallback {
 }
 
 // 后台环境中使用
-export function NewBackendConfig(onlyRead: boolean): Promise<backendConfig> {
+export function NewBackendConfig(): Promise<backendConfig> {
     return new Promise(async resolve => {
-        let ret = new backendConfig(onlyRead);
+        let ret = new backendConfig();
         await ret.updateCache();
         resolve(ret);
     });
@@ -196,11 +195,9 @@ class configWatch {
 class backendConfig implements Config {
 
     protected cache: { [key: string]: string };
-    protected onlyRead: boolean;
     protected watch: configWatch;
 
-    constructor(onlyRead: boolean) {
-        this.onlyRead = onlyRead;
+    constructor() {
         this.watch = new configWatch();
         chrome.runtime.onMessage.addListener((request) => {
             if (request.type && request.type == "cxconfig") {
@@ -212,9 +209,6 @@ class backendConfig implements Config {
     }
 
     protected updateConfigStorage() {
-        if (this.onlyRead) {
-            return
-        }
         let txt = JSON.stringify(this.cache);
         chrome.storage.sync.set({"config_storage": txt});
     }
@@ -261,14 +255,11 @@ class backendConfig implements Config {
             info[key] = val;
             //通知前端和后端
             this.cache[key] = val;
-            if (this.onlyRead) {
-                chrome.tabs.query({currentWindow: true}, function (tabs) {
-                    chrome.tabs.sendMessage(tabs[0].id, {type: "cxconfig", key: key, value: val});
-                });
-                chrome.runtime.sendMessage({type: "cxconfig", key: key, value: val});
-            } else {
-                this.updateConfigStorage();
-            }
+            chrome.tabs.query({active: true, currentWindow: true}, function (tabs) {
+                chrome.tabs.sendMessage(tabs[0].id, {type: "cxconfig", key: key, value: val});
+            });
+            chrome.runtime.sendMessage({type: "cxconfig", key: key, value: val});
+            this.updateConfigStorage();
             resolve();
         });
     }

@@ -4,13 +4,6 @@ import {SystemConfig} from "../config";
 import {boolToString, dealHotVersion, toBool} from "../internal/utils/utils";
 import Vue from 'vue';
 
-window.onload = async () => {
-    let config = new ChromeConfigItems(await NewBackendConfig(true));
-    let component = new Map<string, any>().set("config", config);
-    let app = new Application(Backend, new popup(), component);
-    app.run();
-}
-
 class popup implements Launcher {
     protected vm: Vue;
 
@@ -189,8 +182,10 @@ class popup implements Launcher {
                 for (let key in this.configs) {
                     for (let index in this.configs[key].items) {
                         let item = this.configs[key].items[index];
-                        let val = Application.App.config.GetNamespaceConfig(key, item.key, item.value);
-                        console.log(val);
+                        let val = Application.App.config.GetNamespaceConfig(key, item.key, undefined);
+                        if (val == undefined) {
+                            val = Application.App.config.GetConfig(item.key, item.value);
+                        }
                         switch (item.type) {
                             case "checkbox": {
                                 item.value = toBool(val);
@@ -213,7 +208,6 @@ class popup implements Launcher {
                     }
                     switch (type) {
                         case "checkbox": {
-                            console.log(namespace, key, boolToString(<boolean>val))
                             await Application.App.config.SetNamespaceConfig(namespace, key, boolToString(<boolean>val));
                             break;
                         }
@@ -244,4 +238,11 @@ class popup implements Launcher {
         });
     }
 
+}
+
+window.onload = async () => {
+    let config = new ChromeConfigItems(await NewBackendConfig());
+    let component = new Map<string, any>().set("config", config);
+    let app = new Application(Backend, new popup(), component);
+    app.run();
 }

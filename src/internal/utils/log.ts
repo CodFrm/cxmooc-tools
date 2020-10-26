@@ -116,6 +116,7 @@ export class PageLog implements Logger {
                 Application.CheckUpdate((isnew, data) => {
                     if (data == undefined) {
                         this.Info("检查更新失败.")
+                        return;
                     }
                     let html = "";
                     if (isnew) {

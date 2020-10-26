@@ -170,7 +170,7 @@ class background implements Launcher {
 }
 
 async function init() {
-    let component = new Map<string, any>().set("logger", new ConsoleLog()).set("config", new ChromeConfigItems(await NewBackendConfig(false)));
+    let component = new Map<string, any>().set("logger", new ConsoleLog()).set("config", new ChromeConfigItems(await NewBackendConfig()));
 
     let application = new Application(Backend, new background(), component);
     application.run();

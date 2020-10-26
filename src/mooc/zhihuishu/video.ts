@@ -96,7 +96,7 @@ export class ZhsVideo implements Mooc {
         tools.appendChild(startBtn);
         tools.appendChild(boomBtn);
 
-        console.log(document.querySelector(".videotop_box.fl").append(tools));
+        document.querySelector(".videotop_box.fl").append(tools);
     }
 
     protected compile() {
