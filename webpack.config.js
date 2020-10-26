@@ -6,7 +6,7 @@ module.exports = {
         mooc: home + '/mooc.ts',
         start: home + '/start.ts',
         background: home + '/background.ts',
-        popup: home + '/popup.ts'
+        popup: home + '/views/popup.ts'
     },
     output: {
         path: __dirname + '/build/cxmooc-tools/src',
@@ -40,6 +40,7 @@ module.exports = {
         extensions: ['.ts', '.js'],
         alias: {
             "@App": path.resolve(__dirname, 'src/'),
+            'vue': 'vue/dist/vue.esm.js'
         }
     }
 };

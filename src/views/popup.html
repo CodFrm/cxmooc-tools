@@ -41,15 +41,6 @@
         color: #CCCC33;
     }
 
-    .config-item {
-        display: inline-block;
-        width: 50%;
-        float: left;
-        height: 26px;
-        line-height: 26px;
-        font-size: 14px;
-    }
-
     .rdo {
         width: 0px;
         height: 12px;
@@ -166,13 +157,6 @@
 
     /*字体*/
 
-    .two_font {
-        font-family: SimHei;
-        font-size: 18px;
-        padding-bottom: 10px;
-        text-align: left;
-    }
-
     .three_font {
         font-family: FangSong_GB2312;
         font-size: 14px;
@@ -221,13 +205,6 @@
         padding: 0 20px;
     }
 
-    .content_topright {
-        width: 40%;
-        height: 130px;
-        /*直接设置固定高度了，要加内容注意看高度*/
-        color: #003366;
-    }
-
     /*分类标题*/
 
     .one_title {
@@ -262,17 +239,13 @@
         padding-bottom: 10px;
     }
 
-    .width_50 {
-        margin-top: 10px;
-    }
-
     /*底部项目链接*/
 
     .bottom_div {
         padding: 0 20px;
         margin: 0 auto;
         color: #003366;
-        margin-top: 10px;
+        margin-top: 4px;
     }
 
     .bottom_div ul {
@@ -293,11 +266,6 @@
     }
 
     /*移上去变手*/
-
-    .shou {
-        cursor: pointer;
-    }
-
     #tiku {
         float: left;
         width: 80px;
@@ -311,31 +279,11 @@
         margin-bottom: 8px;
     }
 
-    #vtoken,
-    #dama {
-        float: right;
-    }
-
     .edit {
         width: 100px;
         margin-left: 25px;
         height: 24.8px;
         margin-top: 0;
-    }
-
-    #vtoken {
-        margin-top: 1px;
-    }
-
-    .btn {
-        height: 20px;
-        line-height: 16px;
-        background-color: #008CBA;
-        border: none;
-        color: white;
-        text-align: center;
-        text-decoration: none;
-        display: inline-block;
     }
 
     .page {
@@ -358,231 +306,128 @@
         -moz-osx-font-smoothing: grayscale;
     }
 
-    .one_title .button:focus {
-        outline: none;
-    }
-
-    .one_title .button>span {
+    .one_title .button > span {
         vertical-align: middle;
     }
 
-    .bg-1 .button {
-        color: #37474f;
-        border-color: #37474f;
+    #platform-config {
+        display: flex;
+        flex-direction: column;
     }
 
-    .button--tamaya {
-        overflow: hidden;
-        color: #003366;
-        min-width: 150px;
+    .platform-header {
+        display: flex;
+        flex-direction: row;
     }
 
-    .button--tamaya.button--inverted {
-        color: #37474f;
-        border-color: #37474f;
+    .platform-header-item {
+        display: flex;
+        background: #3ca4ea;
+        padding: 4px;
+        cursor: pointer;
     }
 
-    .button--tamaya::before,
-    .button--tamaya::after {
-        content: attr(data-text);
-        position: absolute;
-        width: 100%;
-        height: 50%;
-        left: 0;
-        background: #003366;
-        color: #fff;
-        /*overflow: hidden;*/
-        -webkit-transition: -webkit-transform 0.3s;
-        transition: transform 0.3s;
-        -webkit-transition-timing-function: cubic-bezier(0.2, 1, 0.3, 1);
-        transition-timing-function: cubic-bezier(0.2, 1, 0.3, 1);
+    .shou {
+        cursor: pointer;
     }
 
-    .button--tamaya.button--inverted::before,
-    .button--tamaya.button--inverted::after {
-        background: #fff;
-        color: #37474f;
+    .platform-header-item.active {
+        background: #2489cc;
     }
 
-    .button--tamaya::before {
-        top: 0;
-        padding-top: 1em;
+    .platform-name {
+        display: flex;
+        font-size: 14px;
+        color: #ffffff;
     }
 
-    .button--tamaya::after {
-        bottom: 0;
-        line-height: 0;
+    .platform-items {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        flex-flow: row wrap;
+        align-content: flex-start;
     }
 
-    .button--tamaya>span {
-        display: block;
-        -webkit-transform: scale3d(0.2, 0.2, 1);
-        transform: scale3d(0.2, 0.2, 1);
-        opacity: 0;
-        -webkit-transition: -webkit-transform 0.3s, opacity 0.3s;
-        transition: transform 0.3s, opacity 0.3s;
-        -webkit-transition-timing-function: cubic-bezier(0.2, 1, 0.3, 1);
-        transition-timing-function: cubic-bezier(0.2, 1, 0.3, 1);
-    }
-
-    .button--tamaya:hover::before {
-        -webkit-transform: translate3d(0, -100%, 0);
-        transform: translate3d(0, -100%, 0);
-    }
-
-    .button--tamaya:hover::after {
-        -webkit-transform: translate3d(0, 100%, 0);
-        transform: translate3d(0, 100%, 0);
-    }
-
-    .button--tamaya:hover>span {
-        opacity: 1;
-        -webkit-transform: scale3d(1, 1, 1);
-        transform: scale3d(1, 1, 1);
-    }
-
-    .one_title_show .button--border-thick {
-        border: 3px solid;
-    }
-
-    .button--size-s {
-        font-size: 10px;
-    }
-
-    @-webkit-keyframes anim-moema-1 {
-        60% {
-            -webkit-transform: scale3d(0.8, 0.8, 1);
-            transform: scale3d(0.8, 0.8, 1);
-        }
-
-        85% {
-            -webkit-transform: scale3d(1.1, 1.1, 1);
-            transform: scale3d(1.1, 1.1, 1);
-        }
-
-        100% {
-            -webkit-transform: scale3d(1, 1, 1);
-            transform: scale3d(1, 1, 1);
-        }
-    }
-
-    @keyframes anim-moema-1 {
-        60% {
-            -webkit-transform: scale3d(0.8, 0.8, 1);
-            transform: scale3d(0.8, 0.8, 1);
-        }
-
-        85% {
-            -webkit-transform: scale3d(1.1, 1.1, 1);
-            transform: scale3d(1.1, 1.1, 1);
-        }
-
-        100% {
-            -webkit-transform: scale3d(1, 1, 1);
-            transform: scale3d(1, 1, 1);
-        }
-    }
-
-    @-webkit-keyframes anim-moema-2 {
-        to {
-            opacity: 0;
-            -webkit-transform: scale3d(1, 1, 1);
-            transform: scale3d(1, 1, 1);
-        }
-    }
-
-    @keyframes anim-moema-2 {
-        to {
-            opacity: 0;
-            -webkit-transform: scale3d(1, 1, 1);
-            transform: scale3d(1, 1, 1);
-        }
-    }
-
-    .min-a {
-        color: #3399cc;
-        font-weight: normal;
-        font-size: 12px;
+    .platform-item {
+        box-sizing: border-box;
+        flex: 0 0 50%;
+        margin-top: 4px;
     }
 </style>
 
 <body>
-    <div class="head">
-        <h3 class="title"><span>超星慕课</span>小工具</h3>
+<div class="head">
+    <h3 class="title"><span>超星慕课</span>小工具</h3>
+</div>
+<div class="content_top center-float-left">
+    <div class="content_topleft">
+        <h4 class="one_title">公告</h4>
+        <div id="injection" class="mt10">
 
-    </div>
-    <div class="content_top center-float-left">
-        <div class="content_topleft">
-            <h4 class="one_title">公告</h4>
-            <div id="injection" class="mt10">
-
-            </div>
         </div>
     </div>
-    <!--插件配置盒子-->
-    <div class="content_bottom">
-        <h4 class="one_title">
-            <div class="one_title_show">
-                <span>插件配置:</span>
-                <input type="password" class="input_text edit" placeholder="token" config-key="vtoken"
-                    style="font-size: 12px;">
-                <a href="https://github.com/CodFrm/cxmooc-tools/issues/74" target="_blank" class="min-a">申请token</a>
-            </div>
-        </h4>
-        <div id="config" class="page">
-            <div class="config-item width_50">
-                <input type="checkbox" id="rand-answer" class="rdo" config-key="rand_answer">
-                <label class="shou" for="rand-answer" title="如果题库没有正确的答案会随机选择">随机答案</label>
-            </div>
-            <div class="config-item width_50">
-                <input type="checkbox" id="auto" class="rdo" config-key="auto">
-                <label class="shou" for="auto" title="进入一个页面就会自动开始挂机,完成一个任务之后会自动进行下一个">自动挂机</label>
-            </div>
-            <br>
-            <div class="config-item width_50">
-                <input type="checkbox" id="video-mute" class="rdo" config-key="video_mute">
-                <label class="shou" for="video-mute" title="播放视频时,自动开启静音">视频静音</label>
-            </div>
-            <div id="ignore" class="config-item width_50">
-                <input class="rdo" type="checkbox" id="answer-ignore" config-key="answer_ignore">
-                <label class="shou" for="answer-ignore" title="自动挂机时,忽略掉题目不做,直接跳过">忽略题目</label>
-            </div>
-            <div class="config-item width_50">
-                <input class="rdo" type="checkbox" id="super-mode" config-key="super_mode">
-                <label class="shou" for="super-mode" title="超级模式,会有一些特殊的功能开启,你也可以选择关闭,具体请看使用文档">超级模式</label>
-            </div>
-            <div>
-                <div class="config-item width_50">
-                    <label for="video-cdn" title="播放源,为空默认选择最后一次播放源">播放源:</label>
-                    <input type="text" class="input_text" id="video-cdn" placeholder="默认" config-key="video_cdn">
+</div>
+<!--插件配置盒子-->
+<div class="content_bottom">
+    <h4 class="one_title">
+        <div class="one_title_show">
+            <span>插件配置:</span>
+            <input type="password" class="input_text edit" placeholder="token" config-key="vtoken"
+                   style="font-size: 12px;">
+        </div>
+    </h4>
+    <div class="page">
+        <div id="platform-config">
+            <div class="platform-header">
+                <div v-for="(config,key) in configs" :key="key"
+                     v-bind:class="[selectKey==key?'platform-header-item active':'platform-header-item']"
+                     @click="changeTab(key)">
+                    <div class="platform-name">{{ config.name }}</div>
                 </div>
-                <div class="config-item width_50" style="color:#ff0000">
-                    <label for="video-multiple" title="视频播放的倍数,1为正常速度(最高16倍,该功能有一定危险)">倍速播放:</label>
-                    <input type="text" class="input_text" id="video-multiple" placeholder="1"
-                        config-key="video_multiple"
-                        prompt="这是一个很危险的功能,建议不要进行调整,如果你想调整播放速度请在下方填写yes(智慧树平台播放速度和视频进度无关,最高只能1.5倍速)">倍
-                </div>
-                <div id="auto-m" class="config-item width_50">
-                    <label for="interval" title="播放(题目)完成后n分钟再继续下一个任务,可以有小数点,例如:0.5=30秒">间隔时间:</label>
-                    <input type="text" class="input_text" id="interval" placeholder="2" config-key="interval">分
+            </div>
+            <div class="platform-content">
+                <div v-for="(config,key) in configs" :key="key" class="platform-items">
+                    <div v-if="selectKey==key" v-for="item in config.items" :key="item.key" class="platform-item">
+                        <div v-if="item.type=='text'">
+                            <label :for="item.key" :title="item.description">{{ item.title }}:</label>
+                            <input type="text" class="input_text" :id="item.key"
+                                   :title="item.description"
+                                   v-model="item.value"
+                                   @input="change(key,item.key,'text',item.value)">
+                            <label v-if="item.unit!=''" :for="item.key" :title="item.description">{{
+                                    item.unit
+                                }}
+                            </label>
+                        </div>
+                        <div v-else-if="item.type== 'checkbox'">
+                            <input class="rdo" type="checkbox" :id="item.key"
+                                   v-model="item.value"
+                                   @change="change(key,item.key,'checkbox',item.value)">
+                            <label class="shou" :for="item.key" :title="item.description">{{ item.title }}</label>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
+        <span style="margin-top: 6px;">Tips:鼠标放置选项上,可以查看详细内容哦</span>
     </div>
-    <!--其他模块盒子-->
-    <div class="bottom_div">
-        <h4 class="one_title"><span>其他:</span></h4>
-        <ul>
-            <li><a class="three_font" href="https://github.com/CodFrm/cxmooc-tools" target="_black">GitHub开源地址</a></li>
-            <li><a class="three_font" href="https://cx.icodef.com" target="_black">使用文档</a></li>
-            <li><a class="three_font" href="https://github.com/CodFrm/cxmooc-tools/issues" target="_black">Bug/意见/反馈地址</a></li>
-        </ul>
-    </div>
-    <div style="padding:0 20px;">
-        <img id="tiku" src="./../img/success.svg">
-        <p class="ps">PS:本扩展全部是免费的,喜欢的话可以帮我点个好评</p>
-        <p id="version" class="ps"></p>
-    </div>
+</div>
+<!--其他模块盒子-->
+<div class="bottom_div">
+    <h4 class="one_title"><span>其他:</span></h4>
+    <ul>
+        <li><a class="three_font" href="https://github.com/CodFrm/cxmooc-tools" target="_black">GitHub开源地址</a></li>
+        <li><a class="three_font" href="https://cx.icodef.com" target="_black">使用文档</a></li>
+        <li><a class="three_font" href="https://github.com/CodFrm/cxmooc-tools/issues" target="_black">Bug/意见/反馈地址</a>
+        </li>
+    </ul>
+</div>
+<div style="padding:0 20px;">
+    <img id="tiku" src="./../img/success.svg">
+    <p class="ps">PS:本扩展全部是免费的,喜欢的话可以帮我点个好评</p>
+    <p id="version" class="ps"></p>
+</div>
 </body>
 
 </html>

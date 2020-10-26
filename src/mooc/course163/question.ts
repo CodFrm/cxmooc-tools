@@ -106,7 +106,7 @@ class CourseQuestion implements Question {
                         this.fill(options[n], answer.correct[i].content);
                         if (this.GetType() == 2 && i != answer.correct.length - 1) {
                             //多选
-                            await Sleep(Application.App.config.topic_interval * 60 * 1000);
+                            await Sleep(Application.App.config.topic_interval * 1000);
                         }
                         flag = true;
                     }

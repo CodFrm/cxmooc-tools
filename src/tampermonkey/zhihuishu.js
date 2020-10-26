@@ -21,8 +21,9 @@ let config = {
     rand_answer: false, //随机答案,没有答案的题目将自动的生成一个答案
     video_multiple: 1, //视频播放倍速,视频播放的倍数,建议不要改动,为1即可,这是危险的功能
     video_mute: true, //视频静音,视频自动静音播放
+    super_mode: true,//超级模式,让倍速成真
+    topic_interval: 5,//题目答题间隔,单位为秒
     vtoken: "",
-    topic_interval: 0.05,//题目答题间隔
 };
 
 Object.keys(config).forEach(k => {

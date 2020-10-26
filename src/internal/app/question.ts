@@ -287,7 +287,7 @@ export class ToolsQuestionBankFacade implements QuestionBankFacade {
                     callback(status);
                     return resolve();
                 }
-                let t = Application.App.config.topic_interval * 60 * 1000;
+                let t = Application.App.config.topic_interval * 1000;
                 for (let i = 0; i < ret.answer.length; i++) {
                     let answer = ret.answer[i];
                     let question = this.question[answer.index];

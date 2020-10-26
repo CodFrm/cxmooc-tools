@@ -4,6 +4,10 @@ import {Application} from "../application";
 export interface ConfigItems extends Config {
     SetNamespace(namespace: string): void
 
+    SetNamespaceConfig(namespace: string, key: string, val: string): Promise<any>
+
+    GetNamespaceConfig(namespace: string, key: string, defaultVal?: string): string
+
     vtoken: string
     rand_answer: boolean
     auto: boolean
@@ -40,7 +44,15 @@ export class ChromeConfigItems implements ConfigItems {
         return this.config.ConfigList();
     }
 
-    public GetConfig(key: string, defaultVal?: string): any {
+    public SetNamespaceConfig(namespace: string, key: string, val: string): Promise<any> {
+        return this.config.SetConfig(namespace + key, val);
+    }
+
+    public GetNamespaceConfig(namespace: string, key: string, defaultVal?: string): string {
+        return this.config.GetConfig(namespace + key, defaultVal);
+    }
+
+    public GetConfig(key: string, defaultVal?: string): string {
         let val = this.config.GetConfig(this.Namespace + key);
         if (val == undefined && this.Namespace != "") {
             return this.config.GetConfig(key, defaultVal);
@@ -81,7 +93,11 @@ export class ChromeConfigItems implements ConfigItems {
     }
 
     public get video_cdn() {
-        return this.GetConfig("video_cdn");
+        let val = this.GetConfig("video_cdn");
+        if (val == "默认") {
+            return ""
+        }
+        return val;
     }
 
     public get video_multiple() {
@@ -125,8 +141,12 @@ export interface ConfigWatchCallback {
 }
 
 // 后台环境中使用
-export function NewBackendConfig(onlyRead: boolean): backendConfig {
-    return new backendConfig(onlyRead);
+export function NewBackendConfig(onlyRead: boolean): Promise<backendConfig> {
+    return new Promise(async resolve => {
+        let ret = new backendConfig(onlyRead);
+        await ret.updateCache();
+        resolve(ret);
+    });
 }
 
 class configWatch {
@@ -182,7 +202,6 @@ class backendConfig implements Config {
     constructor(onlyRead: boolean) {
         this.onlyRead = onlyRead;
         this.watch = new configWatch();
-        this.updateCache();
         chrome.runtime.onMessage.addListener((request) => {
             if (request.type && request.type == "cxconfig") {
                 this.cache[request.key] = request.value;
@@ -200,7 +219,7 @@ class backendConfig implements Config {
         chrome.storage.sync.set({"config_storage": txt});
     }
 
-    protected updateCache(): Promise<any> {
+    public updateCache(): Promise<any> {
         return new Promise(resolve => {
             let configDefaultValue = new Map<string, any>()
                 .set("vtoken", "").set("rand_answer", false).set("auto", true)
@@ -224,15 +243,12 @@ class backendConfig implements Config {
         });
     }
 
-    public GetConfig(key: string, defaultVal?: string): any {
-        return new Promise<any>(async resolve => {
-            if (this.cache == undefined) {
-                await this.updateCache();
-                resolve(this.cache[key] || defaultVal);
-                return;
-            }
-            resolve(this.cache[key] || defaultVal);
-        });
+    public GetConfig(key: string, defaultVal?: string): string {
+        if (this.cache == undefined) {
+            Application.App.log.Fatal("缓存失败!!!");
+            return "";
+        }
+        return this.cache[key] || defaultVal;
     }
 
     public Watch(key: Array<string> | string, callback: ConfigWatchCallback): void {

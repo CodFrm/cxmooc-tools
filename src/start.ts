@@ -56,7 +56,11 @@ class start implements Launcher {
     }
 }
 
-let component = new Map<string, any>().set("config", new ChromeConfigItems(NewBackendConfig(true))).set("logger", new ConsoleLog());
+async function init() {
+    let component = new Map<string, any>().set("config", new ChromeConfigItems(await NewBackendConfig(true))).set("logger", new ConsoleLog());
 
-let application = new Application(Content, new start(), component);
-application.run();
+    let application = new Application(Content, new start(), component);
+    application.run();
+}
+
+init();
