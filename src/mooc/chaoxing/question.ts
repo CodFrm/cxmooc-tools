@@ -181,7 +181,7 @@ abstract class cxQuestion implements Question {
 
     public abstract Correct(): Answer;
 
-    public abstract Fill(answer: Answer): TopicStatus;
+    public abstract Fill(answer: Answer): Promise<TopicStatus>;
 
     public SetStatus(status: TopicStatus) {
         this.AddNotice(TopicStatusString(status));
@@ -263,26 +263,28 @@ class cxSelectQuestion extends cxQuestion implements Question {
         return "random";
     }
 
-    public Fill(s: Answer): TopicStatus {
-        let options = this.options();
-        let flag = false;
-        for (let i = 0; i < s.correct.length; i++) {
-            for (let j = 0; j < options.length; j++) {
-                if (s.correct[i].content.trim() == "") {
-                    if (this.getOption(options[j]) == s.correct[i].option) {
-                        this.click(options[j], this.getContent(options[j]));
+    public Fill(s: Answer): Promise<TopicStatus> {
+        return new Promise(resolve => {
+            let options = this.options();
+            let flag = false;
+            for (let i = 0; i < s.correct.length; i++) {
+                for (let j = 0; j < options.length; j++) {
+                    if (s.correct[i].content.trim() == "") {
+                        if (this.getOption(options[j]) == s.correct[i].option) {
+                            this.click(options[j], this.getContent(options[j]));
+                            flag = true;
+                        }
+                    } else if (s.Equal(this.getContent(options[j]), s.correct[i].content)) {
+                        this.click(options[j], s.correct[i].content);
                         flag = true;
                     }
-                } else if (s.Equal(this.getContent(options[j]), s.correct[i].content)) {
-                    this.click(options[j], s.correct[i].content);
-                    flag = true;
                 }
             }
-        }
-        if (flag) {
-            return "ok";
-        }
-        return "no_match";
+            if (flag) {
+                return resolve("ok");
+            }
+            return resolve("no_match");
+        });
     }
 
     public Correct(): Answer {
@@ -334,10 +336,12 @@ class cxJudgeQuestion extends cxSelectQuestion implements Question {
         return "random";
     }
 
-    public Fill(answer: Answer): TopicStatus {
-        let options = this.options();
-        this.click(options[answer.correct[0].content ? 0 : 1]);
-        return "ok";
+    public Fill(answer: Answer): Promise<TopicStatus> {
+        return new Promise<TopicStatus>(resolve => {
+            let options = this.options();
+            this.click(options[answer.correct[0].content ? 0 : 1]);
+            return resolve("ok");
+        })
     }
 
     public Correct(): Answer {
@@ -414,36 +418,38 @@ class cxFillQuestion extends cxQuestion implements Question {
         return ret;
     }
 
-    public Fill(answer: Answer): TopicStatus {
-        let options = this.options();
-        if (!options.length) {
-            options = this.el.querySelector('.Zy_ulTk').querySelectorAll(".XztiHover1");
-        }
-        let flag = 0;
-        for (let i = 0; i < answer.correct.length; i++) {
-            for (let j = 0; j < options.length; j++) {
-                if (this.getOption(options[j]) == answer.correct[i].option) {
-                    flag++;
-                    let el = <HTMLInputElement>options[j].querySelector("input.inp");
-                    if (!el) {
-                        let uedit = (<any>this.context).$(options[j]).find('textarea');
-                        if (uedit.length <= 0) {
-                            this.AddNotice(this.getOption(options[j]) + "空发生了一个错误");
-                            continue;
+    public Fill(answer: Answer): Promise<TopicStatus> {
+        return new Promise<TopicStatus>(resolve => {
+            let options = this.options();
+            if (!options.length) {
+                options = this.el.querySelector('.Zy_ulTk').querySelectorAll(".XztiHover1");
+            }
+            let flag = 0;
+            for (let i = 0; i < answer.correct.length; i++) {
+                for (let j = 0; j < options.length; j++) {
+                    if (this.getOption(options[j]) == answer.correct[i].option) {
+                        flag++;
+                        let el = <HTMLInputElement>options[j].querySelector("input.inp");
+                        if (!el) {
+                            let uedit = (<any>this.context).$(options[j]).find('textarea');
+                            if (uedit.length <= 0) {
+                                this.AddNotice(this.getOption(options[j]) + "空发生了一个错误");
+                                continue;
+                            }
+                            (<any>this.context).UE.getEditor(uedit.attr('name')).setContent(answer.correct[i].content);
+                            this.AddNotice(this.getOption(options[j]) + ":" + answer.correct[i].content);
+                        } else {
+                            el.value = removeHTMLTag(answer.correct[i].content);
+                            this.AddNotice(this.getOption(options[j]) + ":" + answer.correct[i].content);
                         }
-                        (<any>this.context).UE.getEditor(uedit.attr('name')).setContent(answer.correct[i].content);
-                        this.AddNotice(this.getOption(options[j]) + ":" + answer.correct[i].content);
-                    } else {
-                        el.value = removeHTMLTag(answer.correct[i].content);
-                        this.AddNotice(this.getOption(options[j]) + ":" + answer.correct[i].content);
                     }
                 }
             }
-        }
-        if (flag == options.length) {
-            return "ok";
-        }
-        return "no_match";
+            if (flag == options.length) {
+                return resolve("ok");
+            }
+            return resolve("no_match");
+        });
     }
 
 }
@@ -487,27 +493,29 @@ class cxExamFillQuestion extends cxFillQuestion {
         return substrex(tmpel.innerHTML, "第", "空");
     }
 
-    public Fill(answer: Answer): TopicStatus {
-        let options = this.options();
-        let flag = 0;
-        for (let i = 0; i < answer.correct.length; i++) {
-            for (let j = 0; j < options.length; j++) {
-                if (this.getOption(options[j]) == answer.correct[i].option) {
-                    flag++;
-                    let uedit = (<any>window).$(options[j]).find('textarea');
-                    if (uedit.length <= 0) {
-                        this.AddNotice(this.getOption(options[j]) + "空发生了一个错误");
-                        continue;
+    public Fill(answer: Answer): Promise<TopicStatus> {
+        return new Promise<TopicStatus>(resolve => {
+            let options = this.options();
+            let flag = 0;
+            for (let i = 0; i < answer.correct.length; i++) {
+                for (let j = 0; j < options.length; j++) {
+                    if (this.getOption(options[j]) == answer.correct[i].option) {
+                        flag++;
+                        let uedit = (<any>window).$(options[j]).find('textarea');
+                        if (uedit.length <= 0) {
+                            this.AddNotice(this.getOption(options[j]) + "空发生了一个错误");
+                            continue;
+                        }
+                        (<any>window).UE.getEditor(uedit.attr('name')).setContent(answer.correct[i].content);
+                        this.AddNotice(this.getOption(options[j]) + ":" + answer.correct[i].content);
                     }
-                    (<any>window).UE.getEditor(uedit.attr('name')).setContent(answer.correct[i].content);
-                    this.AddNotice(this.getOption(options[j]) + ":" + answer.correct[i].content);
                 }
             }
-        }
-        if (flag == options.length) {
-            return "ok";
-        }
-        return "no_match";
+            if (flag == options.length) {
+                return resolve("ok");
+            }
+            return resolve("no_match");
+        });
     }
 
     public Correct(): Answer {

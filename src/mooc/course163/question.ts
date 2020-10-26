@@ -1,7 +1,8 @@
 import {Topic, QueryQuestions} from "@App/internal/app/topic";
 import {Question, TopicType, TopicStatus, Answer, TopicStatusString} from "@App/internal/app/question";
 import {CreateNoteLine} from "../chaoxing/utils";
-import {randNumber, UntrustedClick} from "@App/internal/utils/utils";
+import {randNumber, Sleep, UntrustedClick} from "@App/internal/utils/utils";
+import {Application} from "@App/internal/application";
 
 export class CourseQueryAnswer implements QueryQuestions {
     public QueryQuestions(): Question[] {
@@ -70,7 +71,7 @@ class CourseQuestion implements Question {
 
     protected fill(el: HTMLElement, content: string) {
         if (!el.parentElement.querySelector("input").checked) {
-            UntrustedClick( el.parentElement.querySelector("input"));
+            UntrustedClick(el.parentElement.querySelector("input"));
         }
         content = content.replace(/style=".*?"/, "");
         content = content.replace(/(<p>|<\/p>)/, "");
@@ -95,21 +96,27 @@ class CourseQuestion implements Question {
         return content;
     }
 
-    public Fill(answer: Answer): TopicStatus {
-        let options = this.options();
-        let flag = false;
-        for (let i = 0; i < answer.correct.length; i++) {
-            for (let n = 0; n < options.length; n++) {
-                if (answer.Equal(this.dealImgDomain(this.getContent(options[n])), this.dealImgDomain(answer.correct[i].content))) {
-                    this.fill(options[n], answer.correct[i].content);
-                    flag = true;
+    public Fill(answer: Answer): Promise<TopicStatus> {
+        return new Promise<TopicStatus>(async resolve => {
+            let options = this.options();
+            let flag = false;
+            for (let i = 0; i < answer.correct.length; i++) {
+                for (let n = 0; n < options.length; n++) {
+                    if (answer.Equal(this.dealImgDomain(this.getContent(options[n])), this.dealImgDomain(answer.correct[i].content))) {
+                        this.fill(options[n], answer.correct[i].content);
+                        if (this.GetType() == 2 && i != answer.correct.length - 1) {
+                            //多选
+                            await Sleep(Application.App.config.topic_interval * 60 * 1000);
+                        }
+                        flag = true;
+                    }
                 }
             }
-        }
-        if (flag) {
-            return "ok";
-        }
-        return "no_match";
+            if (flag) {
+                return resolve("ok");
+            }
+            return resolve("no_match");
+        });
     }
 
     public Correct(): Answer {
@@ -123,34 +130,38 @@ class FillQuestion extends CourseQuestion {
         return "no_support_random";
     }
 
-    public Fill(answer: Answer): TopicStatus {
-        let el = this.el.querySelector("textarea");
-        el.focus();
-        let match;
-        if (match = answer.correct[0].content.match(/^[\(\[]([\d\.]+),([\d\.]+)[\)\]]$/)) {
-            //范围题
-            el.value = ((parseFloat(match[1]) + parseFloat(match[2])) / 2).toString();
-            this.AddNotice("填空 取值范围:" + answer.correct[0].content);
-        } else {
-            el.value = answer.correct[0].content.split("##%_YZPRLFH_%##")[0];
-            this.AddNotice("填空:" + answer.correct[0].content.replace("##%_YZPRLFH_%##", " 或 "));
-        }
-        return "ok";
+    public Fill(answer: Answer): Promise<TopicStatus> {
+        return new Promise<TopicStatus>(async resolve => {
+            let el = this.el.querySelector("textarea");
+            el.focus();
+            let match;
+            if (match = answer.correct[0].content.match(/^[\(\[]([\d\.]+),([\d\.]+)[\)\]]$/)) {
+                //范围题
+                el.value = ((parseFloat(match[1]) + parseFloat(match[2])) / 2).toString();
+                this.AddNotice("填空 取值范围:" + answer.correct[0].content);
+            } else {
+                el.value = answer.correct[0].content.split("##%_YZPRLFH_%##")[0];
+                this.AddNotice("填空:" + answer.correct[0].content.replace("##%_YZPRLFH_%##", " 或 "));
+            }
+            return resolve("ok");
+        });
     }
 
 }
 
 class JudgeQuestion extends CourseQuestion {
 
-    public Fill(answer: Answer): TopicStatus {
-        let el: HTMLElement;
-        if (answer.correct[0].content) {
-            el = this.el.querySelector(".u-tbl.f-pr.f-cb .u-icon-correct").parentElement.parentElement;
-        } else {
-            el = this.el.querySelector(".u-tbl.f-pr.f-cb .u-icon-wrong").parentElement.parentElement;
-        }
-        this.fill(el, this.getContent(el))
-        return "ok";
+    public Fill(answer: Answer): Promise<TopicStatus> {
+        return new Promise<TopicStatus>(async resolve => {
+            let el: HTMLElement;
+            if (answer.correct[0].content) {
+                el = this.el.querySelector(".u-tbl.f-pr.f-cb .u-icon-correct").parentElement.parentElement;
+            } else {
+                el = this.el.querySelector(".u-tbl.f-pr.f-cb .u-icon-wrong").parentElement.parentElement;
+            }
+            this.fill(el, this.getContent(el))
+            return resolve("ok");
+        });
     }
 
 }

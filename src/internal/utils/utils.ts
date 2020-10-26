@@ -428,3 +428,11 @@ export function UntrustedClick(el: Element): boolean {
     }
     return el.dispatchEvent(untrusted);
 }
+
+export function Sleep(timeout?: number): Promise<any> {
+    return new Promise<any>(resolve => {
+        setTimeout(function () {
+            resolve();
+        }, timeout);
+    });
+}

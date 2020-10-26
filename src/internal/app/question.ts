@@ -1,4 +1,4 @@
-import {HttpUtils, removeHTML, randNumber} from "../utils/utils";
+import {HttpUtils, removeHTML, randNumber, Sleep} from "../utils/utils";
 import {SystemConfig} from "@App/config";
 import {Application} from "../application";
 
@@ -43,7 +43,7 @@ export class PushAnswer implements Answer {
 export interface Options {
     Random(): TopicStatus;
 
-    Fill(s: Answer): TopicStatus;
+    Fill(s: Answer): Promise<TopicStatus>;
 
     Correct(): Answer
 }
@@ -277,7 +277,7 @@ export class ToolsQuestionBankFacade implements QuestionBankFacade {
         });
         let status: QuestionStatus = "success";
         this.bank.Answer(topic, (ret: { status: QuestionStatus, answer: Answer[] }): Promise<void> => {
-            return new Promise((resolve) => {
+            return new Promise(async (resolve) => {
                 if (ret.status != "processing") {
                     Application.App.log.Debug("题库返回", ret);
                     if (ret.status != "success" || status == "success") {
@@ -287,37 +287,29 @@ export class ToolsQuestionBankFacade implements QuestionBankFacade {
                     callback(status);
                     return resolve();
                 }
-                let i = 0;
                 let t = Application.App.config.topic_interval * 60 * 1000;
-                let next = () => {
-                    if (i >= ret.answer.length) {
-                        return resolve();
-                    }
+                for (let i = 0; i < ret.answer.length; i++) {
                     let answer = ret.answer[i];
                     let question = this.question[answer.index];
                     let tmpStatus = answer.status;
                     if (answer.status == "no_answer") {
                         status = this.randAnswer(status, tmpStatus, question);
-                        i++
-                        setTimeout(next, t);
-                        return;
+                        await Sleep(t);
+                        continue
                     }
                     if (answer.type != question.GetType()) {
                         tmpStatus = "no_match";
                     } else {
-                        tmpStatus = question.Fill(answer);
+                        tmpStatus = await question.Fill(answer);
                     }
                     if (tmpStatus == "no_match") {
                         status = this.randAnswer(status, tmpStatus, question);
-                        i++
-                        setTimeout(next, t);
-                        return;
+                        await Sleep(t);
+                        continue
                     }
                     question.SetStatus(tmpStatus);
-                    i++;
-                    setTimeout(next, t);
+                    await Sleep(t);
                 }
-                next();
             });
         });
     }

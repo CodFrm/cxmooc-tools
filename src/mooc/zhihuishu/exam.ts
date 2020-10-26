@@ -130,7 +130,7 @@ abstract class ZhsQuestion implements Question {
 
     public abstract Random(): TopicStatus;
 
-    public abstract Fill(s: Answer): TopicStatus;
+    public abstract Fill(s: Answer): Promise<TopicStatus>;
 
     public abstract Correct(): Answer;
 
@@ -179,23 +179,25 @@ class ZhsSelectQuestion extends ZhsQuestion {
         return "random";
     }
 
-    public Fill(s: Answer): TopicStatus {
-        let options = this.options();
-        let flag = false;
-        for (let i = 0; i < s.correct.length; i++) {
-            for (let j = 0; j < options.length; j++) {
-                if (s.Equal(this.getContent(options[j]), s.correct[i].content)) {
-                    setTimeout(() => {
-                        this.click(options[j], s.correct[i].content);
-                    }, i * 1000);
-                    flag = true;
+    public Fill(s: Answer): Promise<TopicStatus> {
+        return new Promise(resolve => {
+            let options = this.options();
+            let flag = false;
+            for (let i = 0; i < s.correct.length; i++) {
+                for (let j = 0; j < options.length; j++) {
+                    if (s.Equal(this.getContent(options[j]), s.correct[i].content)) {
+                        setTimeout(() => {
+                            this.click(options[j], s.correct[i].content);
+                        }, i * 1000);
+                        flag = true;
+                    }
                 }
             }
-        }
-        if (flag) {
-            return "ok";
-        }
-        return "no_match";
+            if (flag) {
+                return resolve("ok");
+            }
+            return resolve("no_match");
+        });
     }
 
     public Correct(): Answer {
@@ -232,15 +234,17 @@ class ZhsJudgeQuestion extends ZhsQuestion {
         this.addNotice(this.getContent(el));
     }
 
-    public Fill(answer: Answer): TopicStatus {
-        let options = this.options();
-        for (let i = 0; i < options.length; i++) {
-            if (this.getContent(options[i]) == (answer.correct[0].content ? "对" : "错")) {
-                this.click(options[i]);
-                break
+    public Fill(answer: Answer): Promise<TopicStatus> {
+        return new Promise(resolve => {
+            let options = this.options();
+            for (let i = 0; i < options.length; i++) {
+                if (this.getContent(options[i]) == (answer.correct[0].content ? "对" : "错")) {
+                    this.click(options[i]);
+                    break
+                }
             }
-        }
-        return "ok";
+            return resolve("ok");
+        });
     }
 
     public Correct(): Answer {
