@@ -52,9 +52,9 @@ Tampermonkey Violentmonkey暴力猴,以下都称为油猴
 ![](/img/chormescucess.jpg)
 
 ## 第二步【安装脚本】
-- [超星网课助手(改)(查题可用)](https://greasyfork.org/zh-CN/scripts/401447-%E8%B6%85%E6%98%9F%E7%BD%91%E8%AF%BE%E5%8A%A9%E6%89%8B-%E6%94%B9-%E6%9F%A5%E9%A2%98%E5%8F%AF%E7%94%A8)
-- [超星网课助手(考试专版)(改)](https://greasyfork.org/zh-CN/scripts/401448-%E8%B6%85%E6%98%9F%E7%BD%91%E8%AF%BE%E5%8A%A9%E6%89%8B-%E8%80%83%E8%AF%95%E4%B8%93%E7%89%88-%E6%94%B9)
-- [智慧树网课助手(改)](https://greasyfork.org/zh-CN/scripts/401494-%E6%99%BA%E6%85%A7%E6%A0%91%E7%BD%91%E8%AF%BE%E5%8A%A9%E6%89%8B-%E6%94%B9)
+- [超星慕课小工具](https://greasyfork.org/zh-CN/scripts/376190-%E8%B6%85%E6%98%9F%E6%85%95%E8%AF%BE%E5%B0%8F%E5%B7%A5%E5%85%B7)
+- [智慧树小工具](https://greasyfork.org/zh-CN/scripts/382037-%E6%99%BA%E6%85%A7%E6%A0%91%E5%B0%8F%E5%B7%A5%E5%85%B7)
+- [中国大学慕课小工具](https://greasyfork.org/zh-CN/scripts/398719-%E4%B8%AD%E5%9B%BD%E5%A4%A7%E5%AD%A6%E6%85%95%E8%AF%BE%E5%B0%8F%E5%B7%A5%E5%85%B7)
 
 
 请根据需求选择对应的脚本进行安装。网络可能存在缓慢或者延迟，请多加尝试。
@@ -71,8 +71,6 @@ Tampermonkey Violentmonkey暴力猴,以下都称为油猴
 ### 第四步
 确定存在相应名称并且已启用即为安装成功。
 ![](/img/gfsuccess.jpg)
-
-
 
 ## 配置修改
 

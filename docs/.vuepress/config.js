@@ -18,7 +18,7 @@ module.exports = {
         text: '使用教程',
         items: [
           { text: '简介', link: '/1-UserGuide/' },
-          { text: '打包版浏览器', link: '/1-UserGuide/1-7-easychorme.md' },
+          { text: '打包版浏览器(小白看我)', link: '/1-UserGuide/1-7-easychorme.md' },
           { text: 'FireFox 扩展', link: '/1-UserGuide/1-2-firefox.html' },
           { text: 'Chrome 扩展', link: '/1-UserGuide/1-1-chrome.html' },
           { text: 'Tampermonkey 脚本', link: '/1-UserGuide/1-3-tampermonkey.html' },
