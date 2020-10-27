@@ -40,7 +40,7 @@ export class ReadStartPage implements Mooc {
             if (!Application.App.config.auto) {
                 return Application.App.log.Info("开启自动挂机能够自动阅读文章哦");
             }
-            Application.App.log.Info("请在10秒内选择章节,否则插件将从第一章自动开始");
+            Application.App.log.Info("请在10秒内选择章节,否则扩展将从第一章自动开始");
             setTimeout(() => {
                 let el = document.querySelector(".mb15.course_section.fix");
                 el.querySelector("a").click();

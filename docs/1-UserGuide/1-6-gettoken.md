@@ -14,7 +14,7 @@ title: Token的获取以及使用
 
 ![](/img/tmptoken.png)
 
-点击插件的右方编辑按钮
+点击扩展的右方编辑按钮
 
 ![](/img/tmpedit.png)
 

@@ -28,6 +28,7 @@ module.exports = {
           { text: '配置说明', link: '/1-UserGuide/1-4-config.html' },
         ]
       },
+      { text: '开发文档', link: '/Develop/' },
       { text: '免责声明', link: '/3-Disclaimer/' },
       {
         text: '语言选项',
@@ -50,9 +51,11 @@ module.exports = {
         '1-1-chrome.html',
         '1-3-tampermonkey.html',     /* /foo/ */
         '1-5-otherchorme.html',
-        '1-0-developer.html',
         'featured.html',//功能说明
         '1-4-config.html',//配置说明
+      ],
+      '/Develop/': [
+        '',
       ],
     },
     serviceWorker: {

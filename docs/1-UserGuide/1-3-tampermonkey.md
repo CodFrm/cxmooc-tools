@@ -5,7 +5,7 @@ title: Tampermonkey 脚本
 ## 安装
 Tampermonkey Violentmonkey暴力猴,以下都称为油猴
 
-油猴脚本使用需要去安装另外一个名叫**`Tampermonkey`**的插件,然后在下面链接中的页面获取插件,可以按需选择.不过尽量不要与插件版本一同安装,可能会导致冲突.
+油猴脚本使用需要去安装另外一个名叫**`Tampermonkey`**的扩展,然后在下面链接中的页面获取脚本,可以按需选择.不过尽量不要与扩展版本一同安装,可能会导致冲突.
 
 - [超星慕课小工具](https://greasyfork.org/zh-CN/scripts/376190-%E8%B6%85%E6%98%9F%E6%85%95%E8%AF%BE%E5%B0%8F%E5%B7%A5%E5%85%B7)
 - [智慧树小工具](https://greasyfork.org/zh-CN/scripts/382037-%E6%99%BA%E6%85%A7%E6%A0%91%E5%B0%8F%E5%B7%A5%E5%85%B7)

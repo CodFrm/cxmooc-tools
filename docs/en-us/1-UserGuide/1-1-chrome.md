@@ -1,5 +1,5 @@
 ---
-title: Chrome插件
+title: Chrome扩展
 ---
 ## Chrome扩展:
 

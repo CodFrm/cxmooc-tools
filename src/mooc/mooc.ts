@@ -17,7 +17,7 @@ export class mooc implements Launcher {
                 mooc.Start();
             }
         } catch (e) {
-            Application.App.log.Fatal("插件发生了一个致命错误:", e);
+            Application.App.log.Fatal("扩展发生了一个致命错误:", e);
         }
         //最小化警告
         if (top == self) {
