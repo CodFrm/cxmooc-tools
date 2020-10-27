@@ -257,7 +257,7 @@ export class CourseTopicTask extends Task {
 
     public Start(): Promise<any> {
         return new Promise<any>(async resolve => {
-            protocolPrompt("你正准备使用中国慕课的答题功能,相应的我们需要你的正确答案,同意之后插件将自动检索你的所有答案\n* 本项选择不会影响你的正常使用(协议当前版本有效)\n* 手动点击答题结果页面自动采集页面答案\n", "course_answer_collect_v2", "我同意");
+            protocolPrompt("你正准备使用中国慕课的答题功能,相应的我们需要你的正确答案,同意之后扩展将自动检索你的所有答案\n* 本项选择不会影响你的正常使用(协议当前版本有效)\n* 手动点击答题结果页面自动采集页面答案\n", "course_answer_collect_v2", "我同意");
             let ret = await this.topic.QueryAnswer();
             this.callEvent("complete");
             resolve(ret);
