@@ -131,12 +131,10 @@ export class PageLog implements Logger {
             this.div.style.top = Application.App.config.GetConfig("notify_tools_y");
             let head = <HTMLElement>this.div.querySelector('#tools-head');
             head.onmousedown = (downEvent) => {
-                console.log(downEvent.clientY, this.div.offsetTop, downEvent.clientX, this.div.offsetLeft)
                 let relaX = downEvent.clientX - this.div.offsetLeft;
                 let relaY = downEvent.clientY - this.div.offsetTop;
 
                 document.onmousemove = (moveEvent) => {
-                    console.log(moveEvent.clientX, moveEvent.clientY)
                     this.div.style.left = moveEvent.clientX - relaX + 'px';
                     this.div.style.top = moveEvent.clientY - relaY + 'px';
                 }

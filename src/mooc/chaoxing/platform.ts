@@ -30,7 +30,6 @@ export class CxPlatform implements MoocFactory {
         }
         if (mooc) {
             Application.App.config.SetNamespace("cx");
-            Application.App.config.topic_interval = Application.App.config.topic_interval || 0;
         }
         return mooc;
     }

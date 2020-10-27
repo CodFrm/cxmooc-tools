@@ -308,8 +308,11 @@ export class ToolsQuestionBankFacade implements QuestionBankFacade {
                         continue
                     }
                     question.SetStatus(tmpStatus);
-                    await Sleep(t);
+                    if (i < ret.answer.length - 1) {
+                        await Sleep(t);
+                    }
                 }
+                return resolve();
             });
         });
     }

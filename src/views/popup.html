@@ -394,7 +394,7 @@
                             <input type="text" class="input_text" :id="item.key"
                                    :title="item.description"
                                    v-model="item.value"
-                                   @input="change(key,item.key,'text',item.value)">
+                                   @input="change(key,item.key,'text',item.value,item.prompt)">
                             <label v-if="item.unit!=''" :for="item.key" :title="item.description">{{
                                     item.unit
                                 }}
@@ -403,7 +403,7 @@
                         <div v-else-if="item.type== 'checkbox'">
                             <input class="rdo" type="checkbox" :id="item.key"
                                    v-model="item.value"
-                                   @change="change(key,item.key,'checkbox',item.value)">
+                                   @change="change(key,item.key,'checkbox',item.value,item.prompt)">
                             <label class="shou" :for="item.key" :title="item.description">{{ item.title }}</label>
                         </div>
                     </div>
@@ -425,7 +425,7 @@
 </div>
 <div style="padding:0 20px;">
     <img id="tiku" src="./../img/success.svg">
-    <p class="ps">PS:本扩展全部是免费的,喜欢的话可以帮我点个好评</p>
+    <p class="ps">PS:本扩展全部是免费的,喜欢的话可以点个好评</p>
     <p id="version" class="ps"></p>
 </div>
 </body>

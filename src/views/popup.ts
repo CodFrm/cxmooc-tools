@@ -1,7 +1,7 @@
 import {NewBackendConfig, ChromeConfigItems, Config, NewFrontendGetConfig} from "../internal/utils/config";
 import {Application, Backend, Launcher} from "../internal/application";
 import {SystemConfig} from "../config";
-import {boolToString, dealHotVersion, toBool} from "../internal/utils/utils";
+import {boolToString, dealHotVersion, protocolPrompt, toBool} from "../internal/utils/utils";
 import Vue from 'vue';
 
 class popup implements Launcher {
@@ -202,7 +202,12 @@ class popup implements Launcher {
                 changeTab(key: string) {
                     this.selectKey = key;
                 },
-                async change(namespace: string, key: string, type: string, val: string | boolean) {
+                async change(namespace: string, key: string, type: string, val: string | boolean, prompt: string) {
+                    if (prompt !== undefined) {
+                        if (!protocolPrompt(prompt, key)) {
+                            return false;
+                        }
+                    }
                     if (namespace == "common") {
                         namespace = "";
                     }

@@ -1,4 +1,4 @@
-import {randNumber, toBool, boolToString} from "./utils";
+import {boolToString, randNumber, toBool} from "./utils";
 import {Application} from "../application";
 
 export interface ConfigItems extends Config {
@@ -20,6 +20,11 @@ export interface ConfigItems extends Config {
     super_mode: boolean
 }
 
+let configDefaultValue: Map<string, any> = new Map<string, any>()
+    .set("vtoken", "").set("rand_answer", false).set("auto", true)
+    .set("video_mute", true).set("answer_ignore", false).set("video_cdn", "")
+    .set("video_multiple", 1).set("interval", 1).set("super_mode", true).set("topic_interval", 5);
+
 export class ChromeConfigItems implements ConfigItems {
 
     protected config: Config;
@@ -28,8 +33,10 @@ export class ChromeConfigItems implements ConfigItems {
 
     constructor(config: Config) {
         this.config = config;
-        let list = ["vtoken", "rand_answer", "auto", "video_mute", "answer_ignore",
-            "video_cdn", "video_multiple", "interval", "super_mode"];
+        let list: string[] = [];
+        configDefaultValue.forEach((val, key) => {
+            list.push(key);
+        });
         this.config.Watch(list, (key, val) => {
             this.localCache[key] = val;
         });
@@ -114,14 +121,12 @@ export class ChromeConfigItems implements ConfigItems {
         return this.config.SetConfig(this.Namespace + key, val);
     }
 
-    protected topic_interval_: number;
-
     public get topic_interval() {
-        return this.topic_interval_;
+        return parseInt(this.GetConfig("topic_interval", "5"));
     }
 
     public set topic_interval(val: number) {
-        this.topic_interval_ = val;
+        this.SetConfig("topic_interval", val);
     }
 }
 
@@ -208,27 +213,24 @@ class backendConfig implements Config {
         });
     }
 
+    // 更新配置转为json,存入
     protected updateConfigStorage() {
         let txt = JSON.stringify(this.cache);
         chrome.storage.sync.set({"config_storage": txt});
     }
 
+    // 更新缓存
     public updateCache(): Promise<any> {
         return new Promise(resolve => {
-            let configDefaultValue = new Map<string, any>()
-                .set("vtoken", "").set("rand_answer", false).set("auto", true)
-                .set("video_mute", true).set("answer_ignore", false).set("video_cdn", "")
-                .set("video_multiple", 1).set("interval", 1).set("super_mode", true);
             chrome.storage.sync.get("config_storage", items => {
                 if (items["config_storage"]) {
-                    let configJson = JSON.parse(items["config_storage"]);
-                    this.cache = configJson;
+                    this.cache = JSON.parse(items["config_storage"]);
                 } else {
                     this.cache = {};
                 }
                 configDefaultValue.forEach((val, key) => {
                     if (this.cache[key] == undefined) {
-                        this.cache[key] = configDefaultValue.get(key + "");
+                        this.cache[key] = val;
                     }
                 });
                 this.updateConfigStorage();

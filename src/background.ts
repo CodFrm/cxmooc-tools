@@ -122,6 +122,10 @@ class background implements Launcher {
 
     protected dealScript(source: string, version: any): string {
         source = "//# sourceURL=" + chrome.extension.getURL("src/mooc.js?v=" + version) + "\n" + source;
+        return this.dealSymbol(source);
+    }
+
+    protected dealSymbol(source: string): string {
         source = source.replace(/("|\\)/g, "\\$1");
         source = source.replace(/(\r\n|\n)/g, "\\n");
         return source;
@@ -156,7 +160,7 @@ class background implements Launcher {
                         code: `(function(){
                             let temp = document.createElement('script');
                             temp.setAttribute('type', 'text/javascript');
-                            temp.innerHTML = "` + "window.configData=" + cacheJsonText + "\n" + this.source + `";
+                            temp.innerHTML = "` + this.dealSymbol("window.configData=" + cacheJsonText + "\n") + this.source + `";
                             temp.className = "injected-js";
                             document.documentElement.appendChild(temp)
                         }())`,

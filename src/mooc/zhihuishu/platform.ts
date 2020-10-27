@@ -13,7 +13,6 @@ export class ZhsPlatform implements MoocFactory {
         }
         if (mooc) {
             Application.App.config.SetNamespace("zhs");
-            Application.App.config.topic_interval = Application.App.config.topic_interval || 0;
         }
         return mooc;
     }

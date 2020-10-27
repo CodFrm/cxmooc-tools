@@ -20,7 +20,7 @@ let config = {
     interval: 1, //时间间隔,当任务点完成后,会等待1分钟然后跳转到下一个任务点
     video_multiple: 1, //视频播放倍速,视频播放的倍数,建议不要改动,为1即可,这是危险的功能
     video_mute: true, //视频静音,视频自动静音播放
-    topic_interval: 5,//题目答题间隔
+    topic_interval: 5,//题目答题间隔,单位为秒
     vtoken: "",
 };
 
