@@ -40,6 +40,7 @@ export class PushAnswer implements Answer {
     }
 }
 
+// 选项
 export interface Options {
     Random(): TopicStatus;
 
@@ -48,6 +49,7 @@ export interface Options {
     Correct(): Answer
 }
 
+// 题目,继承了选项接口
 export interface Question extends Options {
     GetType(): TopicType;
 
@@ -100,6 +102,7 @@ export type QuestionCallback = (status: QuestionStatus) => void
 
 export type QuestionBankCallback = (args: { status: QuestionStatus, answer: Answer[] }) => Promise<void>
 
+// 题库具体实现
 export interface QuestionBank {
     Answer(topic: Topic[], resolve: QuestionBankCallback): void;
 
@@ -147,6 +150,10 @@ export class ToolsQuestionBank implements QuestionBank {
                 body += "topic[" + (t - index) + "]=" + encodeURIComponent((val.topic)) + "&type[" + (t - index) + "]=" + val.type + "&";
             }
             HttpUtils.HttpPost(SystemConfig.url + "v2/answer?platform=" + this.platform, body, {
+                headers: {
+                    "Authorization": Application.App.config.vtoken,
+                    "X-Version": SystemConfig.version.toString(),
+                },
                 json: true,
                 success: async (result: any) => {
                     let status: QuestionStatus = "success";
@@ -198,6 +205,10 @@ export class ToolsQuestionBank implements QuestionBank {
         return new Promise((resolve) => {
             Application.App.log.Debug("采集提交", answer);
             HttpUtils.HttpPost(SystemConfig.url + "answer?platform=" + this.platform, "info=" + this.GetInfo() + "&data=" + encodeURIComponent(JSON.stringify(answer)), {
+                headers: {
+                    "Authorization": Application.App.config.vtoken,
+                    "X-Version": SystemConfig.version.toString(),
+                },
                 json: true,
                 success: (result: any) => {
                     Application.App.log.Info("答案自动记录成功,成功获得" + result.add_token_num + "个打码数,剩余数量:" + result.token_num);
@@ -218,6 +229,10 @@ export class ToolsQuestionBank implements QuestionBank {
         return new Promise<number>(resolve => {
             info = info || [this.info];
             HttpUtils.HttpPost(SystemConfig.url + "v2/check?platform=" + this.platform, "info=" + encodeURIComponent(JSON.stringify(info)), {
+                headers: {
+                    "Authorization": Application.App.config.vtoken,
+                    "X-Version": SystemConfig.version.toString(),
+                },
                 success: () => {
                     //TODO:课程题目数量
                     resolve(0);

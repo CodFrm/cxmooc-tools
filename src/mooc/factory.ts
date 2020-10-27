@@ -5,7 +5,12 @@ import {CxCourseVCode} from "./chaoxing/vcode";
 import {Application} from "@App/internal/application";
 
 export interface Mooc {
-    Start(): void
+    Init(): void
+    // TODO: 实现各种流程流转
+    // Start()
+    // Stop()
+    // OnFinished()
+    // Next()
 }
 
 export interface MoocFactory {

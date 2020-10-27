@@ -10,7 +10,7 @@ export class CxVideoOptimization implements Mooc {
 
     protected param: any;
 
-    public Start(): void {
+    public Init(): void {
         //对播放器进行优化
         window.addEventListener("load", () => {
             Application.App.config.super_mode && isPhone() && ((<any>Application.GlobalContext).Ext.isChaoxing = true);

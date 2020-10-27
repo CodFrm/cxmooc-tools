@@ -10,7 +10,7 @@ export class Course163 implements Mooc {
 
     protected lastTask: Task;
 
-    public Start(): void {
+    public Init(): void {
         this.hookAjax();
     }
 

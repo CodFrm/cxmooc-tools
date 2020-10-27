@@ -1,16 +1,18 @@
-import { HttpUtils, getImageBase64 } from "@App/internal/utils/utils";
-import { Mooc } from "@App/mooc/factory";
-import { CreateNoteLine } from "@App/mooc/chaoxing/utils";
-import { SystemConfig } from "@App/config";
-import { Application } from "../application";
+import {HttpUtils, getImageBase64} from "@App/internal/utils/utils";
+import {Mooc} from "@App/mooc/factory";
+import {CreateNoteLine} from "@App/mooc/chaoxing/utils";
+import {SystemConfig} from "@App/config";
+import {Application} from "../application";
 
 export interface ListenVCode {
     Listen(callback: (fill: FillVCode) => void): void;
 }
+
 export type VCodeStatus = "ok" | "network" | "error";
 
 export interface FillVCode {
     GetImage(): HTMLImageElement | string
+
     Fill(status: VCodeStatus, msg: string, code: string): void
 }
 
@@ -18,13 +20,14 @@ export class VCode implements Mooc {
 
     protected mooc: Mooc;
     protected listen: ListenVCode;
+
     public constructor(mooc: Mooc, listen: ListenVCode) {
         this.mooc = mooc;
         this.listen = listen;
     }
 
-    public Start(): void {
-        this.mooc && this.mooc.Start();
+    public Init(): void {
+        this.mooc && this.mooc.Init();
         this.listen.Listen((fill) => {
             Application.App.log.Info("准备进行打码");
             this.getVcode(fill);
@@ -40,6 +43,10 @@ export class VCode implements Mooc {
             base64 = getImageBase64(img, 'jpeg');
         }
         HttpUtils.HttpPost(SystemConfig.url + 'vcode', 'img=' + encodeURIComponent(base64.substr('data:image/jpeg;base64,'.length)), {
+            headers: {
+                "Authorization": Application.App.config.vtoken,
+                "X-Version": SystemConfig.version.toString(),
+            },
             json: false,
             success: function (ret: string) {
                 let json = JSON.parse(ret);

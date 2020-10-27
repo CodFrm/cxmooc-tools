@@ -12,7 +12,7 @@ export class ZhsVideo implements Mooc {
     protected videoList: any;
     protected studiedLessonDtoId: number;
 
-    public Start(): void {
+    public Init(): void {
         this.hookAjax();
         let timer = setInterval(() => {
             try {

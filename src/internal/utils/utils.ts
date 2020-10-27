@@ -117,9 +117,9 @@ export class HttpUtils {
         if (!info.headers) {
             info.headers = {};
         }
-        (<any>info.headers)["Content-Type"] = "application/x-www-form-urlencoded";
-        (<any>info.headers)["Authorization"] = Application.App.config.vtoken;
-        (<any>info.headers)["X-Version"] = SystemConfig.version + "";
+        if (!(<any>info.headers)["Content-Type"]) {
+            (<any>info.headers)["Content-Type"] = "application/x-www-form-urlencoded";
+        }
         info.method = "POST";
         this.Request(info);
     }
@@ -253,7 +253,6 @@ export function get(url: string, success: Function) {
 export function post(url: string, data: any, json = true, success: Function) {
     let xmlhttp = createRequest();
     xmlhttp.open("POST", url, true);
-    xmlhttp.setRequestHeader('Authorization', Application.App.config.vtoken || '');
     if (json) {
         xmlhttp.setRequestHeader("Content-Type", "application/json");
     } else {

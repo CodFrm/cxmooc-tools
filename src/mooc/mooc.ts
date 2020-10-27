@@ -14,7 +14,7 @@ export class mooc implements Launcher {
             Application.App.log.Debug("Start document state:", state);
             let mooc = this.moocFactory.CreateMooc();
             if (mooc != null) {
-                mooc.Start();
+                mooc.Init();
             }
         } catch (e) {
             Application.App.log.Fatal("扩展发生了一个致命错误:", e);

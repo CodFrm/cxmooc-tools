@@ -18,6 +18,7 @@ export interface Logger {
     Fatal(...args: any): Logger;
 }
 
+// 开发者工具f12处打印日志
 export class ConsoleLog implements Logger {
 
     protected getNowTime(): string {
@@ -180,9 +181,8 @@ export class PageLog implements Logger {
         let text = this.toStr(...args);
         if (this.el) {
             this.first(text, "#5C3C00", "rgba(250, 236, 216, 0.4)");
-        } else {
-            console.warn("[warn", this.getNowTime(), "]", ...args);
         }
+        console.warn("[warn", this.getNowTime(), "]", ...args);
         if (document.hidden && localStorage["is_notify"] == "true") {
             Noifications({
                 title: "超星慕课小工具",
@@ -197,9 +197,8 @@ export class PageLog implements Logger {
         let text = this.toStr(...args);
         if (this.el) {
             this.first(text, "#FFF0F0", "rgba(253, 226, 226, 0.5)");
-        } else {
-            console.error("[error", this.getNowTime(), "]", ...args);
         }
+        console.error("[error", this.getNowTime(), "]", ...args);
         if (localStorage["is_notify"] == "true") {
             Noifications({
                 title: "超星慕课小工具",
@@ -213,9 +212,8 @@ export class PageLog implements Logger {
         let text = this.toStr(...args);
         if (this.el) {
             this.first(text, "#FFF0F0", "rgba(253, 226, 226, 0.5)");
-        } else {
-            console.error("[fatal", this.getNowTime(), "]", ...args);
         }
+        console.error("[fatal", this.getNowTime(), "]", ...args);
         Noifications({
             title: "超星慕课小工具",
             text: text,

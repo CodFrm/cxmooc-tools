@@ -6,10 +6,12 @@ import {
 import {Application} from "../application";
 import {SystemConfig} from "@App/config";
 
+// 查询任务中的题目,返回Question数组
 export interface QueryQuestions {
     QueryQuestions(): Question[];
 }
 
+// 题目任务点
 export abstract class Topic {
     protected lock: boolean;
     protected answer: QuestionBankFacade;

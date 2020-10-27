@@ -27,6 +27,7 @@ crx.load(['./build/cxmooc-tools/manifest.json',
 });
 
 // build tampermonkey
+// TODO: 可以写成自动识别的
 let tampermonkey_cx = fs.readFileSync('./src/tampermonkey/cxmooc.js');
 let tampermonkey_cx_str = tampermonkey_cx.toString().replace(/@version\s+.*/, '@version ' + SystemConfig.hotVersion);
 tampermonkey_cx_str += fs.readFileSync('./build/tampermonkey-cxmooc.js');

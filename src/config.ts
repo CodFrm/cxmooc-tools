@@ -2,6 +2,7 @@ export class SystemConfig {
     public static version = 2.5;
     public static url = "https://cx.icodef.com/";
     public static hotVersion = "2.5.0";
+    //TODO:优化规则,可以通过ci自动生成匹配规则到tampermonkey和manifest文件中
     public static match = [
         "*://*/mycourse/studentstudy?*",
         "*://*/work/doHomeWorkNew?*",

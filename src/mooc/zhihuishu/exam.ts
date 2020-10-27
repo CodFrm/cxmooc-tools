@@ -22,7 +22,7 @@ export class ZhsExam implements Mooc {
 
     protected topic: Topic;
 
-    public Start(): void {
+    public Init(): void {
         this.topic = new ExamTopic(document, new ToolsQuestionBankFacade("zhs", {
             refer: document.URL,
             id: document.URL.match(/(checkHomework|dohomework)\/(.*?)\/(.*?)\/(.*?)\/(.*?)\/(.*?)$/)[4],

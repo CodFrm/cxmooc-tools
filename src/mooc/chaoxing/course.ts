@@ -11,7 +11,7 @@ export class CxCourse implements Mooc {
     protected attachments: Array<any>;
     protected timer: NodeJS.Timer;
 
-    public Start(): void {
+    public Init(): void {
         document.addEventListener("load", ev => {
             var el = <HTMLIFrameElement>(ev.srcElement || ev.target);
             if (el.id == "iframe") {
@@ -137,7 +137,7 @@ export class CxCourse implements Mooc {
 
 //TODO: 考试和作业强制采集
 export class CxExamTopic implements Mooc {
-    public Start(): void {
+    public Init(): void {
         window.addEventListener("load", () => {
             let el = <HTMLInputElement>document.querySelector("#paperId");
             let info = "0";
@@ -160,7 +160,7 @@ export class CxExamTopic implements Mooc {
 }
 
 export class CxHomeWork implements Mooc {
-    public Start(): void {
+    public Init(): void {
         window.onload = () => {
             let el = (<HTMLInputElement>document.querySelector("#workLibraryId"));
             let info = "";

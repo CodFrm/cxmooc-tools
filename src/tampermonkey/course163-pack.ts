@@ -15,7 +15,7 @@ if (top == self) {
 Application.GlobalContext = (<any>window).unsafeWindow;
 let component = new Map<string, any>().
     set("config", new ChromeConfigItems(NewFrontendGetConfig())).
-    set("logger", logger);;
+    set("logger", logger);
 
 let app = new Application(Frontend, new mooc(new Course163Platform()), component);
 app.run();

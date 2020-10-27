@@ -5,7 +5,7 @@ import {QuestionInfo, ToolsQuestionBank} from "@App/internal/app/question";
 
 export class Read implements Mooc {
 
-    public Start(): void {
+    public Init(): void {
         let timer: NodeJS.Timer;
         let slide = function () {
             if ((<any>window).getScrollHeight() - (<any>window).getHeight() <= (<any>window).getScrollTop() + 40) {
@@ -35,7 +35,7 @@ export class Read implements Mooc {
 }
 
 export class ReadStartPage implements Mooc {
-    public Start(): void {
+    public Init(): void {
         window.addEventListener("load", () => {
             if (!Application.App.config.auto) {
                 return Application.App.log.Info("开启自动挂机能够自动阅读文章哦");
@@ -50,7 +50,7 @@ export class ReadStartPage implements Mooc {
 }
 
 export class Exam implements Mooc {
-    public Start(): void {
+    public Init(): void {
         let bank = new ToolsQuestionBank("cx");
         window.addEventListener("load", () => {
             let str = Application.GlobalContext.document.documentElement.innerHTML;
