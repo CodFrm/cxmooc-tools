@@ -1,14 +1,16 @@
-name: Unit_Test
+name: build
 
 on:
   push:
     branches:
       - master
+      - develop
     paths:
       - "src/*"
   pull_request:
     branches:
       - master
+      - develop
     paths:
       - "src/*"
 
@@ -37,3 +39,4 @@ jobs:
       run: | 
         npm ci  
         npm test
+        npm run build
