@@ -9,7 +9,7 @@ features:
 - title: 功能齐全
   details: 支持视频挂机，自动答题，自动打码
 - title: 支持广泛
-  details: 可以以浏览器扩展，油猴脚本等方式运行
+  details: 支持Chrome浏览器扩展，油猴脚本等方式运行
 - title: 安全可靠
   details: 代码完全开源，透明
 ---
