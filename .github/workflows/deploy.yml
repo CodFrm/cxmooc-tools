@@ -29,12 +29,12 @@ jobs:
           ${{ runner.OS }}-
     
     - name: Install dependencies
-      uses: actions/checkout@v1
+      uses: actions/checkout@v2
     - run: npm ci ##npminstall
-    - run: npm test
+    # - run: npm test
     - run: npm run docs:build
-    - run: npm run build
-    - run: npm run tampermonkey
+    # - run: npm run build
+    # - run: npm run tampermonkey
     # - run: npm run pack  # 没有pem文件，先注释掉了
     
     - name: Deploy 🚀
@@ -43,4 +43,3 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         BRANCH: gh-pages # The branch the action should deploy to.
         FOLDER: docs/.vuepress/dist # The folder the action should deploy.
-
