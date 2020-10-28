@@ -1,11 +1,10 @@
-name: Deploy Github Pages
+name: Deploy Document Pages
 
 on:
   push:
     branches: master
-  pull_request:
-    branches: master
-  workflow_dispatch:
+    paths:
+      - "docs/*"
 
 jobs:
   build-deploy:
