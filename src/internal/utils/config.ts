@@ -88,7 +88,7 @@ export class ChromeConfigItems implements ConfigItems {
     }
 
     public set auto(val: boolean) {
-        this.config.SetConfig("auto", boolToString(val));
+        this.SetConfig("auto", boolToString(val));
     }
 
     public get video_mute() {

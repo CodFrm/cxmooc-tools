@@ -1,4 +1,3 @@
-import {MoocFactory, Mooc} from "../factory";
 import {VCode} from "@App/internal/app/vcode";
 import {CxCourse, CxHomeWork, CxExamTopic} from "./course";
 import {CxCourseVCode} from "./vcode";
@@ -6,13 +5,15 @@ import {CxVideoOptimization} from "./video";
 import {Exam, Read, ReadStartPage} from "@App/mooc/chaoxing/read";
 import {CxAudioOptimization} from "@App/mooc/chaoxing/special";
 import {Application} from "@App/internal/application";
+import {Mooc, MoocFactory} from "@App/internal/app/mooc";
 
 export class CxPlatform implements MoocFactory {
     public CreateMooc(): Mooc {
         let url = document.URL;
         let mooc: Mooc = null;
         if (url.indexOf("mycourse/studentstudy?") > 0) {
-            mooc = new VCode(new CxCourse(), new CxCourseVCode());
+            new VCode(new CxCourseVCode());//添加打码组件
+            mooc = new CxCourse();
         } else if (url.indexOf("ananas/modules/video/index.html") > 0) {
             mooc = new CxVideoOptimization();
         } else if (url.indexOf("ananas/modules/audio/index.html") > 0) {

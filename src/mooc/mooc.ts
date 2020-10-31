@@ -1,5 +1,5 @@
 import {Launcher, Application} from "@App/internal/application";
-import {MoocFactory} from "./factory";
+import {MoocFactory} from "@App/internal/app/mooc";
 
 export class mooc implements Launcher {
     protected moocFactory: MoocFactory;

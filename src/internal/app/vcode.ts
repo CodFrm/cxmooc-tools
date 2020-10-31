@@ -1,5 +1,5 @@
 import {HttpUtils, getImageBase64} from "@App/internal/utils/utils";
-import {Mooc} from "@App/mooc/factory";
+import {Mooc} from "@App/internal/app/mooc";
 import {CreateNoteLine} from "@App/mooc/chaoxing/utils";
 import {SystemConfig} from "@App/config";
 import {Application} from "../application";
@@ -18,16 +18,13 @@ export interface FillVCode {
 
 export class VCode implements Mooc {
 
-    protected mooc: Mooc;
     protected listen: ListenVCode;
 
-    public constructor(mooc: Mooc, listen: ListenVCode) {
-        this.mooc = mooc;
+    public constructor(listen: ListenVCode) {
         this.listen = listen;
     }
 
     public Init(): void {
-        this.mooc && this.mooc.Init();
         this.listen.Listen((fill) => {
             Application.App.log.Info("准备进行打码");
             this.getVcode(fill);

@@ -1,9 +1,9 @@
-import {Mooc} from "../factory";
 import {Hook, Context} from "@App/internal/utils/hook";
 import {Application} from "@App/internal/application";
 import {randNumber, get, createBtn, protocolPrompt, isPhone} from "@App/internal/utils/utils";
 import {CssBtn} from "./utils";
 import {CxTaskControlBar, CxTask} from "@App/mooc/chaoxing/task";
+import {Mooc} from "@App/internal/app/mooc";
 
 // 优化播放器
 export class CxVideoOptimization implements Mooc {

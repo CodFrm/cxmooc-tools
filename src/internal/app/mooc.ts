@@ -1,16 +1,30 @@
-import {CxPlatform} from "./chaoxing/platform";
-import {ZhsPlatform} from "./zhihuishu/platform";
-import {Course163Platform} from "./course163/platform";
-import {CxCourseVCode} from "./chaoxing/vcode";
+import {CxPlatform} from "../../mooc/chaoxing/platform";
+import {ZhsPlatform} from "../../mooc/zhihuishu/platform";
+import {Course163Platform} from "../../mooc/course163/platform";
+import {CxCourseVCode} from "../../mooc/chaoxing/vcode";
 import {Application} from "@App/internal/application";
+import {IEventListener} from "@App/internal/app/task";
+
+export type MoocEvent = "complete" | "init" | "stop" | "load";
 
 export interface Mooc {
-    Init(): void
+    Init(): any
+
     // TODO: 实现各种流程流转
     // Start()
     // Stop()
     // OnFinished()
     // Next()
+}
+
+export interface MoocTaskSet extends Mooc, IEventListener<MoocEvent> {
+    Init(): Promise<any>
+
+    Start(): Promise<any>
+
+    Stop(): Promise<any>
+
+    Next(): Promise<any>
 }
 
 export interface MoocFactory {

@@ -1,11 +1,9 @@
-import {Mooc} from "../factory";
 import {createBtn, substrex, randNumber, protocolPrompt} from "@App/internal/utils/utils";
 import "../../views/common";
 import {Topic, QueryQuestions} from "@App/internal/app/topic";
 import {
     Question,
     ToolsQuestionBankFacade,
-    ToolsQuestionBank,
     TopicType,
     SwitchTopicType,
     TopicStatus,
@@ -15,7 +13,7 @@ import {
     QuestionStatusString
 } from "@App/internal/app/question";
 import {CreateNoteLine} from "../chaoxing/utils";
-import {Application} from "@App/internal/application";
+import {Mooc} from "@App/internal/app/mooc";
 
 //TODO: 与超星一起整合优化
 export class ZhsExam implements Mooc {

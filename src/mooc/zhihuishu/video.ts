@@ -1,4 +1,4 @@
-import {Mooc} from "@App/mooc/factory";
+import {Mooc} from "@App/internal/app/mooc";
 import {Hook, Context} from "@App/internal/utils/hook";
 import {Application} from "@App/internal/application";
 import "../../views/common";

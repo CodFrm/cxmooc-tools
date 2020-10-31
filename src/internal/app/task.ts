@@ -1,6 +1,10 @@
 export type TaskEvent = "complete" | "init" | "stop" | "load";
 
-export abstract class Task {
+export interface IEventListener<T> {
+    addEventListener(event: T, callback: Function): void;
+}
+
+export class EventListener<T> implements IEventListener<T> {
 
     protected event: { [key: string]: Array<any> };
 
@@ -8,21 +12,25 @@ export abstract class Task {
         this.event = {};
     }
 
-    public addEventListener(event: TaskEvent, callback: Function) {
-        if (!this.event[event]) {
-            this.event[event] = new Array<any>();
+
+    public addEventListener(event: T, callback: Function) {
+        if (!this.event[<any>event]) {
+            this.event[<any>event] = new Array<any>();
         }
-        this.event[event].push(callback);
+        this.event[<any>event].push(callback);
     }
 
-    public callEvent(event: TaskEvent) {
-        if (!this.event[event]) {
+    public callEvent(event: T) {
+        if (!this.event[<any>event]) {
             return;
         }
-        this.event[event].forEach((v) => {
+        this.event[<any>event].forEach((v) => {
             v();
         })
     }
+}
+
+export abstract class Task extends EventListener<TaskEvent> {
 
     public Init(): Promise<any> {
         return new Promise<any>(resolve => {

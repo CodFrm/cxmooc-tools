@@ -1,8 +1,8 @@
-import {Mooc} from "../factory";
 import {Application} from "@App/internal/application";
 import {substrex} from "@App/internal/utils/utils";
 import {CxTask} from "@App/mooc/chaoxing/task";
 import {TaskFactory} from "@App/mooc/chaoxing/factory";
+import {Mooc} from "@App/internal/app/mooc";
 
 //课程任务
 export class CxCourse implements Mooc {
@@ -11,15 +11,20 @@ export class CxCourse implements Mooc {
     protected attachments: Array<any>;
     protected timer: NodeJS.Timer;
 
-    public Init(): void {
-        document.addEventListener("load", ev => {
-            var el = <HTMLIFrameElement>(ev.srcElement || ev.target);
-            if (el.id == "iframe") {
-                Application.App.log.Info("超星新窗口加载");
-                clearTimeout(this.timer);
-                this.OperateCard(el);
-            }
-        }, true);
+    public Init(): Promise<any> {
+        return new Promise(resolve => {
+            let first = true;
+            document.addEventListener("load", ev => {
+                var el = <HTMLIFrameElement>(ev.srcElement || ev.target);
+                if (el.id == "iframe") {
+                    Application.App.log.Info("超星新窗口加载");
+                    clearTimeout(this.timer);
+                    this.OperateCard(el);
+                    first && resolve();
+                    first = false;
+                }
+            }, true);
+        });
     }
 
     public async OperateCard(iframe: HTMLIFrameElement) {
@@ -137,7 +142,7 @@ export class CxCourse implements Mooc {
 
 //TODO: 考试和作业强制采集
 export class CxExamTopic implements Mooc {
-    public Init(): void {
+    public Init(): any {
         window.addEventListener("load", () => {
             let el = <HTMLInputElement>document.querySelector("#paperId");
             let info = "0";
@@ -160,7 +165,7 @@ export class CxExamTopic implements Mooc {
 }
 
 export class CxHomeWork implements Mooc {
-    public Init(): void {
+    public Init(): any {
         window.onload = () => {
             let el = (<HTMLInputElement>document.querySelector("#workLibraryId"));
             let info = "";
