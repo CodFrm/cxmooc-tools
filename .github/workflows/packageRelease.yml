@@ -27,14 +27,11 @@ jobs:
           ${{ runner.OS }}-node-
           ${{ runner.OS }}-
 
-    - name: Write Key File
+    - name: Package with Node
       env:
         CHROME_PEM: ${{ secrets.CHROME_PEM }}
       run: |
         echo $CHROME_PEM > build/cxmooc-tolls.pem
-
-    - name: Package with Node
-      run: | 
         npm ci  
         npm test
         npm run build
