@@ -43,14 +43,26 @@ export class mooc implements Launcher {
 
     protected runMoocTask(moocTask: MoocTask) {
         moocTask.addEventListener("reload", () => {
-            if (Application.App.config.auto) {
-                this.runTask(moocTask);
-            }
+            this.runTask(moocTask);
             clearTimeout(this.timer);
         });
         moocTask.addEventListener("complete", () => {
+            console.log("complete");
             Application.App.log.Warn("任务完成了");
             alert("任务完成了");
+        });
+        moocTask.addEventListener("taskComplete", (index: number, task: Task) => {
+            console.log("taskComplete");
+            moocTask.SetTaskPointer(index + 1);
+            if (!Application.App.config.auto) {
+                return;
+            }
+            let interval = Application.App.config.interval;
+            Application.App.log.Info(interval + "分钟后自动切换下一个任务点");
+            this.timer = setTimeout(async () => {
+                await task.Submit();
+                await this.runTask(moocTask);
+            }, interval * 60000);
         });
         moocTask.addEventListener("error", (msg: string) => {
             Application.App.log.Fatal(msg);
@@ -58,30 +70,26 @@ export class mooc implements Launcher {
         });
     }
 
+    // 防止taskComplete和reload冲突
+    protected once: boolean = false;
+
     protected async runTask(moocTask: MoocTask) {
+        if (this.once) {
+            return;
+        }
+        this.once = true;
         let task = await moocTask.Next();
-        console.log("task", task);
         while (task != null) {
-            // if (task.Done()) {
-            //     task = await moocTask.Next();
-            //     continue;
-            // }
+            if (task.Done()) {
+                task = await moocTask.Next();
+                continue;
+            }
             //开始任务
-            task.addEventListenerOnce("complete", () => {
-                if (!Application.App.config.auto) {
-                    return;
-                }
-                let interval = Application.App.config.interval;
-                Application.App.log.Info(interval + "分钟后自动切换下一个任务点");
-                this.timer = setTimeout(async () => {
-                    await task.Submit();
-                    await this.runTask(moocTask);
-                }, interval * 60000);
-            })
             if (Application.App.config.auto) {
                 await task.Start();
             }
             break;
         }
+        this.once = false
     }
 }

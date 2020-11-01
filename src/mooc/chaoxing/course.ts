@@ -40,12 +40,15 @@ export class CxCourse extends EventListener<MoocEvent> implements MoocTask {
                 return this.taskIndex++;
             }
             //翻页
-            this.taskIndex = 0;
             this.addEventListenerOnce("reload", async () => {
                 resolve(await this.Next());
             })
             this.nextPage(null);
         });
+    }
+
+    public SetTaskPointer(index: number): void {
+        this.taskIndex = index;
     }
 
     public async OperateCard(iframe: HTMLIFrameElement) {
@@ -69,38 +72,13 @@ export class CxCourse extends EventListener<MoocEvent> implements MoocTask {
             }
             task.jobIndex = index;
             this.taskList.push(task);
+            task.addEventListener("complete", () => {
+                this.callEvent("taskComplete", index, task);
+            });
             await task.Init();
         }
+        this.taskIndex = 0;
         this.callEvent("reload");
-    }
-
-    protected async startTask(index: number, nowtask: CxTask) {
-        if (Application.App.config.auto) {
-            //选择未完成的任务点开始
-            let task: CxTask;
-            for (let i = index; i < this.taskList.length; i++) {
-                task = this.taskList[i];
-                if (this.attachments[task.jobIndex].job) {
-                    if (index == 0) {
-                        task.Start();
-                    } else {
-                        this.delay(async () => {
-                            nowtask && await nowtask.Submit();
-                            task.Start();
-                        });
-                    }
-                    return;
-                }
-            }
-        }
-    }
-
-    protected delay(func: Function) {
-        let interval = Application.App.config.interval;
-        Application.App.log.Info(interval + "分钟后自动切换下一个任务点");
-        this.timer = setTimeout(() => {
-            Application.App.config.auto && func();
-        }, interval * 60000);
     }
 
     protected afterPage(): HTMLElement {

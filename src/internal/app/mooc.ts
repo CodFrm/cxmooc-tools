@@ -5,7 +5,7 @@ import {CxCourseVCode} from "../../mooc/chaoxing/vcode";
 import {Application} from "@App/internal/application";
 import {IEventListener, Task} from "@App/internal/app/task";
 
-export type MoocEvent = "complete" | "reload" | "error";
+export type MoocEvent = "complete" | "reload" | "error" | "taskComplete";
 
 // 废弃接口,逐渐迁移,应该使用下面的接口
 export interface Mooc {
@@ -18,6 +18,8 @@ export interface MoocTask extends Mooc, IEventListener<MoocEvent> {
     Stop(): Promise<any>
 
     Next(): Promise<Task>
+
+    SetTaskPointer(index: number): void;
 }
 
 export interface MoocFactory {
