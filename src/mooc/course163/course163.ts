@@ -1,10 +1,10 @@
-import {Mooc} from "../factory";
-import {Hook, Context} from "@App/internal/utils/hook";
+import {Hook} from "@App/internal/utils/hook";
 import "../../views/common";
 import {Application} from "@App/internal/application";
 import {TaskFactory} from "@App/mooc/course163/task";
 import {Task} from "@App/internal/app/task";
 import {UntrustedClick} from "@App/internal/utils/utils";
+import {Mooc} from "@App/internal/app/mooc";
 
 export class Course163 implements Mooc {
 

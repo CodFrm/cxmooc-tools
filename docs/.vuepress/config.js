@@ -59,7 +59,7 @@ module.exports = {
                 'Component.html',
                 'Platform.html',
                 'QuestionBank.html',
-                'Utils.html'
+                'Utils.html',
             ],
         },
         serviceWorker: {

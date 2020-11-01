@@ -1,9 +1,10 @@
-import {Mooc} from "../factory";
 import {Hook, Context} from "@App/internal/utils/hook";
 import {Application} from "@App/internal/application";
 import {randNumber, get, createBtn, protocolPrompt, isPhone} from "@App/internal/utils/utils";
 import {CssBtn} from "./utils";
 import {CxTaskControlBar, CxTask} from "@App/mooc/chaoxing/task";
+import {Mooc} from "@App/internal/app/mooc";
+import {TaskType} from "@App/internal/app/task";
 
 // 优化播放器
 export class CxVideoOptimization implements Mooc {
@@ -161,7 +162,6 @@ export class Video extends CxTask {
                         if (this.context.document.querySelector("#reader").innerHTML.indexOf("您没有安装flashplayer") >= 0) {
                             this.context.clearInterval(timer);
                             this.flash = true;
-                            this.loadCallback && this.loadCallback();
                             resolve();
                         }
                         return;
@@ -172,9 +172,8 @@ export class Video extends CxTask {
                     this.video.addEventListener("ended", () => {
                         this.end = true;
                         this.context.clearInterval(this.time);
-                        this.completeCallback && this.completeCallback();
+                        this.callEvent("complete");
                     });
-                    this.loadCallback && this.loadCallback();
                     resolve();
                 } catch (error) {
                 }
@@ -182,23 +181,31 @@ export class Video extends CxTask {
         });
     }
 
-    public Start(): void {
-        if (this.flash) {
-            return this.completeCallback && this.completeCallback();
-        }
-        //定时运行
-        this.time = this.context.setInterval(() => {
-            Application.App.config.auto && this.video.paused && this.video.play();
-        }, 5000);
-        //同时运行多视频的兼容,后续看看能不能hook
-        this.video.addEventListener("pause", () => {
-            if (this.video.currentTime <= this.video.duration - 5) {
-                if (!this.end) {
-                    this.video.play();
-                }
+    public Type(): TaskType {
+        return "video";
+    }
+
+    public Start(): Promise<any> {
+        return new Promise(resolve => {
+            if (this.flash) {
+                resolve();
+                return this.callEvent("complete");
             }
+            //定时运行
+            this.time = this.context.setInterval(() => {
+                Application.App.config.auto && this.video.paused && this.video.play();
+            }, 5000);
+            //同时运行多视频的兼容,后续看看能不能hook
+            this.video.addEventListener("pause", () => {
+                if (this.video.currentTime <= this.video.duration - 5) {
+                    if (!this.end) {
+                        this.video.play();
+                    }
+                }
+            });
+            this.video.play();
+            resolve();
         });
-        this.video.play();
     }
 
     protected initPlayer() {

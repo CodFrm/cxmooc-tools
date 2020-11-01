@@ -1,25 +1,52 @@
-import {Mooc} from "../factory";
 import {Application} from "@App/internal/application";
-import {substrex} from "@App/internal/utils/utils";
 import {CxTask} from "@App/mooc/chaoxing/task";
 import {TaskFactory} from "@App/mooc/chaoxing/factory";
+import {Mooc, MoocTaskSet, MoocEvent} from "@App/internal/app/mooc";
+import {EventListener, Task} from "@App/internal/app/task";
 
 //课程任务
-export class CxCourse implements Mooc {
+export class CxCourse extends EventListener<MoocEvent> implements MoocTaskSet {
 
     protected taskList: Array<CxTask>;
     protected attachments: Array<any>;
-    protected timer: NodeJS.Timer;
 
-    public Init(): void {
-        document.addEventListener("load", ev => {
-            var el = <HTMLIFrameElement>(ev.srcElement || ev.target);
-            if (el.id == "iframe") {
-                Application.App.log.Info("超星新窗口加载");
-                clearTimeout(this.timer);
-                this.OperateCard(el);
+    public Init(): Promise<any> {
+        return new Promise(resolve => {
+            let first = true;
+            document.addEventListener("load", ev => {
+                let el = <HTMLIFrameElement>(ev.srcElement || ev.target);
+                if (el.id == "iframe") {
+                    Application.App.log.Info("超星新窗口加载");
+                    this.OperateCard(el);
+                    first && resolve();
+                    first = false;
+                }
+            }, true);
+        });
+    }
+
+    public Stop(): Promise<any> {
+        throw new Error("Method not implemented.");
+    }
+
+    protected taskIndex: number = 0;
+
+    public Next(): Promise<Task> {
+        return new Promise(resolve => {
+            if (this.taskList.length > this.taskIndex) {
+                resolve(this.taskList[this.taskIndex]);
+                return this.taskIndex++;
             }
-        }, true);
+            //翻页
+            this.addEventListenerOnce("reload", async () => {
+                resolve(await this.Next());
+            })
+            this.nextPage(null);
+        });
+    }
+
+    public SetTaskPointer(index: number): void {
+        this.taskIndex = index;
     }
 
     public async OperateCard(iframe: HTMLIFrameElement) {
@@ -36,10 +63,6 @@ export class CxCourse implements Mooc {
         for (let index = 0; index < this.attachments.length; index++) {
             let value = this.attachments[index];
             value.defaults = <Array<any>>iframeWindow.mArg.defaults;
-            if (value.jobid == undefined) {
-                TaskFactory.CreateCourseTask(iframeWindow, value);
-                continue
-            }
             let task: CxTask;
             task = TaskFactory.CreateCourseTask(iframeWindow, value);
             if (!task) {
@@ -47,46 +70,13 @@ export class CxCourse implements Mooc {
             }
             task.jobIndex = index;
             this.taskList.push(task);
-            let taskIndex = this.taskList.length - 1;
-            task.Load(() => {
-            });
-            task.Complete(async () => {
-                this.startTask(taskIndex + 1, task);
+            task.addEventListener("complete", () => {
+                this.callEvent("taskComplete", index, task);
             });
             await task.Init();
         }
-        Application.App.log.Debug("任务点参数", this.attachments);
-        this.startTask(0, null);
-    }
-
-    protected async startTask(index: number, nowtask: CxTask) {
-        if (Application.App.config.auto) {
-            //选择未完成的任务点开始
-            let task: CxTask;
-            for (let i = index; i < this.taskList.length; i++) {
-                task = this.taskList[i];
-                if (this.attachments[task.jobIndex].job) {
-                    if (index == 0) {
-                        task.Start();
-                    } else {
-                        this.delay(async () => {
-                            nowtask && await nowtask.Submit();
-                            task.Start();
-                        });
-                    }
-                    return;
-                }
-            }
-            this.nextPage(null, nowtask);
-        }
-    }
-
-    protected delay(func: Function) {
-        let interval = Application.App.config.interval;
-        Application.App.log.Info(interval + "分钟后自动切换下一个任务点");
-        this.timer = setTimeout(() => {
-            Application.App.config.auto && func();
-        }, interval * 60000);
+        this.taskIndex = 0;
+        this.callEvent("reload");
     }
 
     protected afterPage(): HTMLElement {
@@ -101,13 +91,7 @@ export class CxCourse implements Mooc {
         return null;
     }
 
-    protected nextPage(num: number, task: CxTask) {
-        if (num == null) {
-            return this.delay(async () => {
-                task && await task.Submit();
-                this.nextPage(0, null);
-            });
-        }
+    protected nextPage(num: number) {
         let el = <HTMLElement>document.querySelector("span.currents ~ span");
         if (el != undefined) {
             return el.click();
@@ -117,27 +101,22 @@ export class CxCourse implements Mooc {
         if (el == undefined) {
             //进行有锁任务查找
             if (document.querySelector("div.ncells > *:not(.currents) > .lock") == undefined) {
-                Application.App.log.Warn("任务结束了");
-                return alert("任务结束了");
+                return this.callEvent("complete");
             }
             return setTimeout(() => {
                 if (num > 5) {
-                    Application.App.log.Fatal("被锁卡住了,请手动处理");
-                    return setTimeout(() => {
-                        return alert("被锁卡住了,请手动处理");
-                    }, 1000);
+                    return this.callEvent("error", "被锁卡住了,请手动处理");
                 }
                 Application.App.log.Info("等待解锁");
-                this.nextPage(num + 1, null);
+                this.nextPage(num + 1);
             }, 5000);
         }
         (<any>el.parentElement.querySelector("a>span")).click();
     }
 }
 
-//TODO: 考试和作业强制采集
 export class CxExamTopic implements Mooc {
-    public Init(): void {
+    public Init(): any {
         window.addEventListener("load", () => {
             let el = <HTMLInputElement>document.querySelector("#paperId");
             let info = "0";
@@ -160,7 +139,7 @@ export class CxExamTopic implements Mooc {
 }
 
 export class CxHomeWork implements Mooc {
-    public Init(): void {
+    public Init(): any {
         window.onload = () => {
             let el = (<HTMLInputElement>document.querySelector("#workLibraryId"));
             let info = "";

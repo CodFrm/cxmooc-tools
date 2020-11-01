@@ -211,7 +211,7 @@ export class PageLog implements Logger {
     public Fatal(...args: any): Logger {
         let text = this.toStr(...args);
         if (this.el) {
-            this.first(text, "#FFF0F0", "rgba(253, 226, 226, 0.5)");
+            this.first(text, "#ff0000", "rgba(253, 226, 226, 0.5)");
         }
         console.error("[fatal", this.getNowTime(), "]", ...args);
         Noifications({

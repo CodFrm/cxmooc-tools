@@ -234,7 +234,6 @@ export class ToolsQuestionBank implements QuestionBank {
                     "X-Version": SystemConfig.version.toString(),
                 },
                 success: () => {
-                    //TODO:课程题目数量
                     resolve(0);
                 }, error: () => {
                     resolve(-1);
@@ -352,9 +351,6 @@ export class ToolsQuestionBankFacade implements QuestionBankFacade {
             if (correct == null || correct.correct == null || correct.type == -1) {
                 return;
             }
-            correct.topic = correct.topic;
-            correct.answers = correct.answers;
-            correct.correct = correct.correct;
             answer.push(correct);
         });
         this.bank.Push(answer).then((ret: QuestionStatus) => {

@@ -1,7 +1,7 @@
-import {Mooc} from "../factory";
 import {Application} from "@App/internal/application";
 import {randNumber, substrex} from "@App/internal/utils/utils";
 import {QuestionInfo, ToolsQuestionBank} from "@App/internal/app/question";
+import {Mooc} from "@App/internal/app/mooc";
 
 export class Read implements Mooc {
 

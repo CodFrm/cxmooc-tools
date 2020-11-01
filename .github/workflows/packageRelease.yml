@@ -28,11 +28,15 @@ jobs:
           ${{ runner.OS }}-
 
     - name: Package with Node
-      run: | 
+      env:
+        CHROME_PEM: ${{ secrets.CHROME_PEM }}
+      run: |
+        echo $CHROME_PEM > build/cxmooc-tolls.pem
         npm ci  
         npm test
         npm run build
         npm run tampermonkey
+        npm run pack
 
     - name: ZIP files
       run: |
@@ -62,13 +66,14 @@ jobs:
         asset_name: cxmooc-tools.zip
         asset_content_type: application/zip
 
-    # - name: Upload Release Asset crx
-    #   id: upload-release-asset-crx
-    #   uses: actions/upload-release-asset@v1
-    #   env:
-    #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    #   with:
-    #     upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info:
-    #     asset_path: ./build/cxmooc-tools.zip
-    #     asset_name: cxmooc-tools-crx.zip
-    #     asset_content_type: application/zip
+    - name: Upload Release Asset crx
+      id: upload-release-asset-crx
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info:
+        asset_path: ./build/cxmooc-tools.crx
+        asset_name: cxmooc-tools.crx
+        asset_content_type: application/octet-stream
+

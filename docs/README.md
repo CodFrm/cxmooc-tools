@@ -15,7 +15,7 @@ features:
 ---
 
 ![GitHub stars](https://img.shields.io/github/stars/codfrm/cxmooc-tools.svg)
-[![Build Status](https://www.travis-ci.org/CodFrm/cxmooc-tools.svg?branch=master)](https://www.travis-ci.org/CodFrm/cxmooc-tools)
+[![Build Status](https://github.com/CodFrm/cxmooc-tools/workflows/build/badge.svg?branch=master)](https://github.com/CodFrm/cxmooc-tools)
 ![GitHub All Releases](https://img.shields.io/github/downloads/codfrm/cxmooc-tools/total.svg)
 ![GitHub tag (latest SemVer)](https://img.shields.io/github/tag/codfrm/cxmooc-tools.svg?label=version)
 [![Chrome](https://img.shields.io/badge/chrome-success-brightgreen)](https://chrome.google.com/webstore/detail/%E8%B6%85%E6%98%9F%E6%85%95%E8%AF%BE%E5%B0%8F%E5%B7%A5%E5%85%B7/kkicgcijebblepmephnfganiiochecfl?hl=zh-CN)

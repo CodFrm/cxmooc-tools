@@ -1,4 +1,4 @@
-import {Task} from "@App/internal/app/task";
+import {Task, TaskType} from "@App/internal/app/task";
 import {Application} from "@App/internal/application";
 import {createBtn, protocolPrompt, randNumber, substrex, UntrustedClick} from "@App/internal/utils/utils";
 import {CourseQueryAnswer, CourseTopic} from "@App/mooc/course163/question";
@@ -11,7 +11,6 @@ import {
     ToolsQuestionBankFacade
 } from "@App/internal/app/question";
 import {Topic} from "@App/internal/app/topic";
-import any = jasmine.any;
 
 export class TaskFactory {
     public static CreateTask(url: string, resp: string): Task {
@@ -56,6 +55,14 @@ export class NoSupportTask extends Task {
         });
     }
 
+    public Done(): boolean {
+        return true;
+    }
+
+    public Type(): TaskType {
+        return "other";
+    }
+
 }
 
 export class VideoTask extends Task {
@@ -84,6 +91,10 @@ export class VideoTask extends Task {
         });
     }
 
+    public Done(): boolean {
+        return false;
+    }
+
     public Stop(): Promise<void> {
         return new Promise<any>(resolve => {
             clearInterval(this.timer);
@@ -108,6 +119,10 @@ export class VideoTask extends Task {
             }, 5000);
             resolve();
         });
+    }
+
+    public Type(): TaskType {
+        return "video";
     }
 
 }
@@ -255,6 +270,14 @@ export class CourseTopicTask extends Task {
         });
     }
 
+    public Done(): boolean {
+        return false;
+    }
+
+    public Type(): TaskType {
+        return "topic";
+    }
+
     public Start(): Promise<any> {
         return new Promise<any>(async resolve => {
             protocolPrompt("你正准备使用中国慕课的答题功能,相应的我们需要你的正确答案,同意之后扩展将自动检索你的所有答案\n* 本项选择不会影响你的正常使用(协议当前版本有效)\n* 手动点击答题结果页面自动采集页面答案\n", "course_answer_collect_v2", "我同意");
@@ -326,6 +349,14 @@ export class DiscussTask extends Task {
                 resolve();
             }, 1000);
         });
+    }
+
+    public Done(): boolean {
+        return false;
+    }
+
+    public Type(): TaskType {
+        return "other";
     }
 
     public Submit(): Promise<void> {

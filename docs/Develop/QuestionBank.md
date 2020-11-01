@@ -2,7 +2,7 @@
 title: 题库和答题功能
 ---
 
-> 扩展抽象了题库,方便切换或者增加题库使用
+> 扩展抽象了题库,方便切换或者增加题库使用,题库后端和数据请自行整理
 >
 > 源码请看`internal/app/question.ts`和`internal/app/topic.ts`
 
@@ -10,7 +10,7 @@ title: 题库和答题功能
 ## 题库接口
 题库的接口
 ```ts
-// 题库操作具体实现
+// 题库操作实现
 export interface QuestionBankFacade {
     ClearQuestion(): void
 
@@ -22,7 +22,7 @@ export interface QuestionBankFacade {
 
     CheckCourse(): Promise<number>
 }
-// 题库存储具体实现
+// 题库存储实现
 export interface QuestionBank {
     Answer(topic: Topic[], resolve: QuestionBankCallback): void;
 

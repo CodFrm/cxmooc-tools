@@ -1,7 +1,7 @@
-import {MoocFactory, Mooc} from "../factory";
 import {ZhsVideo} from "./video";
 import {ZhsExam} from "./exam";
 import {Application} from "@App/internal/application";
+import {Mooc, MoocFactory} from "@App/internal/app/mooc";
 
 export class ZhsPlatform implements MoocFactory {
     public CreateMooc(): Mooc {

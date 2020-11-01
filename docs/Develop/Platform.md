@@ -15,16 +15,23 @@ title: 平台开发
 
 
 ## 实现Mooc接口
-还在优化中,具体请看已有平台
+具体请看已有平台
 
 #### 接口定义
 ```ts
+// 单个Mooc任务
 export interface Mooc {
-    Init(): void
-    // TODO: 实现各种流程流转
-    // Start()
-    // Stop()
-    // OnFinished()
-    // Next()
+    Init(): any
+}
+
+// Mooc任务集
+export interface MoocTaskSet extends Mooc, IEventListener<MoocEvent> {
+    Init(): Promise<any>
+
+    Stop(): Promise<any>
+
+    Next(): Promise<Task>
+
+    SetTaskPointer(index: number): void;
 }
 ```

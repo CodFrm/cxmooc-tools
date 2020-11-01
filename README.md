@@ -4,7 +4,7 @@
 </h1>
 
 ![GitHub stars](https://img.shields.io/github/stars/codfrm/cxmooc-tools.svg)
-[![Build Status](https://www.travis-ci.org/CodFrm/cxmooc-tools.svg?branch=master)](https://www.travis-ci.org/CodFrm/cxmooc-tools)
+[![Build Status](https://github.com/CodFrm/cxmooc-tools/workflows/build/badge.svg?branch=master)](https://github.com/CodFrm/cxmooc-tools)
 ![GitHub tag (latest SemVer)](https://img.shields.io/github/tag/codfrm/cxmooc-tools.svg?label=version)
 [![Chrome](https://img.shields.io/badge/chrome-success-brightgreen)](https://chrome.google.com/webstore/detail/%E8%B6%85%E6%98%9F%E6%85%95%E8%AF%BE%E5%B0%8F%E5%B7%A5%E5%85%B7/kkicgcijebblepmephnfganiiochecfl?hl=zh-CN)
 [![FireFox](https://img.shields.io/badge/firefox-success-brightgreen)](https://addons.mozilla.org/zh-CN/firefox/addon/%E8%B6%85%E6%98%9F%E6%85%95%E8%AF%BE%E5%B0%8F%E5%B7%A5%E5%85%B7/)
@@ -83,7 +83,7 @@ npm run pack
 ### 贡献流程
 1. `Fork Repo`
 2. 发起`Pull Request`，并简要描述更改内容。
-3. `Travis CI 检查通过`
+3. `CI 检查通过`
 4. `CodeReview`
 5. 合并到项目仓库
 
