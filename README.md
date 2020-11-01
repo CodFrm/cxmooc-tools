@@ -1,29 +1,45 @@
+<div align="center">
+<h1 align="center">
+超星慕课小工具
+</h1>
+
 ![GitHub stars](https://img.shields.io/github/stars/codfrm/cxmooc-tools.svg)
 [![Build Status](https://www.travis-ci.org/CodFrm/cxmooc-tools.svg?branch=master)](https://www.travis-ci.org/CodFrm/cxmooc-tools)
 ![GitHub tag (latest SemVer)](https://img.shields.io/github/tag/codfrm/cxmooc-tools.svg?label=version)
 [![Chrome](https://img.shields.io/badge/chrome-success-brightgreen)](https://chrome.google.com/webstore/detail/%E8%B6%85%E6%98%9F%E6%85%95%E8%AF%BE%E5%B0%8F%E5%B7%A5%E5%85%B7/kkicgcijebblepmephnfganiiochecfl?hl=zh-CN)
 [![FireFox](https://img.shields.io/badge/firefox-success-brightgreen)](https://addons.mozilla.org/zh-CN/firefox/addon/%E8%B6%85%E6%98%9F%E6%85%95%E8%AF%BE%E5%B0%8F%E5%B7%A5%E5%85%B7/)
 [![tampermonkey](https://img.shields.io/badge/tampermonkey-success-yellowgreen)](https://greasyfork.org/zh-CN/scripts/376190-%E8%B6%85%E6%98%9F%E6%85%95%E8%AF%BE%E5%B0%8F%E5%B7%A5%E5%85%B7)
+![GitHub All Releases](https://img.shields.io/github/downloads/CodFrm/cxmooc-tools/total)
 
+</div>
 
+- [关于超星慕课小工具](#关于超星慕课小工具)
+- [从应用商店下载](#从应用商店下载)
+- [功能支持列表](#功能支持列表)
+- [适配列表](#适配列表)
+- [参与开发](#参与开发)
+  - [环境:](#环境)
+  - [Build](#build)
+  - [贡献流程](#贡献流程)
+- [题库](#题库)
+- [关于反馈](#关于反馈)
+- [免责声明](#免责声明)
 ## 关于超星慕课小工具
-> **[使用文档](https://cx-doc.xloli.top/)**
 
 一个 超星(学习通)/智慧树(知到)/中国大学mooc 刷课工具,火狐,谷歌,油猴支持.全自动任务,视频倍速秒过,作业考试题库,验证码自动打码(੧ᐛ੭挂科模式,启动)
+**如果觉得好用，顺手点个 Star 吧 ❤❤❤**
 
-### 应用商店
+**仓库地址：[CodFrm/cxmooc-tools](https://github.com/CodFrm/cxmooc-tools)**
+
+## 从应用商店下载
 [Chrome商店](https://chrome.google.com/webstore/detail/%E8%B6%85%E6%98%9F%E6%85%95%E8%AF%BE%E5%B0%8F%E5%B7%A5%E5%85%B7/kkicgcijebblepmephnfganiiochecfl?hl=zh-CN)
+
 [FireFox商店](https://addons.mozilla.org/zh-CN/firefox/addon/%E8%B6%85%E6%98%9F%E6%85%95%E8%AF%BE%E5%B0%8F%E5%B7%A5%E5%85%B7/)
+
 [greasyfork](https://greasyfork.org/zh-CN/scripts/376190-%E8%B6%85%E6%98%9F%E6%85%95%E8%AF%BE%E5%B0%8F%E5%B7%A5%E5%85%B7)
 
-### 浏览器适配列表
- * [x] Chrome for PC
- * [x] Firefox for PC
- * [x] Firefox for Mobile
- * [x] QQ 浏览器 for PC
- * [x] Tampermonkey
 
-### 功能支持列表
+## 功能支持列表
 > 详情请看使用文档,不同平台所支持的功能不尽相同
 
 * [x] 视频挂机
@@ -35,6 +51,14 @@
 * [x] 自动填写验证码
 * [x] 考试答题
 * [x] 作业答题
+  
+## 适配列表
+ * [x] Chrome for PC
+ * [x] Firefox for PC
+ * [x] Firefox for Mobile
+ * [x] QQ 浏览器 for PC
+ * [x] Tampermonkey
+
 
 ## 参与开发
 > 如果你想参与开发,请阅读下面内容,如果只是使用本扩展,请移步 **[使用文档](https://cx.icodef.com/)**
