@@ -1,35 +1,39 @@
 import {CssBtn} from "@App/mooc/chaoxing/utils";
 import {createBtn} from "@App/internal/utils/utils";
 import {Application} from "@App/internal/application";
+import {Task, TaskEvent} from "@App/internal/app/task";
 
-export abstract class CxTask {
+export abstract class CxTask extends Task {
     public jobIndex: number;
     public taskinfo: any;
     protected context: any;
-    protected completeCallback: () => void;
-    protected loadCallback: () => void;
+    public done: boolean;
 
     public constructor(context: any, taskinfo: any) {
+        super();
         this.taskinfo = taskinfo;
         this.context = context;
+        if (this.taskinfo.job) {
+            this.done = false;
+        } else {
+            this.done = true;
+        }
     }
 
-    public Complete(callback: () => void): void {
-        this.completeCallback = callback;
+    protected callEvent(event: TaskEvent, ...args: any) {
+        if (event == "complete") {
+            this.done = true;
+        }
+        super.callEvent(event, ...args);
     }
 
     public Init(): Promise<any> {
         return new Promise(resolve => {
-            this.loadCallback && this.loadCallback();
             resolve();
         });
     }
 
-    public Load(callback: () => void): void {
-        this.loadCallback = callback;
-    }
-
-    public abstract Start(): void
+    public abstract Start(): Promise<any>
 
     public Submit(): Promise<void> {
         return new Promise(resolve => {
@@ -42,6 +46,10 @@ export abstract class CxTask {
         return new Promise(resolve => {
             resolve();
         });
+    }
+
+    public Done(): boolean {
+        return this.done;
     }
 }
 

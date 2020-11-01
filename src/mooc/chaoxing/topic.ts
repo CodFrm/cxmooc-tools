@@ -9,6 +9,7 @@ import {
 import {CxQuestionFactory} from "./question";
 import {Topic, QueryQuestions} from "@App/internal/app/topic";
 import {CxTaskControlBar, CxTask} from "@App/mooc/chaoxing/task";
+import {TaskType} from "@App/internal/app/task";
 
 export class CxTopicControlBar extends CxTaskControlBar {
     public defaultBtn() {
@@ -39,10 +40,9 @@ export class TopicAdapter extends CxTask {
     }
 
     public Init(): Promise<any> {
-        return new Promise<any>(resolve => {
+        return new Promise<any>(async resolve => {
             Application.App.log.Debug("题目信息", this.taskinfo);
-            this.topic.Init();
-            this.loadCallback && this.loadCallback();
+            await this.topic.Init();
             resolve();
         });
     }
@@ -55,10 +55,14 @@ export class TopicAdapter extends CxTask {
             this.lock = true;
             let ret = await this.topic.QueryAnswer();
             this.status = ret;
-            this.completeCallback && this.completeCallback();
+            this.callEvent("complete");
             this.lock = false;
             return resolve(ret);
         });
+    }
+
+    public Type(): TaskType {
+        return "topic";
     }
 
     public async Submit(): Promise<void> {

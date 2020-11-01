@@ -4,22 +4,31 @@ import {Application} from "@App/internal/application";
 import {CxVideoOptimization, Video} from "@App/mooc/chaoxing/video";
 import {CssBtn} from "@App/mooc/chaoxing/utils";
 import {Context, Hook} from "@App/internal/utils/hook";
+import {TaskType} from "@App/internal/app/task";
 
 export class CxDocumentTask extends CxTask {
     protected time: NodeJS.Timer;
 
-    public Start(): void {
-        let next = () => {
-            let el = this.context.document.querySelector(".imglook > .mkeRbtn");
-            if (el.style.visibility == "hidden") {
-                this.completeCallback && this.completeCallback();
-                return;
-            }
-            el.click();
+    public Start(): Promise<any> {
+        return new Promise(resolve => {
+            let next = () => {
+                let el = this.context.document.querySelector(".imglook > .mkeRbtn");
+                if (el.style.visibility == "hidden") {
+                    this.callEvent("complete");
+                    return;
+                }
+                el.click();
+                this.time = this.context.setTimeout(next, randNumber(1, 5) * 1000);
+                resolve();
+            };
             this.time = this.context.setTimeout(next, randNumber(1, 5) * 1000);
-        };
-        this.time = this.context.setTimeout(next, randNumber(1, 5) * 1000);
+        });
     }
+
+    public Type(): TaskType {
+        return "document";
+    }
+
 }
 
 export class CxAudioOptimization extends CxVideoOptimization {

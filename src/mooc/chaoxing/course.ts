@@ -1,11 +1,11 @@
 import {Application} from "@App/internal/application";
-import {substrex} from "@App/internal/utils/utils";
 import {CxTask} from "@App/mooc/chaoxing/task";
 import {TaskFactory} from "@App/mooc/chaoxing/factory";
-import {Mooc} from "@App/internal/app/mooc";
+import {Mooc, MoocTask, MoocEvent} from "@App/internal/app/mooc";
+import {EventListener, Task} from "@App/internal/app/task";
 
 //课程任务
-export class CxCourse implements Mooc {
+export class CxCourse extends EventListener<MoocEvent> implements MoocTask {
 
     protected taskList: Array<CxTask>;
     protected attachments: Array<any>;
@@ -15,7 +15,7 @@ export class CxCourse implements Mooc {
         return new Promise(resolve => {
             let first = true;
             document.addEventListener("load", ev => {
-                var el = <HTMLIFrameElement>(ev.srcElement || ev.target);
+                let el = <HTMLIFrameElement>(ev.srcElement || ev.target);
                 if (el.id == "iframe") {
                     Application.App.log.Info("超星新窗口加载");
                     clearTimeout(this.timer);
@@ -24,6 +24,27 @@ export class CxCourse implements Mooc {
                     first = false;
                 }
             }, true);
+        });
+    }
+
+    public Stop(): Promise<any> {
+        throw new Error("Method not implemented.");
+    }
+
+    protected taskIndex: number = 0;
+
+    public Next(): Promise<Task> {
+        return new Promise(resolve => {
+            if (this.taskList.length > this.taskIndex) {
+                resolve(this.taskList[this.taskIndex]);
+                return this.taskIndex++;
+            }
+            //翻页
+            this.taskIndex = 0;
+            this.addEventListenerOnce("reload", async () => {
+                resolve(await this.Next());
+            })
+            this.nextPage(null);
         });
     }
 
@@ -41,10 +62,6 @@ export class CxCourse implements Mooc {
         for (let index = 0; index < this.attachments.length; index++) {
             let value = this.attachments[index];
             value.defaults = <Array<any>>iframeWindow.mArg.defaults;
-            if (value.jobid == undefined) {
-                TaskFactory.CreateCourseTask(iframeWindow, value);
-                continue
-            }
             let task: CxTask;
             task = TaskFactory.CreateCourseTask(iframeWindow, value);
             if (!task) {
@@ -52,16 +69,9 @@ export class CxCourse implements Mooc {
             }
             task.jobIndex = index;
             this.taskList.push(task);
-            let taskIndex = this.taskList.length - 1;
-            task.Load(() => {
-            });
-            task.Complete(async () => {
-                this.startTask(taskIndex + 1, task);
-            });
             await task.Init();
         }
-        Application.App.log.Debug("任务点参数", this.attachments);
-        this.startTask(0, null);
+        this.callEvent("reload");
     }
 
     protected async startTask(index: number, nowtask: CxTask) {
@@ -82,7 +92,6 @@ export class CxCourse implements Mooc {
                     return;
                 }
             }
-            this.nextPage(null, nowtask);
         }
     }
 
@@ -106,13 +115,7 @@ export class CxCourse implements Mooc {
         return null;
     }
 
-    protected nextPage(num: number, task: CxTask) {
-        if (num == null) {
-            return this.delay(async () => {
-                task && await task.Submit();
-                this.nextPage(0, null);
-            });
-        }
+    protected nextPage(num: number) {
         let el = <HTMLElement>document.querySelector("span.currents ~ span");
         if (el != undefined) {
             return el.click();
@@ -122,18 +125,14 @@ export class CxCourse implements Mooc {
         if (el == undefined) {
             //进行有锁任务查找
             if (document.querySelector("div.ncells > *:not(.currents) > .lock") == undefined) {
-                Application.App.log.Warn("任务结束了");
-                return alert("任务结束了");
+                return this.callEvent("complete");
             }
             return setTimeout(() => {
                 if (num > 5) {
-                    Application.App.log.Fatal("被锁卡住了,请手动处理");
-                    return setTimeout(() => {
-                        return alert("被锁卡住了,请手动处理");
-                    }, 1000);
+                    return this.callEvent("error", "被锁卡住了,请手动处理");
                 }
                 Application.App.log.Info("等待解锁");
-                this.nextPage(num + 1, null);
+                this.nextPage(num + 1);
             }, 5000);
         }
         (<any>el.parentElement.querySelector("a>span")).click();

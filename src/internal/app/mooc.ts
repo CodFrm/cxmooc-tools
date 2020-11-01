@@ -3,28 +3,21 @@ import {ZhsPlatform} from "../../mooc/zhihuishu/platform";
 import {Course163Platform} from "../../mooc/course163/platform";
 import {CxCourseVCode} from "../../mooc/chaoxing/vcode";
 import {Application} from "@App/internal/application";
-import {IEventListener} from "@App/internal/app/task";
+import {IEventListener, Task} from "@App/internal/app/task";
 
-export type MoocEvent = "complete" | "init" | "stop" | "load";
+export type MoocEvent = "complete" | "reload" | "error";
 
+// 废弃接口,逐渐迁移,应该使用下面的接口
 export interface Mooc {
     Init(): any
-
-    // TODO: 实现各种流程流转
-    // Start()
-    // Stop()
-    // OnFinished()
-    // Next()
 }
 
-export interface MoocTaskSet extends Mooc, IEventListener<MoocEvent> {
+export interface MoocTask extends Mooc, IEventListener<MoocEvent> {
     Init(): Promise<any>
-
-    Start(): Promise<any>
 
     Stop(): Promise<any>
 
-    Next(): Promise<any>
+    Next(): Promise<Task>
 }
 
 export interface MoocFactory {
