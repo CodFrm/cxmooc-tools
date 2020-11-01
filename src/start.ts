@@ -1,8 +1,8 @@
-import {Client, NewChromeServerMessage} from "@App/internal/utils/message";
-import {get, HttpUtils, Injected, InjectedBySrc, Noifications, NotificationOptions} from "@App/internal/utils/utils";
-import {Application, Content, Launcher} from "@App/internal/application";
-import {ChromeConfigItems, NewBackendConfig} from "@App/internal/utils/config";
-import {ConsoleLog} from "./internal/utils/log";
+import { Client, NewChromeServerMessage } from "@App/internal/utils/message";
+import { get, HttpUtils, Injected, InjectedBySrc, Noifications, NotificationOptions } from "@App/internal/utils/utils";
+import { Application, Content, Launcher } from "@App/internal/application";
+import { ChromeConfigItems, NewBackendConfig } from "@App/internal/utils/config";
+import { ConsoleLog } from "./internal/utils/log";
 import sources = chrome.devtools.panels.sources;
 
 class start implements Launcher {
@@ -15,7 +15,7 @@ class start implements Launcher {
                 Injected(document, "window.configData=" + cacheJsonText + ";\n" + source);
             });
         } else {
-            chrome.runtime.sendMessage({status: "loading"});
+            chrome.runtime.sendMessage({ status: "loading" });
         }
         //转发消息
         let msg = NewChromeServerMessage("cxmooc-tools");
@@ -40,7 +40,7 @@ class start implements Launcher {
         //监听配置项更新
         chrome.runtime.onMessage.addListener((request) => {
             if (request.type && request.type == "cxconfig") {
-                window.postMessage({type: "cxconfig", key: request.key, value: request.value}, '/');
+                window.postMessage({ type: "cxconfig", key: request.key, value: request.value }, '/');
             }
         });
         //检查扩展强制更新

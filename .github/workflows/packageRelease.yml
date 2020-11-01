@@ -1,0 +1,82 @@
+name: Auto_Package
+
+on:
+  push:
+    tags:
+    - '*'
+  workflow_dispatch:
+
+jobs:
+  build-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Use Node.js
+      uses: actions/setup-node@v1
+      with:
+        node-version: '12.x'
+
+    - name: Cache Node.js modules
+      uses: actions/cache@v2
+      with:
+        # npm cache files are stored in `~/.npm` on Linux/macOS
+        path: ~/.npm 
+        key: ${{ runner.OS }}-node-${{ hashFiles('**/package-lock.json') }}
+        restore-keys: |
+          ${{ runner.OS }}-node-
+          ${{ runner.OS }}-
+
+    - name: Write Key File
+      env:
+        CHROME_PEM: ${{ secrets.CHROME_PEM }}
+      run: |
+        echo $CHROME_PEM > build/cxmooc-tolls.pem
+
+    - name: Package with Node
+      run: | 
+        npm ci  
+        npm test
+        npm run build
+        npm run tampermonkey
+        npm run pack
+
+    - name: ZIP files
+      run: |
+        cd build/cxmooc-tools && zip ../cxmooc-tools.zip -r ./ && cd ../../
+
+    - name: Create Release
+      id: create_release
+      uses: actions/create-release@latest
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
+      with:
+        tag_name: ${{ github.ref }}
+        release_name: cxmooc-tools-${{ github.ref }}
+        body: |
+          'no description'
+        draft: false
+        prerelease: false
+
+    - name: Upload Release Asset zip
+      id: upload-release-asset
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info:
+        asset_path: ./build/cxmooc-tools.zip
+        asset_name: cxmooc-tools.zip
+        asset_content_type: application/zip
+
+    - name: Upload Release Asset crx
+      id: upload-release-asset-crx
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info:
+        asset_path: ./build/cxmooc-tools.crx
+        asset_name: cxmooc-tools.crx
+        asset_content_type: application/octet-stream
+

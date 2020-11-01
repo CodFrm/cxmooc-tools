@@ -1,5 +1,5 @@
 ![GitHub stars](https://img.shields.io/github/stars/codfrm/cxmooc-tools.svg)
-[![Build Status](https://www.travis-ci.org/CodFrm/cxmooc-tools.svg?branch=master)](https://www.travis-ci.org/CodFrm/cxmooc-tools)
+[![Build Status](https://github.com/CodFrm/cxmooc-tools/workflows/build/badge.svg?branch=master)](https://github.com/CodFrm/cxmooc-tools)
 ![GitHub tag (latest SemVer)](https://img.shields.io/github/tag/codfrm/cxmooc-tools.svg?label=version)
 [![Chrome](https://img.shields.io/badge/chrome-success-brightgreen)](https://chrome.google.com/webstore/detail/%E8%B6%85%E6%98%9F%E6%85%95%E8%AF%BE%E5%B0%8F%E5%B7%A5%E5%85%B7/kkicgcijebblepmephnfganiiochecfl?hl=zh-CN)
 [![FireFox](https://img.shields.io/badge/firefox-success-brightgreen)](https://addons.mozilla.org/zh-CN/firefox/addon/%E8%B6%85%E6%98%9F%E6%85%95%E8%AF%BE%E5%B0%8F%E5%B7%A5%E5%85%B7/)
@@ -7,7 +7,7 @@
 
 
 ## 关于超星慕课小工具
-> **[使用文档](https://cx-doc.xloli.top/)**
+> **[使用文档](https://cx-doc.xloli.top/)**,如果帮到了你,可以给我们一个小星星吗?
 
 一个 超星(学习通)/智慧树(知到)/中国大学mooc 刷课工具,火狐,谷歌,油猴支持.全自动任务,视频倍速秒过,作业考试题库,验证码自动打码(੧ᐛ੭挂科模式,启动)
 
@@ -59,7 +59,7 @@ npm run pack
 ### 贡献流程
 1. `Fork Repo`
 2. 发起`Pull Request`，并简要描述更改内容。
-3. `Travis CI 检查通过`
+3. `CI 检查通过`
 4. `CodeReview`
 5. 合并到项目仓库
 
