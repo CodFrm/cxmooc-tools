@@ -234,7 +234,6 @@ export class ToolsQuestionBank implements QuestionBank {
                     "X-Version": SystemConfig.version.toString(),
                 },
                 success: () => {
-                    //TODO:课程题目数量
                     resolve(0);
                 }, error: () => {
                     resolve(-1);

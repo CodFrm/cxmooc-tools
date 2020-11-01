@@ -7,12 +7,13 @@ import {IEventListener, Task} from "@App/internal/app/task";
 
 export type MoocEvent = "complete" | "reload" | "error" | "taskComplete";
 
-// 废弃接口,逐渐迁移,应该使用下面的接口
+// 单个Mooc任务
 export interface Mooc {
     Init(): any
 }
 
-export interface MoocTask extends Mooc, IEventListener<MoocEvent> {
+// Mooc任务集
+export interface MoocTaskSet extends Mooc, IEventListener<MoocEvent> {
     Init(): Promise<any>
 
     Stop(): Promise<any>

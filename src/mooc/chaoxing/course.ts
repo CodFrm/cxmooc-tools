@@ -1,15 +1,14 @@
 import {Application} from "@App/internal/application";
 import {CxTask} from "@App/mooc/chaoxing/task";
 import {TaskFactory} from "@App/mooc/chaoxing/factory";
-import {Mooc, MoocTask, MoocEvent} from "@App/internal/app/mooc";
+import {Mooc, MoocTaskSet, MoocEvent} from "@App/internal/app/mooc";
 import {EventListener, Task} from "@App/internal/app/task";
 
 //课程任务
-export class CxCourse extends EventListener<MoocEvent> implements MoocTask {
+export class CxCourse extends EventListener<MoocEvent> implements MoocTaskSet {
 
     protected taskList: Array<CxTask>;
     protected attachments: Array<any>;
-    protected timer: NodeJS.Timer;
 
     public Init(): Promise<any> {
         return new Promise(resolve => {
@@ -18,7 +17,6 @@ export class CxCourse extends EventListener<MoocEvent> implements MoocTask {
                 let el = <HTMLIFrameElement>(ev.srcElement || ev.target);
                 if (el.id == "iframe") {
                     Application.App.log.Info("超星新窗口加载");
-                    clearTimeout(this.timer);
                     this.OperateCard(el);
                     first && resolve();
                     first = false;
@@ -117,7 +115,6 @@ export class CxCourse extends EventListener<MoocEvent> implements MoocTask {
     }
 }
 
-//TODO: 考试和作业强制采集
 export class CxExamTopic implements Mooc {
     public Init(): any {
         window.addEventListener("load", () => {

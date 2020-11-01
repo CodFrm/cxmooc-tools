@@ -1,5 +1,5 @@
 import {Launcher, Application} from "@App/internal/application";
-import {Mooc, MoocFactory, MoocTask} from "@App/internal/app/mooc";
+import {Mooc, MoocFactory, MoocTaskSet} from "@App/internal/app/mooc";
 import {Task} from "@App/internal/app/task";
 
 export class mooc implements Launcher {
@@ -16,9 +16,9 @@ export class mooc implements Launcher {
             let mooc = this.moocFactory.CreateMooc();
             if (mooc != null) {
                 await mooc.Init();
-                // MoocTask接口判断,接管流程
-                if ((<MoocTask>mooc).Next != undefined) {
-                    this.runMoocTask(<MoocTask>mooc);
+                // MoocTaskSet接口判断,接管流程
+                if ((<MoocTaskSet>mooc).Next != undefined) {
+                    this.runMoocTask(<MoocTaskSet>mooc);
                 }
             }
         } catch (e) {
@@ -41,18 +41,18 @@ export class mooc implements Launcher {
 
     protected timer: NodeJS.Timeout;
 
-    protected runMoocTask(moocTask: MoocTask) {
+    protected runMoocTask(moocTask: MoocTaskSet) {
         moocTask.addEventListener("reload", () => {
-            this.runTask(moocTask);
+            if (Application.App.config.auto) {
+                this.runTask(moocTask);
+            }
             clearTimeout(this.timer);
         });
         moocTask.addEventListener("complete", () => {
-            console.log("complete");
             Application.App.log.Warn("任务完成了");
             alert("任务完成了");
         });
         moocTask.addEventListener("taskComplete", (index: number, task: Task) => {
-            console.log("taskComplete");
             moocTask.SetTaskPointer(index + 1);
             if (!Application.App.config.auto) {
                 return;
@@ -72,8 +72,9 @@ export class mooc implements Launcher {
 
     // 防止taskComplete和reload冲突
     protected once: boolean = false;
+    protected nowTask: Task;
 
-    protected async runTask(moocTask: MoocTask) {
+    protected async runTask(moocTask: MoocTaskSet) {
         if (this.once) {
             return;
         }
@@ -84,10 +85,15 @@ export class mooc implements Launcher {
                 task = await moocTask.Next();
                 continue;
             }
+            if (Application.App.config.answer_ignore && task.Type() == "topic") {
+                task = await moocTask.Next();
+                continue;
+            }
             //开始任务
             if (Application.App.config.auto) {
                 await task.Start();
             }
+            this.nowTask = task;
             break;
         }
         this.once = false
