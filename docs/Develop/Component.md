@@ -101,3 +101,26 @@ Application.App.config.SetConfig("notify_tools_x", this.div.style.left);
 如果发布油猴版本,请在对应的油猴版本中添加相应的配置
 
 
+
+## 事件组件
+
+有些事件调用的可以使用此接口,已有一个默认实现
+
+#### 接口
+
+```ts
+export interface IEventListener<T> {
+    // 添加事件监听
+    addEventListener(event: T, callback: Function): void;
+
+    // 添加事件监听,但是只会调用一次
+    addEventListenerOnce(event: T, callback: Function): void;
+}
+```
+
+#### 实现
+
+```ts
+export class EventListener<T> implements IEventListener<T>
+```
+

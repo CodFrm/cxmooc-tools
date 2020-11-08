@@ -19,19 +19,26 @@ title: 平台开发
 
 #### 接口定义
 ```ts
-// 单个Mooc任务
+// 事件
+export type MoocEvent = "complete" | "reload" | "error" | "taskComplete";
+
+// 单个Mooc任务,可能会被抛弃
 export interface Mooc {
     Init(): any
 }
 
-// Mooc任务集
+// Mooc任务集,未来更倾向于使用此接口
 export interface MoocTaskSet extends Mooc, IEventListener<MoocEvent> {
+    // 初始化
     Init(): Promise<any>
 
+    // 停止
     Stop(): Promise<any>
 
+    // 返回下一个任务点
     Next(): Promise<Task>
 
+    // 设置任务点位置
     SetTaskPointer(index: number): void;
 }
 ```

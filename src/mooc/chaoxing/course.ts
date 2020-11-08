@@ -2,7 +2,8 @@ import {Application} from "@App/internal/application";
 import {CxTask} from "@App/mooc/chaoxing/task";
 import {TaskFactory} from "@App/mooc/chaoxing/factory";
 import {Mooc, MoocTaskSet, MoocEvent} from "@App/internal/app/mooc";
-import {EventListener, Task} from "@App/internal/app/task";
+import {Task} from "@App/internal/app/task";
+import {EventListener} from "@App/internal/utils/event";
 
 //课程任务
 export class CxCourse extends EventListener<MoocEvent> implements MoocTaskSet {
@@ -18,6 +19,7 @@ export class CxCourse extends EventListener<MoocEvent> implements MoocTaskSet {
                 if (el.id == "iframe") {
                     Application.App.log.Info("超星新窗口加载");
                     this.OperateCard(el);
+                    // 超星会有多次加载,所以使用一个flag变量,只回调一次
                     first && resolve();
                     first = false;
                 }
@@ -37,7 +39,7 @@ export class CxCourse extends EventListener<MoocEvent> implements MoocTaskSet {
                 resolve(this.taskList[this.taskIndex]);
                 return this.taskIndex++;
             }
-            //翻页
+            // 当页任务点全部结束,翻页.由于会重新加载窗口调用reload,在加载完成之后再返回任务点.(本方法是同步调用,所以使用此种方法)
             this.addEventListenerOnce("reload", async () => {
                 resolve(await this.Next());
             })
@@ -49,8 +51,10 @@ export class CxCourse extends EventListener<MoocEvent> implements MoocTaskSet {
         this.taskIndex = index;
     }
 
+    // 操作任务卡,一个页面会包含很多任务,取出来
     public async OperateCard(iframe: HTMLIFrameElement) {
         let iframeWindow: any = iframe.contentWindow;
+        // 判断任务的参数
         if (iframeWindow.mArg == undefined) {
             let match = iframeWindow.document.body.innerHTML.match(/try{\s+?mArg = (.*?);/);
             if (!match) {
@@ -58,12 +62,15 @@ export class CxCourse extends EventListener<MoocEvent> implements MoocTaskSet {
             }
             iframeWindow.mArg = JSON.parse(match[1]);
         }
+        // 任务的属性
         this.attachments = <Array<any>>iframeWindow.mArg.attachments;
         this.taskList = new Array();
+        // 构建任务
         for (let index = 0; index < this.attachments.length; index++) {
             let value = this.attachments[index];
             value.defaults = <Array<any>>iframeWindow.mArg.defaults;
             let task: CxTask;
+            // 任务工厂去创建对应的任务对象
             task = TaskFactory.CreateCourseTask(iframeWindow, value);
             if (!task) {
                 continue;
@@ -115,6 +122,7 @@ export class CxCourse extends EventListener<MoocEvent> implements MoocTaskSet {
     }
 }
 
+// 考试
 export class CxExamTopic implements Mooc {
     public Init(): any {
         window.addEventListener("load", () => {
@@ -138,6 +146,7 @@ export class CxExamTopic implements Mooc {
     }
 }
 
+// 作业
 export class CxHomeWork implements Mooc {
     public Init(): any {
         window.onload = () => {

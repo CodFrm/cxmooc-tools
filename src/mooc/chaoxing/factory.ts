@@ -14,6 +14,7 @@ import {CssBtn} from "@App/mooc/chaoxing/utils";
 import {createBtn} from "@App/internal/utils/utils";
 import {CxAudioControlBar, CxAudioTask, CxDocumentTask} from "@App/mooc/chaoxing/special";
 
+// 任务工厂,创建对应的任务
 export class TaskFactory {
 
     public static CreateCourseTask(context: any, taskinfo: any): CxTask {
