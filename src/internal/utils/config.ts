@@ -23,6 +23,7 @@ export interface ConfigItems extends Config {
 
 // 缓存默认值
 let configDefaultValue: Map<string, any> = new Map<string, any>();
+configDefaultValue.set("vtoken", "");
 for (let key in SystemConfig.config) {
     for (let i = 0; i < SystemConfig.config[key].items.length; i++) {
         configDefaultValue.set(key + "_" + SystemConfig.config[key].items[i].key, SystemConfig.config[key].items[i].value);
@@ -66,7 +67,7 @@ export class ChromeConfigItems implements ConfigItems {
 
     public GetConfig(key: string, defaultVal?: string): string {
         let val = this.config.GetConfig(this.Namespace + key);
-        if (val == undefined && this.Namespace != "") {
+        if (val == undefined) {
             return this.config.GetConfig(key, defaultVal);
         }
         return val || defaultVal;

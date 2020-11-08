@@ -71,11 +71,11 @@ class popup implements Launcher {
             }
         });
 
-        let token = <HTMLInputElement>document.querySelector("#token");
-        token.onchange = function () {
-            Application.App.config.SetConfig("token", token.value);
+        let vtoken = <HTMLInputElement>document.querySelector("#vtoken");
+        vtoken.onchange = function () {
+            Application.App.config.SetConfig("vtoken", vtoken.value || "");
         }
-        token.value = Application.App.config.GetConfig("token");
+        vtoken.value = Application.App.config.GetConfig("vtoken");
 
         Application.CheckUpdate(function (isnew, data) {
             let v: any;
