@@ -15,168 +15,7 @@ class popup implements Launcher {
             el: "#platform-config",
             data: {
                 selectKey: 'cx',
-                configs: {
-                    cx: {
-                        name: "超星",
-                        items: [{
-                            title: "随机答案",
-                            description: "如果题库没有正确的答案会随机选择",
-                            type: "checkbox",
-                            key: "rand_answer",
-                            value: false,
-                        }, {
-                            title: "自动挂机",
-                            description: "进入一个页面就会自动开始挂机,完成一个任务之后会自动进行下一个",
-                            type: "checkbox",
-                            key: "auto",
-                            value: true,
-                        }, {
-                            title: "视频静音",
-                            description: "播放视频时,自动开启静音",
-                            type: "checkbox",
-                            key: "video_mute",
-                            value: true,
-                        }, {
-                            title: "忽略题目",
-                            description: "自动挂机时,忽略掉题目不做,直接跳过",
-                            type: "checkbox",
-                            key: "answer_ignore",
-                            value: false,
-                        }, {
-                            title: "超级模式",
-                            description: "超星平台下,超级模式会自动将flash播放器换成h5播放器",
-                            type: "checkbox",
-                            key: "super_mode",
-                            value: true,
-                        }, {
-                            title: "播放源",
-                            description: "锁定视频播放源,为空为记录最后一次选中的源(公网1,公网2等)",
-                            type: "text",
-                            key: "video_cdn",
-                            value: "默认"
-                        }, {
-                            title: "播放倍速",
-                            description: "视频播放的倍数,1为正常速度(最高16倍,该功能有一定危险)",
-                            type: "text",
-                            key: "video_multiple",
-                            prompt: "这是一个很危险的功能,建议不要进行调整,如果你想调整播放速度请在下方填写yes(智慧树平台播放速度和视频进度无关,最高只能1.5倍速)",
-                            unit: "倍",
-                            value: "1",
-                        }, {
-                            title: "跳转间隔",
-                            description: "视频(题目,任务点)完成后n分钟再继续下一个任务,可以有小数点,例如:0.5=30秒",
-                            type: "text",
-                            key: "interval",
-                            unit: "分",
-                            value: "1",
-                        }, {
-                            title: "做题间隔",
-                            description: "每一道题之间填写答案的时间间隔",
-                            type: "text",
-                            key: "topic_interval",
-                            unit: "秒",
-                            value: "5",
-                        }],
-                    }, zhs: {
-                        name: "智慧树",
-                        items: [{
-                            title: "随机答案",
-                            description: "如果题库没有正确的答案会随机选择",
-                            type: "checkbox",
-                            key: "rand_answer",
-                            value: false,
-                        }, {
-                            title: "自动挂机",
-                            description: "进入一个页面就会自动开始挂机,完成一个任务之后会自动进行下一个",
-                            type: "checkbox",
-                            key: "auto",
-                            value: true,
-                        }, {
-                            title: "视频静音",
-                            description: "播放视频时,自动开启静音",
-                            type: "checkbox",
-                            key: "video_mute",
-                            value: true,
-                        }, {
-                            title: "超级模式",
-                            description: "智慧树平台下,超级模式会让任务完成的倍速成真",
-                            type: "checkbox",
-                            key: "super_mode",
-                            value: true,
-                        }, {
-                            title: "播放倍速",
-                            description: "视频播放的倍数,1为正常速度(最高16倍,该功能有一定危险)",
-                            type: "text",
-                            key: "video_multiple",
-                            prompt: "这是一个很危险的功能,建议不要进行调整,如果你想调整播放速度请在下方填写yes(智慧树平台播放速度和视频进度无关,最高只能1.5倍速)",
-                            unit: "倍",
-                            value: "1",
-                        }, {
-                            title: "跳转间隔",
-                            description: "视频完成后n分钟再继续播放下一个,可以有小数点,例如:0.5=30秒",
-                            type: "text",
-                            key: "interval",
-                            unit: "分",
-                            value: "1",
-                        }, {
-                            title: "做题间隔",
-                            description: "每一道题之间填写答案的时间间隔",
-                            type: "text",
-                            key: "topic_interval",
-                            unit: "秒",
-                            value: "5",
-                        }],
-                    }, mooc163: {
-                        name: "中国大学MOOC",
-                        items: [{
-                            title: "随机答案",
-                            description: "如果题库没有正确的答案会随机选择",
-                            type: "checkbox",
-                            key: "rand_answer",
-                            value: false,
-                        }, {
-                            title: "自动挂机",
-                            description: "进入一个页面就会自动开始挂机,完成一个任务之后会自动进行下一个",
-                            type: "checkbox",
-                            key: "auto",
-                            value: true,
-                        }, {
-                            title: "视频静音",
-                            description: "播放视频时,自动开启静音",
-                            type: "checkbox",
-                            key: "video_mute",
-                            value: true,
-                        }, {
-                            title: "忽略题目",
-                            description: "自动挂机时,忽略掉题目不做,直接跳过",
-                            type: "checkbox",
-                            key: "answer_ignore",
-                            value: false,
-                        }, {
-                            title: "播放倍速",
-                            description: "视频播放的倍数,1为正常速度(最高16倍,该功能有一定危险)",
-                            type: "text",
-                            key: "video_multiple",
-                            prompt: "这是一个很危险的功能,建议不要进行调整,如果你想调整播放速度请在下方填写yes(智慧树平台播放速度和视频进度无关,最高只能1.5倍速)",
-                            unit: "倍",
-                            value: "1",
-                        }, {
-                            title: "跳转间隔",
-                            description: "视频完成后n分钟再继续播放下一个,可以有小数点,例如:0.5=30秒",
-                            type: "text",
-                            key: "interval",
-                            unit: "分",
-                            value: "1",
-                        }, {
-                            title: "做题间隔",
-                            description: "每一道题之间填写答案的时间间隔",
-                            type: "text",
-                            key: "topic_interval",
-                            unit: "秒",
-                            value: "5",
-                        }],
-                    },
-                }
+                configs: SystemConfig.config
             },
             async created() {
                 for (let key in this.configs) {
@@ -186,25 +25,33 @@ class popup implements Launcher {
                         if (val == undefined) {
                             val = Application.App.config.GetConfig(item.key, item.value);
                         }
-                        switch (item.type) {
-                            case "checkbox": {
-                                item.value = toBool(val);
-                                break;
-                            }
-                            default: {
-                                item.value = val;
-                            }
-                        }
+                        item.value = this.toVal(item.type, val);
                     }
                 }
             },
             methods: {
+                toVal(type: string, val: string): boolean | string {
+                    switch (type) {
+                        case "checkbox": {
+                            return toBool(val);
+                        }
+                        default: {
+                            return val;
+                        }
+                    }
+                },
                 changeTab(key: string) {
                     this.selectKey = key;
                 },
-                async change(namespace: string, key: string, type: string, val: string | boolean, prompt: string) {
+                async change(namespace: string, key: string, type: string, val: string | boolean, index: number, prompt: string) {
                     if (prompt !== undefined) {
+                        // 弹出信息框,还原值
                         if (!protocolPrompt(prompt, key)) {
+                            let val = Application.App.config.GetNamespaceConfig(namespace, key, undefined);
+                            if (val == undefined) {
+                                val = Application.App.config.GetConfig(key, this.configs[namespace].items[index].value);
+                            }
+                            this.configs[namespace].items[index].value = this.toVal(type, val);
                             return false;
                         }
                     }
@@ -223,6 +70,12 @@ class popup implements Launcher {
                 }
             }
         });
+
+        let token = <HTMLInputElement>document.querySelector("#token");
+        token.onchange = function () {
+            Application.App.config.SetConfig("token", token.value);
+        }
+        token.value = Application.App.config.GetConfig("token");
 
         Application.CheckUpdate(function (isnew, data) {
             let v: any;

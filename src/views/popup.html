@@ -373,7 +373,7 @@
     <h4 class="one_title">
         <div class="one_title_show">
             <span>插件配置:</span>
-            <input type="password" class="input_text edit" placeholder="token" config-key="vtoken"
+            <input type="password" id="token" class="input_text edit" placeholder="token" config-key="vtoken"
                    style="font-size: 12px;">
         </div>
     </h4>
@@ -388,13 +388,14 @@
             </div>
             <div class="platform-content">
                 <div v-for="(config,key) in configs" :key="key" class="platform-items">
-                    <div v-if="selectKey==key" v-for="item in config.items" :key="item.key" class="platform-item">
+                    <div v-if="selectKey==key" v-for="(item,index) in config.items" :key="item.key"
+                         class="platform-item">
                         <div v-if="item.type=='text'">
                             <label :for="item.key" :title="item.description">{{ item.title }}:</label>
                             <input type="text" class="input_text" :id="item.key"
                                    :title="item.description"
                                    v-model="item.value"
-                                   @input="change(key,item.key,'text',item.value,item.prompt)">
+                                   @input="change(key,item.key,'text',item.value,index,item.prompt)">
                             <label v-if="item.unit!=''" :for="item.key" :title="item.description">{{
                                     item.unit
                                 }}
@@ -403,7 +404,7 @@
                         <div v-else-if="item.type== 'checkbox'">
                             <input class="rdo" type="checkbox" :id="item.key"
                                    v-model="item.value"
-                                   @change="change(key,item.key,'checkbox',item.value,item.prompt)">
+                                   @change="change(key,item.key,'checkbox',item.value,index,item.prompt)">
                             <label class="shou" :for="item.key" :title="item.description">{{ item.title }}</label>
                         </div>
                     </div>

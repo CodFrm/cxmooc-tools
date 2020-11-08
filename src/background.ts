@@ -136,11 +136,13 @@ class background implements Launcher {
             return;
         }
         let regex = new Array();
-        for (let i = 0; i < SystemConfig.match.length; i++) {
-            let v = SystemConfig.match[i];
-            v = v.replace(/(\.\?\/)/g, "\\$1");
-            v = v.replace(/\*/g, ".*?");
-            regex.push(v);
+        for (let key in SystemConfig.match) {
+            for (let i = 0; i < SystemConfig.match[key].length; i++) {
+                let v = SystemConfig.match[key][i];
+                v = v.replace(/(\.\?\/)/g, "\\$1");
+                v = v.replace(/\*/g, ".*?");
+                regex.push(v);
+            }
         }
         let cache = await Application.App.config.ConfigList();
         let cacheJsonText = JSON.stringify(cache);

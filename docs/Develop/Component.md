@@ -95,10 +95,8 @@ Application.App.config.GetConfig("notify_tools_x")
 Application.App.config.SetConfig("notify_tools_x", this.div.style.left);
 ```
 
-#### 增减配置和关联配置面板
-增减配置需要修改`config.ts:configDefaultValue`,`config.ts:ConfigItems`接口与实现
-
-配置面板中:`views/popup.ts:popup:start:configs`,具体可看现有配置
+#### 增减配置
+增减配置需要修改`SystemConfig:config`,`config.ts:ConfigItems`中的内容,会自动修改配置面板内容
 
 如果发布油猴版本,请在对应的油猴版本中添加相应的配置
 

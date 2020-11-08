@@ -1,5 +1,6 @@
 import {boolToString, randNumber, toBool} from "./utils";
 import {Application} from "../application";
+import {SystemConfig} from "@App/config";
 
 export interface ConfigItems extends Config {
     SetNamespace(namespace: string): void
@@ -20,10 +21,13 @@ export interface ConfigItems extends Config {
     super_mode: boolean
 }
 
-let configDefaultValue: Map<string, any> = new Map<string, any>()
-    .set("vtoken", "").set("rand_answer", false).set("auto", true)
-    .set("video_mute", true).set("answer_ignore", false).set("video_cdn", "")
-    .set("video_multiple", 1).set("interval", 1).set("super_mode", true).set("topic_interval", 5);
+// 缓存默认值
+let configDefaultValue: Map<string, any> = new Map<string, any>();
+for (let key in SystemConfig.config) {
+    for (let i = 0; i < SystemConfig.config[key].items.length; i++) {
+        configDefaultValue.set(key + "_" + SystemConfig.config[key].items[i].key, SystemConfig.config[key].items[i].value);
+    }
+}
 
 export class ChromeConfigItems implements ConfigItems {
 
@@ -43,6 +47,7 @@ export class ChromeConfigItems implements ConfigItems {
         this.localCache = localStorage;
     }
 
+    // 设置配置的命名空间,储存格式为 namepace_configkey
     public SetNamespace(namespace: string): void {
         this.Namespace = namespace + "_";
     }
@@ -229,7 +234,7 @@ class backendConfig implements Config {
                     this.cache = {};
                 }
                 configDefaultValue.forEach((val, key) => {
-                    if (this.cache[key] == undefined) {
+                    if (this.cache[key] === undefined) {
                         this.cache[key] = val;
                     }
                 });
