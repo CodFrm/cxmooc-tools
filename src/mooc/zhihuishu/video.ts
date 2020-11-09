@@ -1,8 +1,11 @@
-import {Mooc} from "@App/internal/app/mooc";
-import {Hook, Context} from "@App/internal/utils/hook";
-import {Application} from "@App/internal/application";
+import { Mooc } from "@App/internal/app/mooc";
+import { Hook, Context } from "@App/internal/utils/hook";
+import { Application } from "@App/internal/application";
 import "../../views/common";
-import {randNumber, post, substrex, protocolPrompt} from "@App/internal/utils/utils";
+import { randNumber, post, substrex, protocolPrompt, createBtn } from "@App/internal/utils/utils";
+import { CssBtn } from "./utils/css-tool";
+import * as queryString from "querystring";
+
 
 export class ZhsVideo implements Mooc {
 
@@ -11,8 +14,10 @@ export class ZhsVideo implements Mooc {
     protected nowVideoId: number;
     protected videoList: any;
     protected studiedLessonDtoId: number;
+    protected studyTotalTime: number;
+    protected watchPointPost: string;
 
-    public Init(): void {
+    public Init() {
         this.hookAjax();
         let timer = setInterval(() => {
             try {
@@ -27,10 +32,7 @@ export class ZhsVideo implements Mooc {
         let tools = document.createElement('div');
         tools.className = "entrance_div";
         tools.id = "cxtools";
-        let boomBtn = document.createElement("a");
-        boomBtn.href = "#";
-        boomBtn.className = "zhs-tools-btn";
-        boomBtn.innerText = "秒过视频";
+        let boomBtn = CssBtn(createBtn("秒过视频", "", "zhs-tools-btn"));
         boomBtn.onclick = () => {
             if (!protocolPrompt("秒过视频会产生不良记录,是否继续?", "boom_no_prompt")) {
                 return;
@@ -45,25 +47,36 @@ export class ZhsVideo implements Mooc {
             let tn = time;
             //通过id搜索视频信息
             let lessonId = 0, smallLessonId = 0, chapterId = 0;
-            for (let i = 0; i < this.videoList.videoChapterDtos.length; i++) {
-                for (let n = 0; n < this.videoList.videoChapterDtos[i].videoLessons.length; n++) {
-                    if (this.videoList.videoChapterDtos[i].videoLessons[n].videoId == this.nowVideoId) {
-                        lessonId = this.videoList.videoChapterDtos[i].videoLessons[n].id;
-                        smallLessonId = this.videoList.videoChapterDtos[i].videoLessons[n].ishaveChildrenLesson;
-                        chapterId = this.videoList.videoChapterDtos[i].videoLessons[n].chapterId;
-                    }
+            let subTit = (<HTMLSpanElement>document.querySelector(".current_play .hour")).innerText;
+            //获取x.x.x DOM
+            let videoTag = subTit.split('.');
+            if (videoTag.length >= 2) {
+                lessonId = this.videoList.videoChapterDtos[Number.parseInt(videoTag[0]) - 1].videoLessons[Number.parseInt(videoTag[1]) - 1].id;
+                chapterId = this.videoList.videoChapterDtos[Number.parseInt(videoTag[0]) - 1].videoLessons[Number.parseInt(videoTag[1]) - 1].chapterId;
+                switch (videoTag.length) {
+                    case 3:
+                        smallLessonId = this.videoList.videoChapterDtos[Number.parseInt(videoTag[0]) - 1]
+                            .videoLessons[Number.parseInt(videoTag[1]) - 1]
+                            .videoSmallLessons[Number.parseInt(videoTag[2]) - 1].id;
+                    default:
+                        break;
                 }
             }
-            let s = [this.videoList.recruitId, lessonId, smallLessonId, this.nowVideoId, chapterId, "0", tn, time, timeStr]
-                , l = {
-                ev: n.Z(s),
-                learningTokenId: Base64.encode(this.studiedLessonDtoId.toString()),
-                uuid: substrex(document.cookie, "uuid%22%3A%22", "%22"),
-                dateFormate: Date.parse(<any>new Date()),
-            };
-            let postData = "ev=" + l.ev + "&learningTokenId=" + l.learningTokenId +
-                "&uuid=" + l.uuid + "&dateFormate=" + l.dateFormate;
+            const tims = parseInt((time / 1.999).toString());
+            for (let index = 0; index < tims; index++) {
+                this.learningTimeRecord();
+            }
 
+            let s = [this.videoList.recruitId, lessonId, smallLessonId, this.nowVideoId, chapterId, "0", tn, this.studyTotalTime, timeStr]
+                , l = {
+                    watchPoint: this.watchPointPost,
+                    ev: n.Z(s),
+                    courseId: this.videoList.courseId,
+                    learningTokenId: Base64.encode(this.studiedLessonDtoId.toString()),
+                    uuid: substrex(document.cookie, "uuid%22%3A%22", "%22"),
+                    dateFormate: Date.parse(<any>new Date()),
+                };
+            let postData = queryString.stringify(l);
             post("https://studyservice.zhihuishu.com/learning/saveDatabaseIntervalTime", postData, false, function (data: any) {
                 let json = JSON.parse(data);
                 try {
@@ -77,26 +90,30 @@ export class ZhsVideo implements Mooc {
                 }
             });
         };
-        //TODO:优化,先这样把按钮弄出来
-        let li2 = document.createElement("li");
-        let startBtn = document.createElement("a");
-        startBtn.href = "#";
-        startBtn.className = "zhs-tools-btn zhs-start-btn";
-        startBtn.innerText = Application.App.config.auto ? "暂停挂机" : "开始挂机";
-        startBtn.onclick = () => {
+        const startBtnText = Application.App.config.auto ? "暂停挂机" : "开始挂机";
+        let startBtn = CssBtn(createBtn(startBtnText, "", "zhs-tools-btn zhs-start-btn"));
+        startBtn.addEventListener('click', () => {
             if (startBtn.innerText == "暂停挂机") {
                 startBtn.innerText = "开始挂机";
+                Application.App.config.auto = false;
                 localStorage["auto"] = false;
             } else {
                 startBtn.innerText = "暂停挂机";
                 localStorage["auto"] = true;
+                Application.App.config.auto = true;
                 this.play();
             }
-        };
+        })
         tools.appendChild(startBtn);
         tools.appendChild(boomBtn);
-
         document.querySelector(".videotop_box.fl").append(tools);
+    }
+
+    learningTimeRecord() {
+        var t = parseInt(((this.studyTotalTime / 5) + 2).toString())
+            , e = null == this.watchPointPost || "" == this.watchPointPost ? "0,1," : this.watchPointPost + ",";
+        this.watchPointPost = e + t;
+        this.studyTotalTime += 2;
     }
 
     protected compile() {
@@ -124,7 +141,6 @@ export class ZhsVideo implements Mooc {
         if (this.video) {
             this.video.muted = Application.App.config.video_mute;
             this.video.playbackRate = Application.App.config.video_multiple;
-
             Application.App.config.auto && this.video.play();
         }
     }
@@ -192,6 +208,7 @@ export class ZhsVideo implements Mooc {
                     get: function () {
                         let json = JSON.parse(this.response);
                         self.studiedLessonDtoId = json.data.studiedLessonDto.id;
+                        self.studyTotalTime = json.data.studiedLessonDto.studyTotalTime;
                         return this.response;
                     }
                 });
@@ -200,8 +217,6 @@ export class ZhsVideo implements Mooc {
             return ret;
         });
     }
-
-
 }
 
 var n = {
