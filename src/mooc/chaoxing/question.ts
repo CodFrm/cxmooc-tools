@@ -240,8 +240,15 @@ abstract class cxQuestion implements Question {
 class cxSelectQuestion extends cxQuestion implements Question {
 
     protected getContent(el: HTMLElement): string {
-        el = el.querySelector("a");
-        return el.innerHTML;
+        let ret = el.querySelector("a");
+        if (ret == null) {
+            let tmpel = <HTMLInputElement>el.querySelector("label > input,input");
+            if (tmpel.value == "true") {
+                return "对√";
+            }
+            return "错×";
+        }
+        return ret.innerHTML;
     }
 
     protected getOption(el: HTMLElement): string {
