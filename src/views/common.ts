@@ -1,9 +1,24 @@
 window.addEventListener("load", () => {
-    let css = `#cxtools {
+    let css = `
+@keyframes aniripple  
+{
+    0%{
+        width:0px;
+        height:0px;
+        opacity:0.4;
+    }
+    100%{
+        width:500px;
+        height:500px;
+        opacity:0;
+    }
+}  
+
+#cxtools {
     position: absolute;
     left: 250px;
     top: 2px;
-    width: 200px;
+    width: 210px;
     font-size: 0;
 }
 
@@ -32,10 +47,15 @@ window.addEventListener("load", () => {
     font-size: 14px;
     line-height: 24px;
     margin:0;
+    cursor:pointer;
 }
-
-.zhs-tools-btn:hover {
-    background: #ff3838;
+.btn-ripple{
+    position:absolute;
+    background:#000;
+    pointer-events:none;
+    transform:translate(-50%,-50%);
+    border-radius:50%;
+    animation:aniripple 1s linear infinite;
 }
 
 .zhs-start-btn{
