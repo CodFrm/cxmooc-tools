@@ -211,8 +211,10 @@ abstract class cxQuestion implements Question {
 
     protected isCorrect(): Element {
         let el = this.el.querySelector(".Py_answer.clearfix,.Py_tk");
-        if (el && el.innerHTML.indexOf('正确答案') >= 0) {
+        if (el) {
             if (el.querySelectorAll('.fr.dui').length > 0 || el.querySelectorAll('.fr.bandui').length > 0) {
+                return el;
+            } else if (el.innerHTML.indexOf('正确答案') >= 0) {
                 return el;
             }
         }
