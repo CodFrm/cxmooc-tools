@@ -15,11 +15,13 @@ title: 简介
 ## 小白看这里(推荐)
 小白请使用火狐浏览器扩展安装版或者使用一键安装包
 
-超星慕课小工具支持超星以及智慧树，如果需要**中国大学mooc**请安装专版
-
-[**直链高速下载**](http://d0.ananas.chaoxing.com/download/c10c536b4566fcf384849d8c3c5f45c1?fn=&mt=)
+超星慕课小工具支持超星以及智慧树
 
 [**打包版浏览器文档**](/1-UserGuide/1-7-easychorme.html#打包版浏览器),但是这个更新速度较慢,也可以自己手动更新
+
+如果需要**中国大学mooc**请安装专版
+
+[**直链高速下载**](http://d0.ananas.chaoxing.com/download/c10c536b4566fcf384849d8c3c5f45c1?fn=&mt=)
 
 或者使用FireFox浏览器,前往FireFox商店下载更新:[**FireFox文档**](/1-UserGuide/1-2-firefox.html)
 
