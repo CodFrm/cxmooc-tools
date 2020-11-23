@@ -1,8 +1,8 @@
 {
   "manifest_version": 2,
-  "name": "超星慕课小工具",
+  "name": "网课小工具",
   "version": "2.5.0",
-  "description": "一个 超星(学习通)/智慧树(知到)/中国大学mooc 刷课工具,火狐,谷歌,油猴支持.全自动任务,视频倍速秒过,作业考试题库,验证码自动打码(੧ᐛ੭挂科模式,启动)",
+  "description": "一个 大学生网课 学习工具,火狐,谷歌,油猴支持.全自动任务,视频倍速秒过,作业考试题库,验证码自动打码(੧ᐛ੭挂科模式,启动)",
   "icons": {
     "16": "img/logo.png",
     "48": "img/logo.png",
@@ -10,7 +10,7 @@
   },
   "browser_action": {
     "default_icon": "img/logo.png",
-    "default_title": "超星慕课小工具",
+    "default_title": "网课小工具",
     "default_popup": "src/popup.html"
   },
   "background": {
