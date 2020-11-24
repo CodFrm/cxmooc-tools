@@ -48,7 +48,7 @@ class background implements Launcher {
 
     protected menu() {
         chrome.contextMenus.create({
-            title: "使用 超星慕课小工具 搜索题目",
+            title: "使用 网课小工具 搜索题目",
             contexts: ["selection"],
             onclick: function (info, tab) {
                 chrome.tabs.create({url: "https://cx.icodef.com/query.html?q=" + encodeURIComponent(info.selectionText)});
