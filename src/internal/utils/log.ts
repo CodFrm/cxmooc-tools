@@ -185,7 +185,7 @@ export class PageLog implements Logger {
         console.warn("[warn", this.getNowTime(), "]", ...args);
         if (document.hidden && localStorage["is_notify"] == "true") {
             Noifications({
-                title: "超星慕课小工具",
+                title: "网课小工具",
                 text: text + "\n3秒后自动关闭",
                 timeout: 3000,
             });
@@ -201,7 +201,7 @@ export class PageLog implements Logger {
         console.error("[error", this.getNowTime(), "]", ...args);
         if (localStorage["is_notify"] == "true") {
             Noifications({
-                title: "超星慕课小工具",
+                title: "网课小工具",
                 text: text,
             });
         }
@@ -215,7 +215,7 @@ export class PageLog implements Logger {
         }
         console.error("[fatal", this.getNowTime(), "]", ...args);
         Noifications({
-            title: "超星慕课小工具",
+            title: "网课小工具",
             text: text,
         });
         return this;
