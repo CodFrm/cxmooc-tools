@@ -30,18 +30,24 @@ crx.load(['./build/cxmooc-tools/manifest.json',
 // TODO: 可以写成自动识别的
 let tampermonkey_cx = fs.readFileSync('./src/tampermonkey/cxmooc.js');
 let tampermonkey_cx_str = tampermonkey_cx.toString().replace(/@version\s+.*/, '@version ' + SystemConfig.hotVersion);
+let meta_cx = tampermonkey_cx_str;
 tampermonkey_cx_str += fs.readFileSync('./build/tampermonkey-cxmooc.js');
-fs.writeFileSync('./build/cxmooc.js', tampermonkey_cx_str);
+fs.writeFileSync('./build/cxmooc.user.js', tampermonkey_cx_str);
+fs.writeFileSync('./build/cxmooc.meta.js', meta_cx);
 
 let tampermonkey_zhs = fs.readFileSync('./src/tampermonkey/zhihuishu.js');
 let tampermonkey_zhs_str = tampermonkey_zhs.toString().replace(/@version\s+.*/, '@version ' + SystemConfig.hotVersion);
+let meta_zhs = tampermonkey_zhs_str;
 tampermonkey_zhs_str += fs.readFileSync('./build/tampermonkey-zhihuishu.js');
-fs.writeFileSync('./build/zhihuishu.js', tampermonkey_zhs_str);
+fs.writeFileSync('./build/zhihuishu.user.js', tampermonkey_zhs_str);
+fs.writeFileSync('./build/zhihuishu.meta.js', meta_zhs);
 
 let tampermonkey_163 = fs.readFileSync('./src/tampermonkey/course163.js');
 let tampermonkey_163_str = tampermonkey_163.toString().replace(/@version\s+.*/, '@version ' + SystemConfig.hotVersion);
+let meta_163 = tampermonkey_163_str;
 tampermonkey_163_str += fs.readFileSync('./build/tampermonkey-course163.js');
-fs.writeFileSync('./build/course163.js', tampermonkey_163_str);
+fs.writeFileSync('./build/course163.user.js', tampermonkey_163_str);
+fs.writeFileSync('./build/course163.meta.js', meta_163);
 
 function dealVersion(version: any) {
     let reg = /\d/g;

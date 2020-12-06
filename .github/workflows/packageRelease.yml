@@ -31,7 +31,8 @@ jobs:
       env:
         CHROME_PEM: ${{ secrets.CHROME_PEM }}
       run: |
-        echo $CHROME_PEM > build/cxmooc-tolls.pem
+        echo "$CHROME_PEM" > ./build/cxmooc-tools.pem
+        chmod 600 ./build/cxmooc-tools.pem
         npm ci  
         npm test
         npm run build
