@@ -10,6 +10,7 @@
 [![FireFox](https://img.shields.io/badge/firefox-success-brightgreen)](https://addons.mozilla.org/zh-CN/firefox/addon/%E8%B6%85%E6%98%9F%E6%85%95%E8%AF%BE%E5%B0%8F%E5%B7%A5%E5%85%B7/)
 [![tampermonkey](https://img.shields.io/badge/tampermonkey-success-yellowgreen)](https://greasyfork.org/zh-CN/scripts/376190-%E8%B6%85%E6%98%9F%E6%85%95%E8%AF%BE%E5%B0%8F%E5%B7%A5%E5%85%B7)
 ![GitHub All Releases](https://img.shields.io/github/downloads/CodFrm/cxmooc-tools/total)
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2FCodFrm%2Fcxmooc-tools.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2FCodFrm%2Fcxmooc-tools?ref=badge_shield)
 
 </div>
 
@@ -107,3 +108,6 @@ npm run pack
 The project is completely open source, free, and is for technical learning and communication only. **The developer team does not authorize any organization, organization, or individual to use it for commercial or profitable activities. Never use this project for any profitable activities. It will not be used for profit-making business in the future. Individuals or organizations and organizations that use the various disputes arising from the project and legal issues shall be borne by themselves.**
 
 If you start using this project, you are deemed to agree to all the terms in the project disclaimer, and the terms are updated without further notice. **Developers only accept donations or appreciations that do not constitute a purchase or employment relationship with the donor.** If you choose to donate this item, we will list a list of donors (including donation amount, date), but will not announce your donation account. If you choose to donate, then I will treat you as completely voluntary, without any employment, donation of the relationship.
+
+## License
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2FCodFrm%2Fcxmooc-tools.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2FCodFrm%2Fcxmooc-tools?ref=badge_large)
