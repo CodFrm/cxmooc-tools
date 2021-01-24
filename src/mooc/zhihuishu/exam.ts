@@ -21,9 +21,13 @@ export class ZhsExam implements Mooc {
     protected topic: Topic;
 
     public Init(): void {
+        let id = document.URL.match(/(checkHomework|dohomework|doexamination)\/(.*?)\/(.*?)\/(.*?)\/(.*?)\/(.*?)$/);
+        if (id == null) {
+            return;
+        }
         this.topic = new ExamTopic(document, new ToolsQuestionBankFacade("zhs", {
             refer: document.URL,
-            id: document.URL.match(/(checkHomework|dohomework)\/(.*?)\/(.*?)\/(.*?)\/(.*?)\/(.*?)$/)[4],
+            id: id[4],
         }));
         this.topic.SetQueryQuestions(new ExamQueryQuestion());
         window.addEventListener("load", () => {

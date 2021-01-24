@@ -178,7 +178,7 @@ export class PageLog implements Logger {
         let text = "";
         for (let i = 0; i < args.length; i++) {
             if (typeof args[i] == "object") {
-                text += JSON.stringify(args[i]) + "\n";
+                text += args[i].toString() + "\n";
             } else {
                 text += args[i] + "\n";
             }
