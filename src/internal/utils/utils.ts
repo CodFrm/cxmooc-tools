@@ -419,11 +419,11 @@ export function boolToString(val: boolean): string {
 }
 
 export function UntrustedClick(el: Element): boolean {
-    let untrusted = new MouseEvent("click", {"clientX": 10086});
-    if (!untrusted.isTrusted) {
-        Application.App.log.Warn("扩展执行错误");
-        return false;
-    }
+    let untrusted = new MouseEvent("click", {});
+    // if (!untrusted.isTrusted) {
+    //     Application.App.log.Warn("扩展执行错误");
+    //     return false;
+    // }
     return el.dispatchEvent(untrusted);
 }
 

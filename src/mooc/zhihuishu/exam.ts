@@ -23,6 +23,25 @@ export class ZhsExam implements Mooc {
     public Init(): void {
         let id = document.URL.match(/(checkHomework|dohomework|doexamination)\/(.*?)\/(.*?)\/(.*?)\/(.*?)\/(.*?)$/);
         if (id == null) {
+            //url改变但不重载页面
+            window.addEventListener("hashchange", () => {
+                setTimeout(() => {
+                    this.Init();
+                    document.oncontextmenu = () => {
+                    }
+                    document.oncopy = () => {
+                    }
+                    document.onpaste = () => {
+                    }
+                    document.onselectstart = () => {
+                    }
+                    if (document.querySelectorAll(".examInfo.infoList.clearfix").length <= 0) {
+                        this.createBtn();
+                    } else {
+                        this.topic.CollectAnswer();
+                    }
+                }, 1000);
+            })
             return;
         }
         this.topic = new ExamTopic(document, new ToolsQuestionBankFacade("zhs", {
@@ -50,6 +69,9 @@ export class ZhsExam implements Mooc {
     }
 
     protected createBtn() {
+        if (document.querySelectorAll(".zhs-search-answer.green").length > 0) {
+            return;
+        }
         let el = document.querySelector(".examPaper_partTit.mt20 ul");
         let btn = createBtn("搜索答案", "点击搜索答案", "zhs-search-answer green")
         el.append(btn);
