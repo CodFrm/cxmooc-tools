@@ -22,7 +22,7 @@ module.exports = {
                     {text: 'FireFox 扩展', link: '/1-UserGuide/1-2-firefox.html'},
                     {text: 'Chrome 扩展', link: '/1-UserGuide/1-1-chrome.html'},
                     {text: 'Tampermonkey 脚本', link: '/1-UserGuide/1-3-tampermonkey.html'},
-                    {text: '中国大学mooc专用', link: '/1-UserGuide/1-8-moocchorme.html'},
+                    // {text: '中国大学mooc专用', link: '/1-UserGuide/1-8-moocchorme.html'},
                     {text: '常见问题【使用必看】', link: '/1-UserGuide/qa.md'},
                     {text: '功能说明', link: '/1-UserGuide/featured.html'},
                     {text: '配置说明', link: '/1-UserGuide/1-4-config.html'},
@@ -46,7 +46,7 @@ module.exports = {
                 'qa.html',
                 '1-6-gettoken.html',
                 '1-7-easychorme.html',
-                '1-8-moocchorme.html',
+                // '1-8-moocchorme.html',
                 '1-2-firefox.html',  /* /foo/one.html */
                 '1-1-chrome.html',
                 '1-3-tampermonkey.html',     /* /foo/ */

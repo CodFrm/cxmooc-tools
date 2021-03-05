@@ -20,7 +20,7 @@ features:
 ![GitHub tag (latest SemVer)](https://img.shields.io/github/tag/codfrm/cxmooc-tools.svg?label=version)
 [![Chrome](https://img.shields.io/badge/chrome-success-brightgreen)](https://chrome.google.com/webstore/detail/%E8%B6%85%E6%98%9F%E6%85%95%E8%AF%BE%E5%B0%8F%E5%B7%A5%E5%85%B7/kkicgcijebblepmephnfganiiochecfl?hl=zh-CN)
 [![FireFox](https://img.shields.io/badge/firefox-success-brightgreen)](https://addons.mozilla.org/zh-CN/firefox/addon/%E8%B6%85%E6%98%9F%E6%85%95%E8%AF%BE%E5%B0%8F%E5%B7%A5%E5%85%B7/)
-[![tampermonkey](https://img.shields.io/badge/tampermonkey-success-yellowgreen)](https://greasyfork.org/zh-CN/scripts/376190-%E8%B6%85%E6%98%9F%E6%85%95%E8%AF%BE%E5%B0%8F%E5%B7%A5%E5%85%B7)
+[![tampermonkey](https://img.shields.io/badge/tampermonkey-success-yellowgreen)](https://bbs.tampermonkey.net.cn/thread-61-1-1.html)
 
 
 

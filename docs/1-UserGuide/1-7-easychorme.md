@@ -6,7 +6,7 @@ title: 打包版浏览器(小白看我)
 
 请注意，浏览器打包版相对扩展安装版来说可能有一定的更新延迟，如果有一定的动手能力推荐使用扩展版。
 
-- [打包版下载地址](http://d0.ananas.chaoxing.com/download/c10c536b4566fcf384849d8c3c5f45c1?fn=&mt=)
+- [打包版下载地址](http://dl.icodef.com/res/%E7%BD%91%E8%AF%BE%E5%B0%8F%E5%B7%A5%E5%85%B7V2.5.0.zip)
 
 ## 解压浏览器
 
