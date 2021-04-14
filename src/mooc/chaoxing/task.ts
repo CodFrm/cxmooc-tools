@@ -1,7 +1,7 @@
-import {CssBtn} from "@App/mooc/chaoxing/utils";
-import {createBtn} from "@App/internal/utils/utils";
-import {Application} from "@App/internal/application";
-import {Task, TaskEvent} from "@App/internal/app/task";
+import { CssBtn } from "@App/mooc/chaoxing/utils";
+import { createBtn, get } from "@App/internal/utils/utils";
+import { Application } from "@App/internal/application";
+import { Task, TaskEvent } from "@App/internal/app/task";
 
 export abstract class CxTask extends Task {
     public jobIndex: number;
@@ -96,7 +96,13 @@ export class CxTaskControlBar {
         let download = CssBtn(createBtn("下载资源", "我要下载下来好好学习", "cx-btn"));
         download.style.background = "#999999";
         download.onclick = () => {
-            window.open("http://d0.ananas.chaoxing.com/download/" + this.task.taskinfo.property.objectid);
+            (<any>get("https://mooc1-1.chaoxing.com/ananas/status/" + this.task.taskinfo.property.objectid, (data: string) => {
+                let json = JSON.parse(data);
+                prompt("如果打开下载失败，请复制下面链接手动下载", json.download);
+                window.open(json.download);
+            })).error(() => {
+                alert("资源信息获取失败");
+            });
         };
         return download;
     }

@@ -1,6 +1,6 @@
-import {boolToString, randNumber, toBool} from "./utils";
-import {Application} from "../application";
-import {SystemConfig} from "@App/config";
+import { boolToString, randNumber, toBool } from "./utils";
+import { Application } from "../application";
+import { SystemConfig } from "@App/config";
 
 export interface ConfigItems extends Config {
     SetNamespace(namespace: string): void
@@ -222,7 +222,7 @@ class backendConfig implements Config {
     // 更新配置转为json,存入
     protected updateConfigStorage() {
         let txt = JSON.stringify(this.cache);
-        chrome.storage.sync.set({"config_storage": txt});
+        chrome.storage.sync.set({ "config_storage": txt });
     }
 
     // 更新缓存
@@ -240,7 +240,7 @@ class backendConfig implements Config {
                     }
                 });
                 this.updateConfigStorage();
-                resolve();
+                resolve(undefined);
             });
         });
     }
@@ -263,12 +263,12 @@ class backendConfig implements Config {
             info[key] = val;
             //通知前端和后端
             this.cache[key] = val;
-            chrome.tabs.query({active: true, currentWindow: true}, function (tabs) {
-                chrome.tabs.sendMessage(tabs[0].id, {type: "cxconfig", key: key, value: val});
+            chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+                chrome.tabs.sendMessage(tabs[0].id, { type: "cxconfig", key: key, value: val });
             });
-            chrome.runtime.sendMessage({type: "cxconfig", key: key, value: val});
+            chrome.runtime.sendMessage({ type: "cxconfig", key: key, value: val });
             this.updateConfigStorage();
-            resolve();
+            resolve(undefined);
         });
     }
 
@@ -295,7 +295,7 @@ class frontendGetConfig implements Config {
 
     constructor() {
         this.watch = new configWatch();
-        this.cache = (<any>window).configData;
+        this.cache = (<any>window).configData || localStorage;
         window.addEventListener('message', (event) => {
             if (event.data.type && event.data.type == "cxconfig") {
                 Application.App.log.Info("配置更新:" + event.data.key + "=" + event.data.value);
@@ -322,7 +322,7 @@ class frontendGetConfig implements Config {
             return (<any>window).GM_setValue(key, val);
         }
         return Application.App.Client.Send({
-            type: "GM_setValue", details: {key: key, val: val},
+            type: "GM_setValue", details: { key: key, val: val },
         });
     }
 

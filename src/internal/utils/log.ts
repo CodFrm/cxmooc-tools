@@ -138,8 +138,25 @@ export class PageLog implements Logger {
                 return parseInt(window.getComputedStyle(ele)[prop]);
             }
 
-            this.div.style.left = Application.App.config.GetConfig("notify_tools_x");
-            this.div.style.top = Application.App.config.GetConfig("notify_tools_y");
+            const windowWidth = window.innerWidth;
+            const windowHeight = window.innerHeight;
+            const containerWidth = getProperty(this.div, "width");
+            const containerHeight = getProperty(this.div, "height");
+            let x = parseInt(Application.App.config.GetConfig("notify_tools_x").replace('px', ''));
+            if (x < 0) {
+                x = 0;
+            }
+            if (x >= windowWidth - containerWidth)
+                x = windowWidth - containerWidth;
+            this.div.style.left = x + "px";
+            let y = parseInt(Application.App.config.GetConfig("notify_tools_y").replace('px', ''));
+            if (y < 0) {
+                y = 0;
+            }
+            if (y >= windowHeight - containerHeight)
+                y = windowHeight - containerHeight;
+            this.div.style.top = y + "px";
+
             let head = <HTMLElement>this.div.querySelector("#tools-head");
             head.onmousedown = (downEvent) => {
                 let relaX = downEvent.clientX - this.div.offsetLeft;

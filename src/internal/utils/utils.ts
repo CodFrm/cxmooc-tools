@@ -419,6 +419,10 @@ export function boolToString(val: boolean): string {
 }
 
 export function UntrustedClick(el: Element): boolean {
+    if (window.CAT_click != undefined) {
+        CAT_click(el);
+        return true;
+    }
     let untrusted = new MouseEvent("click", { "clientX": 10086 });
     if (!untrusted.isTrusted) {
         Application.App.log.Warn("扩展执行错误");
