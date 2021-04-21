@@ -95,6 +95,9 @@ class ExamQueryQuestion implements QueryQuestions {
         let ret = new Array();
         timu.forEach((val: HTMLElement) => {
             let el = val.querySelector(".subject_type_annex .subject_type");
+            if (el == null) {
+                return;
+            }
             let type = SwitchTopicType(substrex(el.innerHTML, "【", "】"));
             let question = this.createQuestion(type, val);
             ret.push(question);
