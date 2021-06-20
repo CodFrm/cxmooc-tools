@@ -142,14 +142,14 @@ export class PageLog implements Logger {
             const windowHeight = window.innerHeight;
             const containerWidth = getProperty(this.div, "width");
             const containerHeight = getProperty(this.div, "height");
-            let x = parseInt(Application.App.config.GetConfig("notify_tools_x").replace('px', ''));
+            let x = parseInt(Application.App.config.GetConfig("notify_tools_x", "60px").replace('px', ''));
             if (x < 0) {
                 x = 0;
             }
             if (x >= windowWidth - containerWidth)
                 x = windowWidth - containerWidth;
             this.div.style.left = x + "px";
-            let y = parseInt(Application.App.config.GetConfig("notify_tools_y").replace('px', ''));
+            let y = parseInt(Application.App.config.GetConfig("notify_tools_y", "40px").replace('px', ''));
             if (y < 0) {
                 y = 0;
             }

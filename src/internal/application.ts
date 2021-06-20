@@ -1,9 +1,9 @@
-import {Client, NewChromeClientMessage, NewExtensionClientMessage} from "./utils/message";
-import {HttpUtils} from "./utils/utils";
-import {ConfigItems} from "./utils/config";
-import {Logger} from "./utils/log";
-import {SystemConfig} from "@App/config";
-import {QuestionBank} from "./app/question";
+import { Client, NewChromeClientMessage, NewExtensionClientMessage } from "./utils/message";
+import { HttpUtils } from "./utils/utils";
+import { ConfigItems } from "./utils/config";
+import { Logger } from "./utils/log";
+import { SystemConfig } from "@App/config";
+import { QuestionBank } from "./app/question";
 
 export const Backend = "backend";
 export const Frontend = "frontend";
@@ -108,7 +108,7 @@ export class Application {
                     hotversion: json.hotversion,
                     injection: json.injection,
                 };
-                chrome.storage && chrome.storage.local.set(data);
+                Application.IsContent && chrome.storage.local.set(data);
                 await callback((SystemConfig.version < data.version), data);
             }, error: async function () {
                 await callback(false, undefined);
