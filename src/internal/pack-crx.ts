@@ -1,4 +1,5 @@
-import {SystemConfig} from "../config";
+import { SystemConfig } from "../config";
+import { execSync } from "child_process"
 
 const fs = require("fs");
 const ChromeExtension = require('crx');
@@ -12,7 +13,9 @@ if (SystemConfig.version != SystemConfig.hotVersion) {
 let manifest = fs.readFileSync('./build/cxmooc-tools/manifest.json');
 let str = manifest.toString().replace(/"version": "(.*?)"/, '"version": "' + version + '"');
 fs.writeFileSync('./build/cxmooc-tools/manifest.json', str);
+
 // build chrome
+execSync("npm run build");
 const crx = new ChromeExtension({
     privateKey: fs.readFileSync('./build/cxmooc-tools.pem')
 });
@@ -26,7 +29,9 @@ crx.load(['./build/cxmooc-tools/manifest.json',
     console.error(err);
 });
 
+
 // build tampermonkey
+execSync("npm run tampermonkey");
 // TODO: 可以写成自动识别的
 let tampermonkey_cx = fs.readFileSync('./src/tampermonkey/cxmooc.js');
 let tampermonkey_cx_str = tampermonkey_cx.toString().replace(/@version\s+.*/, '@version ' + SystemConfig.hotVersion);

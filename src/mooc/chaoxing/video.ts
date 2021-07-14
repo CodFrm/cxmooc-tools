@@ -1,10 +1,10 @@
-import {Hook, Context} from "@App/internal/utils/hook";
-import {Application} from "@App/internal/application";
-import {randNumber, get, createBtn, protocolPrompt, isPhone} from "@App/internal/utils/utils";
-import {CssBtn} from "./utils";
-import {CxTaskControlBar, CxTask} from "@App/mooc/chaoxing/task";
-import {Mooc} from "@App/internal/app/mooc";
-import {TaskType} from "@App/internal/app/task";
+import { Hook, Context } from "@App/internal/utils/hook";
+import { Application } from "@App/internal/application";
+import { randNumber, get, createBtn, protocolPrompt, isPhone } from "@App/internal/utils/utils";
+import { CssBtn } from "./utils";
+import { CxTaskControlBar, CxTask } from "@App/mooc/chaoxing/task";
+import { Mooc } from "@App/internal/app/mooc";
+import { TaskType } from "@App/internal/app/task";
 
 // 优化播放器
 export class CxVideoOptimization implements Mooc {
@@ -105,9 +105,9 @@ export class CxVideoOptimization implements Mooc {
                 '&duration=' + this.param.duration + '&dtype=Video&objectId=' + this.param.objectId +
                 '&clazzId=' + this.param.clazzId +
                 '&view=pc&playingTime=' + playTime + '&isdrag=4&enc=' + enc, function (data: string) {
-                let isPassed = JSON.parse(data);
-                callback(isPassed.isPassed);
-            });
+                    let isPassed = JSON.parse(data);
+                    callback(isPassed.isPassed);
+                });
         }
     }
 
@@ -162,7 +162,7 @@ export class Video extends CxTask {
                         if (this.context.document.querySelector("#reader").innerHTML.indexOf("您没有安装flashplayer") >= 0) {
                             this.context.clearInterval(timer);
                             this.flash = true;
-                            resolve();
+                            resolve(undefined);
                         }
                         return;
                     }
@@ -174,8 +174,9 @@ export class Video extends CxTask {
                         this.context.clearInterval(this.time);
                         this.callEvent("complete");
                     });
-                    resolve();
+                    resolve(undefined);
                 } catch (error) {
+                    Application.App.log.Debug("初始化video错误", error);
                 }
             }, 500);
         });
@@ -187,8 +188,9 @@ export class Video extends CxTask {
 
     public Start(): Promise<any> {
         return new Promise(resolve => {
+            Application.App.log.Debug("开始播放视频");
             if (this.flash) {
-                resolve();
+                resolve(undefined);
                 return this.callEvent("complete");
             }
             //定时运行
@@ -204,7 +206,7 @@ export class Video extends CxTask {
                 }
             });
             this.video.play();
-            resolve();
+            resolve(undefined);
         });
     }
 
@@ -229,16 +231,16 @@ export class Video extends CxTask {
     public downloadSubtitle() {
         get('/richvideo/subtitle?mid=' + this.taskinfo.property.mid + '&_dc=' +
             Date.parse(new Date().toString()), function (data: any) {
-            let json = JSON.parse(data);
-            if (json.length <= 0) {
-                alert("没有字幕！");
-            } else {
-                for (let i = 0; i < json.length; i++) {
-                    let subtitleURL = json[i]['url'];
-                    window.open(subtitleURL);
+                let json = JSON.parse(data);
+                if (json.length <= 0) {
+                    alert("没有字幕！");
+                } else {
+                    for (let i = 0; i < json.length; i++) {
+                        let subtitleURL = json[i]['url'];
+                        window.open(subtitleURL);
+                    }
                 }
-            }
-        });
+            });
     }
 
     /**
