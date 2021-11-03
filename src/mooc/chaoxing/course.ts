@@ -99,7 +99,7 @@ export class CxCourse extends EventListener<MoocEvent> implements MoocTaskSet {
     }
 
     protected nextPage(num: number) {
-        let el = <HTMLElement>document.querySelector("span.currents ~ span");
+        let el = <HTMLElement>document.querySelector("span.currents ~ span") || <HTMLElement>document.querySelector(".prev_next.next");
         if (el != undefined) {
             return el.click();
         }
