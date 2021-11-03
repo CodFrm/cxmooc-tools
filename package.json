@@ -4,13 +4,13 @@
   "description": "一个 大学生网课 学习工具,火狐,谷歌,油猴支持.全自动任务,视频倍速秒过,作业考试题库,验证码自动打码(੧ᐛ੭挂科模式,启动)",
   "main": "mooc.js",
   "scripts": {
-    "test": "node_modules/.bin/jest",
-    "build": "node_modules/.bin/webpack --mode production --config webpack.config.js",
-    "tampermonkey": "node_modules/.bin/webpack --mode development --config webpack.tampermonkey.js",
-    "dev": "node_modules/.bin/webpack --mode development --config webpack.dev.js",
-    "pack": "node_modules/.bin/tsc src/internal/pack-crx.ts && node src/internal/pack-crx.js",
-    "docs:dev": "node_modules/.bin/vuepress dev docs",
-    "docs:build": "node_modules/.bin/vuepress build docs"
+    "test": "jest",
+    "build": "webpack --mode production --config webpack.config.js",
+    "tampermonkey": "webpack --mode development --config webpack.tampermonkey.js",
+    "dev": "webpack --mode development --config webpack.dev.js",
+    "pack": "tsc src/internal/pack-crx.ts && node src/internal/pack-crx.js",
+    "docs:dev": "vuepress dev docs",
+    "docs:build": "vuepress build docs"
   },
   "repository": {
     "type": "git",

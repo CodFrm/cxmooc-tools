@@ -1,10 +1,6 @@
-import {
-    Application
-} from "../application";
+import { Application } from "../application";
 import "../../views/common";
-import {
-    Noifications
-} from "@App/internal/utils/utils";
+import { Noifications } from "@App/internal/utils/utils";
 
 export interface Logger {
     Debug(...args: any): Logger;
@@ -20,7 +16,6 @@ export interface Logger {
 
 // 开发者工具f12处打印日志
 export class ConsoleLog implements Logger {
-
     protected getNowTime(): string {
         let time = new Date();
         return time.getHours() + ":" + time.getMinutes() + ":" + time.getSeconds();
@@ -50,7 +45,6 @@ export class ConsoleLog implements Logger {
         console.error("[fatal", this.getNowTime(), "]", ...args);
         return this;
     }
-
 }
 
 export class PageLog implements Logger {
@@ -65,13 +59,24 @@ export class PageLog implements Logger {
 
     first(text: string, color: string, background: string) {
         let new_log = document.createElement("div");
-        new_log.innerHTML = `
-                <div class="log" style="border-color: ` + background + `; background-color: ` + background + `;">
-                    <p><span style="color:` + color + `;">` + text + `</span></p>
+        new_log.innerHTML =
+            `
+                <div class="log" style="border-color: ` +
+            background +
+            `; background-color: ` +
+            background +
+            `;">
+                    <p><span style="color:` +
+            color +
+            `;">` +
+            text +
+            `</span></p>
                 </div>
             `;
         //插入第一个元素前
-        var first = document.getElementsByClassName("tools-notice-content")[0].getElementsByTagName("div");
+        var first = document
+            .getElementsByClassName("tools-notice-content")[0]
+            .getElementsByTagName("div");
         document.querySelector(".tools-notice-content").insertBefore(new_log, first[0]);
     }
 
@@ -106,7 +111,7 @@ export class PageLog implements Logger {
             checkbox.checked = (Application.App.config.GetConfig("is_notify") || "true") == "true";
             this.is_notify = checkbox.checked;
             if (!checkbox.checked) {
-                checkbox.removeAttribute("checked")
+                checkbox.removeAttribute("checked");
             }
             let self = this;
             checkbox.addEventListener("change", function () {
@@ -116,36 +121,73 @@ export class PageLog implements Logger {
             setTimeout(() => {
                 Application.CheckUpdate((isnew, data) => {
                     if (data == undefined) {
-                        this.Info("检查更新失败.")
+                        this.Info("检查更新失败.");
                         return;
                     }
                     let html = "";
                     if (isnew) {
-                        html += "<span>[有新版本]</span>"
+                        html += "<span>[有新版本]</span>";
                     }
                     html += data.injection;
                     this.Info(html);
                 });
             }, 1000);
+
             //支持拖拽移动
-            this.div.style.left = Application.App.config.GetConfig("notify_tools_x");
-            this.div.style.top = Application.App.config.GetConfig("notify_tools_y");
-            let head = <HTMLElement>this.div.querySelector('#tools-head');
+            function getProperty(ele: HTMLElement, prop: any) {
+                return parseInt(window.getComputedStyle(ele)[prop]);
+            }
+
+            const windowWidth = window.innerWidth;
+            const windowHeight = window.innerHeight;
+            const containerWidth = getProperty(this.div, "width");
+            const containerHeight = getProperty(this.div, "height");
+            let x = parseInt(Application.App.config.GetConfig("notify_tools_x", "60px").replace('px', ''));
+            if (x < 0) {
+                x = 0;
+            }
+            if (x >= windowWidth - containerWidth)
+                x = windowWidth - containerWidth;
+            this.div.style.left = x + "px";
+            let y = parseInt(Application.App.config.GetConfig("notify_tools_y", "40px").replace('px', ''));
+            if (y < 0) {
+                y = 0;
+            }
+            if (y >= windowHeight - containerHeight)
+                y = windowHeight - containerHeight;
+            this.div.style.top = y + "px";
+
+            let head = <HTMLElement>this.div.querySelector("#tools-head");
             head.onmousedown = (downEvent) => {
                 let relaX = downEvent.clientX - this.div.offsetLeft;
                 let relaY = downEvent.clientY - this.div.offsetTop;
 
+                const windowWidth = window.innerWidth;
+                const windowHeight = window.innerHeight;
+                const containerWidth = getProperty(this.div, "width");
+                const containerHeight = getProperty(this.div, "height");
+
                 document.onmousemove = (moveEvent) => {
-                    this.div.style.left = moveEvent.clientX - relaX + 'px';
-                    this.div.style.top = moveEvent.clientY - relaY + 'px';
-                }
+                    let targetX = moveEvent.clientX - relaX;
+                    let targetY = moveEvent.clientY - relaY;
+
+                    if (targetX <= 0) targetX = 0;
+                    if (targetY <= 0) targetY = 0;
+                    if (targetX >= windowWidth - containerWidth)
+                        targetX = windowWidth - containerWidth;
+                    if (targetY >= windowHeight - containerHeight)
+                        targetY = windowHeight - containerHeight;
+
+                    this.div.style.left = targetX + "px";
+                    this.div.style.top = targetY + "px";
+                };
                 document.onmouseup = () => {
                     document.onmouseup = null;
                     document.onmousemove = null;
                     Application.App.config.SetConfig("notify_tools_x", this.div.style.left);
                     Application.App.config.SetConfig("notify_tools_y", this.div.style.top);
-                }
-            }
+                };
+            };
         });
     }
 
@@ -153,7 +195,7 @@ export class PageLog implements Logger {
         let text = "";
         for (let i = 0; i < args.length; i++) {
             if (typeof args[i] == "object") {
-                text += JSON.stringify(args[i]) + "\n";
+                text += args[i].toString() + "\n";
             } else {
                 text += args[i] + "\n";
             }
@@ -175,7 +217,6 @@ export class PageLog implements Logger {
         }
         return this;
     }
-
 
     public Warn(...args: any): Logger {
         let text = this.toStr(...args);
@@ -223,7 +264,6 @@ export class PageLog implements Logger {
 }
 
 export class EmptyLog implements Logger {
-
     public Debug(...args: any): Logger {
         return this;
     }
@@ -243,5 +283,4 @@ export class EmptyLog implements Logger {
     public Fatal(...args: any): Logger {
         return this;
     }
-
 }

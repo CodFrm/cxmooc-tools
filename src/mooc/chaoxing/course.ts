@@ -20,7 +20,7 @@ export class CxCourse extends EventListener<MoocEvent> implements MoocTaskSet {
                     Application.App.log.Info("超星新窗口加载");
                     this.OperateCard(el);
                     // 超星会有多次加载,所以使用一个flag变量,只回调一次
-                    first && resolve();
+                    first && resolve(undefined);
                     first = false;
                 }
             }, true);

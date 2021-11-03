@@ -1,6 +1,6 @@
-import {Client} from "./message";
-import {AppName, Application} from "../application";
-import {SystemConfig} from "@App/config";
+import { Client } from "./message";
+import { AppName, Application } from "../application";
+import { SystemConfig } from "@App/config";
 
 export type RequestCallback = (body: any) => void
 export type ErrorCallback = () => void
@@ -131,16 +131,16 @@ export class HttpUtils {
         let info = <RequestInfo>data.info;
         if (Application.App.IsBackend) {
             info.success = (body) => {
-                client.Send({body: body, code: 0})
+                client.Send({ body: body, code: 0 })
             };
             info.error = () => {
-                client.Send({code: -1})
+                client.Send({ code: -1 })
             };
             HttpUtils.Request(info)
         } else {
             // content 做转发
             let extClient = Application.App.Client;
-            extClient.Send({type: "GM_xmlhttpRequest", info: info});
+            extClient.Send({ type: "GM_xmlhttpRequest", info: info });
             extClient.Recv((data) => {
                 client.Send(data)
             })
@@ -419,7 +419,11 @@ export function boolToString(val: boolean): string {
 }
 
 export function UntrustedClick(el: Element): boolean {
-    let untrusted = new MouseEvent("click", {"clientX": 10086});
+    if (window.CAT_click != undefined) {
+        CAT_click(el);
+        return true;
+    }
+    let untrusted = new MouseEvent("click", { "clientX": 10086 });
     if (!untrusted.isTrusted) {
         Application.App.log.Warn("扩展执行错误");
         return false;
@@ -430,7 +434,7 @@ export function UntrustedClick(el: Element): boolean {
 export function Sleep(timeout?: number): Promise<any> {
     return new Promise<any>(resolve => {
         setTimeout(function () {
-            resolve();
+            resolve(undefined);
         }, timeout);
     });
 }

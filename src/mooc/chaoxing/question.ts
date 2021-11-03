@@ -1,4 +1,4 @@
-import {substrex, randNumber as RandNumber, removeHTMLTag} from "@App/internal/utils/utils";
+import { substrex, randNumber as RandNumber, removeHTMLTag } from "@App/internal/utils/utils";
 import {
     Question,
     TopicStatus,
@@ -9,7 +9,7 @@ import {
     Answer,
     PushAnswer
 } from "@App/internal/app/question";
-import {CreateNoteLine} from "./utils";
+import { CreateNoteLine } from "./utils";
 
 //TODO: 优化
 export class CxQuestionFactory {
@@ -356,21 +356,31 @@ class cxJudgeQuestion extends cxSelectQuestion implements Question {
     public Correct(): Answer {
         let el = this.el.querySelector(".Py_answer.clearfix");
         let ret = this.defaultAnswer();
-        if (el.querySelectorAll('.fr.dui').length <= 0 && el.querySelectorAll('.fr.cuo').length <= 0) {
+        let score = this.el.querySelector(".Cy_TItle.clearfix .font18.fb");
+        if (el.innerHTML.indexOf('正确答案') !== -1 || (score && score.querySelector(".Cy_TItle.clearfix .font18.fb").innerHTML != "0.0")) {
+            let correctText = el.querySelector("span").innerText;
+            if (correctText.indexOf('×') !== -1) {
+                ret.correct.push({ option: false, content: false });
+            } else {
+                ret.correct.push({ option: true, content: true });
+            }
+            return ret;
+        }
+        if (!el.querySelectorAll('.fr.dui').length && !el.querySelectorAll('.fr.cuo').length) {
             return null;
         }
         let correctText = el.querySelector("span").innerText;
         if (el.querySelectorAll('.fr.dui').length) {
-            if (correctText.indexOf('×') >= 0) {
-                ret.correct.push({option: false, content: false});
+            if (correctText.indexOf('×') !== -1) {
+                ret.correct.push({ option: false, content: false });
             } else {
-                ret.correct.push({option: true, content: true});
+                ret.correct.push({ option: true, content: true });
             }
         } else {
-            if (correctText.indexOf('×') >= 0) {
-                ret.correct.push({option: true, content: true});
+            if (correctText.indexOf('×') !== -1) {
+                ret.correct.push({ option: true, content: true });
             } else {
-                ret.correct.push({option: false, content: false});
+                ret.correct.push({ option: false, content: false });
             }
         }
         return ret;

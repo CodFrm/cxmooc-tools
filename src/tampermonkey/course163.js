@@ -9,12 +9,13 @@
 // @match        *://www.icourse163.org/spoc/learn/*
 // @grant        GM_xmlhttpRequest
 // @grant        GM_notification
+// @grant        CAT_click
 // @grant        unsafeWindow
 // @license      MIT
 // ==/UserScript==
 
 let config = {
-    answer_ignore: true, //忽略题目,勾选此处将不会答题
+    answer_ignore: false, //忽略题目,勾选此处将不会答题
     auto: true, //全自动挂机,无需手动操作,即可自动观看视频等
     rand_answer: false, //随机答案,没有答案的题目将自动的生成一个答案
     interval: 1, //时间间隔,当任务点完成后,会等待1分钟然后跳转到下一个任务点

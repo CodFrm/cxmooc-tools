@@ -43,7 +43,7 @@ export class TopicAdapter extends CxTask {
         return new Promise<any>(async resolve => {
             Application.App.log.Debug("题目信息", this.taskinfo);
             await this.topic.Init();
-            resolve();
+            resolve(undefined);
         });
     }
 
@@ -117,7 +117,7 @@ export class CxCourseTopic extends Topic {
                     if (this.context.document.URL.indexOf("selectWorkQuestionYiPiYue") > 0) {
                         await this.CollectAnswer();
                     }
-                    resolve();
+                    resolve(undefined);
                 }
             }, 500);
         });
@@ -156,7 +156,7 @@ export class CxCourseTopic extends Topic {
                             .addEventListener("load", async function () {
                                 if (this.contentWindow.document.URL.indexOf('selectWorkQuestionYiPiYue') > 0) {
                                     await self.CollectAnswer();
-                                    resolve();
+                                    resolve(undefined);
                                 }
                             });
                         //确定提交
@@ -192,7 +192,7 @@ export class ExamTopic extends Topic implements QueryQuestions {
 
     public Submit(): Promise<any> {
         return new Promise(resolve => {
-            resolve();
+            resolve(undefined);
         });
     }
 }
