@@ -57,7 +57,7 @@ export class HttpUtils {
     }
 
     private static crossDomainRequest(info: RequestInfo): void {
-        if (window.hasOwnProperty('GM_xmlhttpRequest')) {
+        if (Object.hasOwnProperty.bind(window)('GM_xmlhttpRequest')) {
             //兼容油猴
             (<any>info).data = info.body;
             (<any>info).onreadystatechange = function (response: any) {
